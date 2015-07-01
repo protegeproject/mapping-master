@@ -12,9 +12,8 @@
 
     <java.version>1.8</java.version>
 
-    <javacc.version>4.2</javacc.version>
+    <javacc.version>6.1.2</javacc.version>
     <owlapi.version>4.0.2</owlapi.version> 
-
     <jxl.version>2.6.12</jxl.version>
     
     <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
@@ -104,7 +103,10 @@
           </execution>
         </executions>
         <configuration>
-	  <mainClass>org.sm.TODO</mainClass>
+	  <mainClass>org.protege.owl.mm.MappingMasterParserTest</mainClass>
+          <arguments>
+            <argument>Class: Fred SubclassOf: @A2 EquivalentTo: Bob</argument>
+          </arguments>
         </configuration>
       </plugin>
 
