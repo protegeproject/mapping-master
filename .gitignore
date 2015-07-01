@@ -1,0 +1,20 @@
+
+# Ignore temporary Emacs files
+*~
+
+.settings
+.project
+.classpath
+.pydevproject
+.metadata
+.idea
+
+*.iml
+
+# Exclude build directory
+target/*
+.
+/target
+
+*.pyc
+.DS_Store

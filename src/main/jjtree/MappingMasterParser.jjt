@@ -1,0 +1,1317 @@
+ 
+options {
+  LOOKAHEAD = 1;
+  IGNORE_CASE = true;
+  STATIC = false;
+  USER_TOKEN_MANAGER=false;
+  USER_CHAR_STREAM=false;
+
+  // JJTree options
+
+  MULTI=true;
+  NODE_DEFAULT_VOID = true;
+}
+
+PARSER_BEGIN(MappingMasterParser)
+
+package org.protege.owl.mm.parser;
+
+import java.util.*;
+
+public class MappingMasterParser 
+{
+  public String defaultLocationValue = "";
+  public String defaultDataValue = "";
+  public String defaultID = "";
+  public String defaultLabel = "";
+  public String defaultLanguage = "";
+  public String defaultPrefix = "";
+  public String defaultNamespace = "";
+
+  public int defaultEntityType = OWL_CLASS;
+  public int defaultPropertyType = OWL_OBJECT_PROPERTY;
+  public int defaultPropertyValueType = XSD_STRING;
+  public int defaultDataPropertyValueType = XSD_STRING;
+  public int defaultAnnotationPropertyValueType = XSD_STRING;
+
+  public int defaultValueEncoding = RDFS_LABEL;
+  public int defaultClassValueEncoding = defaultValueEncoding;
+  public int defaultPropertyValueEncoding = defaultValueEncoding;
+  public int defaultObjectPropertyValueEncoding = defaultValueEncoding;
+  public int defaultDataPropertyValueEncoding = defaultValueEncoding;
+  public int defaultIndividualValueEncoding = defaultValueEncoding;
+  public int defaultShiftSetting = MM_NO_SHIFT;
+  public int defaultEmptyLocationSetting = MM_PROCESS_IF_EMPTY_LOCATION;
+  public int defaultEmptyDataValueSetting = MM_PROCESS_IF_EMPTY_DATA_VALUE;
+  public int defaultEmptyRDFIDSetting = MM_PROCESS_IF_EMPTY_ID;
+  public int defaultEmptyRDFSLabelSetting = MM_PROCESS_IF_EMPTY_LABEL;
+  public int defaultIfExistsSetting = MM_RESOLVE_IF_EXISTS;
+  public int defaultIfNotExistsSetting = MM_CREATE_IF_NOT_EXISTS;
+
+} 
+
+PARSER_END(MappingMasterParser)
+
+/* White space */
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+/* Comments */
+
+MORE :
+{
+  "//" : IN_SINGLE_LINE_COMMENT
+|  <"/**" ~["/"]> { input_stream.backup(1); } : IN_FORMAL_COMMENT
+|  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+
+<IN_FORMAL_COMMENT>
+SPECIAL_TOKEN :
+{
+  <FORMAL_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_SINGLE_LINE_COMMENT,IN_FORMAL_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+/* Tokens */
+TOKEN: { <CLASS: "Class:" | "class:"> }
+TOKEN: { <INDIVIDUAL: "Individual:" | "individual:"> }
+TOKEN: { <EQUIVALENT_TO: "EquivalentTo:" | "equivalentTo:"> }
+TOKEN: { <SUBCLASS_OF: "SubClassOf:" | "subClassOf:"> }
+TOKEN: { <FACTS: "Facts:" | "facts:"> }
+TOKEN: { <TYPES: "Types:" | "types:"> }
+TOKEN: { <ANNOTATIONS: "Annotations:" | "annotations:"> }
+TOKEN: { <SAME_AS: "SameAs:" | "sameAs:"> }
+TOKEN: { <DIFFERENT_FROM: "DifferentFrom:" | "differentFrom:"> }
+
+/* Class expression tokens */
+
+TOKEN: {<SOME: "some" | "SOME">}
+TOKEN: {<ONLY: "only" | "ONLY">}
+TOKEN: {<VALUE: "value" | "VALUE">}
+TOKEN: {<MIN: "min" | "MIN">}
+TOKEN: {<MAX: "max" | "MAX">}
+TOKEN: {<EXACTLY: "exactly" | "EXACTLY">}
+TOKEN: {<AND: "and" | "AND">}
+TOKEN: {<OR: "or" | "OR">}
+TOKEN: {<NOT: "not" | "NOT">}
+
+TOKEN: {<TRUE: "true" | "TRUE">}
+TOKEN: {<FALSE: "false" | "FALSE">}
+
+TOKEN: { <XSD_DATETIME: "xsd:dateTime" > }
+TOKEN: { <XSD_LONG: "xsd:long" > }
+TOKEN: { <XSD_STRING: "xsd:string" > }
+TOKEN: { <XSD_INT: "xsd:int" > }
+TOKEN: { <XSD_SHORT: "xsd:short" > }
+TOKEN: { <XSD_BOOLEAN: "xsd:boolean" > }
+TOKEN: { <XSD_DOUBLE: "xsd:double" > }
+TOKEN: { <XSD_FLOAT: "xsd:float"  > }
+TOKEN: { <XSD_TIME: "xsd:time"> }
+TOKEN: { <XSD_DURATION: "xsd:duration" > }
+TOKEN: { <RDF_XMLLITERAL: "rdf:XMLLiteral" > }
+
+/*
+TOKEN: { <XSD_NOTATION: "xsd:NOTATION" > }
+TOKEN: { <XSD_UNSIGNEDLONG: "xsd:unsignedLong" > }
+TOKEN: { <XSD_ANYSIMPLETYPE: "xsd:anySimpleType" > }
+TOKEN: { <XSD_HEXBINARY: "xsd:hexBinary" > }
+TOKEN: { <XSD_NONPOSITIVEINTEGER: "xsd:nonPositiveInteger" > }
+TOKEN: { <XSD_NONNEGATIVEINTEGER: "xsd:nonNegativeInteger" > }
+TOKEN: { <XSD_NORMALIZEDSTRING: "xsd:normalizedString" > }
+TOKEN: { <XSD_POSITIVEINTEGER: "xsd:positiveInteger" > }
+TOKEN: { <XSD_ENTITY: "xsd:ENTITY" > }
+TOKEN: { <XSD_LANGUAGE: "xsd:language" > }
+TOKEN: { <XSD_GMONTHDAY: "xsd:gMonthDay" > }
+TOKEN: { <XSD_ANYURI: "xsd:anyURI" > }
+TOKEN: { <XSD_NAME: "xsd:Name" > }
+TOKEN: { <XSD_GYEARMONTH: "xsd:gYearMonth" > }
+TOKEN: { <XSD_QNAME: "xsd:QName" > }
+TOKEN: { <XSD_NEGATIVEINTEGER: "xsd:negativeInteger" > }
+TOKEN: { <XSD_BASE64BINARY: "xsd:base64Binary" > }
+TOKEN: { <XSD_ID: "xsd:ID" > }
+TOKEN: { <XSD_TOKEN: "xsd:token" > }
+TOKEN: { <XSD_UNSIGNEDINT: "xsd:unsignedInt" > }
+TOKEN: { <XSD_IDREF: "xsd:IDREF" > }
+TOKEN: { <XSD_UNSIGNEDBYTE: "xsd:unsignedByte" > }
+TOKEN: { <XSD_GDAY: "xsd:gDay" > }
+TOKEN: { <XSD_GYEAR: "xsd:gYear" > }
+TOKEN: { <XSD_NCNAME: "xsd:NCName" > }
+TOKEN: { <XSD_BYTE: "xsd:byte" > }
+TOKEN: { <XSD_GMONTH: "xsd:gMonth" > }
+TOKEN: { <XSD_DECIMAL: "xsd:decimal" > }
+TOKEN: { <XSD_UNSIGNEDSHORT: "xsd:unsignedShort" > }
+TOKEN: { <XSD_NMTOKEN: "xsd:NMTOKEN" > }
+*/
+
+/* MappingMaster tokens */
+
+TOKEN: { <MM_LOCATION_WITH_DUPLICATES: "mm:LocationWithDuplicates"> }
+TOKEN: { <MM_LOCATION: "mm:Location"> }
+
+TOKEN: { <RDF_ID: "rdf:ID"> }
+TOKEN: { <RDFS_LABEL: "rdfs:label"> }
+
+TOKEN: { <XML_LANG: "xml:lang" > }
+TOKEN: { <MM_NULL: "mm:null" > }
+
+TOKEN: { <MM_DATA_VALUE: "mm:DataValue"> }
+
+TOKEN: { <MM_DEFAULT_VALUE_ENCODING: "mm:DefaultValueEncoding"> }
+TOKEN: { <MM_DEFAULT_ENTITY_TYPE: "mm:DefaultEntityType"> }
+TOKEN: { <MM_DEFAULT_PROPERTY_TYPE: "mm:DefaultPropertyType"> }
+TOKEN: { <MM_DEFAULT_PROPERTY_VALUE_TYPE: "mm:DefaultPropertyValueType"> }
+TOKEN: { <MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE: "mm:DefaultDataPropertyValueType"> }
+TOKEN: { <MM_DEFAULT_ANNOTATION_PROPERTY_VALUE_TYPE: "mm:DefaultAnnotationPropertyValueType"> }
+TOKEN: { <MM_DEFAULT_SHIFT: "mm:DefaultShift"> }
+
+TOKEN: { <MM_DEFAULT_EMPTY_DATA_VALUE: "mm:DefaultEmptyDataValue"> }
+TOKEN: { <MM_DEFAULT_EMPTY_LOCATION: "mm:DefaultEmptyLocation"> }
+TOKEN: { <MM_DEFAULT_EMPTY_RDF_ID: "mm:DefaultEmptyID"> }
+TOKEN: { <MM_DEFAULT_EMPTY_RDFS_LABEL: "mm:DefaultEmptyLabel"> }
+TOKEN: { <MM_DEFAULT_IF_EXISTS: "mm:DefaultIfExists"> }
+TOKEN: { <MM_DEFAULT_IF_NOT_EXISTS: "mm:DefaultIfNotExists"> }
+
+TOKEN: { <MM_UNTYPED: "mm:Untyped"> }
+TOKEN: { <MM_PREFIX: "mm:Prefix"> }
+TOKEN: { <MM_NAMESPACE: "mm:Namespace"> }
+TOKEN: { <CELL_WILDCARD: "*"> }
+TOKEN: { <RDFS_CLASS: "rdfs:class"> }
+TOKEN: { <RDF_PROPERTY: "rdf:property"> }
+TOKEN: { <OWL_CLASS: "Class"> }
+TOKEN: { <OWL_THING: "Individual"> }
+TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
+TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
+
+TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
+TOKEN: { <MM_TO_LOWER_CASE: "mm:toLowerCase"> }
+TOKEN: { <MM_TRIM: "mm:trim"> }
+TOKEN: { <MM_CAPTURING: "mm:capturing"> }
+TOKEN: { <MM_REVERSE: "mm:reverse"> }
+TOKEN: { <MM_REPLACE: "mm:replace"> }
+TOKEN: { <MM_REPLACE_ALL: "mm:replaceAll"> }
+TOKEN: { <MM_REPLACE_FIRST: "mm:replaceFirst"> }
+TOKEN: { <MM_APPEND: "mm:append"> }
+TOKEN: { <MM_PREPEND: "mm:prepend"> }
+
+TOKEN: { <MM_DEFAULT_LOCATION_VALUE: "mm:DefaultLocationValue"> }
+TOKEN: { <MM_DEFAULT_DATA_VALUE: "mm:DefaultDataValue"> }
+TOKEN: { <MM_DEFAULT_ID: "mm:DefaultID"> }
+TOKEN: { <MM_DEFAULT_LABEL: "mm:DefaultLabel"> }
+
+TOKEN: { <MM_DEFAULT_PREFIX: "mm:DefaultPrefix"> }
+TOKEN: { <MM_DEFAULT_NAMESPACE: "mm:DefaultNamespace"> }
+TOKEN: { <MM_DEFAULT_LANGUAGE: "mm:DefaultLanguage"> }
+
+TOKEN: { <MM_NO_SHIFT: "mm:NoShift"> }
+TOKEN: { <MM_SHIFT_UP: "mm:ShiftUp"> }
+TOKEN: { <MM_SHIFT_DOWN: "mm:ShiftDown"> }
+TOKEN: { <MM_SHIFT_LEFT: "mm:ShiftLeft"> }
+TOKEN: { <MM_SHIFT_RIGHT: "mm:ShiftRight"> }
+
+TOKEN: { <MM_ERROR_IF_EMPTY_LOCATION: "mm:ErrorIfEmptyLocation"> }
+TOKEN: { <MM_WARNING_IF_EMPTY_LOCATION: "mm:WarningIfEmptyLocation"> }
+TOKEN: { <MM_SKIP_IF_EMPTY_LOCATION: "mm:SkipIfEmptyLocation"> }
+TOKEN: { <MM_PROCESS_IF_EMPTY_LOCATION: "mm:ProcessIfEmptyLocation"> }
+
+TOKEN: { <MM_PROCESS_IF_EMPTY_DATA_VALUE: "mm:ProcessIfEmptyDataValue"> }
+TOKEN: { <MM_ERROR_IF_EMPTY_DATA_VALUE: "mm:ErrorIfEmptyDataValue"> }
+TOKEN: { <MM_WARNING_IF_EMPTY_DATA_VALUE: "mm:WarningIfEmptyDataValue"> }
+TOKEN: { <MM_SKIP_IF_EMPTY_DATA_VALUE: "mm:SkipIfEmptyDataValue"> }
+
+TOKEN: { <MM_PROCESS_IF_EMPTY_ID: "mm:ProcessIfEmptyID"> }
+TOKEN: { <MM_ERROR_IF_EMPTY_ID: "mm:ErrorIfEmptyID"> }
+TOKEN: { <MM_WARNING_IF_EMPTY_ID: "mm:WarningIfEmptyID"> }
+TOKEN: { <MM_SKIP_IF_EMPTY_ID: "mm:SkipIfEmptyID"> }
+
+TOKEN: { <MM_PROCESS_IF_EMPTY_LABEL: "mm:ProcessIfEmptyLabel"> }
+TOKEN: { <MM_ERROR_IF_EMPTY_LABEL: "mm:ErrorIfEmptyLabel"> }
+TOKEN: { <MM_WARNING_IF_EMPTY_LABEL: "mm:WarningIfEmptyLable"> }
+TOKEN: { <MM_SKIP_IF_EMPTY_LABEL: "mm:SkipIfEmptyLabel"> }
+
+TOKEN: { <MM_RESOLVE_IF_EXISTS: "mm:ResolveIfExists"> }
+TOKEN: { <MM_SKIP_IF_EXISTS: "mm:SkipIfExists"> }
+TOKEN: { <MM_WARNING_IF_EXISTS: "mm:WarningIfExists"> }
+TOKEN: { <MM_ERROR_IF_EXISTS: "mm:ErrorIfExists"> }
+
+TOKEN: { <MM_CREATE_IF_NOT_EXISTS: "mm:CreateIfNotExists"> }
+TOKEN: { <MM_SKIP_IF_NOT_EXISTS: "mm:SkipIfNotExists"> }
+TOKEN: { <MM_WARNING_IF_NOT_EXISTS: "mm:WarningIfNotExists"> }
+TOKEN: { <MM_ERROR_IF_NOT_EXISTS: "mm:ErrorIfNotExists"> }
+
+TOKEN:
+{
+  <STRING_LITERAL: "\"" (~["\""])* ("\"\"" (~["\""])*)* ("\\\"")* "\"" >
+| <QUOTED_NAME_LITERAL: "'" (~["'"])* ("''" (~["'"])*)* "'" >
+| <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT> | "_" | "-" | "#" | "." | ":" | "/" )* | "'" (~["'"])* "'"> 
+| <INTEGER_LITERAL: (["-"])? (<DIGIT>)+ > 
+| <LONG_LITERAL: (["-"])? (<DIGIT>)+> 
+| <FLOAT_LITERAL:   (["-"])? (<DIGIT>)+ "." (<DIGIT>)+ (<EXPONENT>)?
+                  | (["-"])? "." (<DIGIT>)+ (<EXPONENT>)?
+                  | (["-"])? (<DIGIT>)+ <EXPONENT>
+                  | (["-"])? (<DIGIT>)+ (<EXPONENT>)? > 
+|
+  <#LETTER: [ "a"-"z", "A"-"Z" ]>
+|
+  <#DIGIT: ["0"-"9"] >
+| 
+  <#EXPONENT: ["e", "E"] (["+", "-"])? (<DIGIT>)+ >
+| 
+  <LOCATION_SPECIFICATION: (<LETTER> | <DIGIT> | "_" | "-" | "#" | "." | ":" | "/" | "*" )+ | "'" (~["'"])* "'"> 
+}
+
+SimpleNode expression() #Expression : {}
+{
+  (  mm_expression()
+   | owl_expression()
+  ) <EOF>
+  {
+     return jjtThis;
+  }
+}
+
+void mm_expression() #MMExpression : {}
+{
+  (  mm_default_value_encoding()
+   | mm_default_entity_type()
+   | mm_default_property_value_type()
+   | mm_default_shift_setting()
+   | mm_default_empty_location_setting()
+   | mm_default_empty_data_value_setting()
+   | mm_default_empty_rdf_id_setting()
+   | mm_default_empty_rdfs_label_setting()
+   | mm_default_if_exists_setting()
+   | mm_default_if_not_exists_setting()
+  ) 
+}
+
+void owl_expression() #OWLExpression : {}
+{
+  (  owl_class_expression() 
+   | owl_class_declaration() 
+   | owl_individual_declaration()
+  ) 
+}
+
+void mm_default_value_encoding() #MMDefaultValueEncoding: 
+{
+  int encodingType;
+}
+{
+  <MM_DEFAULT_VALUE_ENCODING> 
+      (  <RDF_ID> { encodingType = RDF_ID; }  
+       | <RDFS_LABEL> { encodingType = RDFS_LABEL; } 
+       | <MM_DATA_VALUE> { encodingType = MM_DATA_VALUE; } 
+       | <MM_LOCATION> { encodingType = MM_LOCATION; } 
+      )
+  {
+    jjtThis.encodingType = encodingType;
+    defaultValueEncoding = encodingType;
+  }
+}
+
+void mm_default_shift_setting() #MMDefaultShiftSetting: 
+{
+  int shiftSetting;
+}
+{
+  <MM_DEFAULT_SHIFT> shiftSetting = shift_setting()
+
+  {
+    jjtThis.shiftSetting = shiftSetting;
+    defaultShiftSetting = shiftSetting;
+  }
+}
+
+void mm_default_empty_location_setting() #MMDefaultEmptyLocationSetting: 
+{
+  int emptyLocationSetting;
+}
+{
+  <MM_DEFAULT_EMPTY_LOCATION> emptyLocationSetting = empty_location_setting()
+
+  {
+    jjtThis.emptyLocationSetting = emptyLocationSetting;
+    defaultEmptyLocationSetting = emptyLocationSetting;
+  }
+}
+
+void mm_default_empty_data_value_setting() #MMDefaultEmptyDataValueSetting: 
+{
+  int emptyDataValueSetting;
+}
+{
+  <MM_DEFAULT_EMPTY_DATA_VALUE> emptyDataValueSetting = empty_data_value_setting()
+
+  {
+    jjtThis.emptyDataValueSetting = emptyDataValueSetting;
+    defaultEmptyDataValueSetting = emptyDataValueSetting;
+  }
+}
+
+void mm_default_if_exists_setting() #MMDefaultIfExistsSetting: 
+{
+  int ifExistsSetting;
+}
+{
+  <MM_DEFAULT_IF_EXISTS> ifExistsSetting = if_exists_directive()
+
+  {
+    jjtThis.ifExistsSetting = ifExistsSetting;
+    defaultIfExistsSetting = ifExistsSetting;
+  }
+}
+
+void mm_default_if_not_exists_setting() #MMDefaultIfNotExistsSetting: 
+{
+  int ifNotExistsSetting;
+}
+{
+  <MM_DEFAULT_IF_NOT_EXISTS> ifNotExistsSetting = if_not_exists_directive()
+
+  {
+    jjtThis.ifNotExistsSetting = ifNotExistsSetting;
+    defaultIfNotExistsSetting = ifNotExistsSetting;
+  }
+}
+
+void mm_default_empty_rdf_id_setting() #MMDefaultEmptyRDFIDSetting: 
+{
+  int emptyRDFIDSetting;
+}
+{
+  <MM_DEFAULT_EMPTY_RDF_ID> emptyRDFIDSetting = empty_rdf_id_setting()
+
+  {
+    jjtThis.emptyRDFIDSetting = emptyRDFIDSetting;
+    defaultEmptyRDFIDSetting = emptyRDFIDSetting;
+  }
+}
+
+void mm_default_empty_rdfs_label_setting() #MMDefaultEmptyRDFSLabelSetting: 
+{
+  int emptyRDFSLabelSetting;
+}
+{
+  <MM_DEFAULT_EMPTY_RDFS_LABEL> emptyRDFSLabelSetting = empty_rdfs_label_setting()
+
+  {
+    jjtThis.emptyRDFSLabelSetting = emptyRDFSLabelSetting;
+    defaultEmptyRDFSLabelSetting = emptyRDFSLabelSetting;
+  }
+}
+
+
+void mm_default_entity_type() #MMDefaultEntityType: 
+{
+  int entityType;
+}
+{
+  <MM_DEFAULT_ENTITY_TYPE> entityType = entity_type()
+
+  {
+    defaultEntityType = entityType;
+  }
+}
+
+void mm_default_language() #MMDefaultLanguage: 
+{
+  String language;
+}
+{
+  <MM_DEFAULT_LANGUAGE> language = identifier()
+
+  {
+    defaultLanguage = language;
+  }
+}
+
+void mm_default_prefix() #MMDefaultPrefix: 
+{
+  String prefix;
+}
+{
+  <MM_DEFAULT_LANGUAGE> prefix = string()
+
+  {
+    defaultPrefix = prefix;
+  }
+}
+
+void mm_default_namespace() #MMDefaultNamespace: 
+{
+  String namespace;
+}
+{
+  <MM_DEFAULT_NAMESPACE> namespace = string()
+
+  {
+    defaultNamespace = namespace;
+  }
+}
+
+void mm_default_property_value_type() #MMDefaultPropertyValueType: 
+{
+  int defaultType;
+}
+{
+  <MM_DEFAULT_PROPERTY_VALUE_TYPE> defaultType = entity_type()
+ {
+   jjtThis.defaultType = defaultType;
+   defaultPropertyValueType = defaultType;
+ }
+}
+
+void mm_default_datatype_property_value_type() #MMDefaultDatatypePropertyValueType: 
+{
+  int defaultType;
+}
+{
+  <MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE> defaultType = datatype()
+ {
+   jjtThis.defaultType = defaultType;
+   defaultDataPropertyValueType = defaultType;
+ }
+}
+
+void mm_default_annotation_property_value_type() #MMDefaultAnnotationPropertyValueType: 
+{
+  int defaultEntityType;
+}
+{
+  <MM_DEFAULT_ANNOTATION_PROPERTY_VALUE_TYPE> defaultEntityType = entity_type()
+ {
+   jjtThis.defaultType = defaultEntityType;
+   defaultAnnotationPropertyValueType = defaultEntityType;
+ }
+}
+
+void mm_default_property_type() #MMDefaultPropertyType: 
+{
+  Token t;
+}
+{
+  <MM_DEFAULT_PROPERTY_TYPE> (  t = <OWL_DATA_PROPERTY> 
+                              | t = <OWL_OBJECT_PROPERTY>)
+ {
+   jjtThis.defaultType = t.kind;;
+   defaultPropertyType = t.kind;
+ }
+}
+
+void owl_class_declaration() #OWLClassDeclaration : {}
+{
+  <CLASS> owl_named_class(defaultClassValueEncoding) (  owl_equivalent_to() 
+                                                            | owl_subclass_of()
+                                                           ) *
+   ( <ANNOTATIONS> annotation_fact_list() )?
+}
+
+void owl_equivalent_to() #OWLEquivalentTo : {}
+{
+   <EQUIVALENT_TO> owl_class_expression() ( "," owl_class_expression() )*
+} 
+
+void owl_subclass_of() #OWLSubclassOf : {}
+{
+   <SUBCLASS_OF> owl_class_expression() ( "," owl_class_expression() )*
+} 
+
+void owl_individual_declaration() #OWLIndividualDeclaration : {}
+{ // TODO Order of subclauses should not matter
+  <INDIVIDUAL> owl_individual(defaultIndividualValueEncoding) 
+  ( <FACTS> fact_list() )?
+  ( <TYPES> types(OWL_CLASS) )?
+  ( <ANNOTATIONS> annotation_fact_list() )?
+  ( same_as() )?
+  ( different_from() )?
+}
+
+void same_as() #SameAs : {}
+{
+  <SAME_AS> owl_individual(defaultValueEncoding) ( "," owl_individual(defaultValueEncoding) )*
+}
+
+void different_from() #DifferentFrom : {}
+{
+  <DIFFERENT_FROM>  owl_individual(defaultValueEncoding) ( "," owl_individual(defaultValueEncoding) )*
+}
+
+void fact_list() : {}
+{
+  fact() ( "," fact() )*
+}
+
+void annotation_fact_list() : {}
+{
+  annotation_fact() ( "," annotation_fact() )*
+}
+
+void fact() #Fact: {}
+{
+  owl_property() owl_property_value(defaultPropertyValueType)
+}
+
+void annotation_fact() #AnnotationFact: {}
+{
+  owl_property() owl_property_value(defaultAnnotationPropertyValueType)
+}
+
+void owl_property() #OWLProperty : {}
+{
+  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding)
+} 
+
+void owl_individual(int defaultValueEncoding) #OWLIndividual : {}
+{
+  owl_individual_name() | reference(OWL_THING, defaultValueEncoding)
+} 
+
+void owl_class_name() : {}
+{
+  name()
+}
+
+void owl_property_name() : {}
+{
+  name()
+}
+
+void owl_individual_name() : {}
+{
+  name()
+}
+
+void name() #Name:
+{
+  String name;
+  boolean isQuotedName = false;
+}
+{
+  (  name = identifier() 
+   | name = quoted_name() { isQuotedName = true; }
+  )
+
+  { 
+    jjtThis.name = name; 
+    jjtThis.isQuotedName = isQuotedName; 
+  }
+}
+
+void owl_property_value(int defaultPropertyValueType) #OWLPropertyValue : {}
+{
+  (  reference(defaultPropertyValueType, defaultValueEncoding) 
+   | name() 
+   | literal() 
+  )
+}
+
+void literal() #Literal : {}
+{
+  (  integer_literal() 
+   | float_literal() 
+   | boolean_literal() 
+   | string_literal() 
+  )
+} 
+
+void integer_literal() #IntegerLiteral :
+{
+  Token t;
+}
+{
+  t = <INTEGER_LITERAL>
+
+  {
+    jjtThis.value = Integer.valueOf(token.image);
+  }
+}
+
+void float_literal() #FloatLiteral :
+{
+  Token t;
+}
+{
+  t = <FLOAT_LITERAL>
+
+  {
+    jjtThis.value = Float.valueOf(token.image);
+  }
+}
+
+
+String string() : 
+{
+  Token t;
+}
+{
+  t = <STRING_LITERAL> 
+
+  {
+    String s = t.image;
+    return s.substring(1, s.length() - 1);
+  }
+}
+
+void string_literal() #StringLiteral :
+{
+  String value;
+}
+{
+  value = string()
+
+  {
+    jjtThis.value = value;
+  }
+}
+
+void boolean_literal() #BooleanLiteral :
+{
+  boolean value;
+}
+{
+  ( <TRUE> { value = true; } | <FALSE> { value = false; } )
+
+  {
+    jjtThis.value = value;
+  }
+}
+
+void owl_class_expression() #OWLClassExpression : {}
+{
+  owl_union_class()
+} 
+
+void owl_union_class() #OWLUnionClass : {}
+{
+  owl_intersection_class() ( LOOKAHEAD(2) <OR> owl_intersection_class() )*
+} 
+
+void owl_intersection_class() #OWLIntersectionClass : {}
+{
+  owl_class_or_restriction() ( LOOKAHEAD(2) <AND> owl_class_or_restriction() )*
+} 
+
+void owl_class_or_restriction() #OWLClassOrRestriction :
+{
+  boolean isNegated = false;
+}
+{
+  ( <NOT> { isNegated = true; } )? (  LOOKAHEAD(owl_restriction()) owl_restriction() 
+                                    | owl_named_class(defaultClassValueEncoding) 
+                                    | "(" owl_union_class() ")" 
+                                    | owl_enumerated_class() 
+                                   )
+
+  { jjtThis.isNegated = isNegated; }
+}
+
+void owl_enumerated_class() #OWLEnumeratedClass : {}
+{
+  "{" ( owl_individual(defaultIndividualValueEncoding) )+ "}"
+}
+
+void owl_named_class(int defaultValueEncoding) #OWLNamedClass : {}
+{
+  owl_class_name() | reference(OWL_CLASS, defaultValueEncoding)
+} 
+
+String identifier() :
+{
+  Token t;
+}
+{
+  t = <IDENTIFIER>
+
+  { return t.image; }
+}
+
+String location_specification() :
+{
+  Token t;
+}
+{
+  t = <LOCATION_SPECIFICATION>
+
+  { return t.image; }
+}
+
+void source_specification() #SourceSpecification : 
+{
+  String source = null;
+  String location = null;
+  String literal = null;
+  Token t;
+}
+{ 
+  (
+     ( ( source = quoted_name() "!" )? ( location = location_specification() | location = identifier() ) )
+   | literal = string()
+  )
+
+  { 
+     jjtThis.source = source;
+     jjtThis.location = location;
+     jjtThis.literal = literal;
+  }
+}
+
+void owl_restriction() #OWLRestriction : {}
+{
+  owl_property() (  owl_max_cardinality()  
+                  | owl_min_cardinality() 
+                  | owl_cardinality()
+                  | owl_has_value() 
+                  | owl_all_values_from() 
+                  | owl_some_values_from() 
+                 )
+}
+
+int integer_value() :
+{
+  Token t;
+}
+{
+  t=<INTEGER_LITERAL>
+  {
+    return Integer.parseInt(t.image);
+  }
+}
+
+int cardinality_value() :
+{
+ int cardinality;
+}
+{
+  cardinality  = integer_value()
+
+  {
+    return cardinality;
+  }
+}
+
+void owl_max_cardinality() #OWLMaxCardinality :
+{
+  int cardinality;
+}
+{
+  <MAX> cardinality = cardinality_value()
+
+  {
+    jjtThis.cardinality = cardinality;
+  }
+}
+
+void owl_min_cardinality() #OWLMinCardinality :
+{
+  int cardinality;
+}
+{
+   <MIN> cardinality = cardinality_value()
+
+  {
+    jjtThis.cardinality = cardinality;
+  }
+}
+
+void owl_all_values_from() #OWLAllValuesFrom : {}
+{
+  LOOKAHEAD(2) owl_all_values_from_datatype() | LOOKAHEAD(2) owl_all_values_from_class() 
+}
+
+void owl_has_value() #OWLHasValue : {}
+{
+  <VALUE> owl_property_value(defaultPropertyValueType)
+}
+
+void owl_cardinality() #OWLCardinality :
+{
+  int cardinality;
+}
+{
+  <EXACTLY> cardinality = cardinality_value()
+
+  {
+    jjtThis.cardinality = cardinality;
+  }
+}
+
+void owl_all_values_from_class() #OWLAllValuesFromClass : {}
+{
+  <ONLY> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
+}
+
+void owl_all_values_from_datatype() #OWLAllValuesFromDataType :
+{
+  int dataType;
+}
+{
+  <ONLY> dataType = datatype()
+  {
+    jjtThis.dataType = dataType;
+  }
+}
+
+void owl_some_values_from() #OWLSomeValuesFrom : {}
+{
+  LOOKAHEAD(2) owl_some_values_from_datatype() | LOOKAHEAD(2) owl_some_values_from_class() 
+}
+
+void owl_some_values_from_class() #OWLSomeValuesFromClass : {}
+{
+  <SOME> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
+}
+
+void owl_some_values_from_datatype() #OWLSomeValuesFromDataType :
+{
+  int dataType;
+}
+{
+  <SOME> dataType = datatype()
+  {
+    jjtThis.dataType = dataType;
+  }
+}
+  
+int datatype() :
+{
+  Token t;
+}
+{
+ (
+     t = <XSD_INT>
+   | t = <XSD_STRING> 
+   | t = <XSD_FLOAT>
+   | t = <XSD_DOUBLE>
+   | t = <XSD_SHORT> 
+   | t = <XSD_BOOLEAN>
+   | t = <XSD_TIME>
+   | t = <XSD_DATETIME>
+   | t = <XSD_DURATION>
+ )
+  {
+    return t.kind;
+  }
+}
+
+void reference(int defaultEntityType, int defaultValueEncoding) #Reference : {}
+{
+   "@" source_specification()
+       ( LOOKAHEAD(2) 
+         "(" ( entity_type() )? 
+             ( directive(defaultValueEncoding) )*
+             ( types(defaultEntityType) )? 
+         ")"
+       )?
+  {
+    jjtThis.defaultReferenceDirectives = new DefaultReferenceDirectives(defaultEntityType, defaultValueEncoding, 
+                        defaultLocationValue, defaultDataValue, defaultID,
+			defaultLabel, defaultLanguage, defaultPrefix, defaultNamespace, 
+                        defaultShiftSetting, 
+                        defaultEmptyLocationSetting, defaultEmptyDataValueSetting, defaultEmptyRDFIDSetting,
+			defaultEmptyRDFSLabelSetting,
+                        defaultIfExistsSetting, defaultIfNotExistsSetting);
+
+  }
+}
+
+void directive(int defaultValueEncoding) : {}
+{
+  (  namespace()  
+   | prefix() 
+   | language()
+   | value_extraction_function() 
+   | value_encoding(defaultValueEncoding) 
+   | default_location_value() 
+   | default_data_value() 
+   | default_label() 
+   | default_id() 
+   | empty_data_value_setting()
+   | empty_location_setting()
+   | empty_rdf_id_setting() 
+   | empty_rdfs_label_setting() 
+   | shift_setting() 
+   | if_exists_directive()
+   | if_not_exists_directive()
+  ) 
+}
+
+int entity_type() #EntityType : 
+{
+  Token t;
+  int entityType = defaultEntityType;
+}
+{
+  (
+     t = <RDFS_CLASS> { entityType = t.kind; }
+   | t = <RDF_PROPERTY> { entityType = t.kind; }
+   | t = <OWL_CLASS> { entityType = t.kind; }
+   | t = <OWL_THING> { entityType = t.kind; }
+   | t = <OWL_OBJECT_PROPERTY> { entityType = t.kind; }
+   | t = <OWL_DATA_PROPERTY> { entityType = t.kind; }
+   | entityType = datatype()
+  ) 
+
+  {
+    jjtThis.entityType = entityType;
+    return entityType;
+  }
+}
+
+int value_encoding(int defaultValueEncoding) #ValueEncoding : 
+{
+  int encodingType = defaultValueEncoding;
+}
+{
+  (
+      <MM_LOCATION> { encodingType = MM_LOCATION; }
+    | <MM_LOCATION_WITH_DUPLICATES> { encodingType = MM_LOCATION_WITH_DUPLICATES; }
+    |
+     (
+      (  <RDF_ID> { encodingType = RDF_ID; } 
+       | <RDFS_LABEL> { encodingType = RDFS_LABEL; } 
+       | <MM_DATA_VALUE> { encodingType = MM_DATA_VALUE; } 
+      )
+      ( value_specification() )?
+    )
+  )
+  {
+    jjtThis.encodingType = encodingType;
+    return encodingType;
+  }
+}
+
+int empty_location_setting() #EmptyLocationSetting :
+{
+  Token t;
+  int emptyLocationSetting;
+}
+{
+  (
+     t = <MM_ERROR_IF_EMPTY_LOCATION> { emptyLocationSetting = t.kind; }
+   | t = <MM_WARNING_IF_EMPTY_LOCATION> { emptyLocationSetting = t.kind; }
+   | t = <MM_SKIP_IF_EMPTY_LOCATION> { emptyLocationSetting = t.kind; }
+   | t = <MM_PROCESS_IF_EMPTY_LOCATION> { emptyLocationSetting = t.kind; }
+  )
+
+  {
+    jjtThis.emptyLocationSetting = emptyLocationSetting;
+    return emptyLocationSetting;
+  }
+}
+
+int if_exists_directive() #IfExistsDirective :
+{
+  Token t;
+  int ifExistsSetting;
+}
+{
+  (
+     t = <MM_RESOLVE_IF_EXISTS> { ifExistsSetting = t.kind; }
+   | t = <MM_SKIP_IF_EXISTS> { ifExistsSetting = t.kind; }
+   | t = <MM_WARNING_IF_EXISTS> { ifExistsSetting = t.kind; }
+   | t = <MM_ERROR_IF_EXISTS> { ifExistsSetting = t.kind; }
+  )
+
+  {
+    jjtThis.ifExistsSetting = ifExistsSetting;
+    return ifExistsSetting;
+  }
+}
+
+int if_not_exists_directive() #IfNotExistsDirective :
+{
+  Token t;
+  int ifNotExistsSetting;
+}
+{
+  (
+     t = <MM_CREATE_IF_NOT_EXISTS> { ifNotExistsSetting = t.kind; }
+   | t = <MM_SKIP_IF_NOT_EXISTS> { ifNotExistsSetting = t.kind; }
+   | t = <MM_WARNING_IF_NOT_EXISTS> { ifNotExistsSetting = t.kind; }
+   | t = <MM_ERROR_IF_NOT_EXISTS> { ifNotExistsSetting = t.kind; }
+  )
+
+  {
+    jjtThis.ifNotExistsSetting = ifNotExistsSetting;
+    return ifNotExistsSetting;
+  }
+}
+
+int empty_data_value_setting() #EmptyDataValueSetting :
+{
+  Token t;
+  int emptyDataValueSetting;
+}
+{
+  (
+     t = <MM_ERROR_IF_EMPTY_DATA_VALUE> { emptyDataValueSetting = t.kind; }
+   | t = <MM_WARNING_IF_EMPTY_DATA_VALUE> { emptyDataValueSetting = t.kind; }
+   | t = <MM_SKIP_IF_EMPTY_DATA_VALUE> { emptyDataValueSetting = t.kind; }
+   | t = <MM_PROCESS_IF_EMPTY_DATA_VALUE> { emptyDataValueSetting = t.kind; }
+  )
+
+  {
+    jjtThis.emptyDataValueSetting = emptyDataValueSetting;
+    return emptyDataValueSetting;
+  }
+}
+
+int empty_rdfs_label_setting() #EmptyRDFSLabelSetting :
+{
+  Token t;
+  int emptyRDFSLabelSetting;
+}
+{
+  (
+     t = <MM_ERROR_IF_EMPTY_LABEL> { emptyRDFSLabelSetting = t.kind; }
+   | t = <MM_WARNING_IF_EMPTY_LABEL> { emptyRDFSLabelSetting = t.kind; }
+   | t = <MM_SKIP_IF_EMPTY_LABEL> { emptyRDFSLabelSetting = t.kind; }
+   | t = <MM_PROCESS_IF_EMPTY_LABEL> { emptyRDFSLabelSetting = t.kind; }
+  )
+
+  {
+    jjtThis.emptyRDFSLabelSetting = emptyRDFSLabelSetting;
+    return emptyRDFSLabelSetting;
+  }
+}
+
+int empty_rdf_id_setting() #EmptyRDFIDSetting :
+{
+  Token t;
+  int emptyRDFIDSetting;
+}
+{
+  (
+     t = <MM_ERROR_IF_EMPTY_ID> { emptyRDFIDSetting = t.kind; }
+   | t = <MM_WARNING_IF_EMPTY_ID> { emptyRDFIDSetting = t.kind; }
+   | t = <MM_SKIP_IF_EMPTY_ID> { emptyRDFIDSetting = t.kind; }
+   | t = <MM_PROCESS_IF_EMPTY_ID> { emptyRDFIDSetting = t.kind; }
+  )
+
+  {
+    jjtThis.emptyRDFIDSetting = emptyRDFIDSetting;
+    return emptyRDFIDSetting;
+  }
+}
+
+int shift_setting() #ShiftSetting :
+{
+  Token t;
+  int shiftSetting;
+}
+{
+  (
+     t = <MM_SHIFT_UP> { shiftSetting = t.kind; }
+   | t = <MM_SHIFT_DOWN> { shiftSetting = t.kind; }
+   | t = <MM_SHIFT_LEFT> { shiftSetting = t.kind; }
+   | t = <MM_SHIFT_RIGHT> { shiftSetting = t.kind; }
+   | t = <MM_NO_SHIFT> { shiftSetting = t.kind; }
+  )
+
+  {
+    jjtThis.shiftSetting = shiftSetting;
+    return shiftSetting;
+  }
+}
+
+void default_data_value() #DefaultDataValue :
+{
+  String defaultDataValue;
+}
+{
+  <MM_DEFAULT_DATA_VALUE> "=" defaultDataValue = string()
+
+  {
+    jjtThis.defaultDataValue = defaultDataValue;
+  }
+}
+
+void default_location_value() #DefaultLocationValue :
+{
+  String defaultLocationValue;
+}
+{
+  <MM_DEFAULT_LOCATION_VALUE> "=" defaultLocationValue = string()
+
+  {
+    jjtThis.defaultLocationValue = defaultLocationValue;
+  }
+}
+
+void default_id() #DefaultID :
+{
+  String defaulrRDFID;
+}
+{
+  <MM_DEFAULT_ID> "=" defaulrRDFID = string()
+
+  {
+    jjtThis.defaultID = defaulrRDFID;
+  }
+}
+
+void default_label() #DefaultLabel :
+{
+  String defaultLabel;
+}
+{
+  <MM_DEFAULT_LABEL> "=" defaultLabel = string()
+
+  {
+    jjtThis.defaultLabel = defaultLabel;
+  }
+}
+
+void prefix() #Prefix :
+{
+  String prefix;
+}
+{
+  <MM_PREFIX> "=" prefix = string()
+  {
+    jjtThis.prefix = prefix;
+  }
+}
+
+void language() #Language :
+{
+  String language;
+}
+{
+  <XML_LANG>  ( "=" (  <MM_NULL> { language = ""; }
+                     | "*" { language = "*"; }
+                     | language = string()
+                    )
+               |
+                ( "!" "=" <MM_NULL> { language = "+"; } )
+              )
+  {
+    jjtThis.language = language;
+  }
+}
+
+void namespace() #Namespace :
+{
+  String namespace;
+}
+{
+  <MM_NAMESPACE> "=" namespace = string()
+  {
+    jjtThis.namespace = namespace;
+  }
+}
+
+void value_specification() #ValueSpecification :
+{}
+{
+    "=" (  value_specification_item() 
+         | ( "(" value_specification_item() ( "," value_specification_item() )* ")" ) 
+        )
+}
+
+void value_specification_item() #ValueSpecificationItem : 
+{
+  String stringLiteral = null;
+  String captureExpression = null;
+}
+{
+  (  stringLiteral = string() 
+   | reference(XSD_STRING, defaultValueEncoding) 
+   | value_extraction_function() 
+//   | ( "[" captureExpression = string() "]" )
+  )
+  {
+    jjtThis.stringLiteral = stringLiteral;
+    jjtThis.captureExpression = captureExpression;
+  }
+}
+
+void value_extraction_function() #ValueExtractionFunction:
+{
+  Token t;
+  int functionID;
+}
+{
+  ((
+    ( 
+       t = <MM_TO_UPPER_CASE> { functionID = t.kind; }
+     | t = <MM_TO_LOWER_CASE> { functionID = t.kind; }
+     | t = <MM_TRIM> { functionID = t.kind; }
+     | t = <MM_REVERSE> { functionID = t.kind; }
+     | t = <MM_CAPTURING> { functionID = t.kind; }
+     | t = <MM_REPLACE> { functionID = t.kind; }
+     | t = <MM_REPLACE_ALL> { functionID = t.kind; }
+     | t = <MM_REPLACE_FIRST> { functionID = t.kind; }
+     | t = <MM_APPEND> { functionID = t.kind; }
+     | t = <MM_PREPEND> { functionID = t.kind; }
+    ) ( LOOKAHEAD(2) "(" string_or_reference() ( "," string_or_reference() )* ")" )?
+   )
+   |
+   ( "[" ( LOOKAHEAD(2) string_or_reference() ( "," string_or_reference() )* )? "]" )  { functionID = MM_CAPTURING; } 
+  )
+  {
+    jjtThis.functionID = functionID;
+  }
+}
+
+void string_or_reference() #StringOrReference : {}
+{
+  reference(XSD_STRING, defaultValueEncoding) | string_literal()
+}
+
+void types(int entityType) #Types : 
+{
+  int defaultType = ParserUtil.getDefaultType(entityType);
+} 
+{
+  ( LOOKAHEAD(2) owl_class_expression() | reference(entityType, defaultValueEncoding) )
+    ( "," ( LOOKAHEAD(2) owl_class_expression() | reference(entityType, defaultValueEncoding) ) )?
+}
+ 
+List<String> strings() :
+{
+  List<String> strings = new ArrayList<String>();
+  String s;
+}
+{
+  s = string() { strings.add(s); } ( "," s = string() { strings.add(s); } )*
+
+  { return strings; }
+} 
+
+String quoted_name() : 
+{
+  Token t;
+}
+{
+  t = <QUOTED_NAME_LITERAL> 
+
+  {
+    String s = t.image;
+    return s.substring(1, s.length() - 1);
+  }
+}

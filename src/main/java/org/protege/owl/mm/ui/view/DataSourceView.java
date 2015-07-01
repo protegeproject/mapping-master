@@ -1,0 +1,158 @@
+package org.protege.owl.mm.ui.view;
+
+import jxl.Sheet;
+import org.protege.owl.mm.exceptions.MappingMasterException;
+import org.protege.owl.mm.ss.SpreadSheetDataSource;
+import org.protege.owl.mm.ui.MMApplication;
+import org.protege.owl.mm.ui.dialog.MMApplicationDialogManager;
+import org.protege.owl.mm.ui.model.DataSourceModel;
+import org.protege.owl.mm.ui.model.MMApplicationModel;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+public class DataSourceView extends JPanel implements MMView
+{
+  private MMApplication application;
+
+  private final Map<String, SheetView> sheetViewMaps;
+  private final JTextField fileNameTextField;
+  private final JTabbedPane tabbedPane;
+
+  public DataSourceView(MMApplication application)
+  {
+    this.application = application;
+    getDataSourceModel().setView(this);
+
+    this.sheetViewMaps = new HashMap<>();
+
+    JPanel footerPanel, buttonPanel;
+    JButton openButton, closeButton;
+
+    setLayout(new BorderLayout());
+
+    setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Workbook"));
+
+    this.tabbedPane = new JTabbedPane();
+
+    footerPanel = new JPanel(new BorderLayout());
+    footerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Workbook File"));
+    add(footerPanel, BorderLayout.SOUTH);
+
+    this.fileNameTextField = createTextField("");
+    this.fileNameTextField.setEnabled(true);
+    footerPanel.add(fileNameTextField, BorderLayout.CENTER);
+
+    buttonPanel = new JPanel(new BorderLayout());
+    footerPanel.add(buttonPanel, BorderLayout.EAST);
+
+    openButton = new JButton("Open");
+    openButton.addActionListener(new OpenWorkbookAction());
+    buttonPanel.add(openButton, BorderLayout.WEST);
+
+    closeButton = new JButton("Close");
+    closeButton.addActionListener(new CloseWorkbookAction());
+    buttonPanel.add(closeButton, BorderLayout.EAST);
+
+    add(this.tabbedPane, BorderLayout.CENTER);
+
+    validate();
+  }
+
+  public void setApplicationModel(MMApplication application)
+  {
+    this.application = application;
+    getDataSourceModel().setView(this);
+
+    update();
+  }
+
+  public void clearModel()
+  {
+    application = null;
+
+    update();
+  }
+
+  public void update()
+  {
+    sheetViewMaps.clear();
+    tabbedPane.removeAll();
+
+    if (application != null && getDataSourceModel().hasDataSource()) {
+      int i = 0;
+      for (Sheet sheet : getDataSourceModel().getDataSource().getSheets()) {
+        SheetView sheetView = new SheetView(sheet);
+        String sheetName = sheet.getName();
+        tabbedPane.addTab(sheetName, null, sheetView, "Sheet '" + sheetName + "'");
+        tabbedPane.setForegroundAt(i, (sheet.getSettings().isHidden() ? Color.GRAY : Color.BLACK));
+        sheetViewMaps.put(sheetName, sheetView);
+        i++;
+      }
+    }
+
+    if (getDataSourceModel().hasFileName())
+      fileNameTextField.setText(getDataSourceModel().getFileName());
+    else
+      fileNameTextField.setText("");
+
+    validate();
+  }
+
+  private class OpenWorkbookAction implements ActionListener
+  {
+    public void actionPerformed(ActionEvent e)
+    {
+      JFileChooser fileChooser = getApplicationDialogManager().createFileChooser("Open Data Source", "xls");
+      if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        File file = fileChooser.getSelectedFile();
+        String fileName = file.getAbsolutePath();
+
+        try {
+          SpreadSheetDataSource dataSource = new SpreadSheetDataSource(fileName);
+          getDataSourceModel().setDataSource(dataSource);
+          getDataSourceModel().setFileName(fileName);
+          getApplicationModel().dataSourceUpdated();
+        } catch (MappingMasterException ex) {
+          getApplicationDialogManager()
+            .showErrorMessageDialog(tabbedPane, "error opening file '" + fileName + "': " + ex.getMessage());
+        }
+      }
+    }
+  }
+
+  private class CloseWorkbookAction implements ActionListener
+  {
+    public void actionPerformed(ActionEvent e)
+    {
+      if (getDataSourceModel().hasDataSource() && getApplicationDialogManager()
+        .showConfirmDialog(tabbedPane, "Close Data Source", "Do you really want to close the data source?")) {
+        getDataSourceModel().clearDataSource();
+        getDataSourceModel().clearFileName();
+      }
+    }
+  }
+
+  private JTextField createTextField(String text)
+  {
+    JTextField textField = new JTextField(text);
+    textField.setPreferredSize(new Dimension(80, 30));
+    return textField;
+  }
+
+  private MMApplicationModel getApplicationModel() { return application.getApplicationModel(); }
+
+  private DataSourceModel getDataSourceModel() { return application.getApplicationModel().getDataSourceModel(); }
+
+  private MMApplicationView getApplicationView() { return application.getApplicationView(); }
+
+  private MMApplicationDialogManager getApplicationDialogManager()
+  {
+    return getApplicationView().getApplicationDialogManager();
+  }
+}
