@@ -14,7 +14,7 @@ options {
 
 PARSER_BEGIN(MappingMasterParser)
 
-package org.protege.owl.mm.parser;
+package org.mm.parser;
 
 import java.util.*;
 
