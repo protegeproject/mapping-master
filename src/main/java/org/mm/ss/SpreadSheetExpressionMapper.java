@@ -1,6 +1,5 @@
 package org.mm.ss;
 
-import com.sun.tools.javac.code.Type;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.mm.core.MappingExpression;
