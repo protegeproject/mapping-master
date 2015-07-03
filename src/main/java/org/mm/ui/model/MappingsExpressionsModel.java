@@ -30,7 +30,8 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
 
   public Set<MappingExpression> getMappingExpressions(boolean isActiveFlag)
   {
-    Set<MappingExpression> res = new HashSet<MappingExpression>();
+    Set<MappingExpression> res = new HashSet<>();
+
     for (MappingExpression expr : mappingExpressions) {
       if (expr.isActive() == isActiveFlag) {
         res.add(expr);
@@ -56,6 +57,7 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
   {
     if (!mappingExpressions.contains(mappingExpression))
       mappingExpressions.add(mappingExpression);
+
     isModified = true;
     updateView();
   }

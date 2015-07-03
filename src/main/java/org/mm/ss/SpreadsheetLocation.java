@@ -6,19 +6,19 @@ import jxl.Sheet;
 public class SpreadsheetLocation
 {
 	// There is an equals() method defined on this class.
-	private final Sheet sheet;
-	private int columnNumber, rowNumber;
+	private final String sheetName;
+	private final int columnNumber, rowNumber;
 
-	public SpreadsheetLocation(Sheet sheet, int columnNumber, int rowNumber)
+	public SpreadsheetLocation(String sheetName, int columnNumber, int rowNumber)
 	{
-		this.sheet = sheet;
+		this.sheetName = sheetName;
 		this.columnNumber = columnNumber;
 		this.rowNumber = rowNumber;
 	}
 
-	public Sheet getSheet()
+	public String getSheetName()
 	{
-		return sheet;
+		return this.sheetName;
 	}
 
 	public int getColumnNumber()
@@ -36,31 +36,6 @@ public class SpreadsheetLocation
 		return rowNumber;
 	}
 
-	public void setColumnNumber(int columnNumber)
-	{
-		this.rowNumber = columnNumber;
-	}
-
-	public void setRowNumber(int rowNumber)
-	{
-		this.rowNumber = rowNumber;
-	}
-
-	public void incrementColumnNumber()
-	{
-		columnNumber++;
-	}
-
-	public void incrementRowNumber()
-	{
-		rowNumber++;
-	}
-
-	public String getSheetName()
-	{
-		return sheet == null ? "" : sheet.getName();
-	}
-
 	public String getCellLocation()
 	{
 		return getColumnName() + rowNumber;
@@ -73,14 +48,14 @@ public class SpreadsheetLocation
 		if ((obj == null) || (obj.getClass() != this.getClass()))
 			return false;
 		SpreadsheetLocation l = (SpreadsheetLocation)obj;
-		return (getSheetName() == l.getSheetName() && getColumnNumber() == l.getColumnNumber() && getRowNumber() == l.getRowNumber());
+		return (this.sheetName == l.sheetName && getColumnNumber() == l.getColumnNumber() && getRowNumber() == l.getRowNumber());
 	}
 
 	public int hashCode()
 	{
 		int hash = 12;
 
-		hash = hash + getSheetName().hashCode();
+		hash = hash + sheetName.hashCode();
 		hash = hash + columnNumber;
 		hash = hash + rowNumber;
 		return hash;

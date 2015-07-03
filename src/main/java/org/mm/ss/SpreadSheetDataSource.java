@@ -82,12 +82,14 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 
   public String getLocationValue(SpreadsheetLocation location) throws RendererException
   {
-    Cell cell = null;
     int columnNumber = location.getColumnNumber();
     int rowNumber = location.getRowNumber();
+    Sheet sheet = workbook.getSheet(location.getSheetName());
+    Cell cell;
+
 
     try {
-      cell = location.getSheet().getCell(columnNumber - 1, rowNumber - 1);
+      cell = sheet.getCell(columnNumber - 1, rowNumber - 1);
     } catch (Exception e) {
       throw new RendererException(
         "error accessing sheet " + location.getSheetName() + " at location " + location + ": " + e.getMessage());
@@ -103,34 +105,35 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
     throws RendererException
   {
     String shiftedLocationValue = getLocationValue(location);
+    Sheet sheet = workbook.getSheet(location.getSheetName());
 
     if (shiftedLocationValue == null || shiftedLocationValue.equals("")) {
       if (reference.getActualShiftDirective() == MM_SHIFT_LEFT) {
         for (int currentColumn = location.getColumnNumber() - 1; currentColumn >= 1; currentColumn--) {
           shiftedLocationValue = getLocationValue(
-            new SpreadsheetLocation(location.getSheet(), currentColumn, location.getRowNumber()));
+            new SpreadsheetLocation(location.getSheetName(), currentColumn, location.getRowNumber()));
           if (shiftedLocationValue != null)
             return shiftedLocationValue;
         }
       } else if (reference.getActualShiftDirective() == MM_SHIFT_RIGHT) {
         for (int currentColumn = location.getColumnNumber() + 1;
-             currentColumn <= location.getSheet().getColumns(); currentColumn++) {
+             currentColumn <= sheet.getColumns(); currentColumn++) {
           shiftedLocationValue = getLocationValue(
-            new SpreadsheetLocation(location.getSheet(), currentColumn, location.getRowNumber()));
+            new SpreadsheetLocation(location.getSheetName(), currentColumn, location.getRowNumber()));
           if (shiftedLocationValue != null)
             return shiftedLocationValue;
         }
       } else if (reference.getActualShiftDirective() == MM_SHIFT_DOWN) {
-        for (int currentRow = location.getRowNumber() + 1; currentRow <= location.getSheet().getRows(); currentRow++) {
+        for (int currentRow = location.getRowNumber() + 1; currentRow <= sheet.getRows(); currentRow++) {
           shiftedLocationValue = getLocationValue(
-            new SpreadsheetLocation(location.getSheet(), location.getColumnNumber(), currentRow));
+            new SpreadsheetLocation(location.getSheetName(), location.getColumnNumber(), currentRow));
           if (shiftedLocationValue != null)
             return shiftedLocationValue;
         }
       } else if (reference.getActualShiftDirective() == MM_SHIFT_UP) {
         for (int currentRow = location.getRowNumber() - 1; currentRow >= 1; currentRow--) {
           shiftedLocationValue = getLocationValue(
-            new SpreadsheetLocation(location.getSheet(), location.getColumnNumber(), currentRow));
+            new SpreadsheetLocation(location.getSheetName(), location.getColumnNumber(), currentRow));
           if (shiftedLocationValue != null)
             return shiftedLocationValue;
         }
@@ -163,7 +166,7 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
       if (sheet == null)
         throw new RendererException("invalid sheet name " + sheetName);
     } else
-      sheet = getCurrentLocation().get().getSheet();
+      sheet = getWorkbook().getSheet(getCurrentLocation().get().getSheetName());
 
     if (m.find()) {
       String columnSpecification = m.group(1);
@@ -192,7 +195,7 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
         throw new RendererException("invalid sourceSpecification " + sourceSpecification + ": " + e.getMessage());
       }
 
-      resolvedLocation = new SpreadsheetLocation(sheet, columnNumber, rowNumber);
+      resolvedLocation = new SpreadsheetLocation(sheet.getName(), columnNumber, rowNumber);
     } else
       throw new RendererException("invalid source specification " + sourceSpecification);
 
