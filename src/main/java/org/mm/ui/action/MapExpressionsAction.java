@@ -88,6 +88,8 @@ public class MapExpressionsAction implements ActionListener
 			if (currentLocation.getColumnNumber() < finishLocation.getColumnNumber()) {
 				return new SpreadsheetLocation(currentLocation.getSheetName(), currentLocation.getColumnNumber() + 1,
 						startLocation.getRowNumber());
+			} else {
+				throw new RendererException("internalError: incrementLocation called redundantly");
 			}
 		} else
 			throw new RendererException("internalError: incrementLocation called redundantly");
