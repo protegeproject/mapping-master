@@ -35,7 +35,7 @@ import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassOrRestrictionNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
-import org.mm.parser.node.OWLEquivalentToNode;
+import org.mm.parser.node.OWLClassEquivalentToNode;
 import org.mm.parser.node.OWLExpressionNode;
 import org.mm.parser.node.OWLHasValueNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
@@ -156,7 +156,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     isFirst = true;
     if (owlClassDeclarationNode.hasEquivalentTo()) {
       rendering.addText(" EquivalentTo: ");
-      for (OWLEquivalentToNode equivalentTo : owlClassDeclarationNode.getEquivalentToNodes()) {
+      for (OWLClassEquivalentToNode equivalentTo : owlClassDeclarationNode.getEquivalentToNodes()) {
         Rendering equivalentToRendering = renderOWLEquivalentTo(equivalentTo);
         if (!equivalentToRendering.nothingRendered())
           continue;
@@ -644,22 +644,22 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     return rendering;
   }
 
-  public Rendering renderOWLEquivalentTo(OWLEquivalentToNode owlEquivalentToNode) throws RendererException
+  public Rendering renderOWLEquivalentTo(OWLClassEquivalentToNode owlClassEquivalentToNode) throws RendererException
   {
     Rendering classExpressionRendering;
     Rendering rendering = new Rendering();
 
     rendering.addText(" EquivalentTo: ");
 
-    if (owlEquivalentToNode.getClassExpressionNodes().size() == 1) {
-      classExpressionRendering = renderOWLClassExpression(owlEquivalentToNode.getClassExpressionNodes().get(0));
+    if (owlClassEquivalentToNode.getClassExpressionNodes().size() == 1) {
+      classExpressionRendering = renderOWLClassExpression(owlClassEquivalentToNode.getClassExpressionNodes().get(0));
       if (classExpressionRendering.nothingRendered())
         return rendering;
       rendering.addText(classExpressionRendering.getRendering());
     } else {
       boolean isFirst = true;
 
-      for (OWLClassExpressionNode owlClassExpressionNode : owlEquivalentToNode.getClassExpressionNodes()) {
+      for (OWLClassExpressionNode owlClassExpressionNode : owlClassEquivalentToNode.getClassExpressionNodes()) {
         classExpressionRendering = renderOWLClassExpression(owlClassExpressionNode);
         if (classExpressionRendering.nothingRendered())
           continue; // Any empty class expression will generate an empty rendering

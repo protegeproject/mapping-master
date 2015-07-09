@@ -12,7 +12,7 @@ import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassOrRestrictionNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
-import org.mm.parser.node.OWLEquivalentToNode;
+import org.mm.parser.node.OWLClassEquivalentToNode;
 import org.mm.parser.node.OWLExpressionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLIndividualNode;
@@ -173,7 +173,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
       }
 
       if (classDeclarationNode.hasEquivalentTo()) {
-        for (OWLEquivalentToNode equivalentToNode : classDeclarationNode.getEquivalentToNodes()) {
+        for (OWLClassEquivalentToNode equivalentToNode : classDeclarationNode.getEquivalentToNodes()) {
           for (OWLClassExpressionNode classExpressionNode : equivalentToNode.getClassExpressionNodes()) {
             Rendering classExpressionRendering = renderOWLClassExpression(classExpressionNode);
             if (classExpressionRendering.nothingRendered())

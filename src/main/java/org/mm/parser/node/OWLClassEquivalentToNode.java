@@ -1,21 +1,21 @@
 
 package org.mm.parser.node;
 
+import org.mm.parser.ASTOWLClassEquivalentTo;
 import org.mm.parser.ASTOWLClassExpression;
-import org.mm.parser.ASTOWLEquivalentTo;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-public class OWLEquivalentToNode
+public class OWLClassEquivalentToNode
 {
 	private List<OWLClassExpressionNode> owlClassExpressionNodes;
 
-	public OWLEquivalentToNode(ASTOWLEquivalentTo node) throws ParseException
+	public OWLClassEquivalentToNode(ASTOWLClassEquivalentTo node) throws ParseException
 	{
 		owlClassExpressionNodes = new ArrayList<OWLClassExpressionNode>();
 
@@ -26,13 +26,13 @@ public class OWLEquivalentToNode
 				OWLClassExpressionNode owlClassExpression = new OWLClassExpressionNode((ASTOWLClassExpression)child);
 				owlClassExpressionNodes.add(owlClassExpression);
 			} else
-				throw new InternalParseException("OWLEquivalentTo node expecting OWLClassExpression child, got " + child.toString());
+				throw new InternalParseException("OWLClassEquivalentTo node expecting OWLClassExpression child, got " + child.toString());
 		}
 	}
 
 	public List<OWLClassExpressionNode> getClassExpressionNodes()
 	{
-		return owlClassExpressionNodes;
+		return this.owlClassExpressionNodes;
 	}
 
 	public String toString()

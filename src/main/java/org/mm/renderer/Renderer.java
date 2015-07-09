@@ -37,7 +37,7 @@ import org.mm.parser.node.MMDefaultPropertyValueTypeNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
-import org.mm.parser.node.OWLEquivalentToNode;
+import org.mm.parser.node.OWLClassEquivalentToNode;
 import org.mm.parser.node.OWLHasValueNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
 import org.mm.parser.node.OWLMaxCardinalityNode;
@@ -128,7 +128,7 @@ public interface Renderer
 
   Rendering renderTypes(TypesNode definingTypesNode) throws RendererException;
 
-  Rendering renderOWLEquivalentTo(OWLEquivalentToNode owlEquivalentToNode) throws RendererException;
+  Rendering renderOWLEquivalentTo(OWLClassEquivalentToNode owlClassEquivalentToNode) throws RendererException;
 
   Rendering renderOWLSubclassOf(OWLSubclassOfNode owlSubclassOfNode) throws RendererException;
 

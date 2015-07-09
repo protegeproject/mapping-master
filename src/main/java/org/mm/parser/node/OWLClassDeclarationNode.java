@@ -3,13 +3,13 @@ package org.mm.parser.node;
 
 import org.mm.parser.ASTAnnotationFact;
 import org.mm.parser.ASTOWLClassDeclaration;
-import org.mm.parser.ASTOWLEquivalentTo;
+import org.mm.parser.ASTOWLClassEquivalentTo;
+import org.mm.parser.ASTOWLNamedClass;
 import org.mm.parser.ASTOWLSubclassOf;
 import org.mm.parser.InternalParseException;
+import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
-import org.mm.parser.ASTOWLNamedClass;
-import org.mm.parser.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 public class OWLClassDeclarationNode
 {
 	private OWLNamedClassNode owlNamedClass;
-	private List<OWLEquivalentToNode> equivalentToNodes = new ArrayList<OWLEquivalentToNode>();
+	private List<OWLClassEquivalentToNode> equivalentToNodes = new ArrayList<OWLClassEquivalentToNode>();
 	private List<OWLSubclassOfNode> subclassOfNodes = new ArrayList<OWLSubclassOfNode>();
 	private List<AnnotationFactNode> annotationFactNodes = new ArrayList<AnnotationFactNode>();
 
@@ -28,7 +28,7 @@ public class OWLClassDeclarationNode
 			if (ParserUtil.hasName(child, "OWLNamedClass")) {
 				owlNamedClass = new OWLNamedClassNode((ASTOWLNamedClass)child);
 			} else if (ParserUtil.hasName(child, "OWLEquivalentTo")) {
-				equivalentToNodes.add(new OWLEquivalentToNode((ASTOWLEquivalentTo)child));
+				equivalentToNodes.add(new OWLClassEquivalentToNode((ASTOWLClassEquivalentTo)child));
 			} else if (ParserUtil.hasName(child, "OWLSubclassOf")) {
 				subclassOfNodes.add(new OWLSubclassOfNode((ASTOWLSubclassOf)child));
 			} else if (ParserUtil.hasName(child, "AnnotationFact")) {
@@ -44,7 +44,7 @@ public class OWLClassDeclarationNode
 		return owlNamedClass;
 	}
 
-	public List<OWLEquivalentToNode> getEquivalentToNodes()
+	public List<OWLClassEquivalentToNode> getEquivalentToNodes()
 	{
 		return equivalentToNodes;
 	}
@@ -88,7 +88,7 @@ public class OWLClassDeclarationNode
 
 		if (hasEquivalentTo()) {
 			representation += " EquivalentTo: ";
-			for (OWLEquivalentToNode equivalentTo : equivalentToNodes) {
+			for (OWLClassEquivalentToNode equivalentTo : equivalentToNodes) {
 				representation += equivalentTo.toString();
 			}
 		}
