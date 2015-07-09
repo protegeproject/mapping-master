@@ -27,12 +27,12 @@ public class ExpressionNode
     }
   }
 
-  public MMDirectiveNode getMMExpressionNode()
+  public MMDirectiveNode getMMDirectiveNode()
   {
     return mmDirectiveNode;
   }
 
-  public MMExpressionNode getOWLExpressionNode()
+  public MMExpressionNode getMMExpressionNode()
   {
     return mmExpressionNode;
   }

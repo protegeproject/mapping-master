@@ -128,14 +128,14 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
     this.dataSource = dataSource;
   }
 
-  @Override public OWLAPIRendering renderOWLExpression(MMExpressionNode MMExpressionNode) throws RendererException
+  @Override public OWLAPIRendering renderMMExpression(MMExpressionNode mmExpressionNode) throws RendererException
   {
-    if (MMExpressionNode.hasOWLClassDeclaration())
-      return renderOWLClassDeclaration(MMExpressionNode.getOWLClassDeclarationNode());
-    else if (MMExpressionNode.hasOWLIndividualDeclaration())
-      return renderOWLIndividualDeclaration(MMExpressionNode.getOWLIndividualDeclarationNode());
+    if (mmExpressionNode.hasOWLClassDeclaration())
+      return renderOWLClassDeclaration(mmExpressionNode.getOWLClassDeclarationNode());
+    else if (mmExpressionNode.hasOWLIndividualDeclaration())
+      return renderOWLIndividualDeclaration(mmExpressionNode.getOWLIndividualDeclarationNode());
     else
-      throw new RendererException("unknown expression: " + MMExpressionNode);
+      throw new RendererException("unknown expression: " + mmExpressionNode);
   }
 
   @Override public OWLAPIRendering renderOWLClassDeclaration(OWLClassDeclarationNode classDeclarationNode)

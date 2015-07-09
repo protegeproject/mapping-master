@@ -75,14 +75,14 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
   public Rendering renderExpression(ExpressionNode expressionNode) throws RendererException
   {
     if (expressionNode.hasMMDirective())
-      return renderMMExpression(expressionNode.getMMExpressionNode());
+      return renderMMDirective(expressionNode.getMMDirectiveNode());
     else if (expressionNode.hasMMExpression())
-      return renderOWLExpression(expressionNode.getOWLExpressionNode());
+      return renderMMExpression(expressionNode.getMMExpressionNode());
     else
       throw new RendererException("unknown expression type " + expressionNode);
   }
 
-  public Rendering renderMMExpression(MMDirectiveNode mmDirectiveNode) throws RendererException
+  public Rendering renderMMDirective(MMDirectiveNode mmDirectiveNode) throws RendererException
   {
     if (mmDirectiveNode.hasDefaultValueEncoding())
       return renderMMDefaultValueEncoding(mmDirectiveNode.getDefaultValueEncodingNode());
@@ -123,14 +123,14 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     return new Rendering(mmDefaultDatatypePropertyValueTypeNode.toString());
   }
 
-  public Rendering renderOWLExpression(MMExpressionNode MMExpressionNode) throws RendererException
+  public Rendering renderMMExpression(MMExpressionNode mmExpressionNode) throws RendererException
   {
-    if (MMExpressionNode.hasOWLClassDeclaration())
-      return renderOWLClassDeclaration(MMExpressionNode.getOWLClassDeclarationNode());
-    else if (MMExpressionNode.hasOWLIndividualDeclaration())
-      return renderOWLIndividualDeclaration(MMExpressionNode.getOWLIndividualDeclarationNode());
+    if (mmExpressionNode.hasOWLClassDeclaration())
+      return renderOWLClassDeclaration(mmExpressionNode.getOWLClassDeclarationNode());
+    else if (mmExpressionNode.hasOWLIndividualDeclaration())
+      return renderOWLIndividualDeclaration(mmExpressionNode.getOWLIndividualDeclarationNode());
     else
-      throw new RendererException("unknown expression: " + MMExpressionNode);
+      throw new RendererException("unknown expression: " + mmExpressionNode);
   }
 
   public Rendering renderOWLClassDeclaration(OWLClassDeclarationNode owlClassDeclarationNode) throws RendererException

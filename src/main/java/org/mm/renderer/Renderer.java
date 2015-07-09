@@ -58,7 +58,7 @@ public interface Renderer
   Rendering renderMMDefaultPropertyValueType(MMDefaultPropertyValueTypeNode defaultPropertyValueTypeNode)
     throws RendererException;
 
-  Rendering renderOWLExpression(MMExpressionNode MMExpressionNode) throws RendererException;
+  Rendering renderMMExpression(MMExpressionNode MMExpressionNode) throws RendererException;
 
   Rendering renderOWLClassDeclaration(OWLClassDeclarationNode owlClassDeclarationNode) throws RendererException;
 

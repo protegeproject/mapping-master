@@ -56,7 +56,7 @@ public class OWLAPIRendererTest
 
       if (expressionNode.hasMMExpression()) {
         System.err.println("expressionNode.toString()      : " + expressionNode.toString());
-        OWLAPIRendering rendering = renderer.renderOWLExpression(expressionNode.getOWLExpressionNode());
+        OWLAPIRendering rendering = renderer.renderMMExpression(expressionNode.getMMExpressionNode());
         Set<OWLAxiom> axioms = rendering.getOWLAxioms();
       }
 
