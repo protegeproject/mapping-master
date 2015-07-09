@@ -21,12 +21,12 @@ public class Rendering
     return finalRendering.equals("") || finalRendering.equals("\"\"");
   } // TODO: last clause is hack
 
-  public void addText(String text)
-  {
-    this.finalRendering = finalRendering.concat(text);
-  }
+	public void addText(String text)
+	{
+		this.finalRendering = finalRendering.concat(text);
+	}
 
-  // TODO Use real logger
+	// TODO Use real logger
   public void log(String loggingText)
   {
     this.loggingText.append(loggingText);

@@ -22,7 +22,7 @@ public class OWLAPIRendering extends Rendering
 		this.axioms = new HashSet<>();
 	}
 
-	public void addAxiom(OWLAxiom axiom)
+	public void addOWLAxiom(OWLAxiom axiom)
 	{
 		this.axioms.add(axiom);
 	}

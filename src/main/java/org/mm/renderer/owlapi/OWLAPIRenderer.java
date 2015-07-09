@@ -246,7 +246,8 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 			if (individualDeclarationNode.hasTypes()) { // We have a Types: clause
 				processTypesClause(individualDeclarationNode, individualDeclarationRendering, declaredIndividualRendering);
 			}
-			individualDeclarationRendering = new OWLAPIRendering(declaredIndividualRendering.getRendering()); // Final rendering is declared individual
+			individualDeclarationRendering = new OWLAPIRendering(
+					declaredIndividualRendering.getRendering()); // Final rendering is declared individual
 		}
 
 		return individualDeclarationRendering;
@@ -280,7 +281,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 							OWLClassExpression declaredClass = this.owlObjectHandler.getOWLClass(declaredClassID);
 							OWLClassExpression classExpression = this.owlObjectHandler.getOWLClassExpression(classExpressionID);
 							OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(classExpression, declaredClass);
-							addOWLAxiom(axiom);
+							rendering.addOWLAxiom(axiom);
 						}
 					}
 				}
@@ -300,7 +301,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 							OWLClassExpression classExpression = this.owlObjectHandler.getOWLClassExpression(classExpressionID);
 							OWLEquivalentClassesAxiom axiom = owlDataFactory
 									.getOWLEquivalentClassesAxiom(classExpression, declaredClass);
-							// TODO Add axiom to ontology
+							rendering.addOWLAxiom(axiom);
 						}
 					}
 				}
@@ -336,10 +337,11 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 					OWLClass cls = this.owlObjectHandler.getOWLClass(classShortName);
 					OWLAnnotationProperty property = this.owlObjectHandler.getOWLAnnotationProperty(propertyShortName);
 					String propertyValue = propertyValueRendering.getRendering();
-					createOWLAnnotationAssertionAxiom(cls, property, propertyValue, propertyValueNode);
+					OWLAxiom axiom = createOWLAnnotationAssertionAxiom(cls, property, propertyValue, propertyValueNode);
+					rendering.addOWLAxiom(axiom);
 				}
 			}
-			rendering = new OWLAPIRendering(declaredClassRendering.getRendering());
+			rendering.addText(declaredClassRendering.getRendering());
 		}
 		return rendering;
 	}
@@ -352,8 +354,6 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 
 	@Override public OWLAPIRendering renderOWLUnionClass(OWLUnionClassNode unionClassNode) throws RendererException
 	{
-		OWLAPIRendering rendering = new OWLAPIRendering();
-
 		Set<OWLClassExpression> classes = new HashSet<>();
 
 		for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClasseNodes()) {
@@ -366,17 +366,14 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 		if (!classes.isEmpty()) {
 			OWLObjectUnionOf restriction = this.owlDataFactory.getOWLObjectUnionOf(classes);
 			String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
-			rendering = new OWLAPIRendering(restrictionID);
-		}
-
-		return rendering;
+			return new OWLAPIRendering(restrictionID);
+		} else
+			return new OWLAPIRendering();
 	}
 
 	@Override public OWLAPIRendering renderOWLIntersectionClass(OWLIntersectionClassNode intersectionClassNode)
 			throws RendererException
 	{
-		OWLAPIRendering rendering = new OWLAPIRendering();
-
 		Set<OWLClassExpression> classes = new HashSet<>();
 
 		for (OWLClassOrRestrictionNode classOrRestrictionNode : intersectionClassNode.getOWLClassesOrRestrictionNodes()) {
@@ -389,17 +386,14 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 		if (!classes.isEmpty()) {
 			OWLObjectIntersectionOf restriction = this.owlDataFactory.getOWLObjectIntersectionOf(classes);
 			String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
-			rendering = new OWLAPIRendering(restrictionID);
-		}
-
-		return rendering;
+			return new OWLAPIRendering(restrictionID);
+		} else
+			return new OWLAPIRendering();
 	}
 
 	@Override public OWLAPIRendering renderOWLEnumeratedClass(OWLEnumeratedClassNode enumeratedClassNode)
 			throws RendererException
 	{
-		OWLAPIRendering rendering = new OWLAPIRendering();
-
 		Set<OWLNamedIndividual> individuals = new HashSet<>();
 
 		for (OWLIndividualNode owlIndividualNode : enumeratedClassNode.getOWLIndividualNodes()) {
@@ -414,16 +408,14 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 		if (!individuals.isEmpty()) {
 			OWLObjectOneOf restriction = this.owlDataFactory.getOWLObjectOneOf(individuals);
 			String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
-			rendering = new OWLAPIRendering(restrictionID);
-		}
-		return rendering;
+			return new OWLAPIRendering(restrictionID);
+		} else
+			return new OWLAPIRendering();
 	}
 
 	@Override public OWLAPIRendering renderOWLClassOrRestriction(OWLClassOrRestrictionNode classOrRestrictionNode)
 			throws RendererException
 	{
-		OWLAPIRendering rendering;
-
 		Rendering classRendering;
 
 		if (classOrRestrictionNode.hasOWLEnumeratedClass())
@@ -442,11 +434,9 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 			OWLClassExpression classExpression = this.owlObjectHandler.getOWLClassExpression(classExpressionID);
 			OWLObjectComplementOf restriction = this.owlDataFactory.getOWLObjectComplementOf(classExpression);
 			String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
-			rendering = new OWLAPIRendering(restrictionID);
+			return new OWLAPIRendering(restrictionID);
 		} else
-			rendering = new OWLAPIRendering(classRendering.getRendering());
-
-		return rendering;
+			return new OWLAPIRendering(classRendering.getRendering());
 	}
 
 	// TODO Separate into data and object restrictions
@@ -461,18 +451,26 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 				if (restrictionNode.hasOWLMinCardinality()) {
 					int cardinality = restrictionNode.getOWLMinCardinalityNode().getCardinality();
 					OWLDataMinCardinality restriction = this.owlDataFactory.getOWLDataMinCardinality(cardinality, property);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLMaxCardinality()) {
 					int cardinality = restrictionNode.getOWLMaxCardinalityNode().getCardinality();
 					OWLDataMaxCardinality restriction = this.owlDataFactory.getOWLDataMaxCardinality(cardinality, property);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLCardinality()) {
 					int cardinality = restrictionNode.getOWLCardinalityNode().getCardinality();
 					OWLDataExactCardinality restriction = this.owlDataFactory.getOWLDataExactCardinality(cardinality, property);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLHasValue()) {
 					OWLPropertyValueNode propertyValueNode = restrictionNode.getOWLHasValueNode().getOWLPropertyValueNode();
 					if (!propertyValueNode.isLiteral())
 						throw new RendererException("expecting data value for data has value restriction " + restrictionNode);
 					OWLLiteral literal = getOWLLiteral(propertyValueNode);
 					OWLDataHasValue restriction = this.owlDataFactory.getOWLDataHasValue(property, literal);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLAllValuesFrom()) {
 					OWLAllValuesFromNode allValuesFromNode = restrictionNode.getOWLAllValuesFromNode();
 					if (!allValuesFromNode.hasOWLAllValuesFromDataType())
@@ -480,6 +478,8 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 					OWLDatatype datatype = this.owlObjectHandler
 							.getOWLDatatype(allValuesFromNode.getOWLAllValuesFromDataTypeNode().getDataTypeName());
 					OWLDataAllValuesFrom restriction = this.owlDataFactory.getOWLDataAllValuesFrom(property, datatype);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLSomeValuesFrom()) {
 					OWLSomeValuesFromNode someValuesFromNode = restrictionNode.getOWLSomeValuesFromNode();
 					if (!someValuesFromNode.hasOWLSomeValuesFromDataType())
@@ -487,19 +487,28 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 					OWLDatatype datatype = this.owlObjectHandler
 							.getOWLDatatype(someValuesFromNode.getOWLSomeValuesFromDataTypeNode().getDataTypeName());
 					OWLDataSomeValuesFrom restriction = this.owlDataFactory.getOWLDataSomeValuesFrom(property, datatype);
-				}
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
+				} else
+					return new OWLAPIRendering();
 			} else { // Object property
 				OWLObjectProperty property = this.owlObjectHandler.getOWLObjectProperty(propertyShortName);
 				if (restrictionNode.hasOWLMinCardinality()) {
 					int cardinality = restrictionNode.getOWLMinCardinalityNode().getCardinality();
 					OWLObjectMinCardinality restriction = this.owlDataFactory.getOWLObjectMinCardinality(cardinality, property);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLMaxCardinality()) {
 					int cardinality = restrictionNode.getOWLMaxCardinalityNode().getCardinality();
 					OWLObjectMaxCardinality restriction = this.owlDataFactory.getOWLObjectMaxCardinality(cardinality, property);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLCardinality()) {
 					int cardinality = restrictionNode.getOWLCardinalityNode().getCardinality();
 					OWLObjectExactCardinality restriction = this.owlDataFactory
 							.getOWLObjectExactCardinality(cardinality, property);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLHasValue()) {
 					OWLPropertyValueNode propertyValueNode = restrictionNode.getOWLHasValueNode().getOWLPropertyValueNode();
 					if (propertyValueNode.isLiteral())
@@ -508,6 +517,8 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 					String individualShortName = individualRendering.getRendering();
 					OWLNamedIndividual individual = this.owlObjectHandler.getOWLNamedIndividual(individualShortName);
 					OWLObjectHasValue restriction = this.owlDataFactory.getOWLObjectHasValue(property, individual);
+					String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+					return new OWLAPIRendering(restrictionID);
 				} else if (restrictionNode.hasOWLAllValuesFrom()) {
 					OWLAllValuesFromNode allValuesFromNode = restrictionNode.getOWLAllValuesFromNode();
 					if (allValuesFromNode.hasOWLAllValuesFromDataType())
@@ -519,11 +530,15 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 					else
 						classRendering = renderOWLNamedClass(
 								allValuesFromNode.getOWLAllValuesFromClassNode().getOWLNamedClassNode());
+
 					if (!classRendering.nothingRendered()) {
 						String classExpressionID = classRendering.getRendering();
 						OWLClassExpression cls = this.owlObjectHandler.getOWLClassExpression(classExpressionID);
 						OWLObjectAllValuesFrom restriction = this.owlDataFactory.getOWLObjectAllValuesFrom(property, cls);
-					}
+						String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+						return new OWLAPIRendering(restrictionID);
+					} else
+						return new OWLAPIRendering();
 				} else if (restrictionNode.hasOWLSomeValuesFrom()) {
 					OWLSomeValuesFromNode someValuesFromNode = restrictionNode.getOWLSomeValuesFromNode();
 					if (someValuesFromNode.hasOWLSomeValuesFromDataType())
@@ -539,16 +554,22 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 						String classExpressionID = classRendering.getRendering();
 						OWLClassExpression cls = this.owlObjectHandler.getOWLClassExpression(classExpressionID);
 						OWLObjectSomeValuesFrom restriction = this.owlDataFactory.getOWLObjectSomeValuesFrom(property, cls);
-					}
-				}
+						String restrictionID = this.owlObjectHandler.registerOWLClassExpression(restriction);
+						return new OWLAPIRendering(restrictionID);
+					} else
+						return new OWLAPIRendering();
+				} else
+					return new OWLAPIRendering();
 			}
-		}
-		return null; // TODO
+		} else
+			return new OWLAPIRendering();
 	}
 
-	private void processTypesClause(OWLIndividualDeclarationNode individualDeclarationNode,
+	private Set<OWLAxiom> processTypesClause(OWLIndividualDeclarationNode individualDeclarationNode,
 			Rendering individualDeclarationRendering, Rendering declaredIndividualRendering) throws RendererException
 	{
+		Set<OWLAxiom> axioms = new HashSet<>();
+
 		for (TypeNode typeNode : individualDeclarationNode.getTypeNodes().getTypeNodes()) {
 			Rendering typeRendering = renderType(typeNode);
 			if (typeRendering.nothingRendered()) {
@@ -563,13 +584,17 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 			OWLClass cls = this.owlObjectHandler.getOWLClass(classShortName);
 			OWLClassAssertionAxiom axiom = this.owlDataFactory.getOWLClassAssertionAxiom(cls, individual);
 
-			addOWLAxiom(axiom);
+			axioms.add(axiom);
 		}
+
+		return axioms;
 	}
 
-	private void processSameAsClause(OWLIndividualDeclarationNode individualDeclarationNode,
+	private Set<OWLAxiom> processSameAsClause(OWLIndividualDeclarationNode individualDeclarationNode,
 			Rendering declaredIndividualRendering) throws RendererException
 	{
+		Set<OWLAxiom> axioms = new HashSet<>();
+
 		for (OWLIndividualNode sameAsIndividualNode : individualDeclarationNode.getSameAsNode().getIndividualNodes()) {
 			Rendering sameAsIndividualRendering = renderOWLIndividual(sameAsIndividualNode);
 			if (!sameAsIndividualRendering.nothingRendered()) {
@@ -579,14 +604,17 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 				OWLNamedIndividual individual2 = this.owlObjectHandler.getOWLNamedIndividual(individual2ShortName);
 				OWLSameIndividualAxiom axiom = owlDataFactory.getOWLSameIndividualAxiom(individual1, individual2);
 
-				addOWLAxiom(axiom);
+				axioms.add(axiom);
 			}
 		}
+		return axioms;
 	}
 
-	private void processDifferentFromClause(OWLIndividualDeclarationNode individualDeclarationNode,
+	private Set<OWLAxiom> processDifferentFromClause(OWLIndividualDeclarationNode individualDeclarationNode,
 			Rendering declaredIndividualRendering) throws RendererException
 	{
+		Set<OWLAxiom> axioms = new HashSet<>();
+
 		for (OWLIndividualNode differentFromIndividualNode : individualDeclarationNode.getDifferentFromNode()
 				.getIndividualNodes()) {
 			Rendering differentFromIndividualRendering = renderOWLIndividual(differentFromIndividualNode);
@@ -597,14 +625,17 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 				OWLNamedIndividual individual2 = this.owlObjectHandler.getOWLNamedIndividual(individual2ShortName);
 				OWLDifferentIndividualsAxiom axiom = owlDataFactory.getOWLDifferentIndividualsAxiom(individual1, individual2);
 
-				addOWLAxiom(axiom);
+				axioms.add(axiom);
 			}
 		}
+		return axioms;
 	}
 
-	private void processAnnotationClause(Rendering individualDeclarationRendering, Rendering declaredIndividualRendering,
-			List<AnnotationFactNode> annotationFactNodes) throws RendererException
+	private Set<OWLAxiom> processAnnotationClause(Rendering individualDeclarationRendering,
+			Rendering declaredIndividualRendering, List<AnnotationFactNode> annotationFactNodes) throws RendererException
 	{
+		Set<OWLAxiom> axioms = new HashSet<>();
+
 		for (AnnotationFactNode annotationFact : annotationFactNodes) {
 			Rendering propertyRendering = renderOWLProperty(annotationFact.getOWLPropertyNode());
 			OWLPropertyValueNode propertyValueNode = annotationFact.getOWLPropertyValueNode();
@@ -636,13 +667,18 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 			OWLNamedIndividual individual = this.owlObjectHandler.getOWLNamedIndividual(individualShortName);
 			OWLAnnotationProperty property = this.owlObjectHandler.getOWLAnnotationProperty(propertyShortName);
 
-			createOWLAnnotationAssertionAxiom(individual, property, propertyValue, propertyValueNode);
+			OWLAnnotationAssertionAxiom axiom = createOWLAnnotationAssertionAxiom(individual, property, propertyValue,
+					propertyValueNode);
+			axioms.add(axiom);
 		}
+		return axioms;
 	}
 
-	private void processFactsClause(Rendering individualDeclarationRendering, Rendering declaredIndividualRendering,
-			List<FactNode> factNodes) throws RendererException
+	private Set<OWLAxiom> processFactsClause(Rendering individualDeclarationRendering,
+			Rendering declaredIndividualRendering, List<FactNode> factNodes) throws RendererException
 	{
+		Set<OWLAxiom> axioms = new HashSet<>();
+
 		for (FactNode factNode : factNodes) {
 			Rendering propertyRendering = renderOWLProperty(factNode.getOWLPropertyNode());
 			String propertyShortName = propertyRendering.getRendering();
@@ -675,7 +711,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 
 				OWLObjectPropertyAssertionAxiom axiom = createOWLObjectPropertyAssertionAxiom(individual, property,
 						propertyValue, propertyValueNode);
-				addOWLAxiom(axiom);
+				axioms.add(axiom);
 			} else if (this.owlObjectHandler.isOWLDataProperty(propertyShortName)) {
 				String individualShortName = declaredIndividualRendering.getRendering();
 				String propertyValue = propertyValueRendering.getRendering();
@@ -684,16 +720,17 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 
 				OWLDataPropertyAssertionAxiom axiom = createOWLDataPropertyAssertionAxiom(individual, property, propertyValue,
 						propertyValueNode);
-				addOWLAxiom(axiom);
+				axioms.add(axiom);
 			} else {
 				individualDeclarationRendering.logLine(
 						"Skipping OWL fact declaration clause [" + factNode + "] because property is an annotation property");
 				continue;
 			}
 		}
+		return axioms;
 	}
 
-	// TODO: tentative. Need a more principled way of finding and invoking functions. What about calls to Excel?
+	// TODO Tentative. Need a more principled way of finding and invoking functions. What about calls to Excel?
 	private String processValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode, String value)
 			throws RendererException
 	{
@@ -1083,9 +1120,11 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 		return result;
 	}
 
-	private void addDefiningTypes(OWLEntityType entityType, OWLEntity entity, ReferenceNode referenceNode)
+	private Set<OWLAxiom> addDefiningTypes(OWLEntityType entityType, OWLEntity entity, ReferenceNode referenceNode)
 			throws RendererException
 	{
+		Set<OWLAxiom> axioms = new HashSet<>();
+
 		if (referenceNode.hasExplicitlySpecifiedTypes()) {
 			for (TypeNode typeNode : referenceNode.getTypesNode().getTypeNodes()) {
 				Rendering typeRendering = renderType(typeNode);
@@ -1099,7 +1138,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 						String classExpressionID = typeTextRendering;
 						OWLClassExpression classExpression = this.owlObjectHandler.getOWLClassExpression(classExpressionID);
 						OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(classExpression, entity.asOWLClass());
-						addOWLAxiom(axiom);
+						axioms.add(axiom);
 					} else if (entityType.isOWLIndividual()) {
 						if (!entity.isOWLNamedIndividual())
 							throw new RendererException(
@@ -1109,7 +1148,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 						OWLClassExpression classExpression = this.owlObjectHandler.getOWLClass(classExpressionID);
 						OWLClassAssertionAxiom axiom = this.owlDataFactory
 								.getOWLClassAssertionAxiom(classExpression, entity.asOWLNamedIndividual());
-						addOWLAxiom(axiom);
+						axioms.add(axiom);
 					} else if (entityType.isOWLObjectProperty()) {
 						if (!entity.isOWLObjectProperty())
 							throw new RendererException(
@@ -1118,7 +1157,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 						OWLObjectProperty property = this.owlObjectHandler.getOWLObjectProperty(propertyShortName);
 						OWLSubObjectPropertyOfAxiom axiom = owlDataFactory
 								.getOWLSubObjectPropertyOfAxiom(property, entity.asOWLObjectProperty());
-						addOWLAxiom(axiom);
+						axioms.add(axiom);
 					} else if (entityType.isOWLDataProperty()) {
 						if (!entity.isOWLDataProperty())
 							throw new RendererException(
@@ -1127,12 +1166,13 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 						OWLDataProperty property = this.owlObjectHandler.getOWLDataProperty(propertyShortName);
 						OWLSubDataPropertyOfAxiom axiom = owlDataFactory
 								.getOWLSubDataPropertyOfAxiom(property, entity.asOWLDataProperty());
-						addOWLAxiom(axiom);
+						axioms.add(axiom);
 					} else
 						throw new RendererException("invalid entity type " + entityType);
 				}
 			}
 		}
+		return axioms;
 	}
 
 	private OWLDataPropertyAssertionAxiom createOWLDataPropertyAssertionAxiom(OWLNamedIndividual subject,
@@ -1232,11 +1272,6 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 			dest.append(source.charAt(i));
 
 		return dest.toString();
-	}
-
-	private void addOWLAxiom(OWLAxiom axiom)
-	{
-		// TODO Add axiom to ontology
 	}
 
 	private String getDefaultNamespace()
