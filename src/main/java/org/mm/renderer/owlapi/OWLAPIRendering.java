@@ -9,26 +9,28 @@ import java.util.Set;
 
 public class OWLAPIRendering extends Rendering
 {
-	private final Set<OWLAxiom> axioms;
+  private final Set<OWLAxiom> axioms;
 
-	public OWLAPIRendering()
-	{
-		this.axioms = new HashSet<>();
-	}
+  public OWLAPIRendering()
+  {
+    this.axioms = new HashSet<>();
+  }
 
-	public OWLAPIRendering(String initialTextRendering)
-	{
-		super(initialTextRendering);
-		this.axioms = new HashSet<>();
-	}
+  public OWLAPIRendering(String initialTextRendering)
+  {
+    super(initialTextRendering);
+    this.axioms = new HashSet<>();
+  }
 
-	public void addOWLAxiom(OWLAxiom axiom)
-	{
-		this.axioms.add(axiom);
-	}
+  public void addOWLAxiom(OWLAxiom axiom) { this.axioms.add(axiom); }
 
-	public Set<OWLAxiom> getOWLAxioms()
-	{
-		return Collections.unmodifiableSet(this.axioms);
-	}
+  public void addOWLAxioms(Set<OWLAxiom> axioms)
+  {
+    this.axioms.addAll(axioms);
+  }
+
+  public Set<OWLAxiom> getOWLAxioms()
+  {
+    return Collections.unmodifiableSet(this.axioms);
+  }
 }
