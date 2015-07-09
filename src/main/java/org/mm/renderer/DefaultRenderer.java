@@ -129,8 +129,6 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       return renderOWLClassDeclaration(owlExpressionNode.getOWLClassDeclarationNode());
     else if (owlExpressionNode.hasOWLIndividualDeclaration())
       return renderOWLIndividualDeclaration(owlExpressionNode.getOWLIndividualDeclarationNode());
-    else if (owlExpressionNode.hasOWLClassExpression())
-      return renderOWLClassExpression(owlExpressionNode.getOWLClassExpressionNode());
     else
       throw new RendererException("unknown expression: " + owlExpressionNode);
   }

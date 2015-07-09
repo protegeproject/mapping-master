@@ -310,8 +310,7 @@ void mm_expression() #MMExpression : {}
 
 void owl_expression() #OWLExpression : {}
 {
-  (  owl_class_expression() 
-   | owl_class_declaration() 
+  (  owl_class_declaration() 
    | owl_individual_declaration()
   ) 
 }
