@@ -54,7 +54,7 @@ public class OWLAPIRendererTest
 
       simpleNode.dump(" ");
 
-      if (expressionNode.hasOWLExpression()) {
+      if (expressionNode.hasMMExpression()) {
         System.err.println("expressionNode.toString()      : " + expressionNode.toString());
         OWLAPIRendering rendering = renderer.renderOWLExpression(expressionNode.getOWLExpressionNode());
         Set<OWLAxiom> axioms = rendering.getOWLAxioms();

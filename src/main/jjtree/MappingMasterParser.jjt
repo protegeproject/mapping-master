@@ -285,15 +285,15 @@ TOKEN:
 
 SimpleNode expression() #Expression : {}
 {
-  (  mm_expression()
-   | owl_expression()
+  (  mm_directive()
+   | mm_expression()
   ) <EOF>
   {
      return jjtThis;
   }
 }
 
-void mm_expression() #MMExpression : {}
+void mm_directive() #MMDirective : {}
 {
   (  mm_default_value_encoding()
    | mm_default_entity_type()
@@ -308,7 +308,7 @@ void mm_expression() #MMExpression : {}
   ) 
 }
 
-void owl_expression() #OWLExpression : {}
+void mm_expression() #MMExpression : {}
 {
   (  owl_class_declaration() 
    | owl_individual_declaration()

@@ -1,8 +1,8 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTExpression;
+import org.mm.parser.ASTMMDirective;
 import org.mm.parser.ASTMMExpression;
-import org.mm.parser.ASTOWLExpression;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
@@ -10,8 +10,8 @@ import org.mm.parser.ParserUtil;
 
 public class ExpressionNode
 {
+  private MMDirectiveNode mmDirectiveNode = null;
   private MMExpressionNode mmExpressionNode = null;
-  private OWLExpressionNode owlExpressionNode = null;
 
   public ExpressionNode(ASTExpression node) throws ParseException
   {
@@ -19,22 +19,27 @@ public class ExpressionNode
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "MMExpression")) {
-        mmExpressionNode = new MMExpressionNode((ASTMMExpression)child);
+        mmDirectiveNode = new MMDirectiveNode((ASTMMDirective)child);
       } else if (ParserUtil.hasName(child, "OWLExpression")) {
-        owlExpressionNode = new OWLExpressionNode((ASTOWLExpression)child);
+        mmExpressionNode = new MMExpressionNode((ASTMMExpression)child);
       } else
         throw new InternalParseException("invalid child node " + child.toString() + " to Expression");
     }
   }
 
-  public MMExpressionNode getMMExpressionNode()
+  public MMDirectiveNode getMMExpressionNode()
+  {
+    return mmDirectiveNode;
+  }
+
+  public MMExpressionNode getOWLExpressionNode()
   {
     return mmExpressionNode;
   }
 
-  public OWLExpressionNode getOWLExpressionNode()
+  public boolean hasMMDirective()
   {
-    return owlExpressionNode;
+    return mmDirectiveNode != null;
   }
 
   public boolean hasMMExpression()
@@ -42,19 +47,13 @@ public class ExpressionNode
     return mmExpressionNode != null;
   }
 
-  public boolean hasOWLExpression()
-  {
-    return owlExpressionNode != null;
-  }
-
   public String toString()
   {
-    if (hasMMExpression())
+    if (hasMMDirective())
+      return mmDirectiveNode.toString();
+    else if (hasMMExpression())
       return mmExpressionNode.toString();
-    else if (hasOWLExpression())
-      return owlExpressionNode.toString();
     else
       return "";
   }
-
 }

@@ -16,7 +16,7 @@ import org.mm.parser.node.OWLAllValuesFromNode;
 import org.mm.parser.node.OWLCardinalityNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassOrRestrictionNode;
-import org.mm.parser.node.OWLExpressionNode;
+import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLIndividualNode;
 import org.mm.parser.node.OWLMinCardinalityNode;
@@ -58,7 +58,7 @@ public interface Renderer
   Rendering renderMMDefaultPropertyValueType(MMDefaultPropertyValueTypeNode defaultPropertyValueTypeNode)
     throws RendererException;
 
-  Rendering renderOWLExpression(OWLExpressionNode owlExpressionNode) throws RendererException;
+  Rendering renderOWLExpression(MMExpressionNode MMExpressionNode) throws RendererException;
 
   Rendering renderOWLClassDeclaration(OWLClassDeclarationNode owlClassDeclarationNode) throws RendererException;
 

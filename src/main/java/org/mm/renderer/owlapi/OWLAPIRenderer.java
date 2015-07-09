@@ -13,7 +13,7 @@ import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassOrRestrictionNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
 import org.mm.parser.node.OWLClassEquivalentToNode;
-import org.mm.parser.node.OWLExpressionNode;
+import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLIndividualNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
@@ -128,14 +128,14 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
     this.dataSource = dataSource;
   }
 
-  @Override public OWLAPIRendering renderOWLExpression(OWLExpressionNode owlExpressionNode) throws RendererException
+  @Override public OWLAPIRendering renderOWLExpression(MMExpressionNode MMExpressionNode) throws RendererException
   {
-    if (owlExpressionNode.hasOWLClassDeclaration())
-      return renderOWLClassDeclaration(owlExpressionNode.getOWLClassDeclarationNode());
-    else if (owlExpressionNode.hasOWLIndividualDeclaration())
-      return renderOWLIndividualDeclaration(owlExpressionNode.getOWLIndividualDeclarationNode());
+    if (MMExpressionNode.hasOWLClassDeclaration())
+      return renderOWLClassDeclaration(MMExpressionNode.getOWLClassDeclarationNode());
+    else if (MMExpressionNode.hasOWLIndividualDeclaration())
+      return renderOWLIndividualDeclaration(MMExpressionNode.getOWLIndividualDeclarationNode());
     else
-      throw new RendererException("unknown expression: " + owlExpressionNode);
+      throw new RendererException("unknown expression: " + MMExpressionNode);
   }
 
   @Override public OWLAPIRendering renderOWLClassDeclaration(OWLClassDeclarationNode classDeclarationNode)
