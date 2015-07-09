@@ -27,7 +27,7 @@ public class OWLAPIRendering extends Rendering
 		this.axioms.add(axiom);
 	}
 
-	public Set<OWLAxiom> getAxioms()
+	public Set<OWLAxiom> getOWLAxioms()
 	{
 		return Collections.unmodifiableSet(this.axioms);
 	}

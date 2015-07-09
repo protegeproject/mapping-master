@@ -1,67 +1,67 @@
 package org.mm.renderer;
 
 import org.mm.parser.MappingMasterParserConstants;
+import org.mm.parser.ParserUtil;
+import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.DefaultDataValueNode;
 import org.mm.parser.node.DefaultIDNode;
 import org.mm.parser.node.DefaultLabelNode;
+import org.mm.parser.node.DefaultLocationValueNode;
 import org.mm.parser.node.DifferentFromNode;
 import org.mm.parser.node.EmptyDataValueSettingNode;
+import org.mm.parser.node.EmptyLocationSettingNode;
+import org.mm.parser.node.EmptyRDFIDSettingNode;
 import org.mm.parser.node.EmptyRDFSLabelSettingNode;
 import org.mm.parser.node.EntityTypeNode;
 import org.mm.parser.node.ExpressionNode;
-import org.mm.parser.node.IfExistsDirectiveNode;
-import org.mm.parser.node.LiteralNode;
-import org.mm.parser.node.MMDefaultEntityTypeNode;
-import org.mm.parser.node.MMDefaultPropertyTypeNode;
-import org.mm.parser.node.NamespaceNode;
-import org.mm.parser.node.OWLAllValuesFromNode;
-import org.mm.parser.node.OWLCardinalityNode;
-import org.mm.parser.node.OWLClassExpressionNode;
-import org.mm.parser.node.OWLClassOrRestrictionNode;
-import org.mm.parser.node.OWLExpressionNode;
-import org.mm.parser.node.OWLIndividualDeclarationNode;
-import org.mm.parser.node.OWLIndividualNode;
-import org.mm.parser.node.OWLMinCardinalityNode;
-import org.mm.parser.node.OWLNamedClassNode;
-import org.mm.parser.node.OWLSomeValuesFromClassNode;
-import org.mm.parser.node.OWLSomeValuesFromDataTypeNode;
-import org.mm.parser.node.PrefixNode;
-import org.mm.parser.node.StringLiteralNode;
-import org.mm.parser.node.StringOrReferenceNode;
-import org.mm.parser.node.TypeNode;
-import org.mm.parser.node.ValueEncodingNode;
-import org.mm.parser.ParserUtil;
-import org.mm.parser.node.AnnotationFactNode;
-import org.mm.parser.node.DefaultLocationValueNode;
-import org.mm.parser.node.EmptyLocationSettingNode;
-import org.mm.parser.node.EmptyRDFIDSettingNode;
 import org.mm.parser.node.FactNode;
+import org.mm.parser.node.IfExistsDirectiveNode;
 import org.mm.parser.node.IfNotExistsDirectiveNode;
 import org.mm.parser.node.LanguageNode;
+import org.mm.parser.node.LiteralNode;
 import org.mm.parser.node.MMDefaultDatatypePropertyValueTypeNode;
+import org.mm.parser.node.MMDefaultEntityTypeNode;
+import org.mm.parser.node.MMDefaultPropertyTypeNode;
 import org.mm.parser.node.MMDefaultPropertyValueTypeNode;
 import org.mm.parser.node.MMDefaultValueEncodingNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
+import org.mm.parser.node.NamespaceNode;
 import org.mm.parser.node.OWLAllValuesFromClassNode;
 import org.mm.parser.node.OWLAllValuesFromDataTypeNode;
+import org.mm.parser.node.OWLAllValuesFromNode;
+import org.mm.parser.node.OWLCardinalityNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
+import org.mm.parser.node.OWLClassExpressionNode;
+import org.mm.parser.node.OWLClassOrRestrictionNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
 import org.mm.parser.node.OWLEquivalentToNode;
+import org.mm.parser.node.OWLExpressionNode;
 import org.mm.parser.node.OWLHasValueNode;
+import org.mm.parser.node.OWLIndividualDeclarationNode;
+import org.mm.parser.node.OWLIndividualNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
 import org.mm.parser.node.OWLMaxCardinalityNode;
+import org.mm.parser.node.OWLMinCardinalityNode;
+import org.mm.parser.node.OWLNamedClassNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLPropertyValueNode;
 import org.mm.parser.node.OWLRestrictionNode;
+import org.mm.parser.node.OWLSomeValuesFromClassNode;
+import org.mm.parser.node.OWLSomeValuesFromDataTypeNode;
 import org.mm.parser.node.OWLSomeValuesFromNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
+import org.mm.parser.node.PrefixNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SameAsNode;
 import org.mm.parser.node.ShiftSettingNode;
 import org.mm.parser.node.SourceSpecificationNode;
+import org.mm.parser.node.StringLiteralNode;
+import org.mm.parser.node.StringOrReferenceNode;
+import org.mm.parser.node.TypeNode;
 import org.mm.parser.node.TypesNode;
+import org.mm.parser.node.ValueEncodingNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
@@ -74,32 +74,24 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 {
   public Rendering renderExpression(ExpressionNode expressionNode) throws RendererException
   {
-    Rendering rendering;
-
     if (expressionNode.hasMMExpression())
-      rendering = renderMMExpression(expressionNode.getMMExpressionNode());
+      return renderMMExpression(expressionNode.getMMExpressionNode());
     else if (expressionNode.hasOWLExpression())
-      rendering = renderOWLExpression(expressionNode.getOWLExpressionNode());
+      return renderOWLExpression(expressionNode.getOWLExpressionNode());
     else
       throw new RendererException("unknown expression type " + expressionNode);
-
-    return rendering;
   }
 
   public Rendering renderMMExpression(MMExpressionNode mmExpressionNode) throws RendererException
   {
-    Rendering rendering;
-
     if (mmExpressionNode.hasDefaultValueEncoding())
-      rendering = renderMMDefaultValueEncoding(mmExpressionNode.getDefaultValueEncodingNode());
+      return renderMMDefaultValueEncoding(mmExpressionNode.getDefaultValueEncodingNode());
     else if (mmExpressionNode.hasDefaultEntityType())
-      rendering = renderMMDefaultEntityType(mmExpressionNode.getDefaultEntityTypeNode());
+      return renderMMDefaultEntityType(mmExpressionNode.getDefaultEntityTypeNode());
     else if (mmExpressionNode.hasDefaultPropertyValueType())
-      rendering = renderMMDefaultPropertyValueType(mmExpressionNode.getDefaultPropertyValueTypeNode());
+      return renderMMDefaultPropertyValueType(mmExpressionNode.getDefaultPropertyValueTypeNode());
     else
       throw new RendererException("unknown directive " + mmExpressionNode);
-
-    return rendering;
   }
 
   public Rendering renderMMDefaultEntityType(MMDefaultEntityTypeNode mmDefaultEntityTypeNode) throws RendererException
@@ -133,18 +125,14 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 
   public Rendering renderOWLExpression(OWLExpressionNode owlExpressionNode) throws RendererException
   {
-    Rendering rendering;
-
     if (owlExpressionNode.hasOWLClassDeclaration())
-      rendering = renderOWLClassDeclaration(owlExpressionNode.getOWLClassDeclarationNode());
+      return renderOWLClassDeclaration(owlExpressionNode.getOWLClassDeclarationNode());
     else if (owlExpressionNode.hasOWLIndividualDeclaration())
-      rendering = renderOWLIndividualDeclaration(owlExpressionNode.getOWLIndividualDeclarationNode());
+      return renderOWLIndividualDeclaration(owlExpressionNode.getOWLIndividualDeclarationNode());
     else if (owlExpressionNode.hasOWLClassExpression())
-      rendering = renderOWLClassExpression(owlExpressionNode.getOWLClassExpressionNode());
+      return renderOWLClassExpression(owlExpressionNode.getOWLClassExpressionNode());
     else
       throw new RendererException("unknown expression: " + owlExpressionNode);
-
-    return rendering;
   }
 
   public Rendering renderOWLClassDeclaration(OWLClassDeclarationNode owlClassDeclarationNode) throws RendererException
@@ -297,18 +285,14 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 
   public Rendering renderOWLPropertyValue(OWLPropertyValueNode owlPropertyValueNode) throws RendererException
   {
-    Rendering rendering;
-
     if (owlPropertyValueNode.isReference())
-      rendering = renderReference(owlPropertyValueNode.getReferenceNode());
+      return renderReference(owlPropertyValueNode.getReferenceNode());
     else if (owlPropertyValueNode.isName())
-      rendering = renderName(owlPropertyValueNode.getNameNode());
+      return renderName(owlPropertyValueNode.getNameNode());
     else if (owlPropertyValueNode.isLiteral())
-      rendering = renderLiteral(owlPropertyValueNode.getLiteralNode());
+      return renderLiteral(owlPropertyValueNode.getLiteralNode());
     else
       throw new RendererException("unknown property value node " + owlPropertyValueNode);
-
-    return rendering;
   }
 
   public Rendering renderOWLClassExpression(OWLClassExpressionNode owlClassExpressionNode) throws RendererException
@@ -393,8 +377,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     Rendering rendering = new Rendering();
 
     if (classOrRestrictionNode.hasOWLEnumeratedClass())
-      rendering
-        .addText(renderOWLEnumeratedClass(classOrRestrictionNode.getOWLEnumeratedClassNode()).getRendering());
+      rendering.addText(renderOWLEnumeratedClass(classOrRestrictionNode.getOWLEnumeratedClassNode()).getRendering());
     else if (classOrRestrictionNode.hasOWLUnionClass())
       rendering.addText(renderOWLUnionClass(classOrRestrictionNode.getOWLUnionClassNode()).getRendering());
     else if (classOrRestrictionNode.hasOWLRestriction())
@@ -466,8 +449,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("unkown OWLRestriction " + owlRestrictionNode);
 
     if (!propertyRendering.nothingRendered() && !restrictionRendering.nothingRendered())
-      rendering
-        .addText("(" + propertyRendering.getRendering() + " " + restrictionRendering.getRendering() + ")");
+      rendering.addText("(" + propertyRendering.getRendering() + " " + restrictionRendering.getRendering() + ")");
 
     return rendering;
   }
@@ -574,16 +556,12 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 
   public Rendering renderOWLIndividual(OWLIndividualNode owlIndividualNode) throws RendererException
   {
-    Rendering rendering;
-
     if (owlIndividualNode.isReference())
-      rendering = renderReference(owlIndividualNode.getReferenceNode());
+      return renderReference(owlIndividualNode.getReferenceNode());
     else if (owlIndividualNode.isName())
-      rendering = renderName(owlIndividualNode.getNameNode());
+      return renderName(owlIndividualNode.getNameNode());
     else
       throw new RendererException("unknown OWLIndividual node " + owlIndividualNode);
-
-    return rendering;
   }
 
   public Rendering renderName(NameNode nameNode) throws RendererException
@@ -979,7 +957,6 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!valueSpecificationRendering.nothingRendered())
         rendering.addText(valueSpecificationRendering.getRendering());
     }
-
     return rendering;
   }
 
@@ -1011,43 +988,40 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     return rendering;
   }
 
-  public Rendering renderDefaultLocationValue(DefaultLocationValueNode defaultLocationValue) throws RendererException
-  {
-    return new Rendering(defaultLocationValue.toString());
-  }
-
-  public Rendering renderDefaultDataValue(DefaultDataValueNode defaultDataValue) throws RendererException
-  {
-    return new Rendering(defaultDataValue.toString());
-  }
-
-  public Rendering renderDefaultID(DefaultIDNode defaultID) throws RendererException
-  {
-    return new Rendering(defaultID.toString());
-  }
-
-  public Rendering renderDefaultLabel(DefaultLabelNode defaultLabel) throws RendererException
-  {
-    return new Rendering(defaultLabel.toString());
-  }
-
-  public Rendering renderValueSpecificationItem(ValueSpecificationItemNode valueSpecificationItem)
+  public Rendering renderDefaultLocationValue(DefaultLocationValueNode defaultLocationValueNode)
     throws RendererException
   {
-    Rendering rendering;
+    return new Rendering(defaultLocationValueNode.toString());
+  }
 
-    if (valueSpecificationItem.hasStringLiteral())
-      rendering = new Rendering("\"" + valueSpecificationItem.getStringLiteral() + "\"");
-    else if (valueSpecificationItem.hasReference())
-      rendering = renderReference(valueSpecificationItem.getReferenceNode());
-    else if (valueSpecificationItem.hasValueExtractionFunction())
-      rendering = renderValueExtractionFunction(valueSpecificationItem.getValueExtractionFunctionNode());
-    else if (valueSpecificationItem.hasCapturingExpression())
-      rendering = new Rendering("[\"" + valueSpecificationItem.getCapturingExpression() + "\"]");
+  public Rendering renderDefaultDataValue(DefaultDataValueNode defaultDataValueNode) throws RendererException
+  {
+    return new Rendering(defaultDataValueNode.toString());
+  }
+
+  public Rendering renderDefaultID(DefaultIDNode defaultIDNode) throws RendererException
+  {
+    return new Rendering(defaultIDNode.toString());
+  }
+
+  public Rendering renderDefaultLabel(DefaultLabelNode defaultLabelNode) throws RendererException
+  {
+    return new Rendering(defaultLabelNode.toString());
+  }
+
+  public Rendering renderValueSpecificationItem(ValueSpecificationItemNode valueSpecificationItemNode)
+    throws RendererException
+  {
+    if (valueSpecificationItemNode.hasStringLiteral())
+      return new Rendering("\"" + valueSpecificationItemNode.getStringLiteral() + "\"");
+    else if (valueSpecificationItemNode.hasReference())
+      return renderReference(valueSpecificationItemNode.getReferenceNode());
+    else if (valueSpecificationItemNode.hasValueExtractionFunction())
+      return renderValueExtractionFunction(valueSpecificationItemNode.getValueExtractionFunctionNode());
+    else if (valueSpecificationItemNode.hasCapturingExpression())
+      return new Rendering("[\"" + valueSpecificationItemNode.getCapturingExpression() + "\"]");
     else
-      throw new RendererException("unknown ValueSpecificationItem node " + valueSpecificationItem);
-
-    return rendering;
+      throw new RendererException("unknown ValueSpecificationItem node " + valueSpecificationItemNode);
   }
 
   public Rendering renderTypes(TypesNode types) throws RendererException
@@ -1070,24 +1044,20 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 
   public Rendering renderType(TypeNode typeNode) throws RendererException
   {
-    Rendering rendering;
-
     if (typeNode instanceof ReferenceNode)
-      rendering = renderReference((ReferenceNode)typeNode);
+      return renderReference((ReferenceNode)typeNode);
     else if (typeNode instanceof OWLClassExpressionNode)
-      rendering = renderOWLClassExpression((OWLClassExpressionNode)typeNode);
+      return renderOWLClassExpression((OWLClassExpressionNode)typeNode);
     else
       throw new RendererException("do not know how to render type node " + typeNode.getNodeName());
-
-    return rendering;
   }
 
-  public Rendering renderSameAs(SameAsNode sameAs) throws RendererException
+  public Rendering renderSameAs(SameAsNode sameAsNode) throws RendererException
   {
     Rendering rendering = new Rendering(" SameAs: ");
     boolean isFirst = true;
 
-    for (OWLIndividualNode owlIndividualNode : sameAs.getIndividualNodes()) {
+    for (OWLIndividualNode owlIndividualNode : sameAsNode.getIndividualNodes()) {
       Rendering individualRendering = renderOWLIndividual(owlIndividualNode);
 
       if (!individualRendering.nothingRendered()) {
@@ -1097,16 +1067,15 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
         isFirst = false;
       }
     }
-
     return rendering;
   }
 
-  public Rendering renderDifferentFrom(DifferentFromNode differentFrom) throws RendererException
+  public Rendering renderDifferentFrom(DifferentFromNode differentFromNode) throws RendererException
   {
     Rendering rendering = new Rendering(" DifferentFrom: ");
     boolean isFirst = true;
 
-    for (OWLIndividualNode owlIndividualNode : differentFrom.getIndividualNodes()) {
+    for (OWLIndividualNode owlIndividualNode : differentFromNode.getIndividualNodes()) {
       Rendering individualRendering = renderOWLIndividual(owlIndividualNode);
 
       if (!individualRendering.nothingRendered()) {
@@ -1120,16 +1089,16 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     return rendering;
   }
 
-  public Rendering renderValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunction)
+  public Rendering renderValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode)
     throws RendererException
   {
-    Rendering rendering = new Rendering(valueExtractionFunction.getFunctionName());
+    Rendering rendering = new Rendering(valueExtractionFunctionNode.getFunctionName());
 
-    if (valueExtractionFunction.hasArguments()) {
+    if (valueExtractionFunctionNode.hasArguments()) {
       boolean isFirst = true;
       rendering.addText("(");
 
-      for (StringOrReferenceNode stringOrReferenceNode : valueExtractionFunction.getArgumentNodes()) {
+      for (StringOrReferenceNode stringOrReferenceNode : valueExtractionFunctionNode.getArgumentNodes()) {
         Rendering stringOrReferenceRendering = renderStringOrReference(stringOrReferenceNode);
         if (!stringOrReferenceRendering.nothingRendered()) {
           if (!isFirst)
@@ -1145,73 +1114,72 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     return rendering;
   }
 
-  public Rendering renderSourceSpecification(SourceSpecificationNode sourceSpecification) throws RendererException
+  public Rendering renderSourceSpecification(SourceSpecificationNode sourceSpecificationNode) throws RendererException
   {
     Rendering rendering = new Rendering("@");
 
-    if (sourceSpecification.hasSource())
-      rendering.addText("'" + sourceSpecification.getSource() + "'!");
+    if (sourceSpecificationNode.hasSource())
+      rendering.addText("'" + sourceSpecificationNode.getSource() + "'!");
 
-    if (sourceSpecification.hasLocation())
-      rendering.addText(sourceSpecification.getLocation());
+    if (sourceSpecificationNode.hasLocation())
+      rendering.addText(sourceSpecificationNode.getLocation());
     else
-      // literal
-      rendering.addText("\"" + sourceSpecification.getLiteral() + "\"");
+      rendering.addText("\"" + sourceSpecificationNode.getLiteral() + "\""); // A literal
 
     return rendering;
   }
 
-  public Rendering renderStringOrReference(StringOrReferenceNode stringOrReference) throws RendererException
+  public Rendering renderStringOrReference(StringOrReferenceNode stringOrReferenceNode) throws RendererException
   {
-    Rendering rendering;
-
-    if (stringOrReference.isString())
-      rendering = renderStringLiteral(stringOrReference.getStringLiteralNode());
-    else if (stringOrReference.isReference())
-      rendering = renderReference(stringOrReference.getReferenceNode());
+    if (stringOrReferenceNode.isString())
+      return renderStringLiteral(stringOrReferenceNode.getStringLiteralNode());
+    else if (stringOrReferenceNode.isReference())
+      return renderReference(stringOrReferenceNode.getReferenceNode());
     else
-      throw new RendererException("unknown StringOrReference node" + stringOrReference);
-
-    return rendering;
+      throw new RendererException("unknown StringOrReference node " + stringOrReferenceNode);
   }
 
-  public Rendering renderStringLiteral(StringLiteralNode stringLiteral) throws RendererException
+  public Rendering renderStringLiteral(StringLiteralNode stringLiteralNode) throws RendererException
   {
-    return new Rendering(stringLiteral.toString());
+    return new Rendering(stringLiteralNode.toString());
   }
 
-  public Rendering renderShiftSetting(ShiftSettingNode shiftSetting) throws RendererException
+  public Rendering renderShiftSetting(ShiftSettingNode shiftSettingNode) throws RendererException
   {
-    return new Rendering(shiftSetting.toString());
+    return new Rendering(shiftSettingNode.toString());
   }
 
-  public Rendering renderEmptyLocationSetting(EmptyLocationSettingNode emptyLocationSetting) throws RendererException
+  public Rendering renderEmptyLocationSetting(EmptyLocationSettingNode emptyLocationSettingNode)
+    throws RendererException
   {
-    return new Rendering(emptyLocationSetting.toString());
+    return new Rendering(emptyLocationSettingNode.toString());
   }
 
-  public Rendering renderEmptyDataValueSetting(EmptyDataValueSettingNode emptyDataValueSetting) throws RendererException
+  public Rendering renderEmptyDataValueSetting(EmptyDataValueSettingNode emptyDataValueSettingNode)
+    throws RendererException
   {
-    return new Rendering(emptyDataValueSetting.toString());
+    return new Rendering(emptyDataValueSettingNode.toString());
   }
 
-  public Rendering renderEmptyRDFIDSetting(EmptyRDFIDSettingNode emptyRDFIDSetting) throws RendererException
+  public Rendering renderEmptyRDFIDSetting(EmptyRDFIDSettingNode emptyRDFIDSettingNode) throws RendererException
   {
-    return new Rendering(emptyRDFIDSetting.toString());
+    return new Rendering(emptyRDFIDSettingNode.toString());
   }
 
-  public Rendering renderEmptyRDFSLabelSetting(EmptyRDFSLabelSettingNode emptyRDFSLabelSetting) throws RendererException
+  public Rendering renderEmptyRDFSLabelSetting(EmptyRDFSLabelSettingNode emptyRDFSLabelSettingNode)
+    throws RendererException
   {
-    return new Rendering(emptyRDFSLabelSetting.toString());
+    return new Rendering(emptyRDFSLabelSettingNode.toString());
   }
 
-  public Rendering renderIfExistsDirective(IfExistsDirectiveNode ifExistsDirective) throws RendererException
+  public Rendering renderIfExistsDirective(IfExistsDirectiveNode ifExistsDirectiveNode) throws RendererException
   {
-    return new Rendering(ifExistsDirective.toString());
+    return new Rendering(ifExistsDirectiveNode.toString());
   }
 
-  public Rendering renderIfNotExistsDirective(IfNotExistsDirectiveNode ifNotExistsDirective) throws RendererException
+  public Rendering renderIfNotExistsDirective(IfNotExistsDirectiveNode ifNotExistsDirectiveNode)
+    throws RendererException
   {
-    return new Rendering(ifNotExistsDirective.toString());
+    return new Rendering(ifNotExistsDirectiveNode.toString());
   }
 }
