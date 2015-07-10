@@ -17,7 +17,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OWLAPIObjectHandler
+class OWLAPIObjectHandler
 {
   private final Map<String, Map<String, OWLEntity>> createdOWLEntitiesUsingLabel; // Map of namespace to map of rdfs:label to rdf:ID
 

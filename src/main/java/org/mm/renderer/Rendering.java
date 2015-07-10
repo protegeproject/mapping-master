@@ -2,33 +2,33 @@ package org.mm.renderer;
 
 public class Rendering
 {
-  private String finalRendering;
+  private String textRendering;
   private StringBuffer loggingText;
 
   public Rendering()
   {
-    finalRendering = "";
+    textRendering = "";
     loggingText = new StringBuffer();
   }
 
   public Rendering(String initialTextRendering)
   {
-    finalRendering = initialTextRendering;
+    textRendering = initialTextRendering;
   }
 
   public boolean nothingRendered()
   {
-    return finalRendering.equals("") || finalRendering.equals("\"\"");
+    return textRendering.equals("") || textRendering.equals("\"\"");
   } // TODO: last clause is hack
 
   public void addText(String text)
   {
-    this.finalRendering = finalRendering.concat(text);
+    this.textRendering = textRendering.concat(text);
   }
 
   public void setTextRendering(String textRendering)
   {
-    this.finalRendering = textRendering;
+    this.textRendering = textRendering;
   }
 
   // TODO Use real logger
@@ -43,11 +43,11 @@ public class Rendering
     log(loggingText + "\n");
   }
 
-  public String getRendering()
+  public String getTextRendering()
   {
     stripDoubleQuotesIfNecessary(); // TODO: hack
 
-    return finalRendering;
+    return this.textRendering;
   }
 
   public void addLoggingTextNewLine()
@@ -62,12 +62,12 @@ public class Rendering
 
   private void stripDoubleQuotesIfNecessary()
   {
-    if (finalRendering.startsWith("\""))
-      finalRendering = finalRendering.substring(1, finalRendering.length() - 1);
+    if (textRendering.startsWith("\""))
+      textRendering = textRendering.substring(1, textRendering.length() - 1);
   }
 
   @Override public String toString()
   {
-    return getRendering();
+    return getTextRendering();
   }
 }

@@ -7,16 +7,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class OWLAPIRendering extends Rendering
+public class MMExpressionRendering extends Rendering
 {
   private final Set<OWLAxiom> axioms;
 
-  public OWLAPIRendering()
+  public MMExpressionRendering()
   {
     this.axioms = new HashSet<>();
   }
 
-  public OWLAPIRendering(String initialTextRendering)
+  public MMExpressionRendering(String initialTextRendering)
   {
     super(initialTextRendering);
     this.axioms = new HashSet<>();

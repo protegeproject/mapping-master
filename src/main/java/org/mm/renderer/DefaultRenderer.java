@@ -148,7 +148,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
         if (!isFirst)
           rendering.addText(", ");
 
-        rendering.addText(subclassOfRendering.getRendering());
+        rendering.addText(subclassOfRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -164,7 +164,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
         if (!isFirst)
           rendering.addText(", ");
 
-        rendering.addText(equivalentToRendering.getRendering());
+        rendering.addText(equivalentToRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -180,7 +180,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 
         if (!isFirst)
           rendering.addText(", ");
-        rendering.addText(factRendering.getRendering());
+        rendering.addText(factRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -200,7 +200,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 
     rendering.addText("Individual: ");
 
-    rendering.addText(individualRendering.getRendering());
+    rendering.addText(individualRendering.getTextRendering());
 
     if (owlIndividualDeclarationNode.hasFacts()) {
       rendering.addText(" Facts: ");
@@ -213,7 +213,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 
         if (!isFirst)
           rendering.addText(", ");
-        rendering.addText(factRendering.getRendering());
+        rendering.addText(factRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -222,7 +222,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       Rendering typesRendering = renderTypes(owlIndividualDeclarationNode.getTypeNodes());
 
       if (!typesRendering.nothingRendered())
-        rendering.addText(" Types: " + typesRendering.getRendering());
+        rendering.addText(" Types: " + typesRendering.getTextRendering());
     }
 
     isFirst = true;
@@ -237,7 +237,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
 
         if (!isFirst)
           rendering.addText(", ");
-        rendering.addText(factRendering.getRendering());
+        rendering.addText(factRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -245,13 +245,13 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     if (owlIndividualDeclarationNode.hasSameAs()) {
       Rendering sameAsRendering = renderSameAs(owlIndividualDeclarationNode.getSameAsNode());
       if (!sameAsRendering.nothingRendered())
-        rendering.addText(sameAsRendering.getRendering());
+        rendering.addText(sameAsRendering.getTextRendering());
     }
 
     if (owlIndividualDeclarationNode.hasDifferentFrom()) {
       Rendering differentFromRendering = renderDifferentFrom(owlIndividualDeclarationNode.getDifferentFromNode());
       if (!differentFromRendering.nothingRendered())
-        rendering.addText(differentFromRendering.getRendering());
+        rendering.addText(differentFromRendering.getTextRendering());
     }
 
     return rendering;
@@ -264,7 +264,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     Rendering rendering = new Rendering();
 
     if (!propertyRendering.nothingRendered() && !propertyValueRendering.nothingRendered())
-      rendering.addText(propertyRendering.getRendering() + " " + propertyValueRendering.getRendering());
+      rendering.addText(propertyRendering.getTextRendering() + " " + propertyValueRendering.getTextRendering());
 
     return rendering;
   }
@@ -276,7 +276,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     Rendering rendering = new Rendering();
 
     if (!propertyRendering.nothingRendered() && !propertyValueRendering.nothingRendered())
-      rendering.addText(propertyRendering.getRendering() + " " + propertyValueRendering.getRendering());
+      rendering.addText(propertyRendering.getTextRendering() + " " + propertyValueRendering.getTextRendering());
 
     return rendering;
   }
@@ -321,7 +321,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
             rendering.addText("(");
           else
             rendering.addText(" OR ");
-          rendering.addText(intersectionRendering.getRendering());
+          rendering.addText(intersectionRendering.getTextRendering());
           isFirst = false;
         }
       }
@@ -358,7 +358,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
             rendering.addText("(");
           else
             rendering.addText(" AND ");
-          rendering.addText(classesOrRestrictionsRendering.getRendering());
+          rendering.addText(classesOrRestrictionsRendering.getTextRendering());
           isFirst = false;
         }
       }
@@ -375,19 +375,19 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     Rendering rendering = new Rendering();
 
     if (classOrRestrictionNode.hasOWLEnumeratedClass())
-      rendering.addText(renderOWLEnumeratedClass(classOrRestrictionNode.getOWLEnumeratedClassNode()).getRendering());
+      rendering.addText(renderOWLEnumeratedClass(classOrRestrictionNode.getOWLEnumeratedClassNode()).getTextRendering());
     else if (classOrRestrictionNode.hasOWLUnionClass())
-      rendering.addText(renderOWLUnionClass(classOrRestrictionNode.getOWLUnionClassNode()).getRendering());
+      rendering.addText(renderOWLUnionClass(classOrRestrictionNode.getOWLUnionClassNode()).getTextRendering());
     else if (classOrRestrictionNode.hasOWLRestriction())
-      rendering.addText(renderOWLRestriction(classOrRestrictionNode.getOWLRestrictionNode()).getRendering());
+      rendering.addText(renderOWLRestriction(classOrRestrictionNode.getOWLRestrictionNode()).getTextRendering());
     else if (classOrRestrictionNode.hasOWLNamedClass())
-      rendering.addText(renderOWLNamedClass(classOrRestrictionNode.getOWLNamedClassNode()).getRendering());
+      rendering.addText(renderOWLNamedClass(classOrRestrictionNode.getOWLNamedClassNode()).getTextRendering());
     else
       throw new RendererException("unexpected OWLClassOrRestriction node " + classOrRestrictionNode);
 
     if (!rendering.nothingRendered())
       if (classOrRestrictionNode.getIsNegated())
-        rendering.addText("NOT " + rendering.getRendering());
+        rendering.addText("NOT " + rendering.getTextRendering());
 
     return rendering;
   }
@@ -403,7 +403,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (individualRendering.nothingRendered())
         return rendering;
 
-      rendering.addText(individualRendering.getRendering());
+      rendering.addText(individualRendering.getTextRendering());
     } else {
       boolean isFirst = true;
 
@@ -416,7 +416,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
         if (individualRendering.nothingRendered())
           return rendering;
 
-        rendering.addText(individualRendering.getRendering());
+        rendering.addText(individualRendering.getTextRendering());
         isFirst = false;
       }
       rendering.addText("}");
@@ -447,7 +447,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("unkown OWLRestriction " + owlRestrictionNode);
 
     if (!propertyRendering.nothingRendered() && !restrictionRendering.nothingRendered())
-      rendering.addText("(" + propertyRendering.getRendering() + " " + restrictionRendering.getRendering() + ")");
+      rendering.addText("(" + propertyRendering.getTextRendering() + " " + restrictionRendering.getTextRendering() + ")");
 
     return rendering;
   }
@@ -458,7 +458,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     Rendering rendering = new Rendering();
 
     if (!cardinalityRendering.nothingRendered())
-      rendering.addText("MAX " + cardinalityRendering.getRendering());
+      rendering.addText("MAX " + cardinalityRendering.getTextRendering());
 
     return rendering;
   }
@@ -469,7 +469,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     Rendering rendering = new Rendering();
 
     if (!cardinalityRendering.nothingRendered())
-      rendering.addText("MIN " + cardinalityRendering.getRendering());
+      rendering.addText("MIN " + cardinalityRendering.getTextRendering());
 
     return rendering;
   }
@@ -480,7 +480,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     Rendering rendering = new Rendering();
 
     if (!cardinalityRendering.nothingRendered())
-      rendering.addText("EXACTLY " + cardinalityRendering.getRendering());
+      rendering.addText("EXACTLY " + cardinalityRendering.getTextRendering());
 
     return rendering;
   }
@@ -491,7 +491,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     Rendering rendering = new Rendering();
 
     if (!propertyValueRendering.nothingRendered())
-      rendering.addText("VALUE " + propertyValueRendering.getRendering());
+      rendering.addText("VALUE " + propertyValueRendering.getTextRendering());
 
     return rendering;
   }
@@ -608,7 +608,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("unknown OWLAllValuesFromClass node " + owlAllValuesFromClassNode);
 
     if (!classRendering.nothingRendered())
-      rendering.addText("ONLY " + classRendering.getRendering());
+      rendering.addText("ONLY " + classRendering.getTextRendering());
 
     return rendering;
   }
@@ -639,7 +639,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("unknown OWLSomeValuesFromClass node " + owlSomeValuesFromClassNode);
 
     if (!classRendering.nothingRendered())
-      rendering.addText("SOME " + classRendering.getRendering());
+      rendering.addText("SOME " + classRendering.getTextRendering());
 
     return rendering;
   }
@@ -655,7 +655,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       classExpressionRendering = renderOWLClassExpression(owlClassEquivalentToNode.getClassExpressionNodes().get(0));
       if (classExpressionRendering.nothingRendered())
         return rendering;
-      rendering.addText(classExpressionRendering.getRendering());
+      rendering.addText(classExpressionRendering.getTextRendering());
     } else {
       boolean isFirst = true;
 
@@ -665,7 +665,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
           continue; // Any empty class expression will generate an empty rendering
         if (!isFirst)
           rendering.addText(", ");
-        rendering.addText(classExpressionRendering.getRendering());
+        rendering.addText(classExpressionRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -684,7 +684,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       classExpressionRendering = renderOWLClassExpression(owlSubclassOfNode.getClassExpressionNodes().get(0));
       if (classExpressionRendering.nothingRendered())
         return rendering;
-      rendering.addText(classExpressionRendering.getRendering());
+      rendering.addText(classExpressionRendering.getTextRendering());
     } else {
       boolean isFirst = true;
 
@@ -694,7 +694,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
           continue; // Any empty class expression will generate an empty rendering
         if (!isFirst)
           rendering.addText(", ");
-        rendering.addText(classExpressionRendering.getRendering());
+        rendering.addText(classExpressionRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -743,7 +743,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
           rendering.addText(" ");
         else
           atLeastOneOptionProcessed = true;
-        rendering.addText(prefixRendering.getRendering());
+        rendering.addText(prefixRendering.getTextRendering());
       }
     }
 
@@ -754,7 +754,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
           rendering.addText(" ");
         else
           atLeastOneOptionProcessed = true;
-        rendering.addText(namespaceRendering.getRendering());
+        rendering.addText(namespaceRendering.getTextRendering());
       }
     }
 
@@ -766,7 +766,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
           rendering.addText(" ");
         else
           atLeastOneOptionProcessed = true;
-        rendering.addText(valueExtractionFunctionRendering.getRendering());
+        rendering.addText(valueExtractionFunctionRendering.getTextRendering());
       }
     }
 
@@ -779,7 +779,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
         if (!valueEncodingRendering.nothingRendered()) {
           if (!isFirst)
             rendering.addText(" ");
-          rendering.addText(valueEncodingRendering.getRendering());
+          rendering.addText(valueEncodingRendering.getTextRendering());
           isFirst = false;
         }
       }
@@ -791,7 +791,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!defaultLocationValueRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(defaultLocationValueRendering.getRendering());
+        rendering.addText(defaultLocationValueRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -801,7 +801,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!defaultDataValueRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(defaultDataValueRendering.getRendering());
+        rendering.addText(defaultDataValueRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -811,7 +811,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!defaultIDRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(defaultIDRendering.getRendering());
+        rendering.addText(defaultIDRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -821,7 +821,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!defaultLabelRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(defaultLabelRendering.getRendering());
+        rendering.addText(defaultLabelRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -831,7 +831,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!languageRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(languageRendering.getRendering());
+        rendering.addText(languageRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -839,7 +839,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     if (referenceNode.hasExplicitlySpecifiedPrefix()) {
       if (atLeastOneOptionProcessed)
         rendering.addText(" ");
-      rendering.addText(renderPrefix(referenceNode.getPrefixNode()).getRendering());
+      rendering.addText(renderPrefix(referenceNode.getPrefixNode()).getTextRendering());
       atLeastOneOptionProcessed = true;
     }
 
@@ -848,7 +848,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!namespaceRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(namespaceRendering.getRendering());
+        rendering.addText(namespaceRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -858,7 +858,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!emptyLocationSettingRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(emptyLocationSettingRendering.getRendering());
+        rendering.addText(emptyLocationSettingRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -869,7 +869,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!emptyDataValueSettingRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(emptyDataValueSettingRendering.getRendering());
+        rendering.addText(emptyDataValueSettingRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -879,7 +879,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!emptyRDFIFSettingRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(emptyRDFIFSettingRendering.getRendering());
+        rendering.addText(emptyRDFIFSettingRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -890,7 +890,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (emptyRDFSLabelSettingRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(emptyRDFSLabelSettingRendering.getRendering());
+        rendering.addText(emptyRDFSLabelSettingRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -900,7 +900,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!shiftSettingRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(shiftSettingRendering.getRendering());
+        rendering.addText(shiftSettingRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -910,7 +910,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!typesRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(typesRendering.getRendering());
+        rendering.addText(typesRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -920,7 +920,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!ifExistsRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(ifExistsRendering.getRendering());
+        rendering.addText(ifExistsRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -930,7 +930,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!ifExistsRendering.nothingRendered()) {
         if (atLeastOneOptionProcessed)
           rendering.addText(" ");
-        rendering.addText(ifExistsRendering.getRendering());
+        rendering.addText(ifExistsRendering.getTextRendering());
         atLeastOneOptionProcessed = true;
       }
     }
@@ -953,7 +953,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     if (valueEncodingNode.hasValueSpecification()) {
       Rendering valueSpecificationRendering = renderValueSpecification(valueEncodingNode.getValueSpecification());
       if (!valueSpecificationRendering.nothingRendered())
-        rendering.addText(valueSpecificationRendering.getRendering());
+        rendering.addText(valueSpecificationRendering.getTextRendering());
     }
     return rendering;
   }
@@ -975,7 +975,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
           rendering.addText("=");
         else
           rendering.addText(", ");
-        rendering.addText(valueSpecificationItemRendering.getRendering());
+        rendering.addText(valueSpecificationItemRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -1032,7 +1032,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!typeRendering.nothingRendered()) {
         if (!isFirst)
           rendering.addText(", ");
-        rendering.addText(typeRendering.getRendering());
+        rendering.addText(typeRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -1061,7 +1061,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!individualRendering.nothingRendered()) {
         if (!isFirst)
           rendering.addText(", ");
-        rendering.addText(individualRendering.getRendering());
+        rendering.addText(individualRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -1079,7 +1079,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
       if (!individualRendering.nothingRendered()) {
         if (!isFirst)
           rendering.addText(", ");
-        rendering.addText(individualRendering.getRendering());
+        rendering.addText(individualRendering.getTextRendering());
         isFirst = false;
       }
     }
@@ -1101,7 +1101,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
         if (!stringOrReferenceRendering.nothingRendered()) {
           if (!isFirst)
             rendering.addText(" ");
-          rendering.addText(stringOrReferenceRendering.getRendering());
+          rendering.addText(stringOrReferenceRendering.getTextRendering());
           isFirst = false;
         }
       }
