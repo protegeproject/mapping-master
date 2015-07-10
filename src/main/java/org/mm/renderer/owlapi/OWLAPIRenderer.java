@@ -251,14 +251,14 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
       if (individualDeclarationNode.hasFacts()) { // We have a Facts: clause
         List<FactNode> factNodes = individualDeclarationNode.getFactNodes();
         Set<OWLAxiom> axioms = processFactsClause(individualDeclarationRendering, declaredIndividualRendering,
-          factNodes);
+						factNodes);
         individualDeclarationRendering.addOWLAxioms(axioms);
       }
 
       if (individualDeclarationNode.hasAnnotations()) { // We have an Annotations: clause
         List<AnnotationFactNode> annotationFactNodes = individualDeclarationNode.getAnnotationNodes();
         Set<OWLAxiom> axioms = processAnnotationClause(individualDeclarationRendering, declaredIndividualRendering,
-          annotationFactNodes);
+						annotationFactNodes);
         individualDeclarationRendering.addOWLAxioms(axioms);
       }
 
@@ -436,7 +436,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 
           return new OWLClassExpressionRendering(classExpression);
         } else
-          return new MMExpressionRendering();
+          return new OWLClassExpressionRendering(null); // TODO
       } else { // Object property
         OWLObjectProperty property = this.owlObjectHandler.getOWLObjectProperty(propertyShortName);
         if (restrictionNode.hasOWLMinCardinality()) {
@@ -494,7 +494,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 
             return new OWLClassExpressionRendering(classExpression);
           } else
-            return new MMExpressionRendering();
+						return new OWLClassExpressionRendering(null); // TODO
         } else if (restrictionNode.hasOWLSomeValuesFrom()) {
           OWLSomeValuesFromNode someValuesFromNode = restrictionNode.getOWLSomeValuesFromNode();
           if (someValuesFromNode.hasOWLSomeValuesFromDataType())
@@ -515,12 +515,12 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
 
             return new OWLClassExpressionRendering(classExpression);
           } else
-            return new MMExpressionRendering();
+						return new OWLClassExpressionRendering(null); // TODO
         } else
-          return new MMExpressionRendering(null);
+					return new OWLClassExpressionRendering(null); // TODO
       }
     } else
-      return new MMExpressionRendering(null);
+			return new OWLClassExpressionRendering(null); // TODO
   }
 
   // TODO Too long. Clean up.
