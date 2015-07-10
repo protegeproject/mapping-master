@@ -708,11 +708,6 @@ void boolean_literal() #BooleanLiteral :
   }
 }
 
-void owl_class_expression() #OWLClassExpression : {}
-{
-  owl_union_class()
-} 
-
 void owl_union_class() #OWLUnionClass : {}
 {
   owl_intersection_class() ( LOOKAHEAD(2) <OR> owl_intersection_class() )*
@@ -720,10 +715,10 @@ void owl_union_class() #OWLUnionClass : {}
 
 void owl_intersection_class() #OWLIntersectionClass : {}
 {
-  owl_class_or_restriction() ( LOOKAHEAD(2) <AND> owl_class_or_restriction() )*
+  owl_class_expression() ( LOOKAHEAD(2) <AND> owl_class_expression() )*
 } 
 
-void owl_class_or_restriction() #OWLClassOrRestriction :
+void owl_class_expression() #OWLClassExpression :
 {
   boolean isNegated = false;
 }

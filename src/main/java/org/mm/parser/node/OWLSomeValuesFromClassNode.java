@@ -1,7 +1,7 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLSomeValuesFromClass;
 import org.mm.parser.ASTOWLClassExpression;
+import org.mm.parser.ASTOWLSomeValuesFromClass;
 import org.mm.parser.ASTOWLNamedClass;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;

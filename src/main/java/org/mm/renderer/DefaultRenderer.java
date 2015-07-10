@@ -33,7 +33,6 @@ import org.mm.parser.node.OWLAllValuesFromNode;
 import org.mm.parser.node.OWLCardinalityNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassExpressionNode;
-import org.mm.parser.node.OWLClassOrRestrictionNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
 import org.mm.parser.node.OWLClassEquivalentToNode;
 import org.mm.parser.node.MMExpressionNode;
@@ -349,7 +348,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     } else {
       boolean isFirst = true;
 
-      for (OWLClassOrRestrictionNode owlClassOrRestriction : owlIntersectionClassNode
+      for (OWLClassExpressionNode owlClassOrRestriction : owlIntersectionClassNode
         .getOWLClassesOrRestrictionNodes()) {
         classesOrRestrictionsRendering = renderOWLClassOrRestriction(owlClassOrRestriction);
 
@@ -369,7 +368,7 @@ public class DefaultRenderer implements Renderer, MappingMasterParserConstants
     return rendering;
   }
 
-  public Rendering renderOWLClassOrRestriction(OWLClassOrRestrictionNode classOrRestrictionNode)
+  public Rendering renderOWLClassOrRestriction(OWLClassExpressionNode classOrRestrictionNode)
     throws RendererException
   {
     Rendering rendering = new Rendering();

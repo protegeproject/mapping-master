@@ -1,6 +1,6 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLClassOrRestriction;
+import org.mm.parser.ASTOWLClassExpression;
 import org.mm.parser.ASTOWLIntersectionClass;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
@@ -12,18 +12,18 @@ import java.util.List;
 
 public class OWLIntersectionClassNode
 {
-  private List<OWLClassOrRestrictionNode> owlClassesOrRestrictionNodes;
+  private List<OWLClassExpressionNode> owlClassesOrRestrictionNodes;
 
   public OWLIntersectionClassNode(ASTOWLIntersectionClass node) throws ParseException
   {
-    owlClassesOrRestrictionNodes = new ArrayList<OWLClassOrRestrictionNode>();
+    owlClassesOrRestrictionNodes = new ArrayList<OWLClassExpressionNode>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLClassOrRestriction")) {
-        OWLClassOrRestrictionNode owlClassOrRestriction = new OWLClassOrRestrictionNode(
-          (ASTOWLClassOrRestriction)child);
+        OWLClassExpressionNode owlClassOrRestriction = new OWLClassExpressionNode(
+          (ASTOWLClassExpression)child);
         owlClassesOrRestrictionNodes.add(owlClassOrRestriction);
       } else
         throw new InternalParseException(
@@ -31,7 +31,7 @@ public class OWLIntersectionClassNode
     }
   }
 
-  public List<OWLClassOrRestrictionNode> getOWLClassesOrRestrictionNodes()
+  public List<OWLClassExpressionNode> getOWLClassesOrRestrictionNodes()
   {
     return owlClassesOrRestrictionNodes;
   }
@@ -46,7 +46,7 @@ public class OWLIntersectionClassNode
       boolean isFirst = true;
 
       representation += "(";
-      for (OWLClassOrRestrictionNode owlClassOrRestriction : owlClassesOrRestrictionNodes) {
+      for (OWLClassExpressionNode owlClassOrRestriction : owlClassesOrRestrictionNodes) {
         if (!isFirst)
           representation += " AND ";
         representation += owlClassOrRestriction.toString();

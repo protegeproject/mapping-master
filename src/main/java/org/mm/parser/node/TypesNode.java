@@ -13,24 +13,24 @@ import java.util.List;
 
 public class TypesNode implements MMNode
 {
-  private List<TypeNode> typeNodes;
+  private final List<TypeNode> typeNodes;
 
   public TypesNode(ASTTypes node) throws ParseException
   {
-    typeNodes = new ArrayList<TypeNode>();
+    this.typeNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLClassExpression")) {
-        OWLClassExpressionNode owlClassExpression = new OWLClassExpressionNode((ASTOWLClassExpression)child);
-        typeNodes.add(owlClassExpression);
+        OWLClassExpressionNode owlClassExpressionNode = new OWLClassExpressionNode((ASTOWLClassExpression)child);
+        typeNodes.add(owlClassExpressionNode);
       } else if (ParserUtil.hasName(child, "Reference")) {
-        ReferenceNode reference = new ReferenceNode((ASTReference)child);
-        typeNodes.add(reference);
+        ReferenceNode referenceNode = new ReferenceNode((ASTReference)child);
+        typeNodes.add(referenceNode);
       } else
         throw new InternalParseException(
-          "Types node expecting OWLClassEpxression or Reference child, got " + child.toString());
+          "Types node expecting OWLClassExpression child, got " + child.toString());
     }
   }
 

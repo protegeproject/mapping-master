@@ -15,7 +15,6 @@ import org.mm.parser.node.OWLAllValuesFromDataTypeNode;
 import org.mm.parser.node.OWLAllValuesFromNode;
 import org.mm.parser.node.OWLCardinalityNode;
 import org.mm.parser.node.OWLClassExpressionNode;
-import org.mm.parser.node.OWLClassOrRestrictionNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLIndividualNode;
@@ -79,7 +78,7 @@ public interface Renderer
 
   Rendering renderOWLEnumeratedClass(OWLEnumeratedClassNode owlEnumeratedClassNode) throws RendererException;
 
-  Rendering renderOWLClassOrRestriction(OWLClassOrRestrictionNode owlClassOrRestrictionNode) throws RendererException;
+  Rendering renderOWLClassOrRestriction(OWLClassExpressionNode owlClassExpressionNode) throws RendererException;
 
   // OWL class expressions
   Rendering renderOWLClassExpression(OWLClassExpressionNode owlClassExpressionNode) throws RendererException;

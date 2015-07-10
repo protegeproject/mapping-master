@@ -12,7 +12,6 @@ import org.mm.parser.node.OWLAllValuesFromNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassEquivalentToNode;
 import org.mm.parser.node.OWLClassExpressionNode;
-import org.mm.parser.node.OWLClassOrRestrictionNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLIndividualNode;
@@ -64,7 +63,6 @@ import org.semanticweb.owlapi.model.OWLObjectHasValue;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
 import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
-import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
@@ -311,7 +309,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
   {
     Set<OWLClassExpression> classes = new HashSet<>();
 
-    for (OWLClassOrRestrictionNode classOrRestrictionNode : intersectionClassNode.getOWLClassesOrRestrictionNodes()) {
+    for (OWLClassExpressionNode classOrRestrictionNode : intersectionClassNode.getOWLClassesOrRestrictionNodes()) {
       Rendering classRendering = renderOWLClassOrRestriction(classOrRestrictionNode);
       String classExpressionID = classRendering.getTextRendering();
       if (!classRendering.nothingRendered())
@@ -326,7 +324,7 @@ public class OWLAPIRenderer extends DefaultRenderer implements MappingMasterPars
       return new MMExpressionRendering();
   }
 
-  @Override public MMExpressionRendering renderOWLClassOrRestriction(OWLClassOrRestrictionNode classOrRestrictionNode)
+  @Override public MMExpressionRendering renderOWLClassOrRestriction(OWLClassExpressionNode classOrRestrictionNode)
     throws RendererException
   {
     OWLClassExpressionRendering classExpressionRendering;

@@ -3,15 +3,15 @@
 package org.mm.parser;
 
 public
-class ASTOWLClassOrRestriction extends SimpleNode {
+class ASTOWLClassExpression extends SimpleNode {
 
   public boolean isNegated;
 
-  public ASTOWLClassOrRestriction(int id) {
+  public ASTOWLClassExpression(int id) {
     super(id);
   }
 
-  public ASTOWLClassOrRestriction(MappingMasterParser p, int id) {
+  public ASTOWLClassExpression(MappingMasterParser p, int id) {
     super(p, id);
   }
 
