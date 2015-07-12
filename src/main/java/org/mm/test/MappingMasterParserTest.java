@@ -4,7 +4,7 @@ import org.mm.parser.ASTExpression;
 import org.mm.parser.MappingMasterParser;
 import org.mm.parser.ParseException;
 import org.mm.parser.node.ExpressionNode;
-import org.mm.renderer.DefaultRenderer;
+import org.mm.renderer.TextRenderer;
 import org.mm.parser.SimpleNode;
 import org.mm.renderer.Renderer;
 
@@ -21,7 +21,7 @@ public class MappingMasterParserTest
 
     try {
       MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expressionText.getBytes()));
-      Renderer renderer = new DefaultRenderer();
+      Renderer renderer = new TextRenderer();
 
       SimpleNode expressionNode = parser.expression();
       ExpressionNode expression = new ExpressionNode((ASTExpression)expressionNode);

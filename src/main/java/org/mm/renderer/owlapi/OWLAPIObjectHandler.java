@@ -4,6 +4,7 @@ import org.mm.core.OWLEntityType;
 import org.mm.core.ReferenceDirectives;
 import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadsheetLocation;
+import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -64,7 +65,17 @@ class OWLAPIObjectHandler
     return null; // TODO
   }
 
+  public OWLClass getOWLClass(IRI iri)
+  {
+    return null; // TODO
+  }
+
   public OWLNamedIndividual getOWLNamedIndividual(String shortName)
+  {
+    return null; // TODO
+  }
+
+  public OWLNamedIndividual getOWLNamedIndividual(IRI iri)
   {
     return null; // TODO
   }
@@ -74,12 +85,27 @@ class OWLAPIObjectHandler
     return null; // TODO
   }
 
+  public OWLObjectProperty getOWLObjectProperty(IRI iri)
+  {
+    return null; // TODO
+  }
+
   public OWLDataProperty getOWLDataProperty(String shortName)
   {
     return null; // TODO
   }
 
+  public OWLDataProperty getOWLDataProperty(IRI iri)
+  {
+    return null; // TODO
+  }
+
   public OWLAnnotationProperty getOWLAnnotationProperty(String shortName)
+  {
+    return null; // TODO
+  }
+
+  public OWLAnnotationProperty getOWLAnnotationProperty(IRI iri)
   {
     return null; // TODO
   }
@@ -94,7 +120,17 @@ class OWLAPIObjectHandler
     return false; // TODO
   }
 
+  public boolean isOWLClass(IRI iri)
+  {
+    return false; // TODO
+  }
+
   public boolean isOWLObjectProperty(String shortName)
+  {
+    return false; // TODO
+  }
+
+  public boolean isOWLObjectProperty(IRI iri)
   {
     return false; // TODO
   }
@@ -104,7 +140,17 @@ class OWLAPIObjectHandler
     return false; // TODO
   }
 
+  public boolean isOWLNamedIndividual(IRI iri)
+  {
+    return false; // TODO
+  }
+
   public boolean isOWLDataProperty(String shortName)
+  {
+    return false; // TODO
+  }
+
+  public boolean isOWLDataProperty(IRI iri)
   {
     return false; // TODO
   }
@@ -114,7 +160,17 @@ class OWLAPIObjectHandler
     return false; // TODO
   }
 
+  public boolean isOWLAnnotationProperty(IRI iri)
+  {
+    return false; // TODO
+  }
+
   public boolean isOWLDatatype(String shortName)
+  {
+    return false; // TODO
+  }
+
+  public boolean isOWLDatatype(IRI iri)
   {
     return false; // TODO
   }

@@ -12,49 +12,47 @@ import java.util.List;
 
 public class OWLIntersectionClassNode
 {
-  private List<OWLClassExpressionNode> owlClassesOrRestrictionNodes;
+	private List<OWLClassExpressionNode> classExpressionNodes;
 
-  public OWLIntersectionClassNode(ASTOWLIntersectionClass node) throws ParseException
-  {
-    owlClassesOrRestrictionNodes = new ArrayList<OWLClassExpressionNode>();
+	public OWLIntersectionClassNode(ASTOWLIntersectionClass node) throws ParseException
+	{
+		classExpressionNodes = new ArrayList<>();
 
-    for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-      Node child = node.jjtGetChild(i);
+		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+			Node child = node.jjtGetChild(i);
 
-      if (ParserUtil.hasName(child, "OWLClassOrRestriction")) {
-        OWLClassExpressionNode owlClassOrRestriction = new OWLClassExpressionNode(
-          (ASTOWLClassExpression)child);
-        owlClassesOrRestrictionNodes.add(owlClassOrRestriction);
-      } else
-        throw new InternalParseException(
-          "OWLIntersectionClass node expecting OWLClassOrRestriction child, got " + child.toString());
-    }
-  }
+			if (ParserUtil.hasName(child, "OWLClassExpression")) {
+				OWLClassExpressionNode owlClassExpression = new OWLClassExpressionNode((ASTOWLClassExpression)child);
+				classExpressionNodes.add(owlClassExpression);
+			} else
+				throw new InternalParseException(
+						"OWLIntersectionClass node expecting OWLClassExpression child, got " + child.toString());
+		}
+	}
 
-  public List<OWLClassExpressionNode> getOWLClassesOrRestrictionNodes()
-  {
-    return owlClassesOrRestrictionNodes;
-  }
+	public List<OWLClassExpressionNode> getOWLClassExpressionNodes()
+	{
+		return classExpressionNodes;
+	}
 
-  public String toString()
-  {
-    String representation = "";
+	public String toString()
+	{
+		String representation = "";
 
-    if (owlClassesOrRestrictionNodes.size() == 1)
-      representation = owlClassesOrRestrictionNodes.get(0).toString();
-    else {
-      boolean isFirst = true;
+		if (this.classExpressionNodes.size() == 1)
+			representation = this.classExpressionNodes.get(0).toString();
+		else {
+			boolean isFirst = true;
 
-      representation += "(";
-      for (OWLClassExpressionNode owlClassOrRestriction : owlClassesOrRestrictionNodes) {
-        if (!isFirst)
-          representation += " AND ";
-        representation += owlClassOrRestriction.toString();
-        isFirst = false;
-      }
-      representation += ")";
-    }
-
-    return representation;
-  }
+			representation += "(";
+			for (OWLClassExpressionNode owlClassExpression : this.classExpressionNodes) {
+				if (!isFirst)
+					representation += " AND ";
+				representation += owlClassExpression.toString();
+				isFirst = false;
+			}
+			representation += ")";
+		}
+		return representation;
+	}
 }

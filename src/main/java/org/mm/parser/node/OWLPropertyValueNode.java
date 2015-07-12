@@ -10,6 +10,7 @@ import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParserUtil;
 
+// TODO Rename to OWLPropertyAssertionObject
 public class OWLPropertyValueNode implements MMNode
 {
 	private ReferenceNode referenceNode = null;

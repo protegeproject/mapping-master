@@ -12,7 +12,7 @@ import org.mm.parser.ParseException;
 import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.renderer.owlapi.OWLAPIRenderer;
-import org.mm.renderer.owlapi.MMExpressionRendering;
+import org.mm.renderer.owlapi.OWLAPIRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -56,7 +56,7 @@ public class OWLAPIRendererTest
 
       if (expressionNode.hasMMExpression()) {
         System.err.println("expressionNode.toString()      : " + expressionNode.toString());
-        MMExpressionRendering rendering = renderer.renderMMExpression(expressionNode.getMMExpressionNode());
+        OWLAPIRendering rendering = renderer.renderMMExpression(expressionNode.getMMExpressionNode());
         Set<OWLAxiom> axioms = rendering.getOWLAxioms();
       }
 

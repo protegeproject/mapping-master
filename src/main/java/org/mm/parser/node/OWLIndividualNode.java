@@ -9,6 +9,8 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
+// TODO Rename to OWLNamedIndividualNode
+
 public class OWLIndividualNode implements MMNode
 {
 	private ReferenceNode referenceNode = null;
@@ -52,7 +54,7 @@ public class OWLIndividualNode implements MMNode
 	public String getNodeName()
 	{
 		return "OWLIndividual";
-	}
+	} // TODO Rename
 
 	public String toString()
 	{

@@ -1,22 +1,23 @@
 package org.mm.renderer.owlapi;
 
 import org.mm.renderer.Rendering;
+import org.mm.renderer.TextRendering;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MMExpressionRendering extends Rendering
+public class OWLAPIRendering extends TextRendering
 {
   private final Set<OWLAxiom> axioms;
 
-  public MMExpressionRendering()
+  public OWLAPIRendering()
   {
     this.axioms = new HashSet<>();
   }
 
-  public MMExpressionRendering(String initialTextRendering)
+  public OWLAPIRendering(String initialTextRendering)
   {
     super(initialTextRendering);
     this.axioms = new HashSet<>();

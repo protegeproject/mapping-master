@@ -585,7 +585,7 @@ void fact() #Fact: {}
 
 void annotation_fact() #AnnotationFact: {}
 {
-  owl_property() owl_property_value(defaultAnnotationPropertyValueType)
+  owl_property() owl_annotation_value(defaultAnnotationPropertyValueType)
 }
 
 void owl_property() #OWLProperty : {}
@@ -629,7 +629,16 @@ void name() #Name:
   }
 }
 
+// TODO Rename to owl_property_assertion_object
 void owl_property_value(int defaultPropertyValueType) #OWLPropertyValue : {}
+{
+  (  reference(defaultPropertyValueType, defaultValueEncoding) 
+   | name() 
+   | literal() 
+  )
+}
+
+void owl_annotation_value(int defaultPropertyValueType) #OWLAnnotationValue : {}
 {
   (  reference(defaultPropertyValueType, defaultValueEncoding) 
    | name() 
