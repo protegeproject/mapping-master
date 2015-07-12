@@ -33,7 +33,7 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
 
   public String getDefaultPropertyValueType()
   {
-    return getSettingName(renderer.defaultOWLPropertyValueType);
+    return getSettingName(renderer.defaultOWLPropertyAssertionObjectType);
   }
 
   public String getDefaultDataPropertyValueType()
@@ -77,7 +77,7 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
     else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
       return getSettingName(renderer.defaultOWLPropertyType);
     else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-      return getSettingName(renderer.defaultOWLPropertyValueType);
+      return getSettingName(renderer.defaultOWLPropertyAssertionObjectType);
     else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
       return getSettingName(renderer.defaultOWLDataPropertyValueType);
     else
@@ -102,7 +102,7 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
       else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
         renderer.defaultOWLPropertyType = settingID;
       else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-        renderer.defaultOWLPropertyValueType = settingID;
+        renderer.defaultOWLPropertyAssertionObjectType = settingID;
       else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
         renderer.defaultOWLDataPropertyValueType = settingID;
     }

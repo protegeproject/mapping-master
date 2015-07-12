@@ -23,6 +23,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 
 public class OWLAPIRendererTest
@@ -56,8 +57,10 @@ public class OWLAPIRendererTest
 
       if (expressionNode.hasMMExpression()) {
         System.err.println("expressionNode.toString()      : " + expressionNode.toString());
-        OWLAPIRendering rendering = renderer.renderMMExpression(expressionNode.getMMExpressionNode());
-        Set<OWLAxiom> axioms = rendering.getOWLAxioms();
+        Optional<OWLAPIRendering> rendering = renderer.renderMMExpression(expressionNode.getMMExpressionNode());
+        if (rendering.isPresent()) {
+          Set<OWLAxiom> axioms = rendering.get().getOWLAxioms();
+        }
       }
 
     } catch (MappingMasterException | ParseException | OWLOntologyCreationException | IOException | jxl.read.biff.BiffException | WriteException e) {

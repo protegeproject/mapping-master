@@ -2,13 +2,13 @@ package org.mm.renderer.owlapi;
 
 import org.semanticweb.owlapi.model.OWLClass;
 
-public class OWLClassRendering extends OWLAPIRendering
+public class OWLClassRendering extends OWLClassExpressionRendering
 {
 	private final OWLClass cls;
 
 	public OWLClassRendering(OWLClass cls)
 	{
-		super();
+		super(cls);
 		this.cls = cls;
 	}
 

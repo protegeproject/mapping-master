@@ -1,13 +1,11 @@
-
 package org.mm.parser.node;
 
 import org.mm.parser.ASTAnnotationFact;
 import org.mm.parser.ASTOWLAnnotationValue;
-import org.mm.parser.ASTOWLPropertyValue;
-import org.mm.parser.ParseException;
 import org.mm.parser.ASTOWLProperty;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
 public class AnnotationFactNode

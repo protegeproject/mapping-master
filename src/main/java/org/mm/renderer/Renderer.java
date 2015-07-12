@@ -21,7 +21,7 @@ import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLIndividualNode;
 import org.mm.parser.node.OWLMinCardinalityNode;
 import org.mm.parser.node.OWLNamedClassNode;
-import org.mm.parser.node.OWLPropertyValueNode;
+import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLRestrictionNode;
 import org.mm.parser.node.OWLSomeValuesFromClassNode;
 import org.mm.parser.node.OWLSomeValuesFromDataTypeNode;
@@ -72,7 +72,7 @@ public interface Renderer
 	Optional<? extends Rendering> renderOWLNamedIndividual(OWLIndividualNode owlNamedIndividualNode)
 			throws RendererException;
 
-	Optional<? extends Rendering> renderOWLPropertyAssertionObject(OWLPropertyValueNode owlPropertyAssertionObjectNode)
+	Optional<? extends Rendering> renderOWLPropertyAssertionObject(OWLPropertyAssertionObjectNode owlPropertyAssertionObjectNode)
 			throws RendererException;
 
 	Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException;
@@ -83,9 +83,6 @@ public interface Renderer
 			throws RendererException;
 
 	Optional<? extends Rendering> renderOWLEnumeratedClass(OWLEnumeratedClassNode enumeratedClassNode)
-			throws RendererException;
-
-	Optional<? extends Rendering> renderOWLClassOrRestriction(OWLClassExpressionNode classExpressionNode)
 			throws RendererException;
 
 	// OWL class expressions
@@ -113,7 +110,7 @@ public interface Renderer
 			throws RendererException;
 
 	Optional<? extends Rendering> renderOWLAllValuesFromDataType(
-			OWLAllValuesFromDataTypeNode owlAllValuesFromDataTypeNode) throws RendererException;
+			OWLAllValuesFromDataTypeNode allValuesFromDataTypeNode) throws RendererException;
 
 	Optional<? extends Rendering> renderOWLAllValuesFromClass(OWLAllValuesFromClassNode allValuesFromClassNode)
 			throws RendererException;
@@ -132,8 +129,6 @@ public interface Renderer
 	Optional<? extends Rendering> renderLiteral(LiteralNode literalNode) throws RendererException;
 
 	Optional<? extends Rendering> renderReference(ReferenceNode referenceNode) throws RendererException;
-
-	Optional<? extends Rendering> renderEntityType(EntityTypeNode entityTypeNode) throws RendererException;
 
 	Optional<? extends Rendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException;
 

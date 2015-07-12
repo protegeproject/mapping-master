@@ -1,26 +1,24 @@
-
 package org.mm.parser.node;
 
 import org.mm.parser.ASTLiteral;
-import org.mm.parser.ASTOWLPropertyValue;
-import org.mm.parser.ParseException;
 import org.mm.parser.ASTName;
+import org.mm.parser.ASTOWLPropertyAssertionObject;
 import org.mm.parser.ASTReference;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-// TODO Rename to OWLPropertyAssertionObject
-public class OWLPropertyValueNode implements MMNode
+public class OWLPropertyAssertionObjectNode implements MMNode
 {
 	private ReferenceNode referenceNode = null;
 	private NameNode nameNode = null;
 	private LiteralNode literalNode = null;
 
-	public OWLPropertyValueNode(ASTOWLPropertyValue node) throws ParseException
+	public OWLPropertyAssertionObjectNode(ASTOWLPropertyAssertionObject node) throws ParseException
 	{
 		if (node.jjtGetNumChildren() != 1)
-			throw new InternalParseException("expecting one child of OWLPropertyValue node");
+			throw new InternalParseException("expecting one child of OWLPropertyAssertionObject node");
 		else {
 			Node child = node.jjtGetChild(0);
 			if (ParserUtil.hasName(child, "Reference"))
@@ -30,7 +28,8 @@ public class OWLPropertyValueNode implements MMNode
 			else if (ParserUtil.hasName(child, "Literal"))
 				literalNode = new LiteralNode((ASTLiteral)child);
 			else
-				throw new InternalParseException("unexpected child node " + child.toString() + " for OWLPropertyValue node");
+				throw new InternalParseException(
+						"unexpected child node " + child.toString() + " for OWLPropertyAssertionObject node");
 		}
 	}
 
@@ -66,7 +65,7 @@ public class OWLPropertyValueNode implements MMNode
 
 	public String getNodeName()
 	{
-		return "OWLPropertyValue";
+		return "OWLPropertyAssertionObject";
 	}
 
 	public String toString()

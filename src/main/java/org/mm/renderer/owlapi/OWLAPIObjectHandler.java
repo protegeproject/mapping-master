@@ -14,6 +14,7 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -130,6 +131,11 @@ class OWLAPIObjectHandler
     return false; // TODO
   }
 
+  public boolean isOWLObjectProperty(OWLProperty property)
+  {
+    return false; // TODO
+  }
+
   public boolean isOWLObjectProperty(IRI iri)
   {
     return false; // TODO
@@ -146,6 +152,11 @@ class OWLAPIObjectHandler
   }
 
   public boolean isOWLDataProperty(String shortName)
+  {
+    return false; // TODO
+  }
+
+  public boolean isOWLDataProperty(OWLProperty property)
   {
     return false; // TODO
   }

@@ -580,7 +580,7 @@ void annotation_fact_list() : {}
 
 void fact() #Fact: {}
 {
-  owl_property() owl_property_value(defaultPropertyValueType)
+  owl_property() owl_property_assertion_object(defaultPropertyValueType)
 }
 
 void annotation_fact() #AnnotationFact: {}
@@ -629,8 +629,7 @@ void name() #Name:
   }
 }
 
-// TODO Rename to owl_property_assertion_object
-void owl_property_value(int defaultPropertyValueType) #OWLPropertyValue : {}
+void owl_property_assertion_object(int defaultPropertyValueType) #OWLPropertyAssertionObject : {}
 {
   (  reference(defaultPropertyValueType, defaultValueEncoding) 
    | name() 
@@ -856,7 +855,7 @@ void owl_all_values_from() #OWLAllValuesFrom : {}
 
 void owl_has_value() #OWLHasValue : {}
 {
-  <VALUE> owl_property_value(defaultPropertyValueType)
+  <VALUE> owl_property_assertion_object(defaultPropertyValueType)
 }
 
 void owl_cardinality() #OWLCardinality :

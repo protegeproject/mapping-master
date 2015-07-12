@@ -45,7 +45,7 @@ import org.mm.parser.node.OWLMaxCardinalityNode;
 import org.mm.parser.node.OWLMinCardinalityNode;
 import org.mm.parser.node.OWLNamedClassNode;
 import org.mm.parser.node.OWLPropertyNode;
-import org.mm.parser.node.OWLPropertyValueNode;
+import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLRestrictionNode;
 import org.mm.parser.node.OWLSomeValuesFromClassNode;
 import org.mm.parser.node.OWLSomeValuesFromDataTypeNode;
@@ -162,14 +162,14 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 		return Optional.of(rendering);
 	}
 
-	@Override public Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
+	@Override public Optional<TextRendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
 			throws RendererException
 	{
 		return Optional.empty(); // TODO
 	}
 
-	public Optional<TextRendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode owlIndividualDeclarationNode)
-			throws RendererException
+	public Optional<TextRendering> renderOWLIndividualDeclaration(
+			OWLIndividualDeclarationNode owlIndividualDeclarationNode) throws RendererException
 	{
 		TextRendering rendering = new TextRendering();
 		boolean isFirst = true;
@@ -243,7 +243,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 	{
 		Optional<TextRendering> propertyRendering = renderOWLProperty(factNode.getOWLPropertyNode());
 		Optional<TextRendering> propertyValueRendering = renderOWLPropertyAssertionObject(
-				factNode.getOWLPropertyValueNode());
+				factNode.getOWLPropertyAssertionObjectNode());
 
 		if (propertyRendering.isPresent() && propertyValueRendering.isPresent()) {
 			String textRendering =
@@ -256,18 +256,19 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 	public Optional<TextRendering> renderAnnotationFact(AnnotationFactNode annotationFactNode) throws RendererException
 	{
 		Optional<TextRendering> propertyRendering = renderOWLProperty(annotationFactNode.getOWLPropertyNode());
-		Optional<TextRendering> propertyValueRendering = renderOWLPropertyAssertionObject(
+		Optional<TextRendering> annotationValueRendering = renderOWLAnnotationValue(
 				annotationFactNode.getOWLAnnotationValueNode());
 
-		if (propertyRendering.isPresent() && propertyValueRendering.isPresent()) {
+		if (propertyRendering.isPresent() && annotationValueRendering.isPresent()) {
 			String textRendering =
-					propertyRendering.get().getTextRendering() + " " + propertyValueRendering.get().getTextRendering();
+					propertyRendering.get().getTextRendering() + " " + annotationValueRendering.get().getTextRendering();
 			return Optional.of(new TextRendering(textRendering));
 		} else
 			return Optional.empty();
 	}
 
-	public Optional<TextRendering> renderOWLPropertyAssertionObject(OWLPropertyValueNode owlPropertyAssertionObjectNode) throws RendererException
+	public Optional<TextRendering> renderOWLPropertyAssertionObject(
+			OWLPropertyAssertionObjectNode owlPropertyAssertionObjectNode) throws RendererException
 	{
 		if (owlPropertyAssertionObjectNode.isReference())
 			return renderReference(owlPropertyAssertionObjectNode.getReferenceNode());
@@ -360,7 +361,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 			if (unionClassRendering.isPresent())
 				textRendering.append(unionClassRendering.get().getTextRendering());
 		} else if (classOrRestrictionNode.hasOWLRestriction()) {
-			Optional<TextRendering> restrictionRendering = renderOWLRestriction(classOrRestrictionNode.getOWLRestrictionNode());
+			Optional<TextRendering> restrictionRendering = renderOWLRestriction(
+					classOrRestrictionNode.getOWLRestrictionNode());
 			if (restrictionRendering.isPresent())
 				textRendering.append(restrictionRendering.get().getTextRendering());
 		} else if (classOrRestrictionNode.hasOWLNamedClass()) {
@@ -474,7 +476,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 	public Optional<TextRendering> renderOWLHasValue(OWLHasValueNode owlHasValueNode) throws RendererException
 	{
 		Optional<TextRendering> propertyValueRendering = renderOWLPropertyAssertionObject(
-				owlHasValueNode.getOWLPropertyValueNode());
+				owlHasValueNode.getOWLPropertyAssertionObjectNode());
 
 		if (propertyValueRendering.isPresent())
 			return Optional.of(new TextRendering("VALUE " + propertyValueRendering.get().getTextRendering()));
@@ -482,7 +484,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 			return Optional.empty();
 	}
 
-	public Optional<TextRendering> renderOWLAllValuesFrom(OWLAllValuesFromNode owlAllValuesFromNode) throws RendererException
+	public Optional<TextRendering> renderOWLAllValuesFrom(OWLAllValuesFromNode owlAllValuesFromNode)
+			throws RendererException
 	{
 		if (owlAllValuesFromNode.hasOWLAllValuesFromDataType())
 			return renderOWLAllValuesFromDataType(owlAllValuesFromNode.getOWLAllValuesFromDataTypeNode());
@@ -513,17 +516,48 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 			throw new RendererException("unknown OWLClass node " + owlClassNode);
 	}
 
-	public Optional<TextRendering> renderOWLProperty(OWLPropertyNode owlPropertyNode) throws RendererException
+	public Optional<TextRendering> renderOWLProperty(OWLPropertyNode propertyNode) throws RendererException
 	{
-		if (owlPropertyNode.isReference())
-			return renderReference(owlPropertyNode.getReferenceNode());
-		else if (owlPropertyNode.isName())
-			return renderName(owlPropertyNode.getNameNode());
+		if (propertyNode.isReference())
+			return renderReference(propertyNode.getReferenceNode());
+		else if (propertyNode.isName())
+			return renderName(propertyNode.getNameNode());
 		else
-			throw new RendererException("unknown OWLProperty node " + owlPropertyNode);
+			throw new RendererException("unknown OWLProperty node " + propertyNode);
 	}
 
-	public Optional<TextRendering> renderOWLNamedIndividual(OWLIndividualNode namedIndividualNode) throws RendererException
+	public Optional<TextRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode) throws RendererException
+	{
+		if (propertyNode.isReference())
+			return renderReference(propertyNode.getReferenceNode());
+		else if (propertyNode.isName())
+			return renderName(propertyNode.getNameNode());
+		else
+			throw new RendererException("unknown OWLProperty node " + propertyNode);
+	}
+
+	public Optional<TextRendering> renderOWLDataProperty(OWLPropertyNode propertyNode) throws RendererException
+	{
+		if (propertyNode.isReference())
+			return renderReference(propertyNode.getReferenceNode());
+		else if (propertyNode.isName())
+			return renderName(propertyNode.getNameNode());
+		else
+			throw new RendererException("unknown OWLProperty node " + propertyNode);
+	}
+
+	public Optional<TextRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException
+	{
+		if (propertyNode.isReference())
+			return renderReference(propertyNode.getReferenceNode());
+		else if (propertyNode.isName())
+			return renderName(propertyNode.getNameNode());
+		else
+			throw new RendererException("unknown OWLProperty node " + propertyNode);
+	}
+
+	public Optional<TextRendering> renderOWLNamedIndividual(OWLIndividualNode namedIndividualNode)
+			throws RendererException
 	{
 		if (namedIndividualNode.isReference())
 			return renderReference(namedIndividualNode.getReferenceNode());
@@ -560,8 +594,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 				.of(new TextRendering(ParserUtil.getTokenName(MM_NAMESPACE) + "=\"" + namespaceNode.getNamespace() + "\""));
 	}
 
-	public Optional<TextRendering> renderOWLAllValuesFromDataType(OWLAllValuesFromDataTypeNode owlAllValuesFromDataTypeNode)
-			throws RendererException
+	public Optional<TextRendering> renderOWLAllValuesFromDataType(
+			OWLAllValuesFromDataTypeNode owlAllValuesFromDataTypeNode) throws RendererException
 	{
 		String datatypeName = owlAllValuesFromDataTypeNode.getDataTypeName();
 
@@ -769,7 +803,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 		}
 
 		if (referenceNode.hasExplicitlySpecifiedDefaultDataValue()) {
-			Optional<TextRendering> defaultDataValueRendering = renderDefaultDataValue(referenceNode.getDefaultDataValueNode());
+			Optional<TextRendering> defaultDataValueRendering = renderDefaultDataValue(
+					referenceNode.getDefaultDataValueNode());
 			if (defaultDataValueRendering.isPresent()) {
 				if (atLeastOneOptionProcessed)
 					textRendering.append(" ");
@@ -903,7 +938,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 		}
 
 		if (referenceNode.hasExplicitlySpecifiedIfNotExistsDirective()) {
-			Optional<TextRendering> ifExistsRendering = renderIfNotExistsDirective(referenceNode.getIfNotExistsDirectiveNode());
+			Optional<TextRendering> ifExistsRendering = renderIfNotExistsDirective(
+					referenceNode.getIfNotExistsDirectiveNode());
 			if (ifExistsRendering.isPresent()) {
 				if (atLeastOneOptionProcessed)
 					textRendering.append(" ");
@@ -947,7 +983,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
 		for (ValueSpecificationItemNode valueSpecificationItemNode : valueSpecificationNode
 				.getValueSpecificationItemNodes()) {
-			Optional<TextRendering> valueSpecificationItemRendering = renderValueSpecificationItem(valueSpecificationItemNode);
+			Optional<TextRendering> valueSpecificationItemRendering = renderValueSpecificationItem(
+					valueSpecificationItemNode);
 
 			if (valueSpecificationItemRendering.isPresent()) {
 				if (isFirst)
@@ -971,7 +1008,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 		return Optional.of(new TextRendering(defaultLocationValueNode.toString()));
 	}
 
-	public Optional<TextRendering> renderDefaultDataValue(DefaultDataValueNode defaultDataValueNode) throws RendererException
+	public Optional<TextRendering> renderDefaultDataValue(DefaultDataValueNode defaultDataValueNode)
+			throws RendererException
 	{
 		return Optional.of(new TextRendering(defaultDataValueNode.toString()));
 	}
