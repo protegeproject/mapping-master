@@ -21,9 +21,9 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
     return getSettingName(renderer.defaultValueEncoding);
   }
 
-  public String getDefaultEntityType()
+  public String getDefaultReferenceType()
   {
-    return getSettingName(renderer.defaultOWLEntityType);
+    return getSettingName(renderer.defaultReferenceType);
   }
 
   public String getDefaultPropertyType()
@@ -46,9 +46,9 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
     return getOptionName(MM_DEFAULT_VALUE_ENCODING);
   }
 
-  public String getDefaultEntityTypeOptionName()
+  public String getDefaultReferenceTypeOptionName()
   {
-    return getOptionName(MM_DEFAULT_ENTITY_TYPE);
+    return getOptionName(MM_DEFAULT_REFERENCE_TYPE);
   }
 
   public String getDefaultPropertyTypeOptionName()
@@ -72,8 +72,8 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
 
     if (optionID == MM_DEFAULT_VALUE_ENCODING)
       return getSettingName(renderer.defaultValueEncoding);
-    else if (optionID == MM_DEFAULT_ENTITY_TYPE)
-      return getSettingName(renderer.defaultOWLEntityType);
+    else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
+      return getSettingName(renderer.defaultReferenceType);
     else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
       return getSettingName(renderer.defaultOWLPropertyType);
     else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
@@ -97,8 +97,8 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
     if (settingID != -1) {
       if (optionID == MM_DEFAULT_VALUE_ENCODING)
         renderer.defaultValueEncoding = settingID;
-      else if (optionID == MM_DEFAULT_ENTITY_TYPE)
-        renderer.defaultOWLEntityType = settingID;
+      else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
+        renderer.defaultReferenceType = settingID;
       else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
         renderer.defaultOWLPropertyType = settingID;
       else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)

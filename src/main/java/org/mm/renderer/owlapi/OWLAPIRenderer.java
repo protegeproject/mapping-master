@@ -12,7 +12,7 @@ import org.mm.parser.node.EmptyRDFSLabelSettingNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.LiteralNode;
-import org.mm.parser.node.MMDefaultEntityTypeNode;
+import org.mm.parser.node.MMDefaultReferenceTypeNode;
 import org.mm.parser.node.MMDefaultPropertyValueTypeNode;
 import org.mm.parser.node.MMDefaultValueEncodingNode;
 import org.mm.parser.node.MMExpressionNode;
@@ -120,7 +120,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
 	// Configuration options
 	public int defaultValueEncoding = RDFS_LABEL;
-	public int defaultOWLEntityType = OWL_CLASS;
+	public int defaultReferenceType = OWL_CLASS;
 	public int defaultOWLPropertyType = OWL_OBJECT_PROPERTY;
 	public int defaultOWLPropertyAssertionObjectType = XSD_STRING;
 	public int defaultOWLDataPropertyValueType = XSD_STRING;
@@ -615,13 +615,13 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		if (locationValue.equals("") && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
 			return Optional.empty();
 
-		ReferenceType entityType = referenceNode.getEntityTypeNode().getEntityType();
+		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
 
-		if (entityType.isUntyped())
+		if (referenceType.isUntyped())
 			throw new RendererException("untyped entity for reference " + referenceNode);
 
-		if (entityType.isOWLLiteral()) { // OWL literal
-			String processedOWLDataValue = processOWLDataValue(location, locationValue, entityType, referenceNode, rendering);
+		if (referenceType.isOWLLiteral()) { // OWL literal
+			String processedOWLDataValue = processOWLDataValue(location, locationValue, referenceType, referenceNode, rendering);
 
 			if (processedOWLDataValue.equals("")
 					&& referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE)
@@ -632,15 +632,15 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 			String rdfID = processRDFIDValue(locationValue, referenceNode, rendering);
 			String rdfsLabelText = processRDFSLabelText(locationValue, referenceNode, rendering);
 			OWLEntity entity = this.owlObjectHandler
-					.createOrResolveOWLEntity(location, locationValue, entityType, rdfID, rdfsLabelText, defaultNamespace,
+					.createOrResolveOWLEntity(location, locationValue, referenceType, rdfID, rdfsLabelText, defaultNamespace,
 							language, referenceNode.getReferenceDirectives());
-			addDefiningTypes(entityType, entity, referenceNode);
+			addDefiningTypes(referenceType, entity, referenceNode);
 			rendering.addText(rdfID);
 		}
 
 		if (!rendering.nothingRendered())
 			rendering.logLine(">>>>>>>>>>>>>>>>>>>> Reference [" + referenceNode.toString() + "] rendered as " + referenceNode
-					.getEntityTypeNode() + " " + rendering.getTextRendering() + " >>>>>>>>>>>>>>>>>>>>");
+					.getReferenceTypeNode() + " " + rendering.getTextRendering() + " >>>>>>>>>>>>>>>>>>>>");
 		else
 			rendering
 					.logLine(">>>>>>>>>>>>>>>>>>>> Reference [" + referenceNode + "] - nothing rendered >>>>>>>>>>>>>>>>>>>>");
@@ -747,8 +747,8 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
 				if (annotationValueNode.isReference()) { // We have an object property so tell the reference
 					ReferenceNode referenceNode = annotationValueNode.getReferenceNode();
-					if (!referenceNode.hasExplicitlySpecifiedEntityType() && this.owlObjectHandler.isOWLObjectProperty(property))
-						referenceNode.updateEntityType(OWL_THING);
+					if (!referenceNode.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property))
+						referenceNode.updateReferenceType(OWL_THING);
 				}
 
 				OWLAnnotationAssertionAxiom axiom = this.owlDataFactory
@@ -792,8 +792,8 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 				if (propertyAssertionObjectNode.isReference()) { // We have an object property so tell the reference the type
 					ReferenceNode reference = propertyAssertionObjectNode.getReferenceNode();
 
-					if (!reference.hasExplicitlySpecifiedEntityType() && this.owlObjectHandler.isOWLObjectProperty(property))
-						reference.updateEntityType(OWL_THING);
+					if (!reference.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property))
+						reference.updateReferenceType(OWL_THING);
 				}
 
 				if (this.owlObjectHandler.isOWLObjectProperty(property)) {
@@ -818,7 +818,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		return axioms;
 	}
 
-	private Set<OWLAxiom> addDefiningTypes(ReferenceType entityType, OWLEntity entity, ReferenceNode referenceNode)
+	private Set<OWLAxiom> addDefiningTypes(ReferenceType referenceType, OWLEntity entity, ReferenceNode referenceNode)
 			throws RendererException
 	{
 		Set<OWLAxiom> axioms = new HashSet<>();
@@ -828,7 +828,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 				Rendering typeRendering = renderType(typeNode);
 				if (!typeRendering.nothingRendered()) {
 					String typeTextRendering = typeRendering.getTextRendering();
-					if (entityType.isOWLClass()) {
+					if (referenceType.isOWLClass()) {
 						if (!entity.isOWLClass())
 							throw new RendererException(
 									"expecting class for type in reference " + referenceNode + " for " + entity + ", got " + entity
@@ -837,7 +837,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 						OWLClassExpression classExpression = this.owlObjectHandler.getOWLClassExpression(classExpressionID);
 						OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(classExpression, entity.asOWLClass());
 						axioms.add(axiom);
-					} else if (entityType.isOWLIndividual()) {
+					} else if (referenceType.isOWLIndividual()) {
 						if (!entity.isOWLNamedIndividual())
 							throw new RendererException(
 									"expecting individual for type in reference " + referenceNode + " for " + entity + ", got " + entity
@@ -847,7 +847,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 						OWLClassAssertionAxiom axiom = this.owlDataFactory
 								.getOWLClassAssertionAxiom(classExpression, entity.asOWLNamedIndividual());
 						axioms.add(axiom);
-					} else if (entityType.isOWLObjectProperty()) {
+					} else if (referenceType.isOWLObjectProperty()) {
 						if (!entity.isOWLObjectProperty())
 							throw new RendererException(
 									"expecting object property for type in reference " + referenceNode + " for " + entity);
@@ -856,7 +856,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 						OWLSubObjectPropertyOfAxiom axiom = owlDataFactory
 								.getOWLSubObjectPropertyOfAxiom(property, entity.asOWLObjectProperty());
 						axioms.add(axiom);
-					} else if (entityType.isOWLDataProperty()) {
+					} else if (referenceType.isOWLDataProperty()) {
 						if (!entity.isOWLDataProperty())
 							throw new RendererException(
 									"expecting data property for type in reference " + referenceNode + " for " + entity);
@@ -866,7 +866,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 								.getOWLSubDataPropertyOfAxiom(property, entity.asOWLDataProperty());
 						axioms.add(axiom);
 					} else
-						throw new RendererException("invalid entity type " + entityType);
+						throw new RendererException("invalid entity type " + referenceType);
 				}
 			}
 		}
@@ -1034,10 +1034,10 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 			if (locationValue.equals("") && referenceNode.getActualEmptyLocationDirective() == MM_WARNING_IF_EMPTY_LOCATION)
 				rendering.logLine("processReference: WARNING: empty location " + location + " in reference " + referenceNode);
 
-			rendering.log(", location value [" + locationValue + "], entity type " + referenceNode.getEntityTypeNode());
+			rendering.log(", location value [" + locationValue + "], entity type " + referenceNode.getReferenceTypeNode());
 		}
 
-		if (!referenceNode.getEntityTypeNode().getEntityType().isOWLLiteral()) {
+		if (!referenceNode.getReferenceTypeNode().getReferenceType().isOWLLiteral()) {
 			rendering.log(", namespace " + getReferenceNamespace(referenceNode));
 			String language = getReferenceLanguage(referenceNode);
 			displayLanguage(language, rendering);
@@ -1112,7 +1112,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		return rdfsLabelText;
 	}
 
-	private String processOWLDataValue(SpreadsheetLocation location, String locationValue, ReferenceType entityType,
+	private String processOWLDataValue(SpreadsheetLocation location, String locationValue, ReferenceType referenceType,
 			ReferenceNode referenceNode, Rendering rendering) throws RendererException
 	{
 		String processedLocationValue = locationValue.replace("\"", "\\\"");
@@ -1140,7 +1140,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 			rendering.logLine(
 					"processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
 
-		if (entityType.isQuotedOWLDataValue())
+		if (referenceType.isQuotedOWLDataValue())
 			dataValue = "\"" + dataValue + "\"";
 
 		return dataValue;
@@ -1224,7 +1224,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 				ReferenceNode valueSpecificationItemReferenceNode = valueSpecificationItemNode.getReferenceNode();
 				valueSpecificationItemReferenceNode.setDefaultShiftSetting(referenceNode.getActualShiftDirective());
 				Optional<ReferenceRendering> referenceRendering = renderReference(valueSpecificationItemReferenceNode);
-				if (valueSpecificationItemReferenceNode.getEntityTypeNode().getEntityType().isQuotedOWLDataValue()
+				if (valueSpecificationItemReferenceNode.getReferenceTypeNode().getReferenceType().isQuotedOWLDataValue()
 						&& !referenceTextRendering.equals("") && referenceTextRendering.startsWith("\""))
 					processedValue += referenceTextRendering.substring(1, referenceTextRendering.length() - 1); // Strip quotes
 					// from quoted
@@ -1414,8 +1414,8 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		return Optional.empty(); // TODO
 	}
 
-	@Override public Optional<? extends Rendering> renderMMDefaultEntityType(
-			MMDefaultEntityTypeNode defaultEntityTypeNode) throws RendererException
+	@Override public Optional<? extends Rendering> renderMMDefaultReferenceType(
+		MMDefaultReferenceTypeNode defaultReferenceTypeNode) throws RendererException
 	{
 		return Optional.empty(); // TODO
 	}

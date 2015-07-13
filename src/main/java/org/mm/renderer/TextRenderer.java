@@ -12,7 +12,7 @@ import org.mm.parser.node.EmptyDataValueSettingNode;
 import org.mm.parser.node.EmptyLocationSettingNode;
 import org.mm.parser.node.EmptyRDFIDSettingNode;
 import org.mm.parser.node.EmptyRDFSLabelSettingNode;
-import org.mm.parser.node.EntityTypeNode;
+import org.mm.parser.node.ReferenceTypeNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.IfExistsDirectiveNode;
@@ -20,7 +20,7 @@ import org.mm.parser.node.IfNotExistsDirectiveNode;
 import org.mm.parser.node.LanguageNode;
 import org.mm.parser.node.LiteralNode;
 import org.mm.parser.node.MMDefaultDatatypePropertyValueTypeNode;
-import org.mm.parser.node.MMDefaultEntityTypeNode;
+import org.mm.parser.node.MMDefaultReferenceTypeNode;
 import org.mm.parser.node.MMDefaultPropertyTypeNode;
 import org.mm.parser.node.MMDefaultPropertyValueTypeNode;
 import org.mm.parser.node.MMDefaultValueEncodingNode;
@@ -88,8 +88,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 	{
 		if (mmDirectiveNode.hasDefaultValueEncoding())
 			return renderMMDefaultValueEncoding(mmDirectiveNode.getDefaultValueEncodingNode());
-		else if (mmDirectiveNode.hasDefaultEntityType())
-			return renderMMDefaultEntityType(mmDirectiveNode.getDefaultEntityTypeNode());
+		else if (mmDirectiveNode.hasDefaultReferenceType())
+			return renderMMDefaultReferenceType(mmDirectiveNode.getDefaultReferenceTypeNode());
 		else if (mmDirectiveNode.hasDefaultPropertyValueType())
 			return renderMMDefaultPropertyValueType(mmDirectiveNode.getDefaultPropertyValueTypeNode());
 		else
@@ -736,8 +736,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 		if (hasExplicitOptions)
 			textRendering.append("(");
 
-		if (referenceNode.hasExplicitlySpecifiedEntityType()) {
-			textRendering.append(referenceNode.getEntityTypeNode().toString());
+		if (referenceNode.hasExplicitlySpecifiedReferenceType()) {
+			textRendering.append(referenceNode.getReferenceTypeNode().toString());
 			atLeastOneOptionProcessed = true;
 		}
 
@@ -954,9 +954,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 		return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
 	}
 
-	public Optional<TextRendering> renderEntityType(EntityTypeNode entityTypeNode) throws RendererException
+	public Optional<TextRendering> renderReferenceType(ReferenceTypeNode referenceTypeNode) throws RendererException
 	{
-		return Optional.of(new TextRendering(entityTypeNode.getEntityType().getTypeName()));
+		return Optional.of(new TextRendering(referenceTypeNode.getReferenceType().getTypeName()));
 	}
 
 	public Optional<TextRendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException
@@ -1154,10 +1154,10 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 			throw new RendererException("unknown StringOrReference node " + stringOrReferenceNode);
 	}
 
-	public Optional<TextRendering> renderMMDefaultEntityType(MMDefaultEntityTypeNode mmDefaultEntityTypeNode)
+	public Optional<TextRendering> renderMMDefaultReferenceType(MMDefaultReferenceTypeNode mmDefaultReferenceTypeNode)
 			throws RendererException
 	{
-		return Optional.of(new TextRendering(mmDefaultEntityTypeNode.toString()));
+		return Optional.of(new TextRendering(mmDefaultReferenceTypeNode.toString()));
 	}
 
 	public Optional<TextRendering> renderMMDefaultValueEncoding(MMDefaultValueEncodingNode mmDefaultValueEncodingNode)

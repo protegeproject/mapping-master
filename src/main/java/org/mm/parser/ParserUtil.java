@@ -44,22 +44,22 @@ public class ParserUtil implements MappingMasterParserConstants
   /**
    * Get a default type based on the type of the entity.
    */
-  public static int getDefaultType(int entityType)
+  public static int getDefaultType(int referenceType)
   {
-    if (entityType == OWL_CLASS)
+    if (referenceType == OWL_CLASS)
       return OWL_CLASS;
-    else if (entityType == OWL_THING)
+    else if (referenceType == OWL_THING)
       return OWL_CLASS;
-    else if (entityType == RDFS_CLASS)
+    else if (referenceType == RDFS_CLASS)
       return RDFS_CLASS;
-    else if (entityType == OWL_OBJECT_PROPERTY)
+    else if (referenceType == OWL_OBJECT_PROPERTY)
       return OWL_OBJECT_PROPERTY;
-    else if (entityType == OWL_DATA_PROPERTY)
+    else if (referenceType == OWL_DATA_PROPERTY)
       return OWL_DATA_PROPERTY;
-    else if (entityType == RDF_PROPERTY)
+    else if (referenceType == RDF_PROPERTY)
       return RDF_PROPERTY;
     else
-      return entityType;
+      return referenceType;
   }
 }
     

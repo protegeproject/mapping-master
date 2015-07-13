@@ -1,8 +1,8 @@
 
 package org.mm.parser.node;
 
-import org.mm.parser.ASTMMDefaultEntityType;
 import org.mm.parser.ASTMMDefaultPropertyValueType;
+import org.mm.parser.ASTMMDefaultReferenceType;
 import org.mm.parser.ASTMMDefaultValueEncoding;
 import org.mm.parser.ASTMMDirective;
 import org.mm.parser.InternalParseException;
@@ -13,7 +13,7 @@ import org.mm.parser.ParserUtil;
 public class MMDirectiveNode
 {
 	private MMDefaultValueEncodingNode defaultValueEncodingNode = null;
-	private MMDefaultEntityTypeNode defaultEntityTypeNode = null;
+	private MMDefaultReferenceTypeNode defaultReferenceTypeNode = null;
 	private MMDefaultPropertyValueTypeNode defaultPropertyValueTypeNode = null;
 
 	public MMDirectiveNode(ASTMMDirective node) throws ParseException
@@ -23,8 +23,8 @@ public class MMDirectiveNode
 
 			if (ParserUtil.hasName(child, "MMDefaultValueEncoding")) {
 				defaultValueEncodingNode = new MMDefaultValueEncodingNode((ASTMMDefaultValueEncoding)child);
-			} else if (ParserUtil.hasName(child, "MMDefaultEntityType")) {
-				defaultEntityTypeNode = new MMDefaultEntityTypeNode((ASTMMDefaultEntityType)child);
+			} else if (ParserUtil.hasName(child, "MMDefaultReferenceType")) {
+				defaultReferenceTypeNode = new MMDefaultReferenceTypeNode((ASTMMDefaultReferenceType)child);
 			} else if (ParserUtil.hasName(child, "MMDefaultPropertyValueType")) {
 				defaultPropertyValueTypeNode = new MMDefaultPropertyValueTypeNode((ASTMMDefaultPropertyValueType)child);
 			} else
@@ -37,9 +37,9 @@ public class MMDirectiveNode
 		return defaultValueEncodingNode;
 	}
 
-	public MMDefaultEntityTypeNode getDefaultEntityTypeNode()
+	public MMDefaultReferenceTypeNode getDefaultReferenceTypeNode()
 	{
-		return defaultEntityTypeNode;
+		return defaultReferenceTypeNode;
 	}
 
 	public MMDefaultPropertyValueTypeNode getDefaultPropertyValueTypeNode()
@@ -52,9 +52,9 @@ public class MMDirectiveNode
 		return defaultValueEncodingNode != null;
 	}
 
-	public boolean hasDefaultEntityType()
+	public boolean hasDefaultReferenceType()
 	{
-		return defaultEntityTypeNode != null;
+		return defaultReferenceTypeNode != null;
 	}
 
 	public boolean hasDefaultPropertyValueType()
@@ -68,8 +68,8 @@ public class MMDirectiveNode
 
 		if (hasDefaultValueEncoding())
 			representation += defaultValueEncodingNode.toString();
-		if (hasDefaultEntityType())
-			representation += defaultEntityTypeNode.toString();
+		if (hasDefaultReferenceType())
+			representation += defaultReferenceTypeNode.toString();
 		if (hasDefaultPropertyValueType())
 			representation += defaultPropertyValueTypeNode.toString();
 

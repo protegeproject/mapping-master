@@ -8,7 +8,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 {
   private final DefaultReferenceDirectives defaultReferenceDirectives;
   private final int explicitlySpecifiedValueEncoding = -1;
-  private boolean hasExplicitlySpecifiedEntityType = false;
+  private boolean hasExplicitlySpecifiedReferenceType = false;
   private boolean hasExplicitlySpecifiedValueEncodings = false;
   private boolean hasExplicitlySpecifiedDefaultLocationValue = false;
   private boolean hasExplicitlySpecifiedDefaultDataValue = false;
@@ -24,7 +24,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   private boolean hasExplicitlySpecifiedEmptyDataValueDirective = false;
   private boolean hasExplicitlySpecifiedEmptyRDFIDDirective = false;
   private boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective = false;
-  private ReferenceType explicitlySpecifiedEntityType = null;
+  private ReferenceType explicitlySpecifiedReferenceType = null;
   private String explicitlySpecifiedDefaultLocationValue = null;
   private String explicitlySpecifiedDefaultDataValue = null;
   private String explicitlySpecifiedDefaultRDFID = null;
@@ -112,23 +112,22 @@ public class ReferenceDirectives implements MappingMasterParserConstants
     return defaultReferenceDirectives.getDefaultLocationValue();
   }
 
-  public boolean hasExplicitlySpecifiedEntityType()
+  public boolean hasExplicitlySpecifiedReferenceType()
   {
-    return hasExplicitlySpecifiedEntityType;
+    return hasExplicitlySpecifiedReferenceType;
   }
 
-  public void setExplicitlySpecifiedEntityType(ReferenceType entityType)
+  public void setExplicitlySpecifiedReferenceType(ReferenceType referenceType)
   {
-    this.explicitlySpecifiedEntityType = entityType;
+    this.explicitlySpecifiedReferenceType = referenceType;
     this.hasExplicitlySpecifiedOptions = true;
-    this.hasExplicitlySpecifiedEntityType = true;
+    this.hasExplicitlySpecifiedReferenceType = true;
   }
 
-  public ReferenceType getActualEntityType()
+  public ReferenceType getActualReferenceType()
   {
-    return hasExplicitlySpecifiedEntityType() ?
-      explicitlySpecifiedEntityType :
-      defaultReferenceDirectives.getDefaultEntityType();
+    return hasExplicitlySpecifiedReferenceType() ? explicitlySpecifiedReferenceType :
+      defaultReferenceDirectives.getDefaultReferenceType();
   }
 
   public boolean hasExplicitlySpecifiedValueEncodings()

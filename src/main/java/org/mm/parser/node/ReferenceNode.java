@@ -9,25 +9,25 @@ import org.mm.parser.ASTEmptyDataValueSetting;
 import org.mm.parser.ASTEmptyLocationSetting;
 import org.mm.parser.ASTEmptyRDFIDSetting;
 import org.mm.parser.ASTEmptyRDFSLabelSetting;
-import org.mm.parser.ASTEntityType;
 import org.mm.parser.ASTIfExistsDirective;
 import org.mm.parser.ASTIfNotExistsDirective;
 import org.mm.parser.ASTLanguage;
 import org.mm.parser.ASTNamespace;
 import org.mm.parser.ASTPrefix;
+import org.mm.parser.ASTReference;
+import org.mm.parser.ASTReferenceType;
 import org.mm.parser.ASTShiftSetting;
 import org.mm.parser.ASTSourceSpecification;
 import org.mm.parser.ASTTypes;
 import org.mm.parser.ASTValueEncoding;
 import org.mm.parser.ASTValueExtractionFunction;
+import org.mm.parser.InternalParseException;
 import org.mm.parser.MappingMasterParserConstants;
+import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadsheetLocation;
-import org.mm.parser.ASTReference;
-import org.mm.parser.InternalParseException;
-import org.mm.parser.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.List;
 public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 {
   private SourceSpecificationNode sourceSpecificationNode;
-  private EntityTypeNode entityTypeNode;
+  private ReferenceTypeNode referenceTypeNode;
   private PrefixNode prefixNode;
   private NamespaceNode namespaceNode;
   private LanguageNode languageNode;
@@ -63,7 +63,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       if (ParserUtil.hasName(child, "SourceSpecification")) {
         sourceSpecificationNode = new SourceSpecificationNode((ASTSourceSpecification)child);
       } else if (ParserUtil.hasName(child, "ReferenceType")) {
-        entityTypeNode = new EntityTypeNode((ASTEntityType)child);
+        referenceTypeNode = new ReferenceTypeNode((ASTReferenceType)child);
       } else if (ParserUtil.hasName(child, "Prefix")) {
         if (prefixNode != null)
           throw new RendererException("only one prefix directive can be specified for a Reference");
@@ -137,10 +137,10 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     if (sourceSpecificationNode == null)
       throw new RendererException("missing source specification in reference " + toString());
 
-    if (entityTypeNode == null) { // No entity type specified by the user - use default type
-      this.entityTypeNode = new EntityTypeNode(node.defaultReferenceDirectives.getDefaultEntityType());
+    if (referenceTypeNode == null) { // No entity type specified by the user - use default type
+      this.referenceTypeNode = new ReferenceTypeNode(node.defaultReferenceDirectives.getDefaultReferenceType());
     } else
-      this.referenceDirectives.setExplicitlySpecifiedEntityType(entityTypeNode.getEntityType());
+      this.referenceDirectives.setExplicitlySpecifiedReferenceType(referenceTypeNode.getReferenceType());
 
     if (valueEncodingsNodes.isEmpty()) {
       valueEncodingsNodes.add(new ValueEncodingNode(node.defaultReferenceDirectives.getDefaultValueEncoding()));
@@ -223,14 +223,14 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return sourceSpecificationNode;
   }
 
-  public void updateEntityType(int type)
+  public void updateReferenceType(int type)
   {
-    entityTypeNode = new EntityTypeNode(type);
+    referenceTypeNode = new ReferenceTypeNode(type);
   }
 
-  public EntityTypeNode getEntityTypeNode()
+  public ReferenceTypeNode getReferenceTypeNode()
   {
-    return entityTypeNode;
+    return referenceTypeNode;
   }
 
   public List<ValueEncodingNode> getValueEncodingNodes()
@@ -308,9 +308,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return namespaceNode;
   }
 
-  public boolean hasExplicitlySpecifiedEntityType()
+  public boolean hasExplicitlySpecifiedReferenceType()
   {
-    return referenceDirectives.hasExplicitlySpecifiedEntityType();
+    return referenceDirectives.hasExplicitlySpecifiedReferenceType();
   }
 
   public boolean hasExplicitlySpecifiedPrefix()
@@ -496,7 +496,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 
   public boolean hasLiteralValueEncoding()
   {
-    if (getEntityTypeNode().getEntityType().isOWLLiteral())
+    if (getReferenceTypeNode().getReferenceType().isOWLLiteral())
       return true;
     else if (hasExplicitlySpecifiedValueEncodings())
       return hasExplicitlySpecifiedLiteralValueEncoding();
@@ -574,8 +574,8 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     if (hasExplicitOptions())
       representation += "(";
 
-    if (hasExplicitlySpecifiedEntityType()) {
-      representation += entityTypeNode;
+    if (hasExplicitlySpecifiedReferenceType()) {
+      representation += referenceTypeNode;
       atLeastOneOptionProcessed = true;
     }
 
@@ -751,26 +751,26 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 
   private void checkInvalidExplicitDirectives() throws ParseException
   {
-    if (referenceDirectives.hasExplicitlySpecifiedLanguage() && entityTypeNode.getEntityType().isOWLLiteral())
+    if (referenceDirectives.hasExplicitlySpecifiedLanguage() && referenceTypeNode.getReferenceType().isOWLLiteral())
       throw new ParseException(
         "use of language specification in reference " + toString() + " invalid because it is an OWL data value");
 
-    if (referenceDirectives.hasExplicitlySpecifiedPrefix() && entityTypeNode.getEntityType().isOWLLiteral())
+    if (referenceDirectives.hasExplicitlySpecifiedPrefix() && referenceTypeNode.getReferenceType().isOWLLiteral())
       throw new ParseException("use of prefix in reference " + toString() + " invalid because it is an OWL data value");
 
-    if (referenceDirectives.hasExplicitlySpecifiedNamespace() && entityTypeNode.getEntityType().isOWLLiteral())
+    if (referenceDirectives.hasExplicitlySpecifiedNamespace() && referenceTypeNode.getReferenceType().isOWLLiteral())
       throw new ParseException(
         "use of namespace in reference " + toString() + " invalid because it is an OWL data value");
 
-    if (referenceDirectives.hasExplicitlySpecifiedEmptyDataValueDirective() && !entityTypeNode.getEntityType()
+    if (referenceDirectives.hasExplicitlySpecifiedEmptyDataValueDirective() && !referenceTypeNode.getReferenceType()
       .isOWLLiteral())
       throw new ParseException(
         "use of empty data value setting in reference " + toString() + " invalid because it is not an OWL data value");
 
-    if (referenceDirectives.hasExplicitlySpecifiedEntityType() && entityTypeNode.getEntityType().isOWLLiteral()
+    if (referenceDirectives.hasExplicitlySpecifiedReferenceType() && referenceTypeNode.getReferenceType().isOWLLiteral()
       && hasExplicitlySpecifiedTypes())
       throw new ParseException(
-        "entity type " + entityTypeNode.getEntityType().getTypeName() + " in reference " + toString()
+        "entity type " + referenceTypeNode.getReferenceType().getTypeName() + " in reference " + toString()
           + " should not have defining types because it is an OWL data value");
   }
 }

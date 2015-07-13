@@ -20,7 +20,7 @@ public class MappingsControlView extends JPanel implements MMView
 	private JTextField fileNameTextField;
 	private JTextArea statusWindow;
 	private JButton saveButton, saveAsButton;
-	private JComboBox nameEncodingComboBox, entityTypeComboBox, propertyTypeComboBox, propertyValueTypeComboBox,
+	private JComboBox nameEncodingComboBox, referenceTypeComboBox, propertyTypeComboBox, propertyValueTypeComboBox,
 			dataPropertyValueTypeComboBox;
 
 	public MappingsControlView(MMApplication application)
@@ -66,7 +66,7 @@ public class MappingsControlView extends JPanel implements MMView
 	{
 		JPanel headingPanel, mappingsButtonPanel, optionsPanel, fileButtonPanel, footerPanel;
 		JButton openButton, closeButton, mapExpressionsButton;
-		JLabel nameEncodingLabel, entityTypeLabel, propertyTypeLabel, propertyValueTypeLabel, dataPropertyValueTypeLabel;
+		JLabel nameEncodingLabel, referenceTypeLabel, propertyTypeLabel, propertyValueTypeLabel, dataPropertyValueTypeLabel;
 
 		JScrollPane scrollPane;
 
@@ -97,19 +97,19 @@ public class MappingsControlView extends JPanel implements MMView
 		for (String nameEncoding : getOptionsManager().getNameEncodings())
 			nameEncodingComboBox.addItem(nameEncoding);
 		nameEncodingComboBox.setSelectedItem(getOptionsManager().getDefaultNameEncoding());
-		nameEncodingComboBox.addActionListener(new ConfigurationActionListener(getOptionsManager()
-				.getDefaultValueEncodingOptionName()));
+		nameEncodingComboBox.addActionListener(
+			new ConfigurationActionListener(getOptionsManager().getDefaultValueEncodingOptionName()));
 		optionsPanel.add(nameEncodingComboBox);
 
-		entityTypeLabel = new JLabel("Default Entity Type");
-		optionsPanel.add(entityTypeLabel);
-		entityTypeComboBox = new JComboBox();
-		for (String entityType : getOptionsManager().getReferenceValueTypes())
-			entityTypeComboBox.addItem(entityType);
-		entityTypeComboBox.setSelectedItem(getOptionsManager().getDefaultEntityType());
-		entityTypeComboBox.addActionListener(new ConfigurationActionListener(getOptionsManager()
-				.getDefaultEntityTypeOptionName()));
-		optionsPanel.add(entityTypeComboBox);
+		referenceTypeLabel = new JLabel("Default Entity Type");
+		optionsPanel.add(referenceTypeLabel);
+		referenceTypeComboBox = new JComboBox();
+		for (String referenceType : getOptionsManager().getReferenceValueTypes())
+			referenceTypeComboBox.addItem(referenceType);
+		referenceTypeComboBox.setSelectedItem(getOptionsManager().getDefaultReferenceType());
+		referenceTypeComboBox.addActionListener(
+			new ConfigurationActionListener(getOptionsManager().getDefaultReferenceTypeOptionName()));
+		optionsPanel.add(referenceTypeComboBox);
 
 		propertyTypeLabel = new JLabel("Default Property Type");
 		optionsPanel.add(propertyTypeLabel);

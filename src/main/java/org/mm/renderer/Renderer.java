@@ -5,10 +5,9 @@ import org.mm.parser.node.EmptyDataValueSettingNode;
 import org.mm.parser.node.EmptyLocationSettingNode;
 import org.mm.parser.node.EmptyRDFIDSettingNode;
 import org.mm.parser.node.EmptyRDFSLabelSettingNode;
-import org.mm.parser.node.EntityTypeNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.LiteralNode;
-import org.mm.parser.node.MMDefaultEntityTypeNode;
+import org.mm.parser.node.MMDefaultReferenceTypeNode;
 import org.mm.parser.node.MMDefaultValueEncodingNode;
 import org.mm.parser.node.OWLAllValuesFromClassNode;
 import org.mm.parser.node.OWLAllValuesFromDataTypeNode;
@@ -164,7 +163,7 @@ public interface Renderer
 	Optional<? extends Rendering> renderEmptyRDFSLabelSetting(EmptyRDFSLabelSettingNode emptyRDFSLabelSettingNode)
 			throws RendererException;
 
-	Optional<? extends Rendering> renderMMDefaultEntityType(MMDefaultEntityTypeNode defaultEntityTypeNode)
+	Optional<? extends Rendering> renderMMDefaultReferenceType(MMDefaultReferenceTypeNode defaultReferenceTypeNode)
 			throws RendererException;
 
 	Optional<? extends Rendering> renderMMDefaultValueEncoding(MMDefaultValueEncodingNode defaultValueEncodingNode)

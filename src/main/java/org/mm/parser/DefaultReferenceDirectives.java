@@ -5,7 +5,7 @@ import org.mm.core.ReferenceType;
 
 public class DefaultReferenceDirectives
 {
-	private ReferenceType defaultEntityType;
+	private ReferenceType defaultReferenceType;
 
 	private int defaultValueEncoding;
 
@@ -25,12 +25,12 @@ public class DefaultReferenceDirectives
 	private int defaultIfExistsDirective;
 	private int defaultIfNotExistsDirective;
 
-	public DefaultReferenceDirectives(int defaultEntityType, int defaultValueEncoding, String defaultLocationValue, String defaultDataValue, String defaultRDFID,
+	public DefaultReferenceDirectives(int defaultReferenceType, int defaultValueEncoding, String defaultLocationValue, String defaultDataValue, String defaultRDFID,
 			String defaultRDFSLabel, String defaultLanguage, String defaultPrefix, String defaultNamespace, int defaultShiftDirective,
 			int defaultEmptyLocationDirective, int defaultEmptyDataValueDirective, int defaultEmptyRDFIDDirective, int defaultEmptyRDFSLabelDirective,
 			int defaultIfExistsDirective, int defaultIfNotExistsDirective)
 	{
-		this.defaultEntityType = new ReferenceType(defaultEntityType);
+		this.defaultReferenceType = new ReferenceType(defaultReferenceType);
 
 		this.defaultValueEncoding = defaultValueEncoding;
 
@@ -56,9 +56,9 @@ public class DefaultReferenceDirectives
 		this.defaultShiftDirective = shiftDirective;
 	}
 
-	public ReferenceType getDefaultEntityType()
+	public ReferenceType getDefaultReferenceType()
 	{
-		return defaultEntityType;
+		return defaultReferenceType;
 	}
 
 	public int getDefaultValueEncoding()
