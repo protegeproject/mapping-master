@@ -8,11 +8,11 @@ import org.mm.parser.ParserUtil;
 
 public class NamespaceNode implements MappingMasterParserConstants
 {
-  String namespace;
+  private final String namespace;
 
   NamespaceNode(ASTNamespace node) throws ParseException
   {
-    namespace = node.namespace;
+    this.namespace = node.namespace;
   }
 
   public String getNamespace() { return namespace; }

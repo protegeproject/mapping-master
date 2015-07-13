@@ -2,11 +2,11 @@ package org.mm.core;
 
 import org.mm.parser.MappingMasterParserConstants;
 
-public class OWLEntityType implements MappingMasterParserConstants
+public class ReferenceType implements MappingMasterParserConstants
 {
   private final int type;
 
-  public OWLEntityType(int type)
+  public ReferenceType(int type)
   {
     this.type = type;
   }
@@ -51,7 +51,7 @@ public class OWLEntityType implements MappingMasterParserConstants
     return type == OWL_THING;
   }
 
-  public boolean isOWLDataValue()
+  public boolean isOWLLiteral()
   {
     return isXSDString() || isXSDFloat() || isXSDDouble() || isXSDInteger() || isXSDBoolean() || isXSDShort()
       || isXSDTime() | isXSDDateTime() | isXSDDuration();
@@ -128,7 +128,7 @@ public class OWLEntityType implements MappingMasterParserConstants
       return true;
     if ((obj == null) || (obj.getClass() != this.getClass()))
       return false;
-    OWLEntityType et = (OWLEntityType)obj;
+    ReferenceType et = (ReferenceType)obj;
     return (type == et.type);
   }
 

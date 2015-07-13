@@ -6,13 +6,13 @@ import org.mm.parser.ParseException;
 
 public class SourceSpecificationNode
 {
-  private String source, location, literal;
+  private final String source, location, literal;
 
   public SourceSpecificationNode(ASTSourceSpecification node) throws ParseException
   {
-    source = node.source;
-    location = node.location;
-    literal = node.literal;
+    this.source = node.source;
+		this.location = node.location;
+		this.literal = node.literal;
   }
 
   public boolean hasSource() { return source != null; }

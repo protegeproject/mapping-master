@@ -1,11 +1,11 @@
 
 package org.mm.parser;
 
-import org.mm.core.OWLEntityType;
+import org.mm.core.ReferenceType;
 
 public class DefaultReferenceDirectives
 {
-	private OWLEntityType defaultEntityType;
+	private ReferenceType defaultEntityType;
 
 	private int defaultValueEncoding;
 
@@ -30,7 +30,7 @@ public class DefaultReferenceDirectives
 			int defaultEmptyLocationDirective, int defaultEmptyDataValueDirective, int defaultEmptyRDFIDDirective, int defaultEmptyRDFSLabelDirective,
 			int defaultIfExistsDirective, int defaultIfNotExistsDirective)
 	{
-		this.defaultEntityType = new OWLEntityType(defaultEntityType);
+		this.defaultEntityType = new ReferenceType(defaultEntityType);
 
 		this.defaultValueEncoding = defaultValueEncoding;
 
@@ -56,7 +56,7 @@ public class DefaultReferenceDirectives
 		this.defaultShiftDirective = shiftDirective;
 	}
 
-	public OWLEntityType getDefaultEntityType()
+	public ReferenceType getDefaultEntityType()
 	{
 		return defaultEntityType;
 	}

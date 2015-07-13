@@ -6,8 +6,8 @@ import org.mm.parser.ASTName;
 
 public class NameNode
 {
-	private String name;
-	private boolean isQuotedName;
+	private final String name;
+	private final boolean isQuotedName;
 
 	public NameNode(ASTName node) throws ParseException
 	{

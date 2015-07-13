@@ -1,7 +1,7 @@
 
 package org.mm.parser.node;
 
-import org.mm.core.OWLEntityType;
+import org.mm.core.ReferenceType;
 import org.mm.parser.ASTEntityType;
 import org.mm.parser.ASTMMDefaultEntityType;
 import org.mm.parser.ParseException;
@@ -16,17 +16,17 @@ public class MMDefaultEntityTypeNode
 	public MMDefaultEntityTypeNode(ASTMMDefaultEntityType node) throws ParseException
 	{
 		if (node.jjtGetNumChildren() != 1)
-			throw new InternalParseException("expecting one OWLEntityType child of MMDefaultEntityType node");
+			throw new InternalParseException("expecting one ReferenceType child of MMDefaultEntityType node");
 		else {
 			Node child = node.jjtGetChild(0);
-			if (ParserUtil.hasName(child, "OWLEntityType"))
+			if (ParserUtil.hasName(child, "ReferenceType"))
 				entityTypeNode = new EntityTypeNode((ASTEntityType)child);
 			else
-				throw new InternalParseException("MMDefaultEntityType node expecting OWLEntityType child, got " + child.toString());
+				throw new InternalParseException("MMDefaultEntityType node expecting ReferenceType child, got " + child.toString());
 		}
 	}
 
-	public OWLEntityType getEntityType()
+	public ReferenceType getEntityType()
 	{
 		return entityTypeNode.getEntityType();
 	}

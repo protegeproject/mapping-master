@@ -28,7 +28,7 @@ public class MappingMasterParser
   public String defaultPrefix = "";
   public String defaultNamespace = "";
 
-  public int defaultEntityType = OWL_CLASS;
+  public int defaultReferenceType = OWL_CLASS;
   public int defaultPropertyType = OWL_OBJECT_PROPERTY;
   public int defaultPropertyValueType = XSD_STRING;
   public int defaultDataPropertyValueType = XSD_STRING;
@@ -181,7 +181,7 @@ TOKEN: { <MM_NULL: "mm:null" > }
 TOKEN: { <MM_DATA_VALUE: "mm:DataValue"> }
 
 TOKEN: { <MM_DEFAULT_VALUE_ENCODING: "mm:DefaultValueEncoding"> }
-TOKEN: { <MM_DEFAULT_ENTITY_TYPE: "mm:DefaultEntityType"> }
+TOKEN: { <MM_DEFAULT_REFERENCE_TYPE: "mm:DefaultReferenceType"> }
 TOKEN: { <MM_DEFAULT_PROPERTY_TYPE: "mm:DefaultPropertyType"> }
 TOKEN: { <MM_DEFAULT_PROPERTY_VALUE_TYPE: "mm:DefaultPropertyValueType"> }
 TOKEN: { <MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE: "mm:DefaultDataPropertyValueType"> }
@@ -296,7 +296,7 @@ SimpleNode expression() #Expression : {}
 void mm_directive() #MMDirective : {}
 {
   (  mm_default_value_encoding()
-   | mm_default_entity_type()
+   | mm_default_reference_type()
    | mm_default_property_value_type()
    | mm_default_shift_setting()
    | mm_default_empty_location_setting()
@@ -429,15 +429,15 @@ void mm_default_empty_rdfs_label_setting() #MMDefaultEmptyRDFSLabelSetting:
 }
 
 
-void mm_default_entity_type() #MMDefaultEntityType: 
+void mm_default_reference_type() #MMDefaultReferenceType: 
 {
-  int entityType;
+  int referenceType;
 }
 {
-  <MM_DEFAULT_ENTITY_TYPE> entityType = entity_type()
+  <MM_DEFAULT_REFERENCE_TYPE> referenceType = reference_type()
 
   {
-    defaultEntityType = entityType;
+    defaultReferenceType = referenceType;
   }
 }
 
@@ -482,7 +482,7 @@ void mm_default_property_value_type() #MMDefaultPropertyValueType:
   int defaultType;
 }
 {
-  <MM_DEFAULT_PROPERTY_VALUE_TYPE> defaultType = entity_type()
+  <MM_DEFAULT_PROPERTY_VALUE_TYPE> defaultType = reference_type()
  {
    jjtThis.defaultType = defaultType;
    defaultPropertyValueType = defaultType;
@@ -503,13 +503,13 @@ void mm_default_datatype_property_value_type() #MMDefaultDatatypePropertyValueTy
 
 void mm_default_annotation_property_value_type() #MMDefaultAnnotationPropertyValueType: 
 {
-  int defaultEntityType;
+  int defaultReferenceType;
 }
 {
-  <MM_DEFAULT_ANNOTATION_PROPERTY_VALUE_TYPE> defaultEntityType = entity_type()
+  <MM_DEFAULT_ANNOTATION_PROPERTY_VALUE_TYPE> defaultReferenceType = reference_type()
  {
-   jjtThis.defaultType = defaultEntityType;
-   defaultAnnotationPropertyValueType = defaultEntityType;
+   jjtThis.defaultType = defaultReferenceType;
+   defaultAnnotationPropertyValueType = defaultReferenceType;
  }
 }
 
@@ -587,16 +587,6 @@ void annotation_fact() #AnnotationFact: {}
 {
   owl_property() owl_annotation_value(defaultAnnotationPropertyValueType)
 }
-
-void owl_property() #OWLProperty : {}
-{
-  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding)
-} 
-
-void owl_individual(int defaultValueEncoding) #OWLIndividual : {}
-{
-  owl_individual_name() | reference(OWL_THING, defaultValueEncoding)
-} 
 
 void owl_class_name() : {}
 {
@@ -745,10 +735,54 @@ void owl_enumerated_class() #OWLEnumeratedClass : {}
   "{" ( owl_individual(defaultIndividualValueEncoding) )+ "}"
 }
 
+// TODO Rename to owl_class, OWLClass
 void owl_named_class(int defaultValueEncoding) #OWLNamedClass : {}
 {
   owl_class_name() | reference(OWL_CLASS, defaultValueEncoding)
 } 
+
+void owl_property() #OWLProperty : {}
+{
+  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding)
+} 
+
+// TODO Rename to owl_named_individual, OWLNamedIndividual
+void owl_individual(int defaultValueEncoding) #OWLIndividual : {}
+{
+  owl_individual_name() | reference(OWL_THING, defaultValueEncoding)
+} 
+ 
+void string_or_reference() #StringOrReference : {}
+{
+  reference(XSD_STRING, defaultValueEncoding) | string_literal()
+}
+
+void types(int referenceType) #Types : 
+{
+  int defaultType = ParserUtil.getDefaultType(referenceType);
+} 
+{
+  ( LOOKAHEAD(2) owl_class_expression() | reference(referenceType, defaultValueEncoding) )
+    ( "," ( LOOKAHEAD(2) owl_class_expression() | reference(referenceType, defaultValueEncoding) ) )?
+}
+
+void value_specification_item() #ValueSpecificationItem : 
+{
+  String stringLiteral = null;
+  String captureExpression = null;
+}
+{
+  (  stringLiteral = string() 
+   | reference(XSD_STRING, defaultValueEncoding) 
+   | value_extraction_function() 
+//   | ( "[" captureExpression = string() "]" )
+  )
+  {
+    jjtThis.stringLiteral = stringLiteral;
+    jjtThis.captureExpression = captureExpression;
+  }
+}
+
 
 String identifier() :
 {
@@ -928,17 +962,17 @@ int datatype() :
   }
 }
 
-void reference(int defaultEntityType, int defaultValueEncoding) #Reference : {}
+void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : {}
 {
    "@" source_specification()
        ( LOOKAHEAD(2) 
-         "(" ( entity_type() )? 
+         "(" ( reference_type() )? 
              ( directive(defaultValueEncoding) )*
-             ( types(defaultEntityType) )? 
+             ( types(defaultReferenceType) )? 
          ")"
        )?
   {
-    jjtThis.defaultReferenceDirectives = new DefaultReferenceDirectives(defaultEntityType, defaultValueEncoding, 
+    jjtThis.defaultReferenceDirectives = new DefaultReferenceDirectives(defaultReferenceType, defaultValueEncoding, 
                         defaultLocationValue, defaultDataValue, defaultID,
 			defaultLabel, defaultLanguage, defaultPrefix, defaultNamespace, 
                         defaultShiftSetting, 
@@ -970,25 +1004,25 @@ void directive(int defaultValueEncoding) : {}
   ) 
 }
 
-int entity_type() #EntityType : 
+int reference_type() #ReferenceType : 
 {
   Token t;
-  int entityType = defaultEntityType;
+  int referenceType = defaultReferenceType;
 }
 {
   (
-     t = <RDFS_CLASS> { entityType = t.kind; }
-   | t = <RDF_PROPERTY> { entityType = t.kind; }
-   | t = <OWL_CLASS> { entityType = t.kind; }
-   | t = <OWL_THING> { entityType = t.kind; }
-   | t = <OWL_OBJECT_PROPERTY> { entityType = t.kind; }
-   | t = <OWL_DATA_PROPERTY> { entityType = t.kind; }
-   | entityType = datatype()
+     t = <RDFS_CLASS> { referenceType = t.kind; }
+   | t = <RDF_PROPERTY> { referenceType = t.kind; }
+   | t = <OWL_CLASS> { referenceType = t.kind; }
+   | t = <OWL_THING> { referenceType = t.kind; }
+   | t = <OWL_OBJECT_PROPERTY> { referenceType = t.kind; }
+   | t = <OWL_DATA_PROPERTY> { referenceType = t.kind; }
+   | referenceType = datatype()
   ) 
 
   {
-    jjtThis.entityType = entityType;
-    return entityType;
+    jjtThis.referenceType = referenceType;
+    return referenceType;
   }
 }
 
@@ -1244,22 +1278,6 @@ void value_specification() #ValueSpecification :
         )
 }
 
-void value_specification_item() #ValueSpecificationItem : 
-{
-  String stringLiteral = null;
-  String captureExpression = null;
-}
-{
-  (  stringLiteral = string() 
-   | reference(XSD_STRING, defaultValueEncoding) 
-   | value_extraction_function() 
-//   | ( "[" captureExpression = string() "]" )
-  )
-  {
-    jjtThis.stringLiteral = stringLiteral;
-    jjtThis.captureExpression = captureExpression;
-  }
-}
 
 void value_extraction_function() #ValueExtractionFunction:
 {
@@ -1289,19 +1307,6 @@ void value_extraction_function() #ValueExtractionFunction:
   }
 }
 
-void string_or_reference() #StringOrReference : {}
-{
-  reference(XSD_STRING, defaultValueEncoding) | string_literal()
-}
-
-void types(int entityType) #Types : 
-{
-  int defaultType = ParserUtil.getDefaultType(entityType);
-} 
-{
-  ( LOOKAHEAD(2) owl_class_expression() | reference(entityType, defaultValueEncoding) )
-    ( "," ( LOOKAHEAD(2) owl_class_expression() | reference(entityType, defaultValueEncoding) ) )?
-}
  
 List<String> strings() :
 {

@@ -24,7 +24,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   private boolean hasExplicitlySpecifiedEmptyDataValueDirective = false;
   private boolean hasExplicitlySpecifiedEmptyRDFIDDirective = false;
   private boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective = false;
-  private OWLEntityType explicitlySpecifiedEntityType = null;
+  private ReferenceType explicitlySpecifiedEntityType = null;
   private String explicitlySpecifiedDefaultLocationValue = null;
   private String explicitlySpecifiedDefaultDataValue = null;
   private String explicitlySpecifiedDefaultRDFID = null;
@@ -117,14 +117,14 @@ public class ReferenceDirectives implements MappingMasterParserConstants
     return hasExplicitlySpecifiedEntityType;
   }
 
-  public void setExplicitlySpecifiedEntityType(OWLEntityType entityType)
+  public void setExplicitlySpecifiedEntityType(ReferenceType entityType)
   {
     this.explicitlySpecifiedEntityType = entityType;
     this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedEntityType = true;
   }
 
-  public OWLEntityType getActualEntityType()
+  public ReferenceType getActualEntityType()
   {
     return hasExplicitlySpecifiedEntityType() ?
       explicitlySpecifiedEntityType :
