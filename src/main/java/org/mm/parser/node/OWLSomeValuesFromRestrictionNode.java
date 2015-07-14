@@ -1,6 +1,6 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLSomeValuesFrom;
+import org.mm.parser.ASTOWLSomeValuesFromRestriction;
 import org.mm.parser.ASTOWLSomeValuesFromClass;
 import org.mm.parser.ASTOWLSomeValuesFromDataType;
 import org.mm.parser.InternalParseException;
@@ -8,12 +8,12 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLSomeValuesFromNode
+public class OWLSomeValuesFromRestrictionNode
 {
 	private OWLSomeValuesFromDataTypeNode owlSomeValuesFromDataTypeNode = null;
 	private OWLSomeValuesFromClassNode owlSomeValuesFromClassNode = null;
 
-	public OWLSomeValuesFromNode(ASTOWLSomeValuesFrom node) throws ParseException
+	public OWLSomeValuesFromRestrictionNode(ASTOWLSomeValuesFromRestriction node) throws ParseException
 	{
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);

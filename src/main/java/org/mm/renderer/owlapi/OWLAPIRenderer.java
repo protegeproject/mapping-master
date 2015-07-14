@@ -19,26 +19,26 @@ import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAllValuesFromClassNode;
 import org.mm.parser.node.OWLAllValuesFromDataTypeNode;
-import org.mm.parser.node.OWLAllValuesFromNode;
+import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
-import org.mm.parser.node.OWLCardinalityNode;
+import org.mm.parser.node.OWLExactCardinalityRestrictionNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassEquivalentToNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
-import org.mm.parser.node.OWLHasValueNode;
+import org.mm.parser.node.OWLHasValueRestrictionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLIndividualNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
-import org.mm.parser.node.OWLMaxCardinalityNode;
-import org.mm.parser.node.OWLMinCardinalityNode;
+import org.mm.parser.node.OWLMaxCardinalityRestrictionNode;
+import org.mm.parser.node.OWLMinCardinalityRestrictionNode;
 import org.mm.parser.node.OWLNamedClassNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLRestrictionNode;
 import org.mm.parser.node.OWLSomeValuesFromClassNode;
 import org.mm.parser.node.OWLSomeValuesFromDataTypeNode;
-import org.mm.parser.node.OWLSomeValuesFromNode;
+import org.mm.parser.node.OWLSomeValuesFromRestrictionNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
@@ -306,19 +306,19 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return Optional.empty(); // TODO
   }
 
-  @Override public Optional<? extends Rendering> renderOWLMaxCardinality(OWLMaxCardinalityNode maxCardinalityNode)
+  @Override public Optional<? extends Rendering> renderOWLMaxCardinality(OWLMaxCardinalityRestrictionNode maxCardinalityNode)
     throws RendererException
   {
     return Optional.empty(); // TODO
   }
 
-  @Override public Optional<? extends Rendering> renderOWLMinCardinality(OWLMinCardinalityNode minCardinalityNode)
+  @Override public Optional<? extends Rendering> renderOWLMinCardinality(OWLMinCardinalityRestrictionNode minCardinalityNode)
     throws RendererException
   {
     return Optional.empty(); // TODO
   }
 
-  @Override public Optional<? extends Rendering> renderOWLCardinality(OWLCardinalityNode cardinalityNode)
+  @Override public Optional<? extends Rendering> renderOWLCardinality(OWLExactCardinalityRestrictionNode cardinalityNode)
     throws RendererException
   {
     return Optional.empty(); // TODO
@@ -489,7 +489,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
           return Optional.of(new OWLRestrictionRendering(restriction));
         } else if (restrictionNode.hasOWLAllValuesFrom()) {
-          OWLAllValuesFromNode allValuesFromNode = restrictionNode.getOWLAllValuesFromNode();
+          OWLAllValuesFromRestrictionNode allValuesFromNode = restrictionNode.getOWLAllValuesFromNode();
           if (!allValuesFromNode.hasOWLAllValuesFromDataType())
             throw new RendererException("expecting data value for all values data restriction " + restrictionNode);
           OWLDatatype datatype = this.owlObjectHandler
@@ -498,7 +498,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
           return Optional.of(new OWLRestrictionRendering(restriction));
         } else if (restrictionNode.hasOWLSomeValuesFrom()) {
-          OWLSomeValuesFromNode someValuesFromNode = restrictionNode.getOWLSomeValuesFromNode();
+          OWLSomeValuesFromRestrictionNode someValuesFromNode = restrictionNode.getOWLSomeValuesFromNode();
           if (!someValuesFromNode.hasOWLSomeValuesFromDataType())
             throw new RendererException("expecting data value for some values data restriction " + restrictionNode);
           OWLDatatype datatype = this.owlObjectHandler
@@ -542,7 +542,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
           } else
             return Optional.empty();
         } else if (restrictionNode.hasOWLAllValuesFrom()) {
-          OWLAllValuesFromNode allValuesFromNode = restrictionNode.getOWLAllValuesFromNode();
+          OWLAllValuesFromRestrictionNode allValuesFromNode = restrictionNode.getOWLAllValuesFromNode();
           if (allValuesFromNode.hasOWLAllValuesFromDataType())
             throw new RendererException("expecting class for all values object restriction " + restrictionNode);
 
@@ -568,7 +568,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
               return Optional.empty();
           }
         } else if (restrictionNode.hasOWLSomeValuesFrom()) {
-          OWLSomeValuesFromNode someValuesFromNode = restrictionNode.getOWLSomeValuesFromNode();
+          OWLSomeValuesFromRestrictionNode someValuesFromNode = restrictionNode.getOWLSomeValuesFromNode();
           if (someValuesFromNode.hasOWLSomeValuesFromDataType())
             throw new RendererException("expecting class for object some values  restriction " + restrictionNode);
 
@@ -636,7 +636,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
       String rdfsLabelText = processRDFSLabelText(locationValue, referenceNode, referenceRendering);
       OWLEntity owlEntity = this.owlObjectHandler
         .createOrResolveOWLEntity(location, locationValue, referenceType, rdfID, rdfsLabelText, defaultNamespace,
-          language, referenceNode.getReferenceDirectives());
+						language, referenceNode.getReferenceDirectives());
       Set<OWLAxiom> axioms = addDefiningTypes(referenceType, owlEntity, referenceNode);
       referenceRendering.addOWLAxioms(axioms);
       referenceRendering.setOWLEntity(owlEntity);
@@ -1299,7 +1299,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return false; // TODO
   }
 
-  @Override public Optional<? extends Rendering> renderOWLAllValuesFrom(OWLAllValuesFromNode allValuesFromNode)
+  @Override public Optional<? extends Rendering> renderOWLAllValuesFrom(OWLAllValuesFromRestrictionNode allValuesFromNode)
     throws RendererException
   {
     return Optional.empty();
@@ -1345,13 +1345,13 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return Optional.empty(); // TODO
   }
 
-  @Override public Optional<? extends Rendering> renderOWLHasValue(OWLHasValueNode hasValueNode)
+  @Override public Optional<? extends Rendering> renderOWLHasValue(OWLHasValueRestrictionNode hasValueNode)
     throws RendererException
   {
     return Optional.empty(); // TODO
   }
 
-  @Override public Optional<? extends Rendering> renderOWLSomeValuesFrom(OWLSomeValuesFromNode someValuesFromNode)
+  @Override public Optional<? extends Rendering> renderOWLSomeValuesFrom(OWLSomeValuesFromRestrictionNode someValuesFromNode)
     throws RendererException
   {
     return Optional.empty(); // TODO

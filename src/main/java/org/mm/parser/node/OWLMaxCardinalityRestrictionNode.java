@@ -1,14 +1,14 @@
 
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLMaxCardinality;
+import org.mm.parser.ASTOWLMaxCardinalityRestriction;
 import org.mm.parser.ParseException;
 
-public class OWLMaxCardinalityNode
+public class OWLMaxCardinalityRestrictionNode
 {
 	private int cardinality;
 
-	public OWLMaxCardinalityNode(ASTOWLMaxCardinality node) throws ParseException
+	public OWLMaxCardinalityRestrictionNode(ASTOWLMaxCardinalityRestriction node) throws ParseException
 	{
 		cardinality = node.cardinality;
 	}

@@ -1,14 +1,14 @@
 
 package org.mm.parser.node;
 
+import org.mm.parser.ASTOWLMinCardinalityRestriction;
 import org.mm.parser.ParseException;
-import org.mm.parser.ASTOWLMinCardinality;
 
-public class OWLMinCardinalityNode
+public class OWLMinCardinalityRestrictionNode
 {
 	private int cardinality;
 
-	OWLMinCardinalityNode(ASTOWLMinCardinality node) throws ParseException
+	OWLMinCardinalityRestrictionNode(ASTOWLMinCardinalityRestriction node) throws ParseException
 	{
 		cardinality = node.cardinality;
 	}

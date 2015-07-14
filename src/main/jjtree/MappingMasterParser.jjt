@@ -826,12 +826,12 @@ void source_specification() #SourceSpecification :
 
 void owl_restriction() #OWLRestriction : {}
 {
-  owl_property() (  owl_max_cardinality()  
-                  | owl_min_cardinality() 
-                  | owl_cardinality()
-                  | owl_has_value() 
-                  | owl_all_values_from() 
-                  | owl_some_values_from() 
+  owl_property() (  owl_max_cardinality_restriction()  
+                  | owl_min_cardinality_restriction() 
+                  | owl_exact_cardinality_restriction()
+                  | owl_has_value_restriction() 
+                  | owl_all_values_from_restriction() 
+                  | owl_some_values_from_restriction() 
                  )
 }
 
@@ -858,7 +858,7 @@ int cardinality_value() :
   }
 }
 
-void owl_max_cardinality() #OWLMaxCardinality :
+void owl_max_cardinality_restriction() #OWLMaxCardinalityRestriction :
 {
   int cardinality;
 }
@@ -870,7 +870,7 @@ void owl_max_cardinality() #OWLMaxCardinality :
   }
 }
 
-void owl_min_cardinality() #OWLMinCardinality :
+void owl_min_cardinality_restriction() #OWLMinCardinalityRestriction :
 {
   int cardinality;
 }
@@ -882,17 +882,17 @@ void owl_min_cardinality() #OWLMinCardinality :
   }
 }
 
-void owl_all_values_from() #OWLAllValuesFrom : {}
+void owl_all_values_from_restriction() #OWLAllValuesFromRestriction : {}
 {
   LOOKAHEAD(2) owl_all_values_from_datatype() | LOOKAHEAD(2) owl_all_values_from_class() 
 }
 
-void owl_has_value() #OWLHasValue : {}
+void owl_has_value_restriction() #OWLHasValueRestriction : {}
 {
   <VALUE> owl_property_assertion_object(defaultPropertyValueType)
 }
 
-void owl_cardinality() #OWLCardinality :
+void owl_exact_cardinality_restriction() #OWLExactCardinalityRestriction :
 {
   int cardinality;
 }
@@ -920,7 +920,7 @@ void owl_all_values_from_datatype() #OWLAllValuesFromDataType :
   }
 }
 
-void owl_some_values_from() #OWLSomeValuesFrom : {}
+void owl_some_values_from_restriction() #OWLSomeValuesFromRestriction : {}
 {
   LOOKAHEAD(2) owl_some_values_from_datatype() | LOOKAHEAD(2) owl_some_values_from_class() 
 }

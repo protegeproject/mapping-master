@@ -11,14 +11,14 @@ import org.mm.parser.node.MMDefaultReferenceTypeNode;
 import org.mm.parser.node.MMDefaultValueEncodingNode;
 import org.mm.parser.node.OWLAllValuesFromClassNode;
 import org.mm.parser.node.OWLAllValuesFromDataTypeNode;
-import org.mm.parser.node.OWLAllValuesFromNode;
+import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
-import org.mm.parser.node.OWLCardinalityNode;
+import org.mm.parser.node.OWLExactCardinalityRestrictionNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLIndividualNode;
-import org.mm.parser.node.OWLMinCardinalityNode;
+import org.mm.parser.node.OWLMinCardinalityRestrictionNode;
 import org.mm.parser.node.OWLNamedClassNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLRestrictionNode;
@@ -37,11 +37,11 @@ import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLEnumeratedClassNode;
 import org.mm.parser.node.OWLClassEquivalentToNode;
-import org.mm.parser.node.OWLHasValueNode;
+import org.mm.parser.node.OWLHasValueRestrictionNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
-import org.mm.parser.node.OWLMaxCardinalityNode;
+import org.mm.parser.node.OWLMaxCardinalityRestrictionNode;
 import org.mm.parser.node.OWLPropertyNode;
-import org.mm.parser.node.OWLSomeValuesFromNode;
+import org.mm.parser.node.OWLSomeValuesFromRestrictionNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
@@ -95,17 +95,17 @@ public interface Renderer
 
 	Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictionNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLMaxCardinality(OWLMaxCardinalityNode maxCardinalityNode)
+	Optional<? extends Rendering> renderOWLMaxCardinality(OWLMaxCardinalityRestrictionNode maxCardinalityNode)
 			throws RendererException;
 
-	Optional<? extends Rendering> renderOWLMinCardinality(OWLMinCardinalityNode minCardinalityNode)
+	Optional<? extends Rendering> renderOWLMinCardinality(OWLMinCardinalityRestrictionNode minCardinalityNode)
 			throws RendererException;
 
-	Optional<? extends Rendering> renderOWLCardinality(OWLCardinalityNode cardinalityNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLCardinality(OWLExactCardinalityRestrictionNode cardinalityNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLHasValue(OWLHasValueNode hasValueNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLHasValue(OWLHasValueRestrictionNode hasValueNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLAllValuesFrom(OWLAllValuesFromNode allValuesFromNode)
+	Optional<? extends Rendering> renderOWLAllValuesFrom(OWLAllValuesFromRestrictionNode allValuesFromNode)
 			throws RendererException;
 
 	Optional<? extends Rendering> renderOWLAllValuesFromDataType(
@@ -114,7 +114,7 @@ public interface Renderer
 	Optional<? extends Rendering> renderOWLAllValuesFromClass(OWLAllValuesFromClassNode allValuesFromClassNode)
 			throws RendererException;
 
-	Optional<? extends Rendering> renderOWLSomeValuesFrom(OWLSomeValuesFromNode someValuesFromNode)
+	Optional<? extends Rendering> renderOWLSomeValuesFrom(OWLSomeValuesFromRestrictionNode someValuesFromNode)
 			throws RendererException;
 
 	Optional<? extends Rendering> renderOWLSomeValuesFromDataType(

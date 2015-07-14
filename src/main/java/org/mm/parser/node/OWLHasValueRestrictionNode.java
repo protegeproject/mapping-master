@@ -1,18 +1,18 @@
 
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLHasValue;
+import org.mm.parser.ASTOWLHasValueRestriction;
 import org.mm.parser.ASTOWLPropertyAssertionObject;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLHasValueNode
+public class OWLHasValueRestrictionNode
 {
   private OWLPropertyAssertionObjectNode propertyAssertionObjectNode = null;
 
-  public OWLHasValueNode(ASTOWLHasValue node) throws ParseException
+  public OWLHasValueRestrictionNode(ASTOWLHasValueRestriction node) throws ParseException
   {
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);

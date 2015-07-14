@@ -1,20 +1,19 @@
-
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLAllValuesFrom;
 import org.mm.parser.ASTOWLAllValuesFromClass;
 import org.mm.parser.ASTOWLAllValuesFromDataType;
+import org.mm.parser.ASTOWLAllValuesFromRestriction;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLAllValuesFromNode
+public class OWLAllValuesFromRestrictionNode
 {
 	private OWLAllValuesFromDataTypeNode owlAllValuesFromDataTypeNode = null;
 	private OWLAllValuesFromClassNode owlAllValuesFromClassNode = null;
 
-	public OWLAllValuesFromNode(ASTOWLAllValuesFrom node) throws ParseException
+	public OWLAllValuesFromRestrictionNode(ASTOWLAllValuesFromRestriction node) throws ParseException
 	{
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
