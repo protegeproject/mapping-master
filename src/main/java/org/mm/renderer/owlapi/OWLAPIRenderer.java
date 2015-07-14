@@ -17,8 +17,8 @@ import org.mm.parser.node.MMDefaultReferenceTypeNode;
 import org.mm.parser.node.MMDefaultValueEncodingNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
-import org.mm.parser.node.OWLAllValuesFromClassNode;
-import org.mm.parser.node.OWLAllValuesFromDataTypeNode;
+import org.mm.parser.node.OWLObjectAllValuesFromNode;
+import org.mm.parser.node.OWLDataAllValuesFromNode;
 import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLExactCardinalityRestrictionNode;
@@ -36,8 +36,8 @@ import org.mm.parser.node.OWLNamedClassNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLRestrictionNode;
-import org.mm.parser.node.OWLSomeValuesFromClassNode;
-import org.mm.parser.node.OWLSomeValuesFromDataTypeNode;
+import org.mm.parser.node.OWLObjectSomeValuesFromNode;
+import org.mm.parser.node.OWLDataSomeValuesFromNode;
 import org.mm.parser.node.OWLSomeValuesFromRestrictionNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
@@ -1328,7 +1328,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
   }
 
   @Override public Optional<? extends Rendering> renderOWLAllValuesFromDataType(
-    OWLAllValuesFromDataTypeNode allValuesFromDataTypeNode) throws RendererException
+    OWLDataAllValuesFromNode allValuesFromDataTypeNode) throws RendererException
   {
     return Optional.empty(); // TODO
   }
@@ -1392,7 +1392,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
   }
 
   @Override public Optional<? extends Rendering> renderOWLAllValuesFromClass(
-    OWLAllValuesFromClassNode allValuesFromClassNode) throws RendererException
+    OWLObjectAllValuesFromNode allValuesFromClassNode) throws RendererException
   {
     return Optional.empty(); // TODO
   }
@@ -1434,13 +1434,13 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
   }
 
   @Override public Optional<? extends Rendering> renderOWLSomeValuesFromClass(
-    OWLSomeValuesFromClassNode someValuesFromClassNode) throws RendererException
+    OWLObjectSomeValuesFromNode someValuesFromClassNode) throws RendererException
   {
     return Optional.empty(); // TODO
   }
 
   @Override public Optional<? extends Rendering> renderOWLSomeValuesFromDataType(
-    OWLSomeValuesFromDataTypeNode someValuesFromDataTypeNode) throws RendererException
+    OWLDataSomeValuesFromNode someValuesFromDataTypeNode) throws RendererException
   {
     return Optional.empty(); // TODO
   }

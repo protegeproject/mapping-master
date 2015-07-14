@@ -9,8 +9,8 @@ import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.LiteralNode;
 import org.mm.parser.node.MMDefaultReferenceTypeNode;
 import org.mm.parser.node.MMDefaultValueEncodingNode;
-import org.mm.parser.node.OWLAllValuesFromClassNode;
-import org.mm.parser.node.OWLAllValuesFromDataTypeNode;
+import org.mm.parser.node.OWLObjectAllValuesFromNode;
+import org.mm.parser.node.OWLDataAllValuesFromNode;
 import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLExactCardinalityRestrictionNode;
@@ -22,8 +22,8 @@ import org.mm.parser.node.OWLMinCardinalityRestrictionNode;
 import org.mm.parser.node.OWLNamedClassNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLRestrictionNode;
-import org.mm.parser.node.OWLSomeValuesFromClassNode;
-import org.mm.parser.node.OWLSomeValuesFromDataTypeNode;
+import org.mm.parser.node.OWLObjectSomeValuesFromNode;
+import org.mm.parser.node.OWLDataSomeValuesFromNode;
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.SameAsNode;
 import org.mm.parser.node.ShiftSettingNode;
@@ -109,18 +109,18 @@ public interface Renderer
 			throws RendererException;
 
 	Optional<? extends Rendering> renderOWLAllValuesFromDataType(
-			OWLAllValuesFromDataTypeNode allValuesFromDataTypeNode) throws RendererException;
+			OWLDataAllValuesFromNode allValuesFromDataTypeNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLAllValuesFromClass(OWLAllValuesFromClassNode allValuesFromClassNode)
+	Optional<? extends Rendering> renderOWLAllValuesFromClass(OWLObjectAllValuesFromNode allValuesFromClassNode)
 			throws RendererException;
 
 	Optional<? extends Rendering> renderOWLSomeValuesFrom(OWLSomeValuesFromRestrictionNode someValuesFromNode)
 			throws RendererException;
 
 	Optional<? extends Rendering> renderOWLSomeValuesFromDataType(
-			OWLSomeValuesFromDataTypeNode someValuesFromDataTypeNode) throws RendererException;
+			OWLDataSomeValuesFromNode someValuesFromDataTypeNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLSomeValuesFromClass(OWLSomeValuesFromClassNode someValuesFromClassNode)
+	Optional<? extends Rendering> renderOWLSomeValuesFromClass(OWLObjectSomeValuesFromNode someValuesFromClassNode)
 			throws RendererException;
 
 	Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException;

@@ -884,7 +884,7 @@ void owl_min_cardinality_restriction() #OWLMinCardinalityRestriction :
 
 void owl_all_values_from_restriction() #OWLAllValuesFromRestriction : {}
 {
-  LOOKAHEAD(2) owl_all_values_from_datatype() | LOOKAHEAD(2) owl_all_values_from_class() 
+  LOOKAHEAD(2) owl_data_all_values_from() | LOOKAHEAD(2) owl_object_all_values_from() 
 }
 
 void owl_has_value_restriction() #OWLHasValueRestriction : {}
@@ -904,40 +904,40 @@ void owl_exact_cardinality_restriction() #OWLExactCardinalityRestriction :
   }
 }
 
-void owl_all_values_from_class() #OWLAllValuesFromClass : {}
+void owl_object_all_values_from() #OWLObjectAllValuesFrom : {}
 {
   <ONLY> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
 }
 
-void owl_all_values_from_datatype() #OWLAllValuesFromDataType :
+void owl_data_all_values_from() #OWLDataAllValuesFrom :
 {
-  int dataType;
+  int datatype;
 }
 {
-  <ONLY> dataType = datatype()
+  <ONLY> datatype = datatype()
   {
-    jjtThis.dataType = dataType;
+    jjtThis.datatype = datatype;
   }
 }
 
 void owl_some_values_from_restriction() #OWLSomeValuesFromRestriction : {}
 {
-  LOOKAHEAD(2) owl_some_values_from_datatype() | LOOKAHEAD(2) owl_some_values_from_class() 
+  LOOKAHEAD(2) owl_data_some_values_from() | LOOKAHEAD(2) owl_object_some_values_from() 
 }
 
-void owl_some_values_from_class() #OWLSomeValuesFromClass : {}
+void owl_object_some_values_from() #OWLObjectSomeValuesFrom : {}
 {
   <SOME> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
 }
 
-void owl_some_values_from_datatype() #OWLSomeValuesFromDataType :
+void owl_data_some_values_from() #OWLDataSomeValuesFrom :
 {
-  int dataType;
+  int datatype;
 }
 {
-  <SOME> dataType = datatype()
+  <SOME> datatype = datatype()
   {
-    jjtThis.dataType = dataType;
+    jjtThis.datatype = datatype;
   }
 }
   

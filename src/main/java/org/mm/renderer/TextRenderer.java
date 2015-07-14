@@ -28,8 +28,8 @@ import org.mm.parser.node.MMDirectiveNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.NamespaceNode;
-import org.mm.parser.node.OWLAllValuesFromClassNode;
-import org.mm.parser.node.OWLAllValuesFromDataTypeNode;
+import org.mm.parser.node.OWLObjectAllValuesFromNode;
+import org.mm.parser.node.OWLDataAllValuesFromNode;
 import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLExactCardinalityRestrictionNode;
@@ -47,8 +47,8 @@ import org.mm.parser.node.OWLNamedClassNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLRestrictionNode;
-import org.mm.parser.node.OWLSomeValuesFromClassNode;
-import org.mm.parser.node.OWLSomeValuesFromDataTypeNode;
+import org.mm.parser.node.OWLObjectSomeValuesFromNode;
+import org.mm.parser.node.OWLDataSomeValuesFromNode;
 import org.mm.parser.node.OWLSomeValuesFromRestrictionNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
@@ -595,9 +595,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 	}
 
 	public Optional<TextRendering> renderOWLAllValuesFromDataType(
-			OWLAllValuesFromDataTypeNode owlAllValuesFromDataTypeNode) throws RendererException
+			OWLDataAllValuesFromNode owlDataAllValuesFromNode) throws RendererException
 	{
-		String datatypeName = owlAllValuesFromDataTypeNode.getDataTypeName();
+		String datatypeName = owlDataAllValuesFromNode.getDataTypeName();
 
 		if (!datatypeName.equals(""))
 			return Optional.of(new TextRendering("ONLY " + datatypeName));
@@ -605,17 +605,17 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 			return Optional.empty();
 	}
 
-	public Optional<TextRendering> renderOWLAllValuesFromClass(OWLAllValuesFromClassNode owlAllValuesFromClassNode)
+	public Optional<TextRendering> renderOWLAllValuesFromClass(OWLObjectAllValuesFromNode owlObjectAllValuesFromNode)
 			throws RendererException
 	{
 		Optional<TextRendering> classRendering;
 
-		if (owlAllValuesFromClassNode.hasOWLNamedClass())
-			classRendering = renderOWLClass(owlAllValuesFromClassNode.getOWLNamedClassNode());
-		else if (owlAllValuesFromClassNode.hasOWLClassExpression())
-			classRendering = renderOWLClassExpression(owlAllValuesFromClassNode.getOWLClassExpressionNode());
+		if (owlObjectAllValuesFromNode.hasOWLNamedClass())
+			classRendering = renderOWLClass(owlObjectAllValuesFromNode.getOWLNamedClassNode());
+		else if (owlObjectAllValuesFromNode.hasOWLClassExpression())
+			classRendering = renderOWLClassExpression(owlObjectAllValuesFromNode.getOWLClassExpressionNode());
 		else
-			throw new RendererException("unknown OWLAllValuesFromClass node " + owlAllValuesFromClassNode);
+			throw new RendererException("unknown OWLAllValuesFromClass node " + owlObjectAllValuesFromNode);
 
 		if (classRendering.isPresent())
 			return Optional.of(new TextRendering("ONLY " + classRendering.get().getTextRendering()));
@@ -624,9 +624,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 	}
 
 	public Optional<TextRendering> renderOWLSomeValuesFromDataType(
-			OWLSomeValuesFromDataTypeNode owlSomeValuesFromDataTypeNode) throws RendererException
+			OWLDataSomeValuesFromNode owlDataSomeValuesFromNode) throws RendererException
 	{
-		String datatypeName = owlSomeValuesFromDataTypeNode.getDataTypeName();
+		String datatypeName = owlDataSomeValuesFromNode.getDataTypeName();
 
 		if (!datatypeName.equals(""))
 			return Optional.of(new TextRendering("SOME " + datatypeName));
@@ -634,17 +634,17 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 			return Optional.empty();
 	}
 
-	public Optional<TextRendering> renderOWLSomeValuesFromClass(OWLSomeValuesFromClassNode owlSomeValuesFromClassNode)
+	public Optional<TextRendering> renderOWLSomeValuesFromClass(OWLObjectSomeValuesFromNode owlObjectSomeValuesFromNode)
 			throws RendererException
 	{
 		Optional<TextRendering> classRendering;
 
-		if (owlSomeValuesFromClassNode.hasOWLNamedClass())
-			classRendering = renderOWLClass(owlSomeValuesFromClassNode.getOWLNamedClassNode());
-		else if (owlSomeValuesFromClassNode.hasOWLClassExpression())
-			classRendering = renderOWLClassExpression(owlSomeValuesFromClassNode.getOWLClassExpressionNode());
+		if (owlObjectSomeValuesFromNode.hasOWLNamedClass())
+			classRendering = renderOWLClass(owlObjectSomeValuesFromNode.getOWLNamedClassNode());
+		else if (owlObjectSomeValuesFromNode.hasOWLClassExpression())
+			classRendering = renderOWLClassExpression(owlObjectSomeValuesFromNode.getOWLClassExpressionNode());
 		else
-			throw new RendererException("unknown OWLSomeValuesFromClass node " + owlSomeValuesFromClassNode);
+			throw new RendererException("unknown OWLSomeValuesFromClass node " + owlObjectSomeValuesFromNode);
 
 		if (classRendering.isPresent())
 			return Optional.of(new TextRendering("SOME " + classRendering.get().getTextRendering()));
