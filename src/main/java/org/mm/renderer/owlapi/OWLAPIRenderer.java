@@ -17,6 +17,11 @@ import org.mm.parser.node.MMDefaultReferenceTypeNode;
 import org.mm.parser.node.MMDefaultValueEncodingNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
+<<<<<<< HEAD
+=======
+import org.mm.parser.node.OWLObjectAllValuesFromNode;
+import org.mm.parser.node.OWLDataAllValuesFromNode;
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
 import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
@@ -38,6 +43,11 @@ import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLRestrictionNode;
+<<<<<<< HEAD
+=======
+import org.mm.parser.node.OWLObjectSomeValuesFromNode;
+import org.mm.parser.node.OWLDataSomeValuesFromNode;
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
 import org.mm.parser.node.OWLSomeValuesFromRestrictionNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
@@ -1312,6 +1322,15 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return Optional.empty(); // TODO
   }
 
+<<<<<<< HEAD
+=======
+  @Override public Optional<? extends Rendering> renderOWLAllValuesFromDataType(
+    OWLDataAllValuesFromNode allValuesFromDataTypeNode) throws RendererException
+  {
+    return Optional.empty(); // TODO
+  }
+
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
   @Override public Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
     throws RendererException
   {
@@ -1348,8 +1367,13 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return Optional.empty(); // TODO
   }
 
+<<<<<<< HEAD
   @Override public Optional<? extends Rendering> renderOWLDataAllValuesFrom(
     OWLDataAllValuesFromNode dataAllValuesFromNode) throws RendererException
+=======
+  @Override public Optional<? extends Rendering> renderOWLAllValuesFromClass(
+    OWLObjectAllValuesFromNode allValuesFromClassNode) throws RendererException
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
   {
     return Optional.empty(); // TODO
   }
@@ -1388,13 +1412,23 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return Optional.empty(); // TODO
   }
 
+<<<<<<< HEAD
   @Override public Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException
+=======
+  @Override public Optional<? extends Rendering> renderOWLSomeValuesFromClass(
+    OWLObjectSomeValuesFromNode someValuesFromClassNode) throws RendererException
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
   {
     return Optional.empty(); // TODO
   }
 
+<<<<<<< HEAD
   @Override public Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode)
     throws RendererException
+=======
+  @Override public Optional<? extends Rendering> renderOWLSomeValuesFromDataType(
+    OWLDataSomeValuesFromNode someValuesFromDataTypeNode) throws RendererException
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
   {
     return Optional.empty(); // TODO
   }

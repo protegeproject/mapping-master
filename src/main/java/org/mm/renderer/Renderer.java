@@ -4,8 +4,15 @@ import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.LiteralNode;
+<<<<<<< HEAD
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
+=======
+import org.mm.parser.node.MMDefaultReferenceTypeNode;
+import org.mm.parser.node.MMDefaultValueEncodingNode;
+import org.mm.parser.node.OWLObjectAllValuesFromNode;
+import org.mm.parser.node.OWLDataAllValuesFromNode;
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
 import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
@@ -27,8 +34,13 @@ import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLRestrictionNode;
+<<<<<<< HEAD
 import org.mm.parser.node.OWLSomeValuesFromRestrictionNode;
 import org.mm.parser.node.OWLSubclassOfNode;
+=======
+import org.mm.parser.node.OWLObjectSomeValuesFromNode;
+import org.mm.parser.node.OWLDataSomeValuesFromNode;
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SameAsNode;
@@ -78,19 +90,35 @@ public interface Renderer
   Optional<? extends Rendering> renderOWLEnumeratedClass(OWLEnumeratedClassNode enumeratedClassNode)
     throws RendererException;
 
+<<<<<<< HEAD
   // OWL class expressions
   Optional<? extends Rendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode) throws RendererException;
+=======
+	Optional<? extends Rendering> renderOWLAllValuesFromDataType(
+			OWLDataAllValuesFromNode allValuesFromDataTypeNode) throws RendererException;
+
+	Optional<? extends Rendering> renderOWLAllValuesFromClass(OWLObjectAllValuesFromNode allValuesFromClassNode)
+			throws RendererException;
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
 
   Optional<? extends Rendering> renderOWLIntersectionClass(OWLIntersectionClassNode intersectionClassNode)
     throws RendererException;
 
+<<<<<<< HEAD
   Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictionNode) throws RendererException;
 
   Optional<? extends Rendering> renderOWLMaxCardinality(OWLMaxCardinalityRestrictionNode maxCardinalityNode)
     throws RendererException;
+=======
+	Optional<? extends Rendering> renderOWLSomeValuesFromDataType(
+			OWLDataSomeValuesFromNode someValuesFromDataTypeNode) throws RendererException;
+
+	Optional<? extends Rendering> renderOWLSomeValuesFromClass(OWLObjectSomeValuesFromNode someValuesFromClassNode)
+			throws RendererException;
+>>>>>>> 39db426653991f9114591318e26ba2a8a5eb8db4
 
   Optional<? extends Rendering> renderOWLMinCardinality(OWLMinCardinalityRestrictionNode minCardinalityNode)
     throws RendererException;
