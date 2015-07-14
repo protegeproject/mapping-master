@@ -13,18 +13,18 @@ import java.util.List;
 
 public class OWLClassEquivalentToNode
 {
-	private List<OWLClassExpressionNode> owlClassExpressionNodes;
+	private List<OWLClassExpressionNode> classExpressionNodes;
 
 	public OWLClassEquivalentToNode(ASTOWLClassEquivalentTo node) throws ParseException
 	{
-		owlClassExpressionNodes = new ArrayList<OWLClassExpressionNode>();
+		classExpressionNodes = new ArrayList<OWLClassExpressionNode>();
 
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
 
 			if (ParserUtil.hasName(child, "OWLClassExpression")) {
 				OWLClassExpressionNode owlClassExpression = new OWLClassExpressionNode((ASTOWLClassExpression)child);
-				owlClassExpressionNodes.add(owlClassExpression);
+				classExpressionNodes.add(owlClassExpression);
 			} else
 				throw new InternalParseException("OWLClassEquivalentTo node expecting OWLClassExpression child, got " + child.toString());
 		}
@@ -32,19 +32,19 @@ public class OWLClassEquivalentToNode
 
 	public List<OWLClassExpressionNode> getClassExpressionNodes()
 	{
-		return this.owlClassExpressionNodes;
+		return this.classExpressionNodes;
 	}
 
 	public String toString()
 	{
 		String representation = " EquivalentTo: ";
 
-		if (owlClassExpressionNodes.size() == 1)
-			representation += owlClassExpressionNodes.get(0).toString();
+		if (classExpressionNodes.size() == 1)
+			representation += classExpressionNodes.get(0).toString();
 		else {
 			boolean isFirst = true;
 
-			for (OWLClassExpressionNode owlClassExpression : owlClassExpressionNodes) {
+			for (OWLClassExpressionNode owlClassExpression : classExpressionNodes) {
 				if (!isFirst)
 					representation += ", ";
 				representation += owlClassExpression.toString();

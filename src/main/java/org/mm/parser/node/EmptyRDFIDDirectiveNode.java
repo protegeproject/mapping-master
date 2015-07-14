@@ -6,11 +6,11 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class EmptyRDFIDSettingNode implements MappingMasterParserConstants
+public class EmptyRDFIDDirectiveNode implements MappingMasterParserConstants
 {
   private int emptyRDFIDSetting;
   
-  public EmptyRDFIDSettingNode(ASTEmptyRDFIDSetting node) throws ParseException
+  public EmptyRDFIDDirectiveNode(ASTEmptyRDFIDSetting node) throws ParseException
   {
   	emptyRDFIDSetting = node.emptyRDFIDSetting;
   }

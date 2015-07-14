@@ -6,11 +6,11 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class EmptyLocationSettingNode implements MappingMasterParserConstants
+public class EmptyLocationDirectiveNode implements MappingMasterParserConstants
 {
   private int emptyLocationSetting;
   
-  public EmptyLocationSettingNode(ASTEmptyLocationSetting node) throws ParseException
+  public EmptyLocationDirectiveNode(ASTEmptyLocationSetting node) throws ParseException
   {
   	emptyLocationSetting = node.emptyLocationSetting;
   }

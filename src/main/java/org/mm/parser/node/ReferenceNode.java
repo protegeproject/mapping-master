@@ -44,14 +44,14 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
   private DefaultDataValueNode defaultDataValueNode;
   private DefaultIDNode defaultRDFIDNode;
   private DefaultLabelNode defaultRDFSLabelNode;
-  private EmptyLocationSettingNode emptyLocationSettingNode;
-  private EmptyDataValueSettingNode emptyDataValueSettingNode;
-  private EmptyRDFIDSettingNode emptyRDFIDSettingNode;
-  private EmptyRDFSLabelSettingNode emptyRDFSLabelSettingNode;
+  private EmptyLocationDirectiveNode emptyLocationDirectiveNode;
+  private EmptyDataValueDirectiveNode emptyDataValueDirectiveNode;
+  private EmptyRDFIDDirectiveNode emptyRDFIDDirectiveNode;
+  private EmptyRDFSLabelDirectiveNode emptyRDFSLabelDirectiveNode;
   private IfExistsDirectiveNode ifExistsDirectiveNode;
   private IfNotExistsDirectiveNode ifNotExistsDirectiveNode;
   private ValueExtractionFunctionNode valueExtractionFunctionNode;
-  private ShiftSettingNode shiftSettingNode;
+  private ShiftDirectiveNode shiftDirectiveNode;
   private final ReferenceDirectives referenceDirectives;
 	private final List<ValueEncodingNode> valueEncodingsNodes = new ArrayList<>();
 
@@ -95,9 +95,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
           throw new RendererException("only one default label directive can be specified for a Reference");
         defaultRDFSLabelNode = new DefaultLabelNode((ASTDefaultLabel)child);
       } else if (ParserUtil.hasName(child, "EmptyLocationSetting")) {
-        if (emptyLocationSettingNode != null)
+        if (emptyLocationDirectiveNode != null)
           throw new RendererException("only one empty location directive can be specified for a Reference");
-        emptyLocationSettingNode = new EmptyLocationSettingNode((ASTEmptyLocationSetting)child);
+        emptyLocationDirectiveNode = new EmptyLocationDirectiveNode((ASTEmptyLocationSetting)child);
       } else if (ParserUtil.hasName(child, "IfExistsDirective")) {
         if (ifExistsDirectiveNode != null)
           throw new RendererException("only one if exists directive can be specified for a Reference");
@@ -107,21 +107,21 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
           throw new RendererException("only one if not exists directive can be specified for a Reference");
         ifNotExistsDirectiveNode = new IfNotExistsDirectiveNode((ASTIfNotExistsDirective)child);
       } else if (ParserUtil.hasName(child, "EmptyDataValueSetting")) {
-        if (emptyDataValueSettingNode != null)
+        if (emptyDataValueDirectiveNode != null)
           throw new RendererException("only one empty data value directive can be specified for a Reference");
-        emptyDataValueSettingNode = new EmptyDataValueSettingNode((ASTEmptyDataValueSetting)child);
+        emptyDataValueDirectiveNode = new EmptyDataValueDirectiveNode((ASTEmptyDataValueSetting)child);
       } else if (ParserUtil.hasName(child, "EmptyRDFIDSetting")) {
-        if (emptyRDFIDSettingNode != null)
+        if (emptyRDFIDDirectiveNode != null)
           throw new RendererException("only one empty rdf:ID directive can be specified for a Reference");
-        emptyRDFIDSettingNode = new EmptyRDFIDSettingNode((ASTEmptyRDFIDSetting)child);
+        emptyRDFIDDirectiveNode = new EmptyRDFIDDirectiveNode((ASTEmptyRDFIDSetting)child);
       } else if (ParserUtil.hasName(child, "EmptyRDFSLabelSetting")) {
-        if (emptyRDFSLabelSettingNode != null)
+        if (emptyRDFSLabelDirectiveNode != null)
           throw new RendererException("only one empty rdfs:Label directive can be specified for a Reference");
-        emptyRDFSLabelSettingNode = new EmptyRDFSLabelSettingNode((ASTEmptyRDFSLabelSetting)child);
+        emptyRDFSLabelDirectiveNode = new EmptyRDFSLabelDirectiveNode((ASTEmptyRDFSLabelSetting)child);
       } else if (ParserUtil.hasName(child, "ShiftSetting")) {
-        if (shiftSettingNode != null)
+        if (shiftDirectiveNode != null)
           throw new RendererException("only one shift setting directive can be specified for a Reference");
-        shiftSettingNode = new ShiftSettingNode((ASTShiftSetting)child);
+        shiftDirectiveNode = new ShiftDirectiveNode((ASTShiftSetting)child);
       } else if (ParserUtil.hasName(child, "ValueExtractionFunction")) {
         if (valueExtractionFunctionNode != null)
           throw new RendererException("only one value extraction directive can be specified for a Reference");
@@ -176,23 +176,23 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     if (namespaceNode != null)
       referenceDirectives.setHasExplicitlySpecifiedNamespace(namespaceNode.getNamespace());
 
-    if (emptyLocationSettingNode != null)
+    if (emptyLocationDirectiveNode != null)
       referenceDirectives
-        .setHasExplicitlySpecifiedEmptyLocationDirective(emptyLocationSettingNode.getEmptyLocationSetting());
+        .setHasExplicitlySpecifiedEmptyLocationDirective(emptyLocationDirectiveNode.getEmptyLocationSetting());
 
-    if (emptyDataValueSettingNode != null)
+    if (emptyDataValueDirectiveNode != null)
       referenceDirectives
-        .setHasExplicitlySpecifiedEmptyDataValueDirective(emptyDataValueSettingNode.getEmptyDataValueSetting());
+        .setHasExplicitlySpecifiedEmptyDataValueDirective(emptyDataValueDirectiveNode.getEmptyDataValueSetting());
 
-    if (emptyRDFIDSettingNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedEmptyRDFIDDirective(emptyRDFIDSettingNode.getEmptyRDFIDSetting());
+    if (emptyRDFIDDirectiveNode != null)
+      referenceDirectives.setHasExplicitlySpecifiedEmptyRDFIDDirective(emptyRDFIDDirectiveNode.getEmptyRDFIDSetting());
 
-    if (emptyRDFSLabelSettingNode != null)
+    if (emptyRDFSLabelDirectiveNode != null)
       referenceDirectives
-        .setHasExplicitlySpecifiedEmptyRDFSLabelDirective(emptyRDFSLabelSettingNode.getEmptyRDFSLabelSetting());
+        .setHasExplicitlySpecifiedEmptyRDFSLabelDirective(emptyRDFSLabelDirectiveNode.getEmptyRDFSLabelSetting());
 
-    if (shiftSettingNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedShiftDirective(shiftSettingNode.getShiftSetting());
+    if (shiftDirectiveNode != null)
+      referenceDirectives.setHasExplicitlySpecifiedShiftDirective(shiftDirectiveNode.getShiftSetting());
 
     if (ifExistsDirectiveNode != null)
       referenceDirectives.setHasExplicitlySpecifiedIfExistsDirective(ifExistsDirectiveNode.getIfExistsSetting());
@@ -258,9 +258,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return defaultRDFSLabelNode;
   }
 
-  public ShiftSettingNode getShiftSettingNode()
+  public ShiftDirectiveNode getShiftDirectiveNode()
   {
-    return shiftSettingNode;
+    return shiftDirectiveNode;
   }
 
   public IfExistsDirectiveNode getIfExistsDirectiveNode()
@@ -273,24 +273,24 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return ifNotExistsDirectiveNode;
   }
 
-  public EmptyDataValueSettingNode getEmptyDataValueSettingNode()
+  public EmptyDataValueDirectiveNode getEmptyDataValueDirectiveNode()
   {
-    return emptyDataValueSettingNode;
+    return emptyDataValueDirectiveNode;
   }
 
-  public EmptyLocationSettingNode getEmptyLocationSettingNode()
+  public EmptyLocationDirectiveNode getEmptyLocationDirectiveNode()
   {
-    return emptyLocationSettingNode;
+    return emptyLocationDirectiveNode;
   }
 
-  public EmptyRDFIDSettingNode getEmptyRDFIDSettingNode()
+  public EmptyRDFIDDirectiveNode getEmptyRDFIDDirectiveNode()
   {
-    return emptyRDFIDSettingNode;
+    return emptyRDFIDDirectiveNode;
   }
 
-  public EmptyRDFSLabelSettingNode getEmptyRDFSLabelSettingNode()
+  public EmptyRDFSLabelDirectiveNode getEmptyRDFSLabelDirectiveNode()
   {
-    return emptyRDFSLabelSettingNode;
+    return emptyRDFSLabelDirectiveNode;
   }
 
   public PrefixNode getPrefixNode()
@@ -343,12 +343,12 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return referenceDirectives.hasExplicitlySpecifiedDefaultDataValue();
   }
 
-  public boolean hasExplicitlySpecifiedDefaultID()
+  public boolean hasExplicitlySpecifiedDefaultRDFID()
   {
     return referenceDirectives.hasExplicitlySpecifiedDefaultID();
   }
 
-  public boolean hasExplicitlySpecifiedDefaultLabel()
+  public boolean hasExplicitlySpecifiedDefaultRDFSLabel()
   {
     return referenceDirectives.hasExplicitlySpecifiedDefaultLabel();
   }
@@ -614,14 +614,14 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       atLeastOneOptionProcessed = true;
     }
 
-    if (hasExplicitlySpecifiedDefaultID()) {
+    if (hasExplicitlySpecifiedDefaultRDFID()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
       representation += defaultRDFIDNode;
       atLeastOneOptionProcessed = true;
     }
 
-    if (hasExplicitlySpecifiedDefaultLabel()) {
+    if (hasExplicitlySpecifiedDefaultRDFSLabel()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
       representation += defaultRDFSLabelNode;
@@ -652,28 +652,28 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     if (hasExplicitlySpecifiedEmptyLocationDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += emptyLocationSettingNode;
+      representation += emptyLocationDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedEmptyDataValueDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += emptyDataValueSettingNode;
+      representation += emptyDataValueDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedEmptyRDFIDDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += emptyRDFIDSettingNode;
+      representation += emptyRDFIDDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedEmptyRDFSLabelDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += emptyRDFSLabelSettingNode;
+      representation += emptyRDFSLabelDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
@@ -694,7 +694,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     if (hasExplicitlySpecifiedShiftDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += shiftSettingNode;
+      representation += shiftDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 

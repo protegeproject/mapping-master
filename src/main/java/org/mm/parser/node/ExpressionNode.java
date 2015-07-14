@@ -10,17 +10,17 @@ import org.mm.parser.ParserUtil;
 
 public class ExpressionNode
 {
-  private MMDirectiveNode mmDirectiveNode = null;
-  private MMExpressionNode mmExpressionNode = null;
+  private MMDirectiveNode mmDirectiveNode;
+  private MMExpressionNode mmExpressionNode;
 
   public ExpressionNode(ASTExpression node) throws ParseException
   {
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
-      if (ParserUtil.hasName(child, "MMExpression")) {
+      if (ParserUtil.hasName(child, "MMDirective")) {
         mmDirectiveNode = new MMDirectiveNode((ASTMMDirective)child);
-      } else if (ParserUtil.hasName(child, "OWLExpression")) {
+      } else if (ParserUtil.hasName(child, "MMExpression")) {
         mmExpressionNode = new MMExpressionNode((ASTMMExpression)child);
       } else
         throw new InternalParseException("invalid child node " + child.toString() + " to Expression");

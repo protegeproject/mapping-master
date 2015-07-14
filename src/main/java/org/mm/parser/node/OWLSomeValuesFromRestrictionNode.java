@@ -1,8 +1,8 @@
 package org.mm.parser.node;
 
+import org.mm.parser.ASTOWLDataSomeValuesFrom;
 import org.mm.parser.ASTOWLSomeValuesFromRestriction;
-import org.mm.parser.ASTOWLSomeValuesFromClass;
-import org.mm.parser.ASTOWLSomeValuesFromDataType;
+import org.mm.parser.ASTOWLObjectSomeValuesFrom;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
@@ -10,51 +10,51 @@ import org.mm.parser.ParserUtil;
 
 public class OWLSomeValuesFromRestrictionNode
 {
-	private OWLSomeValuesFromDataTypeNode owlSomeValuesFromDataTypeNode = null;
-	private OWLSomeValuesFromClassNode owlSomeValuesFromClassNode = null;
+	private OWLDataSomeValuesFromNode owlDataSomeValuesFromNode = null;
+	private OWLObjectSomeValuesFromNode owlObjectSomeValuesFromNode = null;
 
 	public OWLSomeValuesFromRestrictionNode(ASTOWLSomeValuesFromRestriction node) throws ParseException
 	{
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
 
-			if (ParserUtil.hasName(child, "OWLSomeValuesFromDataType"))
-				owlSomeValuesFromDataTypeNode = new OWLSomeValuesFromDataTypeNode((ASTOWLSomeValuesFromDataType)child);
+			if (ParserUtil.hasName(child, "OWLDataSomeValuesFrom"))
+				owlDataSomeValuesFromNode = new OWLDataSomeValuesFromNode((ASTOWLDataSomeValuesFrom)child);
 			else if (ParserUtil.hasName(child, "OWLSomeValuesFromClass"))
-				owlSomeValuesFromClassNode = new OWLSomeValuesFromClassNode((ASTOWLSomeValuesFromClass)child);
+				owlObjectSomeValuesFromNode = new OWLObjectSomeValuesFromNode((ASTOWLObjectSomeValuesFrom)child);
 			else
 				throw new InternalParseException("invalid child node " + child.toString() + " for OWLSomeValuesFrom");
 		} 
 	}
 
-	public OWLSomeValuesFromDataTypeNode getOWLSomeValuesFromDataTypeNode()
+	public OWLDataSomeValuesFromNode getOWLSomeValuesFromDataTypeNode()
 	{
-		return owlSomeValuesFromDataTypeNode;
+		return owlDataSomeValuesFromNode;
 	}
 	
-	public OWLSomeValuesFromClassNode getOWLSomeValuesFromClassNode()
+	public OWLObjectSomeValuesFromNode getOWLSomeValuesFromClassNode()
 	{
-		return owlSomeValuesFromClassNode;
+		return owlObjectSomeValuesFromNode;
 	}
 
 	public boolean hasOWLSomeValuesFromDataType()
 	{
-		return owlSomeValuesFromDataTypeNode != null;
+		return owlDataSomeValuesFromNode != null;
 	}
 	
 	public boolean hasOWLSomeValuesFromClass()
 	{
-		return owlSomeValuesFromClassNode != null;
+		return owlObjectSomeValuesFromNode != null;
 	}
 
 	public String toString()
 	{
 		String representation = "";
 
-		if (owlSomeValuesFromDataTypeNode != null)
-			representation += owlSomeValuesFromDataTypeNode.toString();
-		else if (owlSomeValuesFromClassNode != null)
-			representation += owlSomeValuesFromClassNode.toString();
+		if (owlDataSomeValuesFromNode != null)
+			representation += owlDataSomeValuesFromNode.toString();
+		else if (owlObjectSomeValuesFromNode != null)
+			representation += owlObjectSomeValuesFromNode.toString();
 
 		return representation;
 	}
