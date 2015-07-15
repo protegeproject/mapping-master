@@ -12,18 +12,18 @@ import java.util.List;
 
 public class OWLEnumeratedClassNode
 {
-  private List<OWLIndividualNode> owlIndividualNodes;
+  private List<OWLIndividualNode> individualNodes;
 
   public OWLEnumeratedClassNode(ASTOWLEnumeratedClass node) throws ParseException
   {
-    owlIndividualNodes = new ArrayList<OWLIndividualNode>();
+    individualNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLIndividual")) {
         OWLIndividualNode owlIndividual = new OWLIndividualNode((ASTOWLIndividual)child);
-        owlIndividualNodes.add(owlIndividual);
+        individualNodes.add(owlIndividual);
       } else
         throw new InternalParseException(
           "OWLEnumeratedClass node expecting OWLIndividual child, got " + child.toString());
@@ -32,20 +32,20 @@ public class OWLEnumeratedClassNode
 
   public List<OWLIndividualNode> getOWLIndividualNodes()
   {
-    return owlIndividualNodes;
+    return individualNodes;
   }
 
   public String toString()
   {
     String representation = "";
 
-    if (owlIndividualNodes.size() == 1)
-      representation = owlIndividualNodes.get(0).toString();
+    if (individualNodes.size() == 1)
+      representation = individualNodes.get(0).toString();
     else {
       boolean isFirst = true;
 
       representation += "{";
-      for (OWLIndividualNode owlIndividual : owlIndividualNodes) {
+      for (OWLIndividualNode owlIndividual : individualNodes) {
         if (!isFirst)
           representation += " ";
         representation += owlIndividual.toString();

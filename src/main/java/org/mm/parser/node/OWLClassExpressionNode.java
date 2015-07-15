@@ -13,10 +13,10 @@ import org.mm.parser.ParserUtil;
 
 public class OWLClassExpressionNode implements TypeNode
 {
-	private OWLNamedClassNode owlNamedClassNode = null;
-	private OWLEnumeratedClassNode owlEnumeratedClassNode = null;
-	private OWLUnionClassNode owlUnionClassNode = null;
-	private OWLRestrictionNode owlRestrictionNode = null;
+	private OWLNamedClassNode namedClassNode;
+	private OWLEnumeratedClassNode enumeratedClassNode;
+	private OWLUnionClassNode unionClassNode;
+	private OWLRestrictionNode restrictionNode;
 	private boolean isNegated;
 
 	public OWLClassExpressionNode(ASTOWLClassExpression node) throws ParseException
@@ -27,37 +27,41 @@ public class OWLClassExpressionNode implements TypeNode
 			Node child = node.jjtGetChild(i);
 
 			if (ParserUtil.hasName(child, "OWLEnumeratedClass"))
-				owlEnumeratedClassNode = new OWLEnumeratedClassNode((ASTOWLEnumeratedClass)child);
+				enumeratedClassNode = new OWLEnumeratedClassNode((ASTOWLEnumeratedClass)child);
 			else if (ParserUtil.hasName(child, "OWLUnionClass"))
-				owlUnionClassNode = new OWLUnionClassNode((ASTOWLUnionClass)child);
+				unionClassNode = new OWLUnionClassNode((ASTOWLUnionClass)child);
 			else if (ParserUtil.hasName(child, "OWLRestriction"))
-				owlRestrictionNode = new OWLRestrictionNode((ASTOWLRestriction)child);
+				restrictionNode = new OWLRestrictionNode((ASTOWLRestriction)child);
 			else if (ParserUtil.hasName(child, "OWLNamedClass"))
-				owlNamedClassNode = new OWLNamedClassNode((ASTOWLNamedClass)child);
+				namedClassNode = new OWLNamedClassNode((ASTOWLNamedClass)child);
 			else
-				throw new InternalParseException("invalid child node " + child.toString() + " for OWLClassOrRestriction");
-		} 
+				throw new InternalParseException("invalid child node " + child.toString() + " for OWLClassExpression");
+		}
+	}
 
+	@Override public String getNodeName()
+	{
+		return "OWLClassExpression";
 	}
 
 	public OWLEnumeratedClassNode getOWLEnumeratedClassNode()
 	{
-		return owlEnumeratedClassNode;
+		return enumeratedClassNode;
 	}
 
 	public OWLUnionClassNode getOWLUnionClassNode()
 	{
-		return owlUnionClassNode;
+		return unionClassNode;
 	}
 
 	public OWLRestrictionNode getOWLRestrictionNode()
 	{
-		return owlRestrictionNode;
+		return restrictionNode;
 	}
 
 	public OWLNamedClassNode getOWLNamedClassNode()
 	{
-		return owlNamedClassNode;
+		return namedClassNode;
 	}
 
 	public boolean getIsNegated()
@@ -67,28 +71,24 @@ public class OWLClassExpressionNode implements TypeNode
 
 	public boolean hasOWLEnumeratedClass()
 	{
-		return owlEnumeratedClassNode != null;
+		return enumeratedClassNode != null;
 	}
 
 	public boolean hasOWLUnionClass()
 	{
-		return owlUnionClassNode != null;
+		return unionClassNode != null;
 	}
 
 	public boolean hasOWLRestriction()
 	{
-		return owlRestrictionNode != null;
+		return restrictionNode != null;
 	}
 
 	public boolean hasOWLNamedClass()
 	{
-		return owlNamedClassNode != null;
+		return namedClassNode != null;
 	}
 
-	public String getNodeName()
-	{
-		return "OWLClassExpression";
-	}
 
 	@Override public boolean isOWLClassExpressionNode() { return true; }
 
@@ -101,14 +101,14 @@ public class OWLClassExpressionNode implements TypeNode
 		if (isNegated)
 			representation += "NOT ";
 
-		if (owlEnumeratedClassNode != null)
-			representation += owlEnumeratedClassNode.toString();
-		else if (owlUnionClassNode != null)
-			representation += owlUnionClassNode.toString();
-		else if (owlRestrictionNode != null)
-			representation += owlRestrictionNode.toString();
-		else if (owlNamedClassNode != null)
-			representation += owlNamedClassNode.toString();
+		if (enumeratedClassNode != null)
+			representation += enumeratedClassNode.toString();
+		else if (unionClassNode != null)
+			representation += unionClassNode.toString();
+		else if (restrictionNode != null)
+			representation += restrictionNode.toString();
+		else if (namedClassNode != null)
+			representation += namedClassNode.toString();
 
 		return representation;
 	}

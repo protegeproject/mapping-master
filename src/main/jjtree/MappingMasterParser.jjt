@@ -718,7 +718,6 @@ void owl_class_expression() #OWLClassExpression :
   ( <NOT> { isNegated = true; } )? (  LOOKAHEAD(owl_restriction()) owl_restriction() 
                                     | owl_named_class(defaultClassValueEncoding) 
                                     | "(" owl_union_class() ")" 
-                                    | owl_enumerated_class() 
                                    )
 
   { jjtThis.isNegated = isNegated; }
@@ -735,16 +734,17 @@ void owl_named_class(int defaultValueEncoding) #OWLNamedClass : {}
   owl_class_name() | reference(OWL_CLASS, defaultValueEncoding)
 } 
 
-void owl_property() #OWLProperty : {}
-{
-  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding)
-} 
-
 // TODO Rename to owl_named_individual, OWLNamedIndividual
 void owl_individual(int defaultValueEncoding) #OWLIndividual : {}
 {
   owl_individual_name() | reference(OWL_INDIVIDUAL, defaultValueEncoding)
 } 
+
+void owl_property() #OWLProperty : {}
+{
+  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding)
+} 
+
  
 void string_or_reference() #StringOrReference : {}
 {

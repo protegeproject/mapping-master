@@ -75,9 +75,6 @@ public interface Renderer
   Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
     throws RendererException;
 
-  Optional<? extends Rendering> renderOWLEnumeratedClass(OWLEnumeratedClassNode enumeratedClassNode)
-    throws RendererException;
-
     // OWL class expressions
   Optional<? extends Rendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
     throws RendererException;
