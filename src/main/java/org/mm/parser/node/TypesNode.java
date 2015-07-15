@@ -23,8 +23,8 @@ public class TypesNode implements MMNode
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLClassExpression")) {
-        OWLClassExpressionNode owlClassExpressionNode = new OWLClassExpressionNode((ASTOWLClassExpression)child);
-        typeNodes.add(owlClassExpressionNode);
+        OWLClassExpressionNode classExpressionNode = new OWLClassExpressionNode((ASTOWLClassExpression)child);
+        typeNodes.add(classExpressionNode);
       } else if (ParserUtil.hasName(child, "Reference")) {
         ReferenceNode referenceNode = new ReferenceNode((ASTReference)child);
         typeNodes.add(referenceNode);

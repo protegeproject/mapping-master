@@ -18,22 +18,22 @@ import java.util.List;
 
 public class OWLIndividualDeclarationNode
 {
-	private OWLIndividualNode owlIndividualNode;
+	private OWLIndividualNode individualNode;
 	private List<FactNode> factNodes;
 	private List<AnnotationFactNode> annotationNodes;
-	private TypesNode typeNodes = null;
+	private TypesNode typesNode = null;
 	private SameAsNode sameAsNode = null;
-	private DifferentFromNode differentFromNode = null;
+	private DifferentFromNode differentFromNode;
 
 	public OWLIndividualDeclarationNode(ASTOWLIndividualDeclaration node) throws ParseException
 	{
-		factNodes = new ArrayList<FactNode>();
-		annotationNodes = new ArrayList<AnnotationFactNode>();
+		factNodes = new ArrayList<>();
+		annotationNodes = new ArrayList<>();
 
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
 			if (ParserUtil.hasName(child, "OWLIndividual"))
-				owlIndividualNode = new OWLIndividualNode((ASTOWLIndividual)child);
+				individualNode = new OWLIndividualNode((ASTOWLIndividual)child);
 			else if (ParserUtil.hasName(child, "Fact")) {
 				FactNode fact = new FactNode((ASTFact)child);
 				factNodes.add(fact);
@@ -41,7 +41,7 @@ public class OWLIndividualDeclarationNode
 				AnnotationFactNode fact = new AnnotationFactNode((ASTAnnotationFact)child);
 				annotationNodes.add(fact);
 			} else if (ParserUtil.hasName(child, "Types")) {
-				typeNodes = new TypesNode((ASTTypes)child);
+				typesNode = new TypesNode((ASTTypes)child);
 			} else if (ParserUtil.hasName(child, "SameAs")) {
 				sameAsNode = new SameAsNode((ASTSameAs)child);
 			} else if (ParserUtil.hasName(child, "DifferentFrom")) {
@@ -63,7 +63,7 @@ public class OWLIndividualDeclarationNode
 
 	public boolean hasTypes()
 	{
-		return typeNodes != null;
+		return typesNode != null;
 	}
 
 	public boolean hasSameAs()
@@ -78,7 +78,7 @@ public class OWLIndividualDeclarationNode
 
 	public OWLIndividualNode getOWLIndividualNode()
 	{
-		return owlIndividualNode;
+		return individualNode;
 	}
 
 	public List<FactNode> getFactNodes()
@@ -91,9 +91,9 @@ public class OWLIndividualDeclarationNode
 		return annotationNodes;
 	}
 
-	public TypesNode getTypeNodes()
+	public TypesNode getTypesNode()
 	{
-		return typeNodes;
+		return typesNode;
 	}
 
 	public SameAsNode getSameAsNode()
@@ -108,7 +108,7 @@ public class OWLIndividualDeclarationNode
 
 	public String toString()
 	{
-		String representation = "Individual: " + owlIndividualNode.toString();
+		String representation = "Individual: " + individualNode.toString();
 		boolean isFirst = true;
 
 		if (hasFacts()) {
@@ -123,7 +123,7 @@ public class OWLIndividualDeclarationNode
 
 		if (hasTypes()) {
 			representation += " Types: ";
-			representation += typeNodes.toString();
+			representation += typesNode.toString();
 		}
 
 		isFirst = true;

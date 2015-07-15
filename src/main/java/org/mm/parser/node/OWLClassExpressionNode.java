@@ -90,6 +90,10 @@ public class OWLClassExpressionNode implements TypeNode
 		return "OWLClassExpression";
 	}
 
+	@Override public boolean isOWLClassExpressionNode() { return true; }
+
+	@Override public boolean isReferenceNode() { return false; }
+
 	public String toString()
 	{
 		String representation = "";

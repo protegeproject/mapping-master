@@ -107,7 +107,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     }
 
     if (owlIndividualDeclarationNode.hasTypes()) {
-      Optional<TextRendering> typesRendering = renderTypes(owlIndividualDeclarationNode.getTypeNodes());
+      Optional<TextRendering> typesRendering = renderTypes(owlIndividualDeclarationNode.getTypesNode());
 
       if (typesRendering.isPresent())
         rendering.addText(" Types: " + typesRendering.get().getTextRendering());

@@ -564,7 +564,11 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return null;
   }
 
-  @Override public String toString()
+	@Override public boolean isOWLClassExpressionNode() { return false; }
+
+	@Override public boolean isReferenceNode() { return true; }
+
+	@Override public String toString()
   {
     String representation = "";
     boolean atLeastOneOptionProcessed = false;
