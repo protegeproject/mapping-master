@@ -9,7 +9,7 @@ import org.mm.parser.node.DefaultLocationValueNode;
 import org.mm.parser.node.DifferentFromNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
-import org.mm.parser.node.LiteralNode;
+import org.mm.parser.node.OWLLiteralNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
@@ -168,7 +168,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     else if (owlPropertyAssertionObjectNode.isName())
       return renderName(owlPropertyAssertionObjectNode.getNameNode());
     else if (owlPropertyAssertionObjectNode.isLiteral())
-      return renderLiteral(owlPropertyAssertionObjectNode.getLiteralNode());
+      return renderLiteral(owlPropertyAssertionObjectNode.getOWLLiteralNode());
     else
       throw new RendererException("unknown property value node " + owlPropertyAssertionObjectNode);
   }
@@ -247,16 +247,17 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering));
   }
 
-  public Optional<TextRendering> renderOWLHasValueRestriction(OWLHasValueRestrictionNode owlHasValueRestrictionNode)
+  public Optional<TextRendering> renderOWLHasValueRestriction(OWLHasValueRestrictionNode hasValueRestrictionNode)
     throws RendererException
   {
-    Optional<TextRendering> propertyValueRendering = renderOWLPropertyAssertionObject(
-      owlHasValueRestrictionNode.getOWLPropertyAssertionObjectNode());
-
-    if (propertyValueRendering.isPresent())
-      return Optional.of(new TextRendering("VALUE " + propertyValueRendering.get().getTextRendering()));
+    if (hasValueRestrictionNode.isReference())
+      return renderReference(hasValueRestrictionNode.getReferenceNode());
+    else if (hasValueRestrictionNode.isName())
+      return renderName(hasValueRestrictionNode.getNameNode());
+    else if (hasValueRestrictionNode.isLiteral())
+      return renderLiteral(hasValueRestrictionNode.getOWLLiteralNode());
     else
-      return Optional.empty();
+      throw new RendererException("unknown property value node " + hasValueRestrictionNode);
   }
 
   public Optional<TextRendering> renderOWLProperty(OWLPropertyNode propertyNode) throws RendererException
@@ -840,18 +841,6 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
       return Optional.empty();
   }
 
-  public Optional<TextRendering> renderOWLHasValue(OWLHasValueRestrictionNode owlHasValueRestrictionNode)
-    throws RendererException
-  {
-    Optional<TextRendering> propertyValueRendering = renderOWLPropertyAssertionObject(
-      owlHasValueRestrictionNode.getOWLPropertyAssertionObjectNode());
-
-    if (propertyValueRendering.isPresent())
-      return Optional.of(new TextRendering("VALUE " + propertyValueRendering.get().getTextRendering()));
-    else
-      return Optional.empty();
-  }
-
   public Optional<TextRendering> renderOWLAllValuesFrom(OWLAllValuesFromRestrictionNode owlAllValuesFromRestrictionNode)
     throws RendererException
   {
@@ -1010,7 +999,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
   }
 
-  public Optional<TextRendering> renderLiteral(LiteralNode literalNode) throws RendererException
+  public Optional<TextRendering> renderLiteral(OWLLiteralNode literalNode) throws RendererException
   {
     if (literalNode.isInteger())
       return Optional.of(new TextRendering(literalNode.getIntegerLiteralNode().toString()));

@@ -3,7 +3,7 @@ package org.mm.renderer;
 import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
-import org.mm.parser.node.LiteralNode;
+import org.mm.parser.node.OWLLiteralNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
@@ -138,7 +138,7 @@ Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictio
 
   Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException;
 
-  Optional<? extends Rendering> renderLiteral(LiteralNode literalNode) throws RendererException;
+  Optional<? extends Rendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException;
 
   Optional<? extends Rendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException;
 

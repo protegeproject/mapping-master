@@ -7,7 +7,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
-import org.mm.parser.node.LiteralNode;
+import org.mm.parser.node.OWLLiteralNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAllValuesFromRestrictionNode;
@@ -103,12 +103,12 @@ import java.util.regex.PatternSyntaxException;
 public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 {
   public static int NameEncodings[] = { MM_LOCATION, MM_DATA_VALUE, RDF_ID, RDFS_LABEL };
-  public static int ReferenceValueTypes[] = { OWL_CLASS, OWL_THING, OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY, XSD_INT,
+  public static int ReferenceValueTypes[] = { OWL_CLASS, OWL_INDIVIDUAL, OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY, XSD_INT,
     XSD_STRING, XSD_FLOAT, XSD_DOUBLE, XSD_SHORT, XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DURATION };
   public static int PropertyTypes[] = { OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY };
   public static int PropertyValueTypes[] = ReferenceValueTypes;
-  public static int DataPropertyValueTypes[] = { XSD_INT, XSD_STRING, XSD_FLOAT, XSD_DOUBLE, XSD_SHORT, XSD_BOOLEAN,
-    XSD_TIME, XSD_DATETIME, XSD_DURATION };
+  public static int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INT, XSD_FLOAT, XSD_DOUBLE, XSD_BOOLEAN,
+    XSD_TIME, XSD_DATETIME, XSD_DATE, XSD_DURATION };
 
   // Configuration options
   public int defaultValueEncoding = RDFS_LABEL;
@@ -479,11 +479,11 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
           return Optional.of(new OWLRestrictionRendering(restriction));
         } else if (restrictionNode.isOWLHasValue()) {
-          OWLPropertyAssertionObjectNode propertyValueNode = restrictionNode.getOWLHasValueRestrictionNode()
-            .getOWLPropertyAssertionObjectNode();
-          if (!propertyValueNode.isLiteral())
+          OWLHasValueRestrictionNode hasValueRestrictionNode = restrictionNode.getOWLHasValueRestrictionNode();
+
+          if (!hasValueRestrictionNode.isLiteral())
             throw new RendererException("expecting data value for data has value restriction " + restrictionNode);
-          OWLLiteral literal = getOWLLiteral(propertyValueNode);
+          OWLLiteral literal = getOWLLiteral(hasValueRestrictionNode.getOWLLiteralNode());
           OWLDataHasValue restriction = this.owlDataFactory.getOWLDataHasValue(property, literal);
 
           return Optional.of(new OWLRestrictionRendering(restriction));
@@ -526,17 +526,13 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
           return Optional.of(new OWLRestrictionRendering(restriction));
         } else if (restrictionNode.isOWLHasValue()) {
-          OWLPropertyAssertionObjectNode propertyAssertionObjectNode = restrictionNode.getOWLHasValueRestrictionNode()
-            .getOWLPropertyAssertionObjectNode();
-          if (propertyAssertionObjectNode.isLiteral())
+          OWLHasValueRestrictionNode hasValueRestrictionNode = restrictionNode.getOWLHasValueRestrictionNode();
+          if (hasValueRestrictionNode.isLiteral())
             throw new RendererException("expecting class for object has value restriction " + restrictionNode);
-          Optional<OWLPropertyAssertionObjectRendering> propertyAssertionObjectRendering = renderOWLPropertyAssertionObject(
-            propertyAssertionObjectNode);
-          if (propertyAssertionObjectRendering.isPresent()) {
-            OWLPropertyAssertionObject propertyAssertionObject = propertyAssertionObjectRendering.get()
-              .getOWLPropertyAssertionObject();
-            OWLObjectHasValue restriction = this.owlDataFactory.getOWLObjectHasValue(property, propertyAssertionObject);
-
+          Optional<OWLNamedIndividualRendering> individualRendering = renderOWLNamedIndividual();
+          if (individualRendering.isPresent()) {
+            OWLNamedIndividual individual = individualRendering.get().getOWLNamedIndividual();
+            OWLObjectHasValue restriction = this.owlDataFactory.getOWLObjectHasValue(property, individual);
             return Optional.of(new OWLRestrictionRendering(restriction));
           } else
             return Optional.empty();
@@ -755,7 +751,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
           ReferenceNode referenceNode = annotationValueNode.getReferenceNode();
           if (!referenceNode.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler
             .isOWLObjectProperty(property))
-            referenceNode.updateReferenceType(OWL_THING);
+            referenceNode.updateReferenceType(OWL_INDIVIDUAL);
         }
 
         OWLAnnotationAssertionAxiom axiom = this.owlDataFactory
@@ -800,7 +796,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
           ReferenceNode reference = propertyAssertionObjectNode.getReferenceNode();
 
           if (!reference.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property))
-            reference.updateReferenceType(OWL_THING);
+            reference.updateReferenceType(OWL_INDIVIDUAL);
         }
 
         if (this.owlObjectHandler.isOWLObjectProperty(property)) {
@@ -993,10 +989,8 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return processedValue;
   }
 
-  private OWLLiteral getOWLLiteral(OWLPropertyAssertionObjectNode propertyValueNode) throws RendererException
+  private OWLLiteral getOWLLiteral(OWLLiteralNode literalNode) throws RendererException
   {
-    LiteralNode literalNode = propertyValueNode.getLiteralNode();
-
     if (literalNode.isBoolean())
       return this.owlDataFactory.getOWLLiteral(literalNode.getBooleanLiteralNode().getValue());
     else if (literalNode.isInteger())
@@ -1006,7 +1000,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     else if (literalNode.isString())
       return this.owlDataFactory.getOWLLiteral(literalNode.getStringLiteralNode().getValue());
     else
-      throw new RendererException("unknown OWL literal property value " + propertyValueNode.toString());
+      throw new RendererException("unknown OWL literal property value " + literalNode.toString());
   }
 
   private SpreadsheetLocation getLocation(SourceSpecificationNode sourceSpecificationNode) throws RendererException
@@ -1409,7 +1403,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return Optional.empty(); // TODO
   }
 
-  @Override public Optional<? extends Rendering> renderLiteral(LiteralNode literalNode) throws RendererException
+  @Override public Optional<? extends Rendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
   {
     return Optional.empty(); // TODO
   }

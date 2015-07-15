@@ -1,7 +1,7 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTLiteral;
 import org.mm.parser.ASTName;
+import org.mm.parser.ASTOWLLiteral;
 import org.mm.parser.ASTOWLPropertyAssertionObject;
 import org.mm.parser.ASTReference;
 import org.mm.parser.InternalParseException;
@@ -11,72 +11,72 @@ import org.mm.parser.ParserUtil;
 
 public class OWLPropertyAssertionObjectNode implements MMNode
 {
-	private ReferenceNode referenceNode = null;
-	private NameNode nameNode = null;
-	private LiteralNode literalNode = null;
+  private ReferenceNode referenceNode;
+  private NameNode nameNode;
+  private OWLLiteralNode literalNode;
 
-	public OWLPropertyAssertionObjectNode(ASTOWLPropertyAssertionObject node) throws ParseException
-	{
-		if (node.jjtGetNumChildren() != 1)
-			throw new InternalParseException("expecting one child of OWLPropertyAssertionObject node");
-		else {
-			Node child = node.jjtGetChild(0);
-			if (ParserUtil.hasName(child, "Reference"))
-				referenceNode = new ReferenceNode((ASTReference)child);
-			else if (ParserUtil.hasName(child, "Name"))
-				nameNode = new NameNode((ASTName)child);
-			else if (ParserUtil.hasName(child, "Literal"))
-				literalNode = new LiteralNode((ASTLiteral)child);
-			else
-				throw new InternalParseException(
-						"unexpected child node " + child.toString() + " for OWLPropertyAssertionObject node");
-		}
-	}
+  public OWLPropertyAssertionObjectNode(ASTOWLPropertyAssertionObject node) throws ParseException
+  {
+    if (node.jjtGetNumChildren() != 1)
+      throw new InternalParseException("expecting one child of OWLPropertyAssertionObject node");
+    else {
+      Node child = node.jjtGetChild(0);
+      if (ParserUtil.hasName(child, "Reference"))
+        referenceNode = new ReferenceNode((ASTReference)child);
+      else if (ParserUtil.hasName(child, "Name"))
+        nameNode = new NameNode((ASTName)child);
+      else if (ParserUtil.hasName(child, "OWLLiteral"))
+        literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
+      else
+        throw new InternalParseException(
+          "unexpected child node " + child.toString() + " for OWLPropertyAssertionObject node");
+    }
+  }
 
-	public ReferenceNode getReferenceNode()
-	{
-		return referenceNode;
-	}
+  public String getNodeName()
+  {
+    return "OWLPropertyAssertionObject";
+  }
 
-	public NameNode getNameNode()
-	{
-		return nameNode;
-	}
+  public ReferenceNode getReferenceNode()
+  {
+    return referenceNode;
+  }
 
-	public LiteralNode getLiteralNode()
-	{
-		return literalNode;
-	}
+  public NameNode getNameNode()
+  {
+    return nameNode;
+  }
 
-	public boolean isReference()
-	{
-		return referenceNode != null;
-	}
+  public OWLLiteralNode getOWLLiteralNode()
+  {
+    return literalNode;
+  }
 
-	public boolean isName()
-	{
-		return nameNode != null;
-	}
+  public boolean isReference()
+  {
+    return referenceNode != null;
+  }
 
-	public boolean isLiteral()
-	{
-		return literalNode != null;
-	}
+  public boolean isName()
+  {
+    return nameNode != null;
+  }
 
-	public String getNodeName()
-	{
-		return "OWLPropertyAssertionObject";
-	}
+  public boolean isLiteral()
+  {
+    return literalNode != null;
+  }
 
-	public String toString()
-	{
-		if (isReference())
-			return referenceNode.toString();
-		else if (isName())
-			return nameNode.toString();
-		else if (isLiteral())
-			return literalNode.toString();
-		else
-			return "";
-	}
+  public String toString()
+  {
+    if (isReference())
+      return referenceNode.toString();
+    else if (isName())
+      return nameNode.toString();
+    else if (isLiteral())
+      return literalNode.toString();
+    else
+      return "";
+  }
 }

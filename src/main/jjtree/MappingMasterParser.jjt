@@ -122,16 +122,18 @@ TOKEN: {<NOT: "not" | "NOT">}
 TOKEN: {<TRUE: "true" | "TRUE">}
 TOKEN: {<FALSE: "false" | "FALSE">}
 
-TOKEN: { <XSD_DATETIME: "xsd:dateTime" > }
-TOKEN: { <XSD_LONG: "xsd:long" > }
 TOKEN: { <XSD_STRING: "xsd:string" > }
-TOKEN: { <XSD_INT: "xsd:int" > }
+TOKEN: { <XSD_BYTE: "xsd:byte" > }
 TOKEN: { <XSD_SHORT: "xsd:short" > }
-TOKEN: { <XSD_BOOLEAN: "xsd:boolean" > }
-TOKEN: { <XSD_DOUBLE: "xsd:double" > }
+TOKEN: { <XSD_INT: "xsd:int" > }
+TOKEN: { <XSD_LONG: "xsd:long" > }
 TOKEN: { <XSD_FLOAT: "xsd:float"  > }
+TOKEN: { <XSD_DOUBLE: "xsd:double" > }
+TOKEN: { <XSD_BOOLEAN: "xsd:boolean" > }
+TOKEN: { <XSD_DATETIME: "xsd:dateTime"> }
 TOKEN: { <XSD_TIME: "xsd:time"> }
 TOKEN: { <XSD_DURATION: "xsd:duration" > }
+TOKEN: { <XSD_DATE: "xsd:date" > }
 TOKEN: { <RDF_XMLLITERAL: "rdf:XMLLiteral" > }
 
 /*
@@ -202,7 +204,7 @@ TOKEN: { <CELL_WILDCARD: "*"> }
 TOKEN: { <RDFS_CLASS: "rdfs:class"> }
 TOKEN: { <RDF_PROPERTY: "rdf:property"> }
 TOKEN: { <OWL_CLASS: "Class"> }
-TOKEN: { <OWL_THING: "Individual"> }
+TOKEN: { <OWL_INDIVIDUAL: "Individual"> }
 TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
 TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
 
@@ -619,23 +621,15 @@ void name() #Name:
   }
 }
 
-void owl_property_assertion_object(int defaultPropertyValueType) #OWLPropertyAssertionObject : {}
-{
-  (  reference(defaultPropertyValueType, defaultValueEncoding) 
-   | name() 
-   | literal() 
-  )
-}
-
 void owl_annotation_value(int defaultPropertyValueType) #OWLAnnotationValue : {}
 {
   (  reference(defaultPropertyValueType, defaultValueEncoding) 
    | name() 
-   | literal() 
+   | owl_literal() 
   )
 }
 
-void literal() #Literal : {}
+void owl_literal() #OWLLiteral : {}
 {
   (  integer_literal() 
    | float_literal() 
@@ -749,7 +743,7 @@ void owl_property() #OWLProperty : {}
 // TODO Rename to owl_named_individual, OWLNamedIndividual
 void owl_individual(int defaultValueEncoding) #OWLIndividual : {}
 {
-  owl_individual_name() | reference(OWL_THING, defaultValueEncoding)
+  owl_individual_name() | reference(OWL_INDIVIDUAL, defaultValueEncoding)
 } 
  
 void string_or_reference() #StringOrReference : {}
@@ -835,26 +829,53 @@ void owl_restriction() #OWLRestriction : {}
                  )
 }
 
-int integer_value() :
+void owl_has_value_restriction() #OWLHasValueRestriction : {}
 {
-  Token t;
+  <VALUE> (  reference(OWL_INDIVIDUAL, defaultValueEncoding) 
+           | name() 
+           | owl_literal() 
+          )
+}
+
+void owl_all_values_from_restriction() #OWLAllValuesFromRestriction : {}
+{
+  LOOKAHEAD(2) owl_data_all_values_from() | LOOKAHEAD(2) owl_object_all_values_from() 
+}
+
+void owl_data_all_values_from() #OWLDataAllValuesFrom :
+{
+  int datatype;
 }
 {
-  t=<INTEGER_LITERAL>
+  <ONLY> datatype = datatype()
   {
-    return Integer.parseInt(t.image);
+    jjtThis.datatype = datatype;
   }
 }
 
-int cardinality_value() :
+void owl_object_all_values_from() #OWLObjectAllValuesFrom : {}
 {
- int cardinality;
+  <ONLY> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
+}
+
+void owl_some_values_from_restriction() #OWLSomeValuesFromRestriction : {}
+{
+  LOOKAHEAD(2) owl_data_some_values_from() | LOOKAHEAD(2) owl_object_some_values_from() 
+}
+
+void owl_object_some_values_from() #OWLObjectSomeValuesFrom : {}
+{
+  <SOME> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
+}
+
+void owl_data_some_values_from() #OWLDataSomeValuesFrom :
+{
+  int datatype;
 }
 {
-  cardinality  = integer_value()
-
+  <SOME> datatype = datatype()
   {
-    return cardinality;
+    jjtThis.datatype = datatype;
   }
 }
 
@@ -882,79 +903,67 @@ void owl_min_cardinality_restriction() #OWLMinCardinalityRestriction :
   }
 }
 
-void owl_all_values_from_restriction() #OWLAllValuesFromRestriction : {}
-{
-  LOOKAHEAD(2) owl_data_all_values_from() | LOOKAHEAD(2) owl_object_all_values_from() 
-}
-
-void owl_has_value_restriction() #OWLHasValueRestriction : {}
-{
-  <VALUE> owl_property_assertion_object(defaultPropertyValueType)
-}
-
 void owl_exact_cardinality_restriction() #OWLExactCardinalityRestriction :
 {
   int cardinality;
 }
 {
   <EXACTLY> cardinality = cardinality_value()
-
   {
     jjtThis.cardinality = cardinality;
   }
 }
 
-void owl_object_all_values_from() #OWLObjectAllValuesFrom : {}
+void owl_property_assertion_object(int defaultPropertyValueType) #OWLPropertyAssertionObject : {}
 {
-  <ONLY> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
+  (  reference(defaultPropertyValueType, defaultValueEncoding) 
+   | name() 
+   | owl_literal() 
+  )
 }
 
-void owl_data_all_values_from() #OWLDataAllValuesFrom :
+int integer_value() :
 {
-  int datatype;
+  Token t;
 }
 {
-  <ONLY> datatype = datatype()
+  t=<INTEGER_LITERAL>
   {
-    jjtThis.datatype = datatype;
+    return Integer.parseInt(t.image);
   }
 }
 
-void owl_some_values_from_restriction() #OWLSomeValuesFromRestriction : {}
+int cardinality_value() :
 {
-  LOOKAHEAD(2) owl_data_some_values_from() | LOOKAHEAD(2) owl_object_some_values_from() 
+ int cardinality;
 }
+{
+  cardinality  = integer_value()
 
-void owl_object_some_values_from() #OWLObjectSomeValuesFrom : {}
-{
-  <SOME> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
-}
-
-void owl_data_some_values_from() #OWLDataSomeValuesFrom :
-{
-  int datatype;
-}
-{
-  <SOME> datatype = datatype()
   {
-    jjtThis.datatype = datatype;
+    return cardinality;
   }
 }
-  
+
+// Note that this is not an exhuastive list of datatypes
+
 int datatype() :
 {
   Token t;
 }
 {
  (
-     t = <XSD_INT>
-   | t = <XSD_STRING> 
+     t = <XSD_STRING>
+   | t = <XSD_BYTE>
+   | t = <XSD_SHORT> 
+   | t = <XSD_INT>
+   | t = <XSD_LONG>
    | t = <XSD_FLOAT>
    | t = <XSD_DOUBLE>
-   | t = <XSD_SHORT> 
    | t = <XSD_BOOLEAN>
    | t = <XSD_TIME>
    | t = <XSD_DATETIME>
+   | t = <XSD_DATE>
    | t = <XSD_DURATION>
  )
   {
@@ -1014,7 +1023,7 @@ int reference_type() #ReferenceType :
      t = <RDFS_CLASS> { referenceType = t.kind; }
    | t = <RDF_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_CLASS> { referenceType = t.kind; }
-   | t = <OWL_THING> { referenceType = t.kind; }
+   | t = <OWL_INDIVIDUAL> { referenceType = t.kind; }
    | t = <OWL_OBJECT_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_DATA_PROPERTY> { referenceType = t.kind; }
    | referenceType = datatype()

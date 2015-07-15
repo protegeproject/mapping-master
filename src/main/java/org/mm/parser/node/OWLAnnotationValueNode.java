@@ -1,6 +1,6 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTLiteral;
+import org.mm.parser.ASTOWLLiteral;
 import org.mm.parser.ASTOWLAnnotationValue;
 import org.mm.parser.ParseException;
 import org.mm.parser.ASTName;
@@ -11,9 +11,9 @@ import org.mm.parser.ParserUtil;
 
 public class OWLAnnotationValueNode implements MMNode
 {
-	private ReferenceNode referenceNode = null;
-	private NameNode nameNode = null;
-	private LiteralNode literalNode = null;
+	private ReferenceNode referenceNode;
+	private NameNode nameNode;
+	private OWLLiteralNode literalNode;
 
 	public OWLAnnotationValueNode(ASTOWLAnnotationValue node) throws ParseException
 	{
@@ -25,12 +25,17 @@ public class OWLAnnotationValueNode implements MMNode
 				referenceNode = new ReferenceNode((ASTReference)child);
 			else if (ParserUtil.hasName(child, "Name"))
 				nameNode = new NameNode((ASTName)child);
-			else if (ParserUtil.hasName(child, "Literal"))
-				literalNode = new LiteralNode((ASTLiteral)child);
+			else if (ParserUtil.hasName(child, "OWLLiteral"))
+				literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
 			else
 				throw new InternalParseException(
-						"unexpected child node " + child.toString() + " for OWLPropertyAnnotationValue node");
+						"unexpected child node " + child.toString() + " for OWLAnnotationValue node");
 		}
+	}
+
+	public String getNodeName()
+	{
+		return "OWLAnnotationValue";
 	}
 
 	public ReferenceNode getReferenceNode()
@@ -43,7 +48,7 @@ public class OWLAnnotationValueNode implements MMNode
 		return nameNode;
 	}
 
-	public LiteralNode getLiteralNode()
+	public OWLLiteralNode getOWLLiteralNode()
 	{
 		return literalNode;
 	}
@@ -63,10 +68,6 @@ public class OWLAnnotationValueNode implements MMNode
 		return literalNode != null;
 	}
 
-	public String getNodeName()
-	{
-		return "OWLAnnotationValue";
-	}
 
 	public String toString()
 	{
