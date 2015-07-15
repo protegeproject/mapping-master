@@ -1,14 +1,17 @@
 package org.mm.parser.node;
 
 /**
- * A TypeNode has subclasses OWLClassExpressionNode and ReferenceNode
+ * A TypeNode has subclasses OWLClassNode and ReferenceNode
  *
- * @see OWLClassExpressionNode
+ * @see OWLNamedClassNode
+ * @see OWLPropertyNode
  * @see ReferenceNode
  */
 public interface TypeNode extends MMNode
 {
-	boolean isOWLClassExpressionNode();
+	boolean isOWLClassNode();
+
+	boolean isOWLPropertyNode();
 
 	boolean isReferenceNode();
 }

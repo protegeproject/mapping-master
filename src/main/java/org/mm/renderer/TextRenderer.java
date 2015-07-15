@@ -262,7 +262,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLProperty(OWLPropertyNode propertyNode) throws RendererException
   {
-    if (propertyNode.isReference())
+    if (propertyNode.isReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
     else if (propertyNode.isName())
       return renderName(propertyNode.getNameNode());
@@ -272,7 +272,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException
   {
-    if (propertyNode.isReference())
+    if (propertyNode.isReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
     else if (propertyNode.isName())
       return renderName(propertyNode.getNameNode());
@@ -875,7 +875,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode) throws RendererException
   {
-    if (propertyNode.isReference())
+    if (propertyNode.isReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
     else if (propertyNode.isName())
       return renderName(propertyNode.getNameNode());
@@ -885,7 +885,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLDataProperty(OWLPropertyNode propertyNode) throws RendererException
   {
-    if (propertyNode.isReference())
+    if (propertyNode.isReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
     else if (propertyNode.isName())
       return renderName(propertyNode.getNameNode());

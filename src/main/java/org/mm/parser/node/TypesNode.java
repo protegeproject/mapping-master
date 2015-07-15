@@ -1,12 +1,14 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTOWLClassExpression;
+import org.mm.parser.ASTOWLNamedClass;
 import org.mm.parser.ASTTypes;
 import org.mm.parser.ParseException;
 import org.mm.parser.ASTReference;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParserUtil;
+import org.semanticweb.owlapi.reasoner.impl.OWLClassNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +24,9 @@ public class TypesNode implements MMNode
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
-      if (ParserUtil.hasName(child, "OWLClassExpression")) {
-        OWLClassExpressionNode classExpressionNode = new OWLClassExpressionNode((ASTOWLClassExpression)child);
-        typeNodes.add(classExpressionNode);
+      if (ParserUtil.hasName(child, "OWLClass")) {
+        OWLNamedClassNode classNode = new OWLNamedClassNode((ASTOWLNamedClass)child);
+        typeNodes.add(classNode);
       } else if (ParserUtil.hasName(child, "Reference")) {
         ReferenceNode referenceNode = new ReferenceNode((ASTReference)child);
         typeNodes.add(referenceNode);

@@ -9,7 +9,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLPropertyNode implements MMNode
+public class OWLPropertyNode implements TypeNode
 {
 	private ReferenceNode referenceNode = null;
 	private NameNode nameNode = null;
@@ -29,6 +29,11 @@ public class OWLPropertyNode implements MMNode
 		}
 	}
 
+	public String getNodeName()
+	{
+		return "OWLProperty";
+	}
+
 	public ReferenceNode getReferenceNode()
 	{
 		return referenceNode;
@@ -44,21 +49,20 @@ public class OWLPropertyNode implements MMNode
 		return nameNode != null;
 	}
 
-	public boolean isReference()
+	public boolean isReferenceNode()
 	{
 		return referenceNode != null;
 	}
 
-	public String getNodeName()
-	{
-		return "OWLProperty";
-	}
+	@Override public boolean isOWLClassNode() { return false; }
+
+	@Override public boolean isOWLPropertyNode() { return false; }
 
 	public String toString()
 	{
 		if (isName())
 			return nameNode.toString();
-		else if (isReference())
+		else if (isReferenceNode())
 			return referenceNode.toString();
 		else
 			return "";

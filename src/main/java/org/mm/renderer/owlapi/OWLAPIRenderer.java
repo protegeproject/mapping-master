@@ -90,6 +90,7 @@ import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
+import org.semanticweb.owlapi.reasoner.impl.OWLClassNode;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -330,7 +331,8 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		Set<OWLClassExpression> classExpressions = new HashSet<>();
 
 		for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClasseNodes()) {
-			Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLIntersectionClass(intersectionClassNode);
+			Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLIntersectionClass(
+					intersectionClassNode);
 			if (classExpressionRendering.isPresent()) {
 				OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
 				classExpressions.add(classExpression);
@@ -371,7 +373,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 	{
 		Optional<? extends OWLClassExpressionRendering> classExpressionRendering;
 
-    if (classExpressionNode.hasOWLUnionClass())
+		if (classExpressionNode.hasOWLUnionClass())
 			classExpressionRendering = renderOWLUnionClass(classExpressionNode.getOWLUnionClassNode());
 		else if (classExpressionNode.hasOWLRestriction())
 			classExpressionRendering = renderOWLRestriction(classExpressionNode.getOWLRestrictionNode());
@@ -639,12 +641,22 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		return Optional.of(referenceRendering);
 	}
 
-	private Optional<OWLClassExpressionRendering> renderType(TypeNode typeNode) throws RendererException
+	private Optional<OWLEntity> renderType(TypeNode typeNode) throws RendererException
 	{
-		if (typeNode.isOWLClassExpressionNode())
-			return renderOWLClassExpression((OWLClassExpressionNode)typeNode);
-		else // if (typeNode.isReferenceNode()) {
-		  return Optional.empty(); // TODO
+		if (typeNode.isOWLClassNode()) {
+			Optional<OWLClassRendering> classRendering = renderOWLClass((OWLNamedClassNode)typeNode);
+			if (classRendering.isPresent()) {
+				return Optional.of(classRendering.get().getOWLClass());
+			} else
+				return Optional.empty();
+		} else if (typeNode.isOWLPropertyNode()) {
+			Optional<OWLPropertyRendering> propertyRendering = renderOWLProperty((OWLPropertyNode)typeNode);
+			if (propertyRendering.isPresent()) {
+				return Optional.of(propertyRendering.get().getOWLProperty());
+			} else
+				return Optional.empty();
+		} else // if (typeNode.isReferenceNode()) {
+			return Optional.empty(); // TODO
 
 	}
 
@@ -654,7 +666,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		Set<OWLAxiom> axioms = new HashSet<>();
 
 		for (TypeNode typeNode : typeNodes) {
-			Optional<OWLClassExpressionRendering> typeRendering = renderType(typeNode);
+			Optional<OWLEntity> typeRendering = renderType(typeNode);
 
 			if (!typeRendering.isPresent()) {
 				individualRendering.logLine(
@@ -761,18 +773,19 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		return axioms;
 	}
 
-	private Set<OWLAxiom> processFactsClause(Rendering individualDeclarationRendering,
-			Optional<OWLNamedIndividualRendering> declaredIndividualRendering, List<FactNode> factNodes)
+	private Set<OWLAxiom> processFactsClause(Rendering finalRendering,
+			Optional<OWLNamedIndividualRendering> subjectIndividualRendering, List<FactNode> factNodes)
 			throws RendererException
 	{
 		Set<OWLAxiom> axioms = new HashSet<>();
 
-		if (declaredIndividualRendering.isPresent()) {
+		if (subjectIndividualRendering.isPresent()) {
+			OWLIndividual subjectIndividual = subjectIndividualRendering.get().getOWLNamedIndividual();
 			for (FactNode factNode : factNodes) {
 				Optional<OWLPropertyRendering> propertyRendering = renderOWLProperty(factNode.getOWLPropertyNode());
 
 				if (!propertyRendering.isPresent()) {
-					individualDeclarationRendering
+					finalRendering
 							.logLine("Skipping OWL fact declaration clause [" + factNode + "] because of missing property name");
 					continue;
 				}
@@ -782,7 +795,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 						propertyAssertionObjectNode);
 
 				if (!propertyAssertionObjectRendering.isPresent()) {
-					individualDeclarationRendering
+					finalRendering
 							.logLine("Skipping OWL fact declaration clause [" + factNode + "] because of missing property value");
 					continue;
 				}
@@ -800,18 +813,20 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
 				if (this.owlObjectHandler.isOWLObjectProperty(property)) {
 					OWLObjectProperty objectProperty = (OWLObjectProperty)property;
+					OWLIndividual objectIndividual = (OWLIndividual)propertyAssertionObject; // TODO Check
 
 					OWLObjectPropertyAssertionAxiom axiom = this.owlDataFactory
-							.getOWLObjectPropertyAssertionAxiom(property, individual, propertyAssertionObject);
+							.getOWLObjectPropertyAssertionAxiom(objectProperty, subjectIndividual, objectIndividual);
 					axioms.add(axiom);
 				} else if (this.owlObjectHandler.isOWLDataProperty(property)) {
 					OWLDataProperty dataProperty = (OWLDataProperty)property;
+					OWLLiteral literal = (OWLLiteral)propertyAssertionObject; // TODO Check
 
 					OWLDataPropertyAssertionAxiom axiom = this.owlDataFactory
-							.getOWLDataPropertyAssertionAxiom(dataProperty, individual, propertyAssertionObject);
+							.getOWLDataPropertyAssertionAxiom(dataProperty, subjectIndividual, literal);
 					axioms.add(axiom);
 				} else {
-					individualDeclarationRendering.logLine(
+					finalRendering.logLine(
 							"Skipping OWL fact declaration clause [" + factNode + "] because property is an annotation property");
 					continue;
 				}
@@ -1221,13 +1236,16 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 				ReferenceNode valueSpecificationItemReferenceNode = valueSpecificationItemNode.getReferenceNode();
 				valueSpecificationItemReferenceNode.setDefaultShiftSetting(referenceNode.getActualShiftDirective());
 				Optional<ReferenceRendering> referenceRendering = renderReference(valueSpecificationItemReferenceNode);
-				if (valueSpecificationItemReferenceNode.getReferenceTypeNode().getReferenceType().isQuotedOWLDataValue()
-						&& !referenceTextRendering.equals("") && referenceTextRendering.startsWith("\""))
-					processedValue += referenceTextRendering.substring(1, referenceTextRendering.length() - 1); // Strip quotes
-					// from quoted
-					// renderings
-				else
-					processedValue += referenceTextRendering;
+				if (referenceRendering.isPresent()) {
+					String referenceTextRendering = referenceRendering.get().getTextRendering(); // TODO WHy accessible?
+					if (valueSpecificationItemReferenceNode.getReferenceTypeNode().getReferenceType().isQuotedOWLDataValue()
+							&& !referenceTextRendering.equals("") && referenceTextRendering.startsWith("\""))
+						processedValue += referenceTextRendering.substring(1, referenceTextRendering.length() - 1); // Strip quotes
+						// from quoted
+						// renderings
+					else
+						processedValue += referenceTextRendering;
+				}
 			} else if (valueSpecificationItemNode.hasValueExtractionFunction()) {
 				ValueExtractionFunctionNode valueExtractionFunction = valueSpecificationItemNode
 						.getValueExtractionFunctionNode();

@@ -11,7 +11,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLClassExpressionNode implements TypeNode
+public class OWLClassExpressionNode implements MMNode
 {
 	private OWLNamedClassNode namedClassNode;
 	private OWLEnumeratedClassNode enumeratedClassNode;
@@ -88,11 +88,6 @@ public class OWLClassExpressionNode implements TypeNode
 	{
 		return namedClassNode != null;
 	}
-
-
-	@Override public boolean isOWLClassExpressionNode() { return true; }
-
-	@Override public boolean isReferenceNode() { return false; }
 
 	public String toString()
 	{
