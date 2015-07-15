@@ -22,6 +22,10 @@ public class ReferenceRendering extends OWLAPIRendering
     this.literal = Optional.empty();
   }
 
+  public Optional<OWLEntity> getOWLEntity() { return entity; }
+
+  public Optional<OWLLiteral> getOWLLiteral() { return literal; }
+
   public boolean isOWLLiteral() { return this.literal.isPresent(); }
 
   public boolean isOWLEntity() { return this.entity.isPresent(); }
