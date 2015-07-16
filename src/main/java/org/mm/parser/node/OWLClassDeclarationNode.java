@@ -4,7 +4,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTAnnotationFact;
 import org.mm.parser.ASTOWLClassDeclaration;
 import org.mm.parser.ASTOWLClassEquivalentTo;
-import org.mm.parser.ASTOWLNamedClass;
+import org.mm.parser.ASTOWLClass;
 import org.mm.parser.ASTOWLSubclassOf;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
@@ -16,17 +16,17 @@ import java.util.List;
 
 public class OWLClassDeclarationNode
 {
-	private OWLNamedClassNode owlNamedClass;
-	private List<OWLClassEquivalentToNode> equivalentToNodes = new ArrayList<OWLClassEquivalentToNode>();
-	private List<OWLSubclassOfNode> subclassOfNodes = new ArrayList<OWLSubclassOfNode>();
-	private List<AnnotationFactNode> annotationFactNodes = new ArrayList<AnnotationFactNode>();
+	private OWLClassNode classNode;
+	private List<OWLClassEquivalentToNode> equivalentToNodes = new ArrayList<>();
+	private List<OWLSubclassOfNode> subclassOfNodes = new ArrayList<>();
+	private List<AnnotationFactNode> annotationFactNodes = new ArrayList<>();
 
 	OWLClassDeclarationNode(ASTOWLClassDeclaration node) throws ParseException
 	{
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
-			if (ParserUtil.hasName(child, "OWLNamedClass")) {
-				owlNamedClass = new OWLNamedClassNode((ASTOWLNamedClass)child);
+			if (ParserUtil.hasName(child, "OWLClass")) {
+				classNode = new OWLClassNode((ASTOWLClass)child);
 			} else if (ParserUtil.hasName(child, "OWLEquivalentTo")) {
 				equivalentToNodes.add(new OWLClassEquivalentToNode((ASTOWLClassEquivalentTo)child));
 			} else if (ParserUtil.hasName(child, "OWLSubclassOf")) {
@@ -39,9 +39,9 @@ public class OWLClassDeclarationNode
 		}
 	}
 
-	public OWLNamedClassNode getOWLNamedClassNode()
+	public OWLClassNode getOWLClassNode()
 	{
-		return owlNamedClass;
+		return classNode;
 	}
 
 	public List<OWLClassEquivalentToNode> getEquivalentToNodes()
@@ -76,7 +76,7 @@ public class OWLClassDeclarationNode
 
 	public String toString()
 	{
-		String representation = "Class: " + owlNamedClass.toString();
+		String representation = "Class: " + classNode.toString();
 		boolean isFirst = true;
 
 		if (hasSubclassOf()) {

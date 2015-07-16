@@ -48,8 +48,8 @@ public class ParserUtil implements MappingMasterParserConstants
   {
     if (referenceType == OWL_CLASS)
       return OWL_CLASS;
-    else if (referenceType == OWL_INDIVIDUAL)
-      return OWL_CLASS;
+    else if (referenceType == OWL_NAMED_INDIVIDUAL)
+      return OWL_NAMED_INDIVIDUAL;
     else if (referenceType == RDFS_CLASS)
       return RDFS_CLASS;
     else if (referenceType == OWL_OBJECT_PROPERTY)

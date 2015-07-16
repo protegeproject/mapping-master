@@ -204,7 +204,7 @@ TOKEN: { <CELL_WILDCARD: "*"> }
 TOKEN: { <RDFS_CLASS: "rdfs:class"> }
 TOKEN: { <RDF_PROPERTY: "rdf:property"> }
 TOKEN: { <OWL_CLASS: "Class"> }
-TOKEN: { <OWL_INDIVIDUAL: "Individual"> }
+TOKEN: { <OWL_NAMED_INDIVIDUAL: "Individual"> }
 TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
 TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
 
@@ -530,7 +530,7 @@ void mm_default_property_type() #MMDefaultPropertyType:
 
 void owl_class_declaration() #OWLClassDeclaration : {}
 {
-  <CLASS> owl_named_class(defaultClassValueEncoding)
+  <CLASS> owl_class(defaultClassValueEncoding)
     (  owl_class_equivalent_to() 
      | owl_subclass_of()
     ) *
@@ -551,7 +551,7 @@ void owl_subclass_of() #OWLSubclassOf : {}
 
 void owl_individual_declaration() #OWLIndividualDeclaration : {}
 { // TODO Order of subclauses should not matter
-  <INDIVIDUAL> owl_individual(defaultIndividualValueEncoding) 
+  <INDIVIDUAL> owl_named_individual(defaultIndividualValueEncoding) 
   ( <FACTS> fact_list() )?
   ( <TYPES> types(OWL_CLASS) )?
   ( <ANNOTATIONS> annotation_fact_list() )?
@@ -562,12 +562,12 @@ void owl_individual_declaration() #OWLIndividualDeclaration : {}
 
 void same_as() #SameAs : {}
 {
-  <SAME_AS> owl_individual(defaultValueEncoding) ( "," owl_individual(defaultValueEncoding) )*
+  <SAME_AS> owl_named_individual(defaultValueEncoding) ( "," owl_named_individual(defaultValueEncoding) )*
 }
 
 void different_from() #DifferentFrom : {}
 {
-  <DIFFERENT_FROM>  owl_individual(defaultValueEncoding) ( "," owl_individual(defaultValueEncoding) )*
+  <DIFFERENT_FROM>  owl_named_individual(defaultValueEncoding) ( "," owl_named_individual(defaultValueEncoding) )*
 }
 
 void fact_list() : {}
@@ -716,7 +716,7 @@ void owl_class_expression() #OWLClassExpression :
 }
 {
   ( <NOT> { isNegated = true; } )? (  LOOKAHEAD(owl_restriction()) owl_restriction() 
-                                    | owl_named_class(defaultClassValueEncoding) 
+                                    | owl_class(defaultClassValueEncoding) 
                                     | "(" owl_union_class() ")" 
                                    )
 
@@ -725,19 +725,17 @@ void owl_class_expression() #OWLClassExpression :
 
 void owl_enumerated_class() #OWLEnumeratedClass : {}
 {
-  "{" ( owl_individual(defaultIndividualValueEncoding) )+ "}"
+  "{" ( owl_named_individual(defaultIndividualValueEncoding) )+ "}"
 }
 
-// TODO Rename to owl_class, OWLClass
-void owl_named_class(int defaultValueEncoding) #OWLNamedClass : {}
+void owl_class(int defaultValueEncoding) #OWLClass : {}
 {
   owl_class_name() | reference(OWL_CLASS, defaultValueEncoding)
 } 
 
-// TODO Rename to owl_named_individual, OWLNamedIndividual
-void owl_individual(int defaultValueEncoding) #OWLIndividual : {}
+void owl_named_individual(int defaultValueEncoding) #OWLNamedIndividual : {}
 {
-  owl_individual_name() | reference(OWL_INDIVIDUAL, defaultValueEncoding)
+  owl_individual_name() | reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding)
 } 
 
 void owl_property() #OWLProperty : {}
@@ -756,8 +754,8 @@ void types(int referenceType) #Types :
   int defaultType = ParserUtil.getDefaultType(referenceType);
 } 
 {
-  ( LOOKAHEAD(2) owl_named_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) )
-    ( "," ( LOOKAHEAD(2) owl_named_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) ) )?
+  ( LOOKAHEAD(2) owl_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) )
+    ( "," ( LOOKAHEAD(2) owl_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) ) )?
 }
 
 void value_specification_item() #ValueSpecificationItem : 
@@ -831,7 +829,7 @@ void owl_restriction() #OWLRestriction : {}
 
 void owl_has_value_restriction() #OWLHasValueRestriction : {}
 {
-  <VALUE> (  reference(OWL_INDIVIDUAL, defaultValueEncoding) 
+  <VALUE> (  reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding) 
            | name() 
            | owl_literal() 
           )
@@ -855,7 +853,7 @@ void owl_data_all_values_from() #OWLDataAllValuesFrom :
 
 void owl_object_all_values_from() #OWLObjectAllValuesFrom : {}
 {
-  <ONLY> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
+  <ONLY> (owl_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
 }
 
 void owl_some_values_from_restriction() #OWLSomeValuesFromRestriction : {}
@@ -865,7 +863,7 @@ void owl_some_values_from_restriction() #OWLSomeValuesFromRestriction : {}
 
 void owl_object_some_values_from() #OWLObjectSomeValuesFrom : {}
 {
-  <SOME> (owl_named_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
+  <SOME> (owl_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
 }
 
 void owl_data_some_values_from() #OWLDataSomeValuesFrom :
@@ -1023,7 +1021,7 @@ int reference_type() #ReferenceType :
      t = <RDFS_CLASS> { referenceType = t.kind; }
    | t = <RDF_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_CLASS> { referenceType = t.kind; }
-   | t = <OWL_INDIVIDUAL> { referenceType = t.kind; }
+   | t = <OWL_NAMED_INDIVIDUAL> { referenceType = t.kind; }
    | t = <OWL_OBJECT_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_DATA_PROPERTY> { referenceType = t.kind; }
    | referenceType = datatype()

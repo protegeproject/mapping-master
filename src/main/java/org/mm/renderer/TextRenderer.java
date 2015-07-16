@@ -23,11 +23,11 @@ import org.mm.parser.node.OWLEnumeratedClassNode;
 import org.mm.parser.node.OWLExactCardinalityRestrictionNode;
 import org.mm.parser.node.OWLHasValueRestrictionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
-import org.mm.parser.node.OWLIndividualNode;
+import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
 import org.mm.parser.node.OWLMaxCardinalityRestrictionNode;
 import org.mm.parser.node.OWLMinCardinalityRestrictionNode;
-import org.mm.parser.node.OWLNamedClassNode;
+import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLObjectAllValuesFromNode;
 import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
@@ -173,12 +173,6 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("unknown property value node " + owlPropertyAssertionObjectNode);
   }
 
-  public Optional<TextRendering> renderOWLClassExpression(OWLClassExpressionNode owlClassExpressionNode)
-    throws RendererException
-  {
-    return renderOWLUnionClass(owlClassExpressionNode.getOWLUnionClassNode());
-  }
-
   public Optional<TextRendering> renderOWLUnionClass(OWLUnionClassNode owlUnionClassNode) throws RendererException
   {
     if (owlUnionClassNode.getOWLIntersectionClasseNodes().size() == 1) {
@@ -296,8 +290,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   {
     Optional<TextRendering> classRendering;
 
-    if (owlObjectAllValuesFromNode.hasOWLNamedClass())
-      classRendering = renderOWLClass(owlObjectAllValuesFromNode.getOWLNamedClassNode());
+    if (owlObjectAllValuesFromNode.hasOWLClass())
+      classRendering = renderOWLClass(owlObjectAllValuesFromNode.getOWLClassNode());
     else if (owlObjectAllValuesFromNode.hasOWLClassExpression())
       classRendering = renderOWLClassExpression(owlObjectAllValuesFromNode.getOWLClassExpressionNode());
     else
@@ -325,8 +319,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   {
     Optional<TextRendering> classRendering;
 
-    if (owlObjectSomeValuesFromNode.hasOWLNamedClass())
-      classRendering = renderOWLClass(owlObjectSomeValuesFromNode.getOWLNamedClassNode());
+    if (owlObjectSomeValuesFromNode.hasOWLClass())
+      classRendering = renderOWLClass(owlObjectSomeValuesFromNode.getOWLClassNode());
     else if (owlObjectSomeValuesFromNode.hasOWLClassExpression())
       classRendering = renderOWLClassExpression(owlObjectSomeValuesFromNode.getOWLClassExpressionNode());
     else
@@ -577,8 +571,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     TextRendering rendering = new TextRendering(" SameAs: ");
     boolean isFirst = true;
 
-    for (OWLIndividualNode owlIndividualNode : sameAsNode.getIndividualNodes()) {
-      Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlIndividualNode);
+    for (OWLNamedIndividualNode owlNamedIndividualNode : sameAsNode.getIndividualNodes()) {
+      Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
 
       if (individualRendering.isPresent()) {
         if (!isFirst)
@@ -648,7 +642,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   public Optional<TextRendering> renderOWLClassDeclaration(OWLClassDeclarationNode owlClassDeclarationNode)
     throws RendererException
   {
-    TextRendering rendering = new TextRendering("Class: " + owlClassDeclarationNode.getOWLNamedClassNode().toString());
+    TextRendering rendering = new TextRendering("Class: " + owlClassDeclarationNode.getOWLClassNode().toString());
     boolean isFirst = true;
 
     if (owlClassDeclarationNode.hasSubclassOf()) {
@@ -726,7 +720,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     throws RendererException
   {
     if (owlIntersectionClassNode.getOWLClassExpressionNodes().size() == 1) {
-      Optional<TextRendering> classesOrRestrictionsRendering = renderOWLClassOrRestriction(
+      Optional<TextRendering> classesOrRestrictionsRendering = renderOWLClassExpression(
         owlIntersectionClassNode.getOWLClassExpressionNodes().get(0));
 
       return classesOrRestrictionsRendering;
@@ -734,8 +728,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
       TextRendering rendering = new TextRendering();
       boolean isFirst = true;
 
-      for (OWLClassExpressionNode owlClassOrRestriction : owlIntersectionClassNode.getOWLClassExpressionNodes()) {
-        Optional<TextRendering> classesOrRestrictionsRendering = renderOWLClassOrRestriction(owlClassOrRestriction);
+      for (OWLClassExpressionNode classExpressionNode : owlIntersectionClassNode.getOWLClassExpressionNodes()) {
+        Optional<TextRendering> classesOrRestrictionsRendering = renderOWLClassExpression(classExpressionNode);
 
         if (classesOrRestrictionsRendering.isPresent()) {
           if (isFirst)
@@ -752,34 +746,34 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     }
   }
 
-  public Optional<TextRendering> renderOWLClassOrRestriction(OWLClassExpressionNode classOrRestrictionNode)
+  public Optional<TextRendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
     throws RendererException
   {
     StringBuffer textRendering = new StringBuffer();
 
-    if (classOrRestrictionNode.hasOWLEnumeratedClass()) {
+    if (classExpressionNode.hasOWLEnumeratedClass()) {
       Optional<TextRendering> enumeratedClassRendering = renderOWLEnumeratedClass(
-        classOrRestrictionNode.getOWLEnumeratedClassNode());
+        classExpressionNode.getOWLEnumeratedClassNode());
       if (enumeratedClassRendering.isPresent())
         textRendering.append(enumeratedClassRendering.get().getTextRendering());
-    } else if (classOrRestrictionNode.hasOWLUnionClass()) {
-      Optional<TextRendering> unionClassRendering = renderOWLUnionClass(classOrRestrictionNode.getOWLUnionClassNode());
+    } else if (classExpressionNode.hasOWLUnionClass()) {
+      Optional<TextRendering> unionClassRendering = renderOWLUnionClass(classExpressionNode.getOWLUnionClassNode());
       if (unionClassRendering.isPresent())
         textRendering.append(unionClassRendering.get().getTextRendering());
-    } else if (classOrRestrictionNode.hasOWLRestriction()) {
+    } else if (classExpressionNode.hasOWLRestriction()) {
       Optional<TextRendering> restrictionRendering = renderOWLRestriction(
-        classOrRestrictionNode.getOWLRestrictionNode());
+        classExpressionNode.getOWLRestrictionNode());
       if (restrictionRendering.isPresent())
         textRendering.append(restrictionRendering.get().getTextRendering());
-    } else if (classOrRestrictionNode.hasOWLNamedClass()) {
-      Optional<TextRendering> namedClassRendering = renderOWLClass(classOrRestrictionNode.getOWLNamedClassNode());
-      if (namedClassRendering.isPresent())
-        textRendering.append(namedClassRendering.get().getTextRendering());
+    } else if (classExpressionNode.hasOWLClass()) {
+      Optional<TextRendering> classRendering = renderOWLClass(classExpressionNode.getOWLClassNode());
+      if (classRendering.isPresent())
+        textRendering.append(classRendering.get().getTextRendering());
     } else
-      throw new RendererException("unexpected OWLClassOrRestriction node " + classOrRestrictionNode);
+      throw new RendererException("unexpected OWLClassExpression node " + classExpressionNode);
 
     if (textRendering.length() == 0)
-      if (classOrRestrictionNode.getIsNegated())
+      if (classExpressionNode.getIsNegated())
         textRendering.append("NOT " + textRendering);
 
     return textRendering.length() != 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
@@ -790,9 +784,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   {
     StringBuffer textRendering = new StringBuffer();
 
-    if (owlEnumeratedClassNode.getOWLIndividualNodes().size() == 1) {
+    if (owlEnumeratedClassNode.getOWLNamedIndividualNodes().size() == 1) {
       Optional<TextRendering> individualRendering = renderOWLNamedIndividual(
-        owlEnumeratedClassNode.getOWLIndividualNodes().get(0));
+        owlEnumeratedClassNode.getOWLNamedIndividualNodes().get(0));
 
       if (!individualRendering.isPresent())
         return Optional.empty();
@@ -802,10 +796,10 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
       boolean isFirst = true;
 
       textRendering.append("{");
-      for (OWLIndividualNode owlIndividualNode : owlEnumeratedClassNode.getOWLIndividualNodes()) {
+      for (OWLNamedIndividualNode owlNamedIndividualNode : owlEnumeratedClassNode.getOWLNamedIndividualNodes()) {
         if (!isFirst)
           textRendering.append(" ");
-        Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlIndividualNode);
+        Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
 
         if (!individualRendering.isPresent())
           return Optional.empty();
@@ -863,7 +857,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("unknown OWLSomeValuesFrom node " + owlSomeValuesFromRestrictionNode);
   }
 
-  public Optional<TextRendering> renderOWLClass(OWLNamedClassNode owlClassNode) throws RendererException
+  public Optional<TextRendering> renderOWLClass(OWLClassNode owlClassNode) throws RendererException
   {
     if (owlClassNode.isReference())
       return renderReference(owlClassNode.getReferenceNode());
@@ -893,7 +887,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("unknown OWLProperty node " + propertyNode);
   }
 
-  public Optional<TextRendering> renderOWLNamedIndividual(OWLIndividualNode namedIndividualNode)
+  public Optional<TextRendering> renderOWLNamedIndividual(OWLNamedIndividualNode namedIndividualNode)
     throws RendererException
   {
     if (namedIndividualNode.isReference())
@@ -927,8 +921,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   {
     Optional<TextRendering> classRendering;
 
-    if (owlObjectAllValuesFromNode.hasOWLNamedClass())
-      classRendering = renderOWLClass(owlObjectAllValuesFromNode.getOWLNamedClassNode());
+    if (owlObjectAllValuesFromNode.hasOWLClass())
+      classRendering = renderOWLClass(owlObjectAllValuesFromNode.getOWLClassNode());
     else if (owlObjectAllValuesFromNode.hasOWLClassExpression())
       classRendering = renderOWLClassExpression(owlObjectAllValuesFromNode.getOWLClassExpressionNode());
     else
@@ -956,8 +950,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   {
     Optional<TextRendering> classRendering;
 
-    if (owlObjectSomeValuesFromNode.hasOWLNamedClass())
-      classRendering = renderOWLClass(owlObjectSomeValuesFromNode.getOWLNamedClassNode());
+    if (owlObjectSomeValuesFromNode.hasOWLClass())
+      classRendering = renderOWLClass(owlObjectSomeValuesFromNode.getOWLClassNode());
     else if (owlObjectSomeValuesFromNode.hasOWLClassExpression())
       classRendering = renderOWLClassExpression(owlObjectSomeValuesFromNode.getOWLClassExpressionNode());
     else
@@ -1090,8 +1084,8 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     TextRendering rendering = new TextRendering(" DifferentFrom: ");
     boolean isFirst = true;
 
-    for (OWLIndividualNode owlIndividualNode : differentFromNode.getIndividualNodes()) {
-      Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlIndividualNode);
+    for (OWLNamedIndividualNode owlNamedIndividualNode : differentFromNode.getIndividualNodes()) {
+      Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
 
       if (individualRendering.isPresent()) {
         if (!isFirst)

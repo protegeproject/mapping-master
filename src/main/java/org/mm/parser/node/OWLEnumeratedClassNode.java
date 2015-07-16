@@ -1,6 +1,6 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLIndividual;
+import org.mm.parser.ASTOWLNamedIndividual;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
@@ -12,40 +12,40 @@ import java.util.List;
 
 public class OWLEnumeratedClassNode
 {
-  private List<OWLIndividualNode> individualNodes;
+  private List<OWLNamedIndividualNode> namedIndividualNodes;
 
   public OWLEnumeratedClassNode(ASTOWLEnumeratedClass node) throws ParseException
   {
-    individualNodes = new ArrayList<>();
+    namedIndividualNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
-      if (ParserUtil.hasName(child, "OWLIndividual")) {
-        OWLIndividualNode owlIndividual = new OWLIndividualNode((ASTOWLIndividual)child);
-        individualNodes.add(owlIndividual);
+      if (ParserUtil.hasName(child, "OWLNamedIndividual")) {
+        OWLNamedIndividualNode owlIndividual = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
+        namedIndividualNodes.add(owlIndividual);
       } else
         throw new InternalParseException(
-          "OWLEnumeratedClass node expecting OWLIndividual child, got " + child.toString());
+          "OWLEnumeratedClass node expecting OWLNamedIndividual child, got " + child.toString());
     }
   }
 
-  public List<OWLIndividualNode> getOWLIndividualNodes()
+  public List<OWLNamedIndividualNode> getOWLNamedIndividualNodes()
   {
-    return individualNodes;
+    return namedIndividualNodes;
   }
 
   public String toString()
   {
     String representation = "";
 
-    if (individualNodes.size() == 1)
-      representation = individualNodes.get(0).toString();
+    if (namedIndividualNodes.size() == 1)
+      representation = namedIndividualNodes.get(0).toString();
     else {
       boolean isFirst = true;
 
       representation += "{";
-      for (OWLIndividualNode owlIndividual : individualNodes) {
+      for (OWLNamedIndividualNode owlIndividual : namedIndividualNodes) {
         if (!isFirst)
           representation += " ";
         representation += owlIndividual.toString();

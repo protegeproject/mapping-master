@@ -46,9 +46,9 @@ public class ReferenceType implements MappingMasterParserConstants
     return type == OWL_CLASS;
   }
 
-  public boolean isOWLIndividual()
+  public boolean isOWLNamedIndividual()
   {
-    return type == OWL_INDIVIDUAL;
+    return type == OWL_NAMED_INDIVIDUAL;
   }
 
   public boolean isOWLLiteral()

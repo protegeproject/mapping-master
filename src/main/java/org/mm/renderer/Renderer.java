@@ -13,15 +13,14 @@ import org.mm.parser.node.OWLClassEquivalentToNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLDataAllValuesFromNode;
 import org.mm.parser.node.OWLDataSomeValuesFromNode;
-import org.mm.parser.node.OWLEnumeratedClassNode;
 import org.mm.parser.node.OWLExactCardinalityRestrictionNode;
 import org.mm.parser.node.OWLHasValueRestrictionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
-import org.mm.parser.node.OWLIndividualNode;
+import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
 import org.mm.parser.node.OWLMaxCardinalityRestrictionNode;
 import org.mm.parser.node.OWLMinCardinalityRestrictionNode;
-import org.mm.parser.node.OWLNamedClassNode;
+import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLObjectAllValuesFromNode;
 import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
@@ -52,7 +51,7 @@ public interface Renderer
   Optional<? extends Rendering> renderOWLIndividualDeclaration(
     OWLIndividualDeclarationNode owlIndividualDeclarationNode) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLClass(OWLNamedClassNode namedClassNode) throws RendererException;
+  Optional<? extends Rendering> renderOWLClass(OWLClassNode classNode) throws RendererException;
 
   Optional<? extends Rendering> renderOWLProperty(OWLPropertyNode propertyNode) throws RendererException;
 
@@ -62,7 +61,7 @@ public interface Renderer
 
   Optional<? extends Rendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLNamedIndividual(OWLIndividualNode namedIndividualNode)
+  Optional<? extends Rendering> renderOWLNamedIndividual(OWLNamedIndividualNode namedIndividualNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLPropertyAssertionObject(

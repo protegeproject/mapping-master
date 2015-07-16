@@ -1,7 +1,7 @@
 package org.mm.renderer.owlapi;
 
-import org.mm.core.ReferenceType;
 import org.mm.core.ReferenceDirectives;
+import org.mm.core.ReferenceType;
 import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.IRI;
@@ -25,36 +25,36 @@ class OWLAPIObjectHandler
 
   private final Map<String, Map<SpreadsheetLocation, OWLEntity>> createdOWLEntitiesUsingLocation; // Map of namespace to map of location to rdf:ID
 
-	private final Map<String, OWLClassExpression> classExpressionMap;
+  private final Map<String, OWLClassExpression> classExpressionMap;
 
   private final OWLOntology ontology;
 
-	private int classExpressionIndex;
+  private int classExpressionIndex;
 
   public OWLAPIObjectHandler(OWLOntology ontology)
   {
     this.ontology = ontology;
 
     this.createdOWLEntitiesUsingLabel = new HashMap<>();
-		this.createdOWLEntitiesUsingLocation = new HashMap<>();
-		this.classExpressionMap = new HashMap<>();
-		this.classExpressionIndex = 0;
+    this.createdOWLEntitiesUsingLocation = new HashMap<>();
+    this.classExpressionMap = new HashMap<>();
+    this.classExpressionIndex = 0;
   }
 
   public void reset()
   {
     this.createdOWLEntitiesUsingLabel.clear();
     this.createdOWLEntitiesUsingLocation.clear();
-		this.classExpressionMap.clear();
-		this.classExpressionIndex = 0;
+    this.classExpressionMap.clear();
+    this.classExpressionIndex = 0;
   }
 
-	public String registerOWLClassExpression(OWLClassExpression classExpression)
-	{
-		String classExpressionID = "CE" + classExpressionIndex++;
-		this.classExpressionMap.put(classExpressionID, classExpression);
-		return classExpressionID;
-	}
+  public String registerOWLClassExpression(OWLClassExpression classExpression)
+  {
+    String classExpressionID = "CE" + classExpressionIndex++;
+    this.classExpressionMap.put(classExpressionID, classExpression);
+    return classExpressionID;
+  }
 
   public OWLClassExpression getOWLClassExpression(String classExpressionID)
   {
@@ -246,8 +246,8 @@ class OWLAPIObjectHandler
       if (hasOWLEntityBeenCreatedAtLocation(location,
         namespace)) { // Has an entity been created at this location already?
         resolvedOWLEntity = getCreatedEntityRDFIDAtLocation(referenceType, location, namespace);
-        System.err.println(
-          "--processReference: using existing " + referenceType + " " + resolvedOWLEntity + " created at this location");
+        System.err.println("--processReference: using existing " + referenceType + " " + resolvedOWLEntity
+          + " created at this location");
       } else { // No existing entity created at this location -- create one. If an existing entity has this rdf:ID it will be reused.
         resolvedOWLEntity = createOWLEntity(location, rdfID, referenceType, namespace,
           referenceDirectives); // If entity exists, it will be retrieved.
@@ -271,8 +271,8 @@ class OWLAPIObjectHandler
       if (hasOWLEntityBeenCreatedAtLocation(location,
         namespace)) { // Has an entity for this location been created already?
         resolvedOWLEntity = getCreatedEntityRDFIDAtLocation(referenceType, location, namespace);
-        System.err.println(
-          "--processReference: using existing " + referenceType + " " + resolvedOWLEntity + " created at this location");
+        System.err.println("--processReference: using existing " + referenceType + " " + resolvedOWLEntity
+          + " created at this location");
       } else { // No existing entity created at this location -- create one. If an existing entity has this rdf:ID it will be reused.
         resolvedOWLEntity = createOWLEntity(location, rdfID, referenceType, namespace,
           referenceDirectives); // If entity exists, it will be
@@ -414,7 +414,8 @@ class OWLAPIObjectHandler
   private OWLEntity resolveOWLEntityWithDuplicatesEncoding(ReferenceType referenceType, String namespace)
     throws RendererException
   {
-    OWLEntity resolvedOWLEntity = createOWLEntity(referenceType, namespace); // Create entity with an auto-generated rdf:ID
+    OWLEntity resolvedOWLEntity = createOWLEntity(referenceType,
+      namespace); // Create entity with an auto-generated rdf:ID
     System.err.println(
       "--processReference: creating " + referenceType + " at this location using location with duplicates encoding");
     return resolvedOWLEntity;
@@ -457,7 +458,7 @@ class OWLAPIObjectHandler
   }
 
   // Here, owlEntityName may represent an IRI, a prefixed name, or a short name. If a namespace or prefix is specified for a reference then we assume that it is
-  // a fragment and prepend a namespace to it; otherwise we assume it can be either of the three and let createOWLNamedClass take care of it.
+  // a fragment and prepend a namespace to it; otherwise we assume it can be either of the three and let createOWLClass take care of it.
   // An empty entityRDFID indicates that one should be generated.
   // TODO: fix so that we are strict about RDFID
   private OWLEntity createOWLEntity(SpreadsheetLocation location, String owlEntityName, ReferenceType referenceType,
@@ -467,7 +468,7 @@ class OWLAPIObjectHandler
 
     if (referenceType.isOWLClass()) {
       return isEmptyName ? createOWLClassWithNamespace(namespace) : createOWLClass(owlEntityName, namespace);
-    } else if (referenceType.isOWLIndividual()) {
+    } else if (referenceType.isOWLNamedIndividual()) {
       return isEmptyName ?
         createOWLNamedIndividualWithNamespace(namespace) :
         createOWLNamedIndividual(owlEntityName, namespace);
@@ -504,7 +505,7 @@ class OWLAPIObjectHandler
   {
     if (referenceType.isOWLClass()) {
       return createOWLClassWithNamespace(namespace);
-    } else if (referenceType.isOWLIndividual()) {
+    } else if (referenceType.isOWLNamedIndividual()) {
       return createOWLNamedIndividualWithNamespace(namespace);
     } else if (referenceType.isOWLObjectProperty()) {
       return createOWLObjectPropertyWithNamespace(namespace);
@@ -531,7 +532,8 @@ class OWLAPIObjectHandler
       return createdOWLEntitiesUsingLocation.get(namespace).get(location);
     else
       throw new RendererException(
-        "internal error: " + referenceType + " with namespace " + namespace + " was not created at location " + location);
+        "internal error: " + referenceType + " with namespace " + namespace + " was not created at location "
+          + location);
   }
 
   private void recordCreatedOWLEntityRDFIDAtLocation(ReferenceType referenceType, SpreadsheetLocation location,
@@ -580,9 +582,9 @@ class OWLAPIObjectHandler
   private void checkOWLReferenceType(ReferenceType expectedReferenceType, OWLEntity owlEntity) throws RendererException
   {
     if ((expectedReferenceType.isOWLClass() && !ontology.containsClassInSignature(owlEntity.getIRI())) || (
-      expectedReferenceType.isOWLIndividual() && !ontology.containsIndividualInSignature(owlEntity.getIRI())) || (
-      expectedReferenceType.isOWLObjectProperty() && !ontology.containsObjectPropertyInSignature(owlEntity.getIRI())) || (
-      expectedReferenceType.isOWLDataProperty() && !ontology.containsDataPropertyInSignature(owlEntity.getIRI())))
+      expectedReferenceType.isOWLNamedIndividual() && !ontology.containsIndividualInSignature(owlEntity.getIRI())) || (
+      expectedReferenceType.isOWLObjectProperty() && !ontology.containsObjectPropertyInSignature(owlEntity.getIRI()))
+      || (expectedReferenceType.isOWLDataProperty() && !ontology.containsDataPropertyInSignature(owlEntity.getIRI())))
       throw new RendererException(
         "existing OWL entity with URI " + owlEntity + " has type that differs from expected " + expectedReferenceType
           .getTypeName());
@@ -599,7 +601,8 @@ class OWLAPIObjectHandler
       return createdOWLEntitiesUsingLabel.get(namespace).get(key);
     else
       throw new RendererException(
-        "internal error: " + referenceType + " with namespace " + namespace + " was not created with rdfs:label " + key);
+        "internal error: " + referenceType + " with namespace " + namespace + " was not created with rdfs:label "
+          + key);
   }
 
   private void addRDFSLabelToOWLEntity(OWLEntity entity, String labelText, String language)

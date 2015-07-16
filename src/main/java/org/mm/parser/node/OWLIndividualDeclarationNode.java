@@ -6,7 +6,7 @@ import org.mm.parser.ASTDifferentFrom;
 import org.mm.parser.ASTOWLIndividualDeclaration;
 import org.mm.parser.ParseException;
 import org.mm.parser.ASTFact;
-import org.mm.parser.ASTOWLIndividual;
+import org.mm.parser.ASTOWLNamedIndividual;
 import org.mm.parser.ASTSameAs;
 import org.mm.parser.ASTTypes;
 import org.mm.parser.InternalParseException;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class OWLIndividualDeclarationNode
 {
-	private OWLIndividualNode individualNode;
+	private OWLNamedIndividualNode namedIndividualNode;
 	private List<FactNode> factNodes;
 	private List<AnnotationFactNode> annotationNodes;
 	private TypesNode typesNode = null;
@@ -32,8 +32,8 @@ public class OWLIndividualDeclarationNode
 
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
-			if (ParserUtil.hasName(child, "OWLIndividual"))
-				individualNode = new OWLIndividualNode((ASTOWLIndividual)child);
+			if (ParserUtil.hasName(child, "OWLNamedIndividual"))
+				namedIndividualNode = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
 			else if (ParserUtil.hasName(child, "Fact")) {
 				FactNode fact = new FactNode((ASTFact)child);
 				factNodes.add(fact);
@@ -76,9 +76,9 @@ public class OWLIndividualDeclarationNode
 		return differentFromNode != null;
 	}
 
-	public OWLIndividualNode getOWLIndividualNode()
+	public OWLNamedIndividualNode getOWLIndividualNode()
 	{
-		return individualNode;
+		return namedIndividualNode;
 	}
 
 	public List<FactNode> getFactNodes()
@@ -108,7 +108,7 @@ public class OWLIndividualDeclarationNode
 
 	public String toString()
 	{
-		String representation = "Individual: " + individualNode.toString();
+		String representation = "Individual: " + namedIndividualNode.toString();
 		boolean isFirst = true;
 
 		if (hasFacts()) {

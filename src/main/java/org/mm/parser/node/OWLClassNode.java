@@ -1,34 +1,34 @@
 
 package org.mm.parser.node;
 
-import org.mm.parser.ParseException;
 import org.mm.parser.ASTName;
-import org.mm.parser.ASTOWLNamedClass;
+import org.mm.parser.ASTOWLClass;
 import org.mm.parser.ASTReference;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLNamedClassNode implements TypeNode
+public class OWLClassNode implements TypeNode
 {
   private ReferenceNode referenceNode = null;
   private NameNode nameNode = null;
 
-  public OWLNamedClassNode(ASTOWLNamedClass node) throws ParseException
+  public OWLClassNode(ASTOWLClass node) throws ParseException
   {
     if (node.jjtGetNumChildren() != 1)  
-      throw new InternalParseException("expecting one child node for OWLNamedClass node");
+      throw new InternalParseException("expecting one child node for OWLClass node");
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "Name")) nameNode = new NameNode((ASTName)child);
       else if (ParserUtil.hasName(child, "Reference")) referenceNode = new ReferenceNode((ASTReference)child);
-      else throw new InternalParseException("unexpected child node " + child.toString() + " for OWLNamedClass node");
+      else throw new InternalParseException("unexpected child node " + child.toString() + " for " + getNodeName() + " node");
     }
 	}
 
 	@Override public String getNodeName()
 	{
-		return "OWLNamedClass";
+		return "OWLClass";
 	}
 
 	public ReferenceNode getReferenceNode() { return referenceNode; }

@@ -19,12 +19,12 @@ import org.mm.parser.node.OWLDataSomeValuesFromNode;
 import org.mm.parser.node.OWLExactCardinalityRestrictionNode;
 import org.mm.parser.node.OWLHasValueRestrictionNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
-import org.mm.parser.node.OWLIndividualNode;
+import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
 import org.mm.parser.node.OWLLiteralNode;
 import org.mm.parser.node.OWLMaxCardinalityRestrictionNode;
 import org.mm.parser.node.OWLMinCardinalityRestrictionNode;
-import org.mm.parser.node.OWLNamedClassNode;
+import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLObjectAllValuesFromNode;
 import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
@@ -103,7 +103,7 @@ import java.util.regex.PatternSyntaxException;
 public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 {
   public static int NameEncodings[] = { MM_LOCATION, MM_DATA_VALUE, RDF_ID, RDFS_LABEL };
-  public static int ReferenceValueTypes[] = { OWL_CLASS, OWL_INDIVIDUAL, OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY,
+  public static int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY,
     XSD_INT, XSD_STRING, XSD_FLOAT, XSD_DOUBLE, XSD_SHORT, XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DURATION };
   public static int PropertyTypes[] = { OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY };
   public static int PropertyValueTypes[] = ReferenceValueTypes;
@@ -175,7 +175,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     if (dataSource.hasCurrentLocation())
       rendering.logLine("********************Current location: " + dataSource.getCurrentLocation() + "*************");
 
-    Optional<OWLClassRendering> declaredClassRendering = renderOWLClass(classDeclarationNode.getOWLNamedClassNode());
+    Optional<OWLClassRendering> declaredClassRendering = renderOWLClass(classDeclarationNode.getOWLClassNode());
 
     if (!declaredClassRendering.isPresent()) {
       rendering.logLine("processReference: skipping OWL class declaration because of missing class");
@@ -376,10 +376,10 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
       classExpressionRendering = renderOWLUnionClass(classExpressionNode.getOWLUnionClassNode());
     else if (classExpressionNode.hasOWLRestriction())
       classExpressionRendering = renderOWLRestriction(classExpressionNode.getOWLRestrictionNode());
-    else if (classExpressionNode.hasOWLNamedClass())
-      classExpressionRendering = renderOWLClass(classExpressionNode.getOWLNamedClassNode());
+    else if (classExpressionNode.hasOWLClass())
+      classExpressionRendering = renderOWLClass(classExpressionNode.getOWLClassNode());
     else
-      throw new RendererException("unknown OWLClassOrRestriction node " + classExpressionNode);
+      throw new RendererException("unknown OWLClassExpression node " + classExpressionNode);
 
     if (classExpressionRendering.isPresent()) {
       OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
@@ -393,13 +393,13 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
       return Optional.empty();
   }
 
-  @Override public Optional<OWLClassRendering> renderOWLClass(OWLNamedClassNode classNode) throws RendererException
+  @Override public Optional<OWLClassRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
   {
     OWLClass cls = null; // TODO
     return Optional.of(new OWLClassRendering(cls));
   }
 
-  @Override public Optional<OWLNamedIndividualRendering> renderOWLNamedIndividual(OWLIndividualNode namedIndividualNode)
+  @Override public Optional<OWLNamedIndividualRendering> renderOWLNamedIndividual(OWLNamedIndividualNode namedIndividualNode)
     throws RendererException
   {
     OWLNamedIndividual individual = null; // TODO
@@ -549,7 +549,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
               return Optional.empty();
           } else {
             Optional<OWLClassRendering> classRendering = renderOWLClass(
-              allValuesFromNode.getOWLAllValuesFromClassNode().getOWLNamedClassNode());
+              allValuesFromNode.getOWLAllValuesFromClassNode().getOWLClassNode());
 
             if (classRendering.isPresent()) {
               OWLClassExpression cls = classRendering.get().getOWLClass();
@@ -576,7 +576,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
               return Optional.empty();
           } else {
             Optional<OWLClassRendering> classRendering = renderOWLClass(
-              someValuesFromNode.getOWLSomeValuesFromClassNode().getOWLNamedClassNode());
+              someValuesFromNode.getOWLSomeValuesFromClassNode().getOWLClassNode());
             if (classRendering.isPresent()) {
               OWLClassExpression cls = classRendering.get().getOWLClass();
               OWLObjectSomeValuesFrom restriction = this.owlDataFactory.getOWLObjectSomeValuesFrom(property, cls);
@@ -648,7 +648,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
   private Optional<OWLEntity> renderType(TypeNode typeNode) throws RendererException
   {
     if (typeNode.isOWLClassNode()) {
-      Optional<OWLClassRendering> classRendering = renderOWLClass((OWLNamedClassNode)typeNode);
+      Optional<OWLClassRendering> classRendering = renderOWLClass((OWLClassNode)typeNode);
       if (classRendering.isPresent()) {
         return Optional.of(classRendering.get().getOWLClass());
       } else
@@ -711,7 +711,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     if (declaredIndividualRendering.isPresent()) {
       OWLNamedIndividual individual1 = declaredIndividualRendering.get().getOWLNamedIndividual();
 
-      for (OWLIndividualNode sameAsIndividualNode : individualDeclarationNode.getSameAsNode().getIndividualNodes()) {
+      for (OWLNamedIndividualNode sameAsIndividualNode : individualDeclarationNode.getSameAsNode().getIndividualNodes()) {
         Optional<OWLNamedIndividualRendering> sameAsIndividualRendering = renderOWLNamedIndividual(
           sameAsIndividualNode);
         if (sameAsIndividualRendering.isPresent()) {
@@ -731,7 +731,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
     if (declaredIndividualRendering.isPresent()) {
       OWLNamedIndividual individual1 = declaredIndividualRendering.get().getOWLNamedIndividual();
-      for (OWLIndividualNode differentFromIndividualNode : individualDeclarationNode.getDifferentFromNode()
+      for (OWLNamedIndividualNode differentFromIndividualNode : individualDeclarationNode.getDifferentFromNode()
         .getIndividualNodes()) {
         Optional<OWLNamedIndividualRendering> differentFromIndividualsRendering = renderOWLNamedIndividual(
           differentFromIndividualNode);
@@ -780,7 +780,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
           ReferenceNode referenceNode = annotationValueNode.getReferenceNode();
           if (!referenceNode.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler
             .isOWLObjectProperty(property))
-            referenceNode.updateReferenceType(OWL_INDIVIDUAL);
+            referenceNode.updateReferenceType(OWL_NAMED_INDIVIDUAL);
         }
 
         OWLAnnotationAssertionAxiom axiom = this.owlDataFactory
@@ -825,7 +825,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
           ReferenceNode reference = propertyAssertionObjectNode.getReferenceNode();
 
           if (!reference.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property))
-            reference.updateReferenceType(OWL_INDIVIDUAL);
+            reference.updateReferenceType(OWL_NAMED_INDIVIDUAL);
         }
 
         if (this.owlObjectHandler.isOWLObjectProperty(property)) {
@@ -869,7 +869,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
             OWLClassExpression classExpression = typeRendering.get().getOWLClassExpression();
             OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(classExpression, entity.asOWLClass());
             axioms.add(axiom);
-          } else if (referenceType.isOWLIndividual()) {
+          } else if (referenceType.isOWLNamedIndividual()) {
             if (!entity.isOWLNamedIndividual())
               throw new RendererException(
                 "expecting individual for type in reference " + referenceNode + " for " + entity + ", got " + entity
