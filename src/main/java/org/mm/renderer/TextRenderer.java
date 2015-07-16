@@ -6,7 +6,7 @@ import org.mm.parser.node.DefaultDataValueNode;
 import org.mm.parser.node.DefaultIDNode;
 import org.mm.parser.node.DefaultLabelNode;
 import org.mm.parser.node.DefaultLocationValueNode;
-import org.mm.parser.node.DifferentFromNode;
+import org.mm.parser.node.OWLDifferentFromNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.OWLLiteralNode;
@@ -38,7 +38,7 @@ import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.ReferenceTypeNode;
-import org.mm.parser.node.SameAsNode;
+import org.mm.parser.node.OWLSameAsNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.parser.node.StringLiteralNode;
 import org.mm.parser.node.StringOrReferenceNode;
@@ -131,14 +131,14 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     }
 
     if (owlIndividualDeclarationNode.hasSameAs()) {
-      Optional<TextRendering> sameAsRendering = renderSameAs(owlIndividualDeclarationNode.getSameAsNode());
+      Optional<TextRendering> sameAsRendering = renderOWLSameAs(owlIndividualDeclarationNode.getOWLSameAsNode());
       if (sameAsRendering.isPresent())
         rendering.addText(sameAsRendering.get().getTextRendering());
     }
 
     if (owlIndividualDeclarationNode.hasDifferentFrom()) {
       Optional<TextRendering> differentFromRendering = renderDifferentFrom(
-        owlIndividualDeclarationNode.getDifferentFromNode());
+        owlIndividualDeclarationNode.getOWLDifferentFromNode());
       if (differentFromRendering.isPresent())
         rendering.addText(differentFromRendering.get().getTextRendering());
     }
@@ -566,12 +566,12 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("do not know how to render type node " + typeNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderSameAs(SameAsNode sameAsNode) throws RendererException
+  public Optional<TextRendering> renderOWLSameAs(OWLSameAsNode OWLSameAsNode) throws RendererException
   {
     TextRendering rendering = new TextRendering(" SameAs: ");
     boolean isFirst = true;
 
-    for (OWLNamedIndividualNode owlNamedIndividualNode : sameAsNode.getIndividualNodes()) {
+    for (OWLNamedIndividualNode owlNamedIndividualNode : OWLSameAsNode.getIndividualNodes()) {
       Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
 
       if (individualRendering.isPresent()) {
@@ -1079,12 +1079,12 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
       throw new RendererException("unknown ValueSpecificationItem node " + valueSpecificationItemNode);
   }
 
-  public Optional<TextRendering> renderDifferentFrom(DifferentFromNode differentFromNode) throws RendererException
+  public Optional<TextRendering> renderDifferentFrom(OWLDifferentFromNode OWLDifferentFromNode) throws RendererException
   {
     TextRendering rendering = new TextRendering(" DifferentFrom: ");
     boolean isFirst = true;
 
-    for (OWLNamedIndividualNode owlNamedIndividualNode : differentFromNode.getIndividualNodes()) {
+    for (OWLNamedIndividualNode owlNamedIndividualNode : OWLDifferentFromNode.getNamedIndividualNodes()) {
       Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
 
       if (individualRendering.isPresent()) {

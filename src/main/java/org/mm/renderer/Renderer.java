@@ -30,7 +30,7 @@ import org.mm.parser.node.OWLSomeValuesFromRestrictionNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
-import org.mm.parser.node.SameAsNode;
+import org.mm.parser.node.OWLSameAsNode;
 import org.mm.parser.node.StringOrReferenceNode;
 import org.mm.parser.node.TypesNode;
 import org.mm.parser.node.ValueEncodingNode;
@@ -122,7 +122,7 @@ Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictio
   Optional<? extends Rendering> renderOWLEquivalentTo(OWLClassEquivalentToNode classEquivalentToNode)
     throws RendererException;
 
-  Optional<? extends Rendering> renderSameAs(SameAsNode sameAs) throws RendererException;
+  Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAs) throws RendererException;
 
   Optional<? extends Rendering> renderReference(ReferenceNode referenceNode) throws RendererException;
 

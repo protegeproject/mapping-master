@@ -315,11 +315,10 @@ void mm_expression() #MMExpression : {}
   (  owl_class_declaration() 
    | owl_individual_declaration()
   )
-  // TODO Other clauses. See: http://www.w3.org/TR/owl2-manchester-syntax/
-  // datatype, object property, data property, annotation property declarations
-  // negative property assertions,
-  // EquivalentClasses, DisjointClasses EquivalentProperties, DisjointProperties, EquivalentProperties,
-  // DisjointProperties, SameIndividual, DifferentIndividuals
+  // TODO Other clauses: datatype, object property, data property, and annotation property declarations;
+  // negative property assertions, equivalent classes, disjoint classes, disjoint properties, equivalent properties;
+  // same individual, different individuals
+  // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
 
 void mm_default_value_encoding() #MMDefaultValueEncoding: 
@@ -535,8 +534,8 @@ void owl_class_declaration() #OWLClassDeclaration : {}
      | owl_subclass_of()
     ) *
    ( <ANNOTATIONS> annotation_fact_list() )?
-  // TODO Other clauses. See: http://www.w3.org/TR/owl2-manchester-syntax/
-  // DisjointWith: DisjoinUnionOf: HasKey:
+  // TODO Other clauses: DisjointWith, DisjoinUnionOf, HasKey
+  // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
 
 void owl_class_equivalent_to() #OWLClassEquivalentTo : {}
@@ -555,17 +554,16 @@ void owl_individual_declaration() #OWLIndividualDeclaration : {}
   ( <FACTS> fact_list() )?
   ( <TYPES> types(OWL_CLASS) )?
   ( <ANNOTATIONS> annotation_fact_list() )?
-  ( same_as() )?
-  ( different_from() )?
-  // TODO 
+  ( owl_same_as() )?
+  ( owl_different_from() )?
 }
 
-void same_as() #SameAs : {}
+void owl_same_as() #OWLSameAs : {}
 {
   <SAME_AS> owl_named_individual(defaultValueEncoding) ( "," owl_named_individual(defaultValueEncoding) )*
 }
 
-void different_from() #DifferentFrom : {}
+void owl_different_from() #OWLDifferentFrom : {}
 {
   <DIFFERENT_FROM>  owl_named_individual(defaultValueEncoding) ( "," owl_named_individual(defaultValueEncoding) )*
 }
