@@ -249,7 +249,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     return Optional.of(rendering);
   }
 
-  @Override public Optional<OWLAPIRendering> renderOWLIndividualDeclaration(
+  @Override public Optional<OWLDeclarationRendering> renderOWLIndividualDeclaration(
     OWLIndividualDeclarationNode individualDeclarationNode) throws RendererException
   {
     OWLAPIRendering individualDeclarationRendering = new OWLAPIRendering();
@@ -266,7 +266,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     if (!declaredIndividualRendering.isPresent()) {
       individualDeclarationRendering.logLine("Skipping OWL individual declaration because of missing individual name");
     } else {
-      if (individualDeclarationNode.hasFacts()) { // We have a Facts: clause
+      if (individualDeclarationxNode.hasFacts()) { // We have a Facts: clause
         List<FactNode> factNodes = individualDeclarationNode.getFactNodes();
         Set<OWLAxiom> axioms = processFactsClause(individualDeclarationRendering, declaredIndividualRendering,
           factNodes);
@@ -291,7 +291,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
       }
 
       if (individualDeclarationNode.hasTypes()) { // We have a Types: clause
-        Set<OWLAxiom> axioms = processTypesClause(individualDeclarationRendering,
+        Set<OWLAxiom> axioms = processTypesClause(individualDeclarationRendering.get(),
           individualDeclarationNode.getTypesNode().getTypeNodes());
         individualDeclarationRendering.addOWLAxioms(axioms);
       }
@@ -627,7 +627,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
       String rdfsLabelText = processRDFSLabelText(locationValue, referenceNode, referenceRendering);
       OWLEntity owlEntity = this.owlObjectHandler
         .createOrResolveOWLEntity(location, locationValue, referenceType, rdfID, rdfsLabelText, defaultNamespace,
-          language, referenceNode.getReferenceDirectives());
+						language, referenceNode.getReferenceDirectives());
       Set<OWLAxiom> axioms = addDefiningTypes(referenceType, owlEntity, referenceNode);
       referenceRendering.addOWLAxioms(axioms);
       referenceRendering.setOWLEntity(owlEntity);
@@ -689,18 +689,17 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
       }
 
       OWLNamedIndividual individual = individualRendering.getOWLNamedIndividual();
+			OWLEntity entity = typeRendering.get();
 
-      if (typeRendering.get().isOWLClass()) {
-        OWLEntity entity = typeRendering.get().isOWLClass()
+      if (entity.isOWLClass()) {
 
         OWLClass cls = entity.asOWLClass();
         OWLClassAssertionAxiom axiom = this.owlDataFactory.getOWLClassAssertionAxiom(cls, individual);
 
         axioms.add(axiom);
       } else
-        throw new RendererException("expecting OWL class for individual " + individual.getIRI() + ", got " + ent
-    }
-
+        throw new RendererException("expecting OWL class as type for individual " + individual.getIRI() + ", got " + entity.getIRI());
+		}
     return axioms;
   }
 
