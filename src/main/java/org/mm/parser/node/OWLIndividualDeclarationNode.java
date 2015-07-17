@@ -21,9 +21,9 @@ public class OWLIndividualDeclarationNode
 	private OWLNamedIndividualNode namedIndividualNode;
 	private List<FactNode> factNodes;
 	private List<AnnotationFactNode> annotationNodes;
-	private TypesNode typesNode = null;
-	private OWLSameAsNode OWLSameAsNode = null;
-	private OWLDifferentFromNode OWLDifferentFromNode;
+	private TypesNode typesNode ;
+	private OWLSameAsNode sameAsNode;
+	private OWLDifferentFromNode differentFromNode;
 
 	public OWLIndividualDeclarationNode(ASTOWLIndividualDeclaration node) throws ParseException
 	{
@@ -43,9 +43,9 @@ public class OWLIndividualDeclarationNode
 			} else if (ParserUtil.hasName(child, "Types")) {
 				typesNode = new TypesNode((ASTTypes)child);
 			} else if (ParserUtil.hasName(child, "OWLSameAs")) {
-				OWLSameAsNode = new OWLSameAsNode((ASTOWLSameAs)child);
+				sameAsNode = new OWLSameAsNode((ASTOWLSameAs)child);
 			} else if (ParserUtil.hasName(child, "OWLDifferentFrom")) {
-				OWLDifferentFromNode = new OWLDifferentFromNode((ASTOWLDifferentFrom)child);
+				differentFromNode = new OWLDifferentFromNode((ASTOWLDifferentFrom)child);
 			} else
 				throw new InternalParseException("unexpect child node " + child.toString() + " for OWLIndividualDeclaration");
 		}
@@ -68,12 +68,12 @@ public class OWLIndividualDeclarationNode
 
 	public boolean hasSameAs()
 	{
-		return OWLSameAsNode != null;
+		return sameAsNode != null;
 	}
 
 	public boolean hasDifferentFrom()
 	{
-		return OWLDifferentFromNode != null;
+		return differentFromNode != null;
 	}
 
 	public OWLNamedIndividualNode getOWLIndividualNode()
@@ -98,12 +98,12 @@ public class OWLIndividualDeclarationNode
 
 	public OWLSameAsNode getOWLSameAsNode()
 	{
-		return OWLSameAsNode;
+		return sameAsNode;
 	}
 
 	public OWLDifferentFromNode getOWLDifferentFromNode()
 	{
-		return OWLDifferentFromNode;
+		return differentFromNode;
 	}
 
 	public String toString()

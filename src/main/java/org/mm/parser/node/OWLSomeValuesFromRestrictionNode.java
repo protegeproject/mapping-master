@@ -10,8 +10,8 @@ import org.mm.parser.ParserUtil;
 
 public class OWLSomeValuesFromRestrictionNode
 {
-	private OWLDataSomeValuesFromNode owlDataSomeValuesFromNode = null;
-	private OWLObjectSomeValuesFromNode owlObjectSomeValuesFromNode = null;
+	private OWLDataSomeValuesFromNode dataSomeValuesFromNode = null;
+	private OWLObjectSomeValuesFromNode objectSomeValuesFromNode = null;
 
 	public OWLSomeValuesFromRestrictionNode(ASTOWLSomeValuesFromRestriction node) throws ParseException
 	{
@@ -19,42 +19,42 @@ public class OWLSomeValuesFromRestrictionNode
 			Node child = node.jjtGetChild(i);
 
 			if (ParserUtil.hasName(child, "OWLDataSomeValuesFrom"))
-				owlDataSomeValuesFromNode = new OWLDataSomeValuesFromNode((ASTOWLDataSomeValuesFrom)child);
-			else if (ParserUtil.hasName(child, "OWLSomeValuesFromClass"))
-				owlObjectSomeValuesFromNode = new OWLObjectSomeValuesFromNode((ASTOWLObjectSomeValuesFrom)child);
+				dataSomeValuesFromNode = new OWLDataSomeValuesFromNode((ASTOWLDataSomeValuesFrom)child);
+			else if (ParserUtil.hasName(child, "OWLObjectSomeValuesFrom"))
+				objectSomeValuesFromNode = new OWLObjectSomeValuesFromNode((ASTOWLObjectSomeValuesFrom)child);
 			else
 				throw new InternalParseException("invalid child node " + child.toString() + " for OWLSomeValuesFrom");
 		} 
 	}
 
-	public OWLDataSomeValuesFromNode getOWLSomeValuesFromDataTypeNode()
+	public OWLDataSomeValuesFromNode getOWLDataSomeValuesFromNode()
 	{
-		return owlDataSomeValuesFromNode;
+		return dataSomeValuesFromNode;
 	}
 	
-	public OWLObjectSomeValuesFromNode getOWLSomeValuesFromClassNode()
+	public OWLObjectSomeValuesFromNode getOWLObjectSomeValuesFromNode()
 	{
-		return owlObjectSomeValuesFromNode;
+		return objectSomeValuesFromNode;
 	}
 
-	public boolean hasOWLSomeValuesFromDataType()
+	public boolean hasOWLDataSomeValuesFromNode()
 	{
-		return owlDataSomeValuesFromNode != null;
+		return dataSomeValuesFromNode != null;
 	}
 	
-	public boolean hasOWLSomeValuesFromClass()
+	public boolean hasOWLObjectSomeValuesFrom()
 	{
-		return owlObjectSomeValuesFromNode != null;
+		return objectSomeValuesFromNode != null;
 	}
 
 	public String toString()
 	{
 		String representation = "";
 
-		if (owlDataSomeValuesFromNode != null)
-			representation += owlDataSomeValuesFromNode.toString();
-		else if (owlObjectSomeValuesFromNode != null)
-			representation += owlObjectSomeValuesFromNode.toString();
+		if (dataSomeValuesFromNode != null)
+			representation += dataSomeValuesFromNode.toString();
+		else if (objectSomeValuesFromNode != null)
+			representation += objectSomeValuesFromNode.toString();
 
 		return representation;
 	}

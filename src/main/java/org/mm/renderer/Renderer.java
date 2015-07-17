@@ -99,7 +99,8 @@ Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictio
   Optional<? extends Rendering> renderOWLHasValueRestriction(OWLHasValueRestrictionNode hasValueRestrictionNode)
     throws RendererException;
 
-  Optional<? extends Rendering> renderOWLAllValuesFrom(OWLAllValuesFromRestrictionNode allValuesFroRestrictonNode)
+  Optional<? extends Rendering> renderOWLAllValuesFromRestriction(
+			OWLAllValuesFromRestrictionNode allValuesFroRestrictonNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLDataAllValuesFrom(OWLDataAllValuesFromNode dataAllValuesFromNode)
@@ -108,7 +109,8 @@ Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictio
   Optional<? extends Rendering> renderOWLObjectAllValuesFrom(OWLObjectAllValuesFromNode objectAllValuesFromNode)
     throws RendererException;
 
-  Optional<? extends Rendering> renderOWLSomeValuesFrom(OWLSomeValuesFromRestrictionNode someValuesFromRestrictionNode)
+  Optional<? extends Rendering> renderOWLSomeValuesFromRestriction(
+			OWLSomeValuesFromRestrictionNode someValuesFromRestrictionNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLDataSomeValuesFrom(OWLDataSomeValuesFromNode dataSomeValuesFromNode)
@@ -119,7 +121,7 @@ Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictio
 
   Optional<? extends Rendering> renderOWLSubclassOf(OWLSubclassOfNode subclassOfNode) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLEquivalentTo(OWLClassEquivalentToNode classEquivalentToNode)
+  Optional<? extends Rendering> renderOWLClassEquivalentTo(OWLClassEquivalentToNode classEquivalentToNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAs) throws RendererException;

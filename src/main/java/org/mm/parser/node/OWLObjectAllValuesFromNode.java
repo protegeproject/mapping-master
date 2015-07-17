@@ -22,7 +22,7 @@ public class OWLObjectAllValuesFromNode
       classNode = new OWLClassNode((ASTOWLClass)child);
     else
       throw new InternalParseException(
-        "OWLObjectAllValuesFrom node expecting OWLClassExpression child, got " + child.toString());
+        "OWLObjectAllValuesFrom node expecting OWLClassExpression or OWLClass child,ren got " + child.toString());
   }
 
   public boolean hasOWLClassExpression()

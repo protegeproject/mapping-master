@@ -1,8 +1,8 @@
 package org.mm.parser.node;
 
+import org.mm.parser.ASTOWLAllValuesFromRestriction;
 import org.mm.parser.ASTOWLDataAllValuesFrom;
 import org.mm.parser.ASTOWLObjectAllValuesFrom;
-import org.mm.parser.ASTOWLAllValuesFromRestriction;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
@@ -27,22 +27,22 @@ public class OWLAllValuesFromRestrictionNode
 		}
 	}
 
-	public OWLDataAllValuesFromNode getOWLAllValuesFromDataTypeNode()
+	public OWLDataAllValuesFromNode getOWLDataAllValuesFromNode()
 	{
 		return dataAllValuesFromNode;
 	}
 
-	public OWLObjectAllValuesFromNode getOWLAllValuesFromClassNode()
+	public OWLObjectAllValuesFromNode getObjectOWLAllValuesFromNode()
 	{
 		return objectAllValuesFromNode;
 	}
 
-	public boolean hasOWLAllValuesFromDataType()
+	public boolean hasOWLDataAllValuesFromNode()
 	{
 		return dataAllValuesFromNode != null;
 	}
 
-	public boolean hasOWLAllValuesFromClass()
+	public boolean hasOWLObjectAllValuesFromNode()
 	{
 		return objectAllValuesFromNode != null;
 	}
