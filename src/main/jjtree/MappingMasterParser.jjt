@@ -207,6 +207,8 @@ TOKEN: { <OWL_CLASS: "Class"> }
 TOKEN: { <OWL_NAMED_INDIVIDUAL: "Individual"> }
 TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
 TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
+TOKEN: { <OWL_ANNOTATION_PROPERTY: "AnnotationProperty"> }
+TOKEN: { <OWL_DATATYPE: "Datatype"> }
 
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
 TOKEN: { <MM_TO_LOWER_CASE: "mm:toLowerCase"> }

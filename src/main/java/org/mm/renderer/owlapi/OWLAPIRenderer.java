@@ -531,8 +531,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
           if (hasValueRestrictionNode.isLiteral())
             throw new RendererException("expecting individual for object has value restriction " + restrictionNode);
 
-          Optional<OWLNamedIndividualRendering> individualRendering = renderOWLNamedIndividual(
-            hasValueRestrictionNode.getNameNode());
+          Optional<OWLNamedIndividualRendering> individualRendering = renderOWLNamedIndividual(null); // TODO
           if (individualRendering.isPresent()) {
             OWLNamedIndividual individual = individualRendering.get().getOWLNamedIndividual();
             OWLObjectHasValue restriction = this.owlDataFactory.getOWLObjectHasValue(property, individual);
@@ -625,12 +624,16 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
       OWLLiteral literal = this.owlDataFactory.getOWLLiteral(processedLiteralValue); // TODO Literal type
 
       if (processedLiteralValue.equals("")
-        && referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE)
+        && referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE) {
         return Optional.empty();
+      }
 
-      referenceRendering.addText(processedLiteralValue);
+      referenceRendering.logLine(
+        ">>>>>>>>>>>>>>>>>>>> Reference [" + referenceNode.toString() + "] rendered as " + referenceNode
+          .getReferenceTypeNode() + " " + referenceRendering.toString() + " >>>>>>>>>>>>>>>>>>>>");
+
       referenceRendering.setOWLLiteral(literal);
-    } else { // OWL entity
+    } else if (referenceType.isOWLEntity()) { // OWL entity
       String rdfID = processRDFIDValue(locationValue, referenceNode, referenceRendering);
       String rdfsLabelText = processRDFSLabelText(locationValue, referenceNode, referenceRendering);
       OWLEntity owlEntity = this.owlObjectHandler
@@ -638,17 +641,15 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
           language, referenceNode.getReferenceDirectives());
       Set<OWLAxiom> axioms = addDefiningTypesFromReference(owlEntity, referenceNode);
       referenceRendering.addOWLAxioms(axioms);
-      referenceRendering.setOWLEntity(owlEntity);
-      referenceRendering.addText(rdfID);
-    }
 
-    if (!referenceRendering.nothingRendered())
       referenceRendering.logLine(
         ">>>>>>>>>>>>>>>>>>>> Reference [" + referenceNode.toString() + "] rendered as " + referenceNode
-          .getReferenceTypeNode() + " " + referenceRendering.getTextRendering() + " >>>>>>>>>>>>>>>>>>>>");
-    else
-      referenceRendering
-        .logLine(">>>>>>>>>>>>>>>>>>>> Reference [" + referenceNode + "] - nothing rendered >>>>>>>>>>>>>>>>>>>>");
+          .getReferenceTypeNode() + " " + referenceRendering.toString() + " >>>>>>>>>>>>>>>>>>>>");
+
+      referenceRendering.setOWLEntity(owlEntity);
+    } else
+      throw new RendererException(
+        "internal error: unknown reference type " + referenceType + " for reference " + referenceNode.toString());
 
     return Optional.of(referenceRendering);
   }
@@ -939,8 +940,11 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
     if (valueExtractionFunctionNode.hasArguments()) {
       for (ValueExtractionFunctionArgumentNode argumentNode : valueExtractionFunctionNode.getArgumentNodes()) {
-        Optional<> argumentRendering = renderValueExtractionFunctionArgument(argumentNode);
-        arguments.add(argumentRendering.getTextRendering());
+        Optional<OWLLiteralRendering> argumentRendering = renderValueExtractionFunctionArgument(argumentNode);
+        if (argumentRendering.isPresent()) {
+          OWLLiteral literal = argumentRendering.get().getOWLLiteral();
+          arguments.add(literal.toString()); // TODO
+        }
       }
     }
 

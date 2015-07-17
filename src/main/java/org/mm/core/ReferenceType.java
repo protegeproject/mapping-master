@@ -26,21 +26,6 @@ public class ReferenceType implements MappingMasterParserConstants
     return type == MM_UNTYPED;
   }
 
-  public boolean isTyped()
-  {
-    return !isUntyped();
-  }
-
-  public boolean isRDFSClass()
-  {
-    return type == RDFS_CLASS;
-  }
-
-  public boolean isRDFProperty()
-  {
-    return type == RDF_PROPERTY;
-  }
-
   public boolean isOWLClass()
   {
     return type == OWL_CLASS;
@@ -51,10 +36,36 @@ public class ReferenceType implements MappingMasterParserConstants
     return type == OWL_NAMED_INDIVIDUAL;
   }
 
+  public boolean isOWLObjectProperty()
+  {
+    return type == OWL_OBJECT_PROPERTY;
+  }
+
+  public boolean isOWLDataProperty()
+  {
+    return type == OWL_DATA_PROPERTY;
+  }
+
+  public boolean isOWLAnnotationProperty()
+  {
+    return type == OWL_ANNOTATION_PROPERTY;
+  }
+
+  public boolean isOWLDatatype()
+  {
+    return type == OWL_DATATYPE;
+  }
+
+  public boolean isOWLEntity()
+  {
+    return isOWLClass() || isOWLNamedIndividual() || isOWLObjectProperty() || isOWLDataProperty()
+      || isOWLAnnotationProperty() || isOWLDatatype();
+  }
+
   public boolean isOWLLiteral()
   {
-    return isXSDString() || isXSDFloat() || isXSDDouble() || isXSDInteger() || isXSDBoolean() || isXSDShort()
-      || isXSDTime() | isXSDDateTime() | isXSDDuration();
+    return isXSDString() || isXSDShort() || isXSDFloat() || isXSDInteger() || isXSDLong() || isXSDFloat()
+      || isXSDDouble() || isXSDBoolean() || isXSDTime() || isXSDDate() || isXSDDateTime() | isXSDDuration();
   }
 
   public boolean isXSDString()
@@ -70,6 +81,11 @@ public class ReferenceType implements MappingMasterParserConstants
   public boolean isXSDInteger()
   {
     return type == XSD_INT;
+  }
+
+  public boolean isXSDLong()
+  {
+    return type == XSD_FLOAT;
   }
 
   public boolean isXSDFloat()
@@ -97,6 +113,11 @@ public class ReferenceType implements MappingMasterParserConstants
     return type == XSD_DATETIME;
   }
 
+  public boolean isXSDDate()
+  {
+    return type == XSD_DATE;
+  }
+
   public boolean isXSDDuration()
   {
     return type == XSD_DURATION;
@@ -105,16 +126,6 @@ public class ReferenceType implements MappingMasterParserConstants
   public boolean isQuotedOWLDataValue()
   {
     return isXSDString() || isXSDTime() || isXSDDateTime() || isXSDDuration();
-  }
-
-  public boolean isOWLObjectProperty()
-  {
-    return type == OWL_OBJECT_PROPERTY;
-  }
-
-  public boolean isOWLDataProperty()
-  {
-    return type == OWL_DATA_PROPERTY;
   }
 
   public String toString()

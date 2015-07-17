@@ -21,10 +21,16 @@ public class TextRendering implements Rendering
 		return rendering.equals("") || rendering.equals("\"\"");
 	} // TODO: last clause is hack
 
-	// TODO Remove addText
-	@Override public void addText(String text)
+	public void addText(String text)
 	{
 		this.rendering = rendering.concat(text);
+	}
+
+	public String getTextRendering()
+	{
+		stripDoubleQuotesIfNecessary(); // TODO: hack
+
+		return this.rendering;
 	}
 
 	// TODO Use real logger
@@ -38,13 +44,6 @@ public class TextRendering implements Rendering
 	@Override public void logLine(String loggingText)
 	{
 		log(loggingText + "\n");
-	}
-
-	@Override public String getTextRendering()
-	{
-		stripDoubleQuotesIfNecessary(); // TODO: hack
-
-		return this.rendering;
 	}
 
 	@Override public void addLoggingTextNewLine()
