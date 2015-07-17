@@ -14,12 +14,12 @@ public class OWLDataSomeValuesFromNode implements MMNode, MappingMasterParserCon
     datatype = node.datatype;
   }
 
-  public String getDataTypeName() { return tokenImage[datatype].substring(1, tokenImage[datatype].length() - 1); }
+  public String getDatatypeName() { return tokenImage[datatype].substring(1, tokenImage[datatype].length() - 1); }
 
   @Override public String getNodeName()
   {
     return "OWLDataSomeValuesFrom";
   }
 
-  public String toString() { return " SOME " + getDataTypeName(); }
+  public String toString() { return " SOME " + getDatatypeName(); }
 }

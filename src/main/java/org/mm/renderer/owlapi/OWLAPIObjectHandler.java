@@ -5,9 +5,7 @@ import org.mm.core.ReferenceType;
 import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -25,11 +23,7 @@ class OWLAPIObjectHandler
 
   private final Map<String, Map<SpreadsheetLocation, OWLEntity>> createdOWLEntitiesUsingLocation; // Map of namespace to map of location to rdf:ID
 
-  private final Map<String, OWLClassExpression> classExpressionMap;
-
   private final OWLOntology ontology;
-
-  private int classExpressionIndex;
 
   public OWLAPIObjectHandler(OWLOntology ontology)
   {
@@ -37,78 +31,12 @@ class OWLAPIObjectHandler
 
     this.createdOWLEntitiesUsingLabel = new HashMap<>();
     this.createdOWLEntitiesUsingLocation = new HashMap<>();
-    this.classExpressionMap = new HashMap<>();
-    this.classExpressionIndex = 0;
   }
 
   public void reset()
   {
     this.createdOWLEntitiesUsingLabel.clear();
     this.createdOWLEntitiesUsingLocation.clear();
-    this.classExpressionMap.clear();
-    this.classExpressionIndex = 0;
-  }
-
-  public String registerOWLClassExpression(OWLClassExpression classExpression)
-  {
-    String classExpressionID = "CE" + classExpressionIndex++;
-    this.classExpressionMap.put(classExpressionID, classExpression);
-    return classExpressionID;
-  }
-
-  public OWLClassExpression getOWLClassExpression(String classExpressionID)
-  {
-    return null; // TODO
-  }
-
-  public OWLClass getOWLClass(String shortName)
-  {
-    return null; // TODO
-  }
-
-  public OWLClass getOWLClass(IRI iri)
-  {
-    return null; // TODO
-  }
-
-  public OWLNamedIndividual getOWLNamedIndividual(String shortName)
-  {
-    return null; // TODO
-  }
-
-  public OWLNamedIndividual getOWLNamedIndividual(IRI iri)
-  {
-    return null; // TODO
-  }
-
-  public OWLObjectProperty getOWLObjectProperty(String shortName)
-  {
-    return null; // TODO
-  }
-
-  public OWLObjectProperty getOWLObjectProperty(IRI iri)
-  {
-    return null; // TODO
-  }
-
-  public OWLDataProperty getOWLDataProperty(String shortName)
-  {
-    return null; // TODO
-  }
-
-  public OWLDataProperty getOWLDataProperty(IRI iri)
-  {
-    return null; // TODO
-  }
-
-  public OWLAnnotationProperty getOWLAnnotationProperty(String shortName)
-  {
-    return null; // TODO
-  }
-
-  public OWLAnnotationProperty getOWLAnnotationProperty(IRI iri)
-  {
-    return null; // TODO
   }
 
   public OWLDatatype getOWLDatatype(String shortName)
@@ -116,74 +44,19 @@ class OWLAPIObjectHandler
     return null; // TODO
   }
 
-  public boolean isOWLClass(String shortName)
-  {
-    return false; // TODO
-  }
-
-  public boolean isOWLClass(IRI iri)
-  {
-    return false; // TODO
-  }
-
-  public boolean isOWLObjectProperty(String shortName)
-  {
-    return false; // TODO
-  }
-
   public boolean isOWLObjectProperty(OWLProperty property)
   {
-    return false; // TODO
-  }
-
-  public boolean isOWLObjectProperty(IRI iri)
-  {
-    return false; // TODO
-  }
-
-  public boolean isOWLNamedIndividual(String shortName)
-  {
-    return false; // TODO
-  }
-
-  public boolean isOWLNamedIndividual(IRI iri)
-  {
-    return false; // TODO
-  }
-
-  public boolean isOWLDataProperty(String shortName)
-  {
-    return false; // TODO
+    return ontology.containsObjectPropertyInSignature(property.getIRI());
   }
 
   public boolean isOWLDataProperty(OWLProperty property)
   {
-    return false; // TODO
+    return ontology.containsDataPropertyInSignature(property.getIRI());
   }
 
   public boolean isOWLDataProperty(IRI iri)
   {
-    return false; // TODO
-  }
-
-  public boolean isOWLAnnotationProperty(String shortName)
-  {
-    return false; // TODO
-  }
-
-  public boolean isOWLAnnotationProperty(IRI iri)
-  {
-    return false; // TODO
-  }
-
-  public boolean isOWLDatatype(String shortName)
-  {
-    return false; // TODO
-  }
-
-  public boolean isOWLDatatype(IRI iri)
-  {
-    return false; // TODO
+    return ontology.containsDataPropertyInSignature(iri);
   }
 
   public OWLEntity createOrResolveOWLEntity(SpreadsheetLocation location, String locationValue,
@@ -195,7 +68,7 @@ class OWLAPIObjectHandler
     if (referenceDirectives.usesLocationWithDuplicatesEncoding()) {
       createdOrResolvedOWLEntity = resolveOWLEntityWithDuplicatesEncoding(referenceType, defaultNamespace);
     } else if (referenceDirectives.usesLocationEncoding()) {
-      createdOrResolvedOWLEntity = resolveOWLEntityWithLocationEncoding(location, referenceType, defaultNamespace);
+      createdOrResolvedOWLEntity = resolveOWLEntityWithLocationEncoding(location, defaultNamespace, referenceType);
     } else { // Uses rdf:ID or rdfs:label encoding
       boolean isEmptyRDFIDValue = rdfID == null || rdfID.equals("");
       boolean isEmptyRDFSLabelText = labelText == null | labelText.equals("");
@@ -208,8 +81,8 @@ class OWLAPIObjectHandler
         System.err.println("--processReference: skipping because of empty rdfs:label");
       } else {
         if (isEmptyRDFIDValue && isEmptyRDFSLabelText) { // Empty rdf:ID and rdfs:label
-          createdOrResolvedOWLEntity = createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(location, referenceType,
-            defaultNamespace);
+          createdOrResolvedOWLEntity = createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(location, defaultNamespace,
+            referenceType);
         } else { // One or both of rdf:ID and label have values
           if (isEmptyRDFIDValue) { // rdf:ID is empty, label must then have a value. Use label to resolve possible existing entity.
             createdOrResolvedOWLEntity = createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(location, referenceType,
@@ -249,7 +122,7 @@ class OWLAPIObjectHandler
         System.err.println("--processReference: using existing " + referenceType + " " + resolvedOWLEntity
           + " created at this location");
       } else { // No existing entity created at this location -- create one. If an existing entity has this rdf:ID it will be reused.
-        resolvedOWLEntity = createOWLEntity(location, rdfID, referenceType, namespace,
+        resolvedOWLEntity = createOWLEntity(location, namespace, rdfID, referenceType,
           referenceDirectives); // If entity exists, it will be retrieved.
         System.err.println("--processReference: creating/resolving " + referenceType + " using rdf:ID " + rdfID);
         recordCreatedOWLEntityRDFIDAtLocation(referenceType, location, namespace, resolvedOWLEntity);
@@ -274,9 +147,9 @@ class OWLAPIObjectHandler
         System.err.println("--processReference: using existing " + referenceType + " " + resolvedOWLEntity
           + " created at this location");
       } else { // No existing entity created at this location -- create one. If an existing entity has this rdf:ID it will be reused.
-        resolvedOWLEntity = createOWLEntity(location, rdfID, referenceType, namespace,
-          referenceDirectives); // If entity exists, it will be
-        // retrieved
+        resolvedOWLEntity = createOWLEntity(location, namespace, rdfID, referenceType,
+          referenceDirectives); // If entity exists, it will be retrieved
+
         System.err.println("--processReference: creating/resolving " + referenceType + " using rdf:ID " + rdfID);
         recordCreatedOWLEntityRDFIDAtLocation(referenceType, location, namespace, resolvedOWLEntity);
       }
@@ -414,15 +287,15 @@ class OWLAPIObjectHandler
   private OWLEntity resolveOWLEntityWithDuplicatesEncoding(ReferenceType referenceType, String namespace)
     throws RendererException
   {
-    OWLEntity resolvedOWLEntity = createOWLEntity(referenceType,
-      namespace); // Create entity with an auto-generated rdf:ID
+    // Create entity with an auto-generated rdf:ID
+    OWLEntity resolvedOWLEntity = createOWLEntity(referenceType, namespace);
     System.err.println(
       "--processReference: creating " + referenceType + " at this location using location with duplicates encoding");
     return resolvedOWLEntity;
   }
 
-  private OWLEntity resolveOWLEntityWithLocationEncoding(SpreadsheetLocation location, ReferenceType referenceType,
-    String namespace) throws RendererException
+  private OWLEntity resolveOWLEntityWithLocationEncoding(SpreadsheetLocation location, String namespace,
+    ReferenceType referenceType) throws RendererException
   {
     OWLEntity resolvedOWLEntity;
 
@@ -439,20 +312,20 @@ class OWLAPIObjectHandler
     return resolvedOWLEntity;
   }
 
-  private OWLEntity createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(SpreadsheetLocation location,
-    ReferenceType referenceType, String defaultNamespace) throws RendererException
+  private OWLEntity createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(SpreadsheetLocation location, String namespace,
+    ReferenceType referenceType) throws RendererException
   {
     OWLEntity resolvedOWLEntity;
 
     if (hasOWLEntityBeenCreatedAtLocation(location,
-      defaultNamespace)) { // Has an entity for this location been created already?
-      resolvedOWLEntity = getCreatedEntityRDFIDAtLocation(referenceType, location, defaultNamespace);
+      namespace)) { // Has an entity for this location been created already?
+      resolvedOWLEntity = getCreatedEntityRDFIDAtLocation(referenceType, location, namespace);
       System.err.println(
         "--processReference: using existing " + referenceType + " " + resolvedOWLEntity + " created at this location");
     } else { // No existing entity created at this location -- create one with an auto-generated rdf:ID
-      resolvedOWLEntity = createOWLEntity(referenceType, defaultNamespace);
+      resolvedOWLEntity = createOWLEntity(referenceType, namespace);
       System.err.println("--processReference: creating " + referenceType);
-      recordCreatedOWLEntityRDFIDAtLocation(referenceType, location, defaultNamespace, resolvedOWLEntity);
+      recordCreatedOWLEntityRDFIDAtLocation(referenceType, location, namespace, resolvedOWLEntity);
     }
     return resolvedOWLEntity;
   }
@@ -461,28 +334,22 @@ class OWLAPIObjectHandler
   // a fragment and prepend a namespace to it; otherwise we assume it can be either of the three and let createOWLClass take care of it.
   // An empty entityRDFID indicates that one should be generated.
   // TODO: fix so that we are strict about RDFID
-  private OWLEntity createOWLEntity(SpreadsheetLocation location, String owlEntityName, ReferenceType referenceType,
-    String namespace, ReferenceDirectives referenceDirectives) throws RendererException
+  private OWLEntity createOWLEntity(SpreadsheetLocation location, String namespace, String entityLocalID,
+    ReferenceType referenceType, ReferenceDirectives referenceDirectives) throws RendererException
   {
-    boolean isEmptyName = owlEntityName.equals("");
+    boolean isEmptyName = entityLocalID.equals("");
 
     if (referenceType.isOWLClass()) {
-      return isEmptyName ? createOWLClassWithNamespace(namespace) : createOWLClass(owlEntityName, namespace);
+      return isEmptyName ? createOWLClass(namespace) : createOWLClass(namespace, entityLocalID);
     } else if (referenceType.isOWLNamedIndividual()) {
-      return isEmptyName ?
-        createOWLNamedIndividualWithNamespace(namespace) :
-        createOWLNamedIndividual(owlEntityName, namespace);
+      return isEmptyName ? createOWLNamedIndividual(namespace) : createOWLNamedIndividual(namespace, entityLocalID);
     } else if (referenceType.isOWLObjectProperty()) {
-      return isEmptyName ?
-        createOWLObjectPropertyWithNamespace(namespace) :
-        createOWLObjectProperty(owlEntityName, namespace);
+      return isEmptyName ? createOWLObjectProperty(namespace) : createOWLObjectProperty(namespace, entityLocalID);
     } else if (referenceType.isOWLDataProperty()) {
-      return isEmptyName ?
-        createOWLDataPropertyWithNamespace(namespace) :
-        createOWLDataProperty(owlEntityName, namespace);
+      return isEmptyName ? createOWLDataProperty(namespace) : createOWLDataProperty(namespace, entityLocalID);
     } else
       throw new RendererException(
-        "unknown entity type " + referenceType + " for entity " + owlEntityName + " in namespace " + namespace
+        "unknown entity type " + referenceType + " for entity " + entityLocalID + " in namespace " + namespace
           + "	in reference " + referenceDirectives + " at location " + location);
   }
 
@@ -504,13 +371,13 @@ class OWLAPIObjectHandler
   private OWLEntity createOWLEntity(ReferenceType referenceType, String namespace) throws RendererException
   {
     if (referenceType.isOWLClass()) {
-      return createOWLClassWithNamespace(namespace);
+      return createOWLClass(namespace);
     } else if (referenceType.isOWLNamedIndividual()) {
-      return createOWLNamedIndividualWithNamespace(namespace);
+      return createOWLNamedIndividual(namespace);
     } else if (referenceType.isOWLObjectProperty()) {
-      return createOWLObjectPropertyWithNamespace(namespace);
+      return createOWLObjectProperty(namespace);
     } else if (referenceType.isOWLDataProperty()) {
-      return createOWLDataPropertyWithNamespace(namespace);
+      return createOWLDataProperty(namespace);
     } else
       throw new RendererException("invalid entity type " + referenceType);
   }
@@ -645,42 +512,42 @@ class OWLAPIObjectHandler
     return false; // TODO
   }
 
-  private OWLClass createOWLClass(String className, String namespace)
+  private OWLClass createOWLClass(String namespace, String localName)
   {
     return null; // TODO
   }
 
-  private OWLClass createOWLClassWithNamespace(String namespace)
+  private OWLClass createOWLClass(String namespace)
   {
     return null; // TODO
   }
 
-  private OWLNamedIndividual createOWLNamedIndividual(String individualName, String namespace)
+  private OWLNamedIndividual createOWLNamedIndividual(String namespace, String localName)
   {
     return null; // TODO
   }
 
-  private OWLNamedIndividual createOWLNamedIndividualWithNamespace(String namespace)
+  private OWLNamedIndividual createOWLNamedIndividual(String namespace)
   {
     return null; // TODO
   }
 
-  private OWLObjectProperty createOWLObjectProperty(String propertyName, String namespace)
+  private OWLObjectProperty createOWLObjectProperty(String namespace, String localName)
   {
     return null; // TODO
   }
 
-  private OWLObjectProperty createOWLObjectPropertyWithNamespace(String namespace)
+  private OWLObjectProperty createOWLObjectProperty(String namespace)
   {
     return null; // TODO
   }
 
-  private OWLDataProperty createOWLDataProperty(String propertyName, String namespace)
+  private OWLDataProperty createOWLDataProperty(String namespace, String localName)
   {
     return null; // TODO
   }
 
-  private OWLDataProperty createOWLDataPropertyWithNamespace(String namespace)
+  private OWLDataProperty createOWLDataProperty(String namespace)
   {
     return null; // TODO
   }

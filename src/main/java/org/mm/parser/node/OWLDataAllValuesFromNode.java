@@ -13,7 +13,7 @@ public class OWLDataAllValuesFromNode implements MMNode, MappingMasterParserCons
     datatype = node.datatype;
   }
 
-  public String getDataTypeName()
+  public String getDatatypeName()
   {
     return tokenImage[datatype].substring(1, tokenImage[datatype].length() - 1);
   }
@@ -25,6 +25,6 @@ public class OWLDataAllValuesFromNode implements MMNode, MappingMasterParserCons
 
   public String toString()
   {
-    return "ONLY " + getDataTypeName() + ")";
+    return "ONLY " + getDatatypeName() + ")";
   }
 }

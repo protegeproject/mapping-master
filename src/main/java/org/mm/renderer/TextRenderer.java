@@ -277,7 +277,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   public Optional<TextRendering> renderOWLDataAllValuesFrom(OWLDataAllValuesFromNode dataAllValuesFromNode)
     throws RendererException
   {
-    String datatypeName = dataAllValuesFromNode.getDataTypeName();
+    String datatypeName = dataAllValuesFromNode.getDatatypeName();
 
     if (!datatypeName.equals(""))
       return Optional.of(new TextRendering("ONLY " + datatypeName));
@@ -288,7 +288,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   public Optional<TextRendering> renderOWLDataSomeValuesFrom(OWLDataSomeValuesFromNode dataSomeValuesFromNode)
     throws RendererException
   {
-    String datatypeName = dataSomeValuesFromNode.getDataTypeName();
+    String datatypeName = dataSomeValuesFromNode.getDatatypeName();
 
     if (!datatypeName.equals(""))
       return Optional.of(new TextRendering("SOME " + datatypeName));
