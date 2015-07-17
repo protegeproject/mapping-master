@@ -5,7 +5,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class EmptyRDFSLabelDirectiveNode implements MappingMasterParserConstants
+public class EmptyRDFSLabelDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private int emptyRDFSLabelSetting;
 
@@ -25,6 +25,11 @@ public class EmptyRDFSLabelDirectiveNode implements MappingMasterParserConstants
   public boolean isSkipIfEmpty() { return emptyRDFSLabelSetting == MM_SKIP_IF_EMPTY_LABEL; }
 
   public boolean isProcessIfEmpty() { return emptyRDFSLabelSetting == MM_PROCESS_IF_EMPTY_LABEL; }
+
+  @Override public String getNodeName()
+  {
+    return "EmptyRDFSLabelDirective";
+  }
 
   public String toString() { return getEmptyRDFSLabelSettingName(); }
 }

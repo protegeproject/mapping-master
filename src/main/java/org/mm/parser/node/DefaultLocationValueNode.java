@@ -6,7 +6,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultLocationValueNode implements MappingMasterParserConstants
+public class DefaultLocationValueNode implements MMNode, MappingMasterParserConstants
 {
   private String defaultLocationValue;
   
@@ -17,7 +17,12 @@ public class DefaultLocationValueNode implements MappingMasterParserConstants
   
   public String getDefaultLocationValue() { return defaultLocationValue; }
 
-  public String toString() 
+  @Override public String getNodeName()
+  {
+    return "DefaultLocationValue";
+  }
+
+  public String toString()
   { 
     String representation = ParserUtil.getTokenName(MM_DEFAULT_LOCATION_VALUE) + "=\"" + defaultLocationValue + "\"";
 

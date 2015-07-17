@@ -14,7 +14,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLClassDeclarationNode
+public class OWLClassDeclarationNode implements MMNode
 {
 	private OWLClassNode classNode;
 	private List<OWLClassEquivalentToNode> equivalentToNodes = new ArrayList<>();
@@ -35,7 +35,7 @@ public class OWLClassDeclarationNode
 				AnnotationFactNode fact = new AnnotationFactNode((ASTAnnotationFact)child);
 				annotationFactNodes.add(fact);
 			} else
-				throw new InternalParseException("unkown child " + child.toString() + " to OWLClassDeclaration node");
+				throw new InternalParseException("unkown child " + child.toString() + " to node " + getNodeName());
 		}
 	}
 
@@ -72,6 +72,11 @@ public class OWLClassDeclarationNode
 	public boolean hasAnnotations()
 	{
 		return !annotationFactNodes.isEmpty();
+	}
+
+	@Override public String getNodeName()
+	{
+		return "OWLClassDeclaration";
 	}
 
 	public String toString()

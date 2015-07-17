@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class ExpressionNode
+public class ExpressionNode implements MMNode
 {
   private MMDirectiveNode mmDirectiveNode;
   private MMExpressionNode mmExpressionNode;
@@ -45,6 +45,11 @@ public class ExpressionNode
   public boolean hasMMExpression()
   {
     return mmExpressionNode != null;
+  }
+
+  @Override public String getNodeName()
+  {
+    return "Expression";
   }
 
   public String toString()

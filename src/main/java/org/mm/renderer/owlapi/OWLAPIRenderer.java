@@ -331,7 +331,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
   {
     Set<OWLClassExpression> classExpressions = new HashSet<>();
 
-    for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClasseNodes()) {
+    for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClassNodes()) {
       Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLIntersectionClass(
         intersectionClassNode);
       if (classExpressionRendering.isPresent()) {
@@ -1281,7 +1281,6 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
         valueSpecificationItemReferenceNode.setDefaultShiftSetting(referenceNode.getActualShiftDirective());
         Optional<ReferenceRendering> referenceRendering = renderReference(valueSpecificationItemReferenceNode);
         if (referenceRendering.isPresent()) {
-          String referenceTextRendering = referenceRendering.get().getTextRendering(); // TODO WHy accessible?
           if (valueSpecificationItemReferenceNode.getReferenceTypeNode().getReferenceType().isQuotedOWLDataValue()
             && !referenceTextRendering.equals("") && referenceTextRendering.startsWith("\""))
             processedValue += referenceTextRendering.substring(1, referenceTextRendering.length() - 1); // Strip quotes
@@ -1304,20 +1303,19 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 
   private String processCapturingExpression(String locationValue, String capturingExpression) throws RendererException
   {
-    String result = "";
-
     try {
       Pattern p = Pattern.compile(capturingExpression); // Pull the value out of the location
       Matcher m = p.matcher(locationValue);
       boolean matchFound = m.find();
+      String result = "";
       if (matchFound) {
         for (int groupIndex = 1; groupIndex <= m.groupCount(); groupIndex++)
           result += (m.group(groupIndex));
       }
+      return result;
     } catch (PatternSyntaxException e) {
       throw new RendererException("invalid capturing expression: " + capturingExpression + ": " + e.getMessage());
     }
-    return result;
   }
 
   private String reverse(String source)

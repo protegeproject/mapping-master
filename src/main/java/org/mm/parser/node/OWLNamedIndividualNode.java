@@ -9,12 +9,10 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-// TODO Rename to OWLNamedIndividualNode
-
 public class OWLNamedIndividualNode implements MMNode
 {
-	private ReferenceNode referenceNode = null;
-	private NameNode nameNode = null;
+	private ReferenceNode referenceNode;
+	private NameNode nameNode;
 
 	public OWLNamedIndividualNode(ASTOWLNamedIndividual node) throws ParseException
 	{
@@ -27,7 +25,7 @@ public class OWLNamedIndividualNode implements MMNode
 			else if (ParserUtil.hasName(child, "Reference"))
 				referenceNode = new ReferenceNode((ASTReference)child);
 			else
-				throw new InternalParseException("unexpected child node " + child.toString() + " for OWLNamedIndividual node");
+				throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
 		}
 	}
 

@@ -10,7 +10,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLDifferentFromNode
+public class OWLDifferentFromNode implements MMNode
 {
   private List<OWLNamedIndividualNode> namedIndividualNodes;
 
@@ -33,6 +33,11 @@ public class OWLDifferentFromNode
   public List<OWLNamedIndividualNode> getNamedIndividualNodes()
   {
     return namedIndividualNodes;
+  }
+
+  @Override public String getNodeName()
+  {
+    return "OWLDifferentFrom";
   }
 
   public String toString()

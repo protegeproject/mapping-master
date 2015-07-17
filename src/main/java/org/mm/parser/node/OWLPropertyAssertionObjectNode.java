@@ -18,7 +18,7 @@ public class OWLPropertyAssertionObjectNode implements MMNode
   public OWLPropertyAssertionObjectNode(ASTOWLPropertyAssertionObject node) throws ParseException
   {
     if (node.jjtGetNumChildren() != 1)
-      throw new InternalParseException("expecting one child of OWLPropertyAssertionObject node");
+      throw new InternalParseException("expecting one child of node " + getNodeName());
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "Reference"))
@@ -28,8 +28,7 @@ public class OWLPropertyAssertionObjectNode implements MMNode
       else if (ParserUtil.hasName(child, "OWLLiteral"))
         literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
       else
-        throw new InternalParseException(
-          "unexpected child node " + child.toString() + " for OWLPropertyAssertionObject node");
+        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
     }
   }
 

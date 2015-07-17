@@ -5,7 +5,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class IfExistsDirectiveNode implements MappingMasterParserConstants
+public class IfExistsDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private int ifExistsSetting;
 
@@ -25,6 +25,11 @@ public class IfExistsDirectiveNode implements MappingMasterParserConstants
   public boolean isErrorIfExists() { return ifExistsSetting == MM_ERROR_IF_EXISTS; }
 
   public boolean isSkipIfExists() { return ifExistsSetting == MM_SKIP_IF_EXISTS; }
+
+  @Override public String getNodeName()
+  {
+    return "IfExistsDirective";
+  }
 
   public String toString() { return getIfExistsSettingName(); }
 }

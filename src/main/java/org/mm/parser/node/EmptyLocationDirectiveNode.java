@@ -6,7 +6,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class EmptyLocationDirectiveNode implements MappingMasterParserConstants
+public class EmptyLocationDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private int emptyLocationSetting;
   
@@ -21,6 +21,11 @@ public class EmptyLocationDirectiveNode implements MappingMasterParserConstants
   public boolean isWarningIfEmpty() { return emptyLocationSetting == MM_WARNING_IF_EMPTY_LOCATION; }
   public boolean isSkipIfEmpty() { return emptyLocationSetting == MM_SKIP_IF_EMPTY_LOCATION; }
   public boolean isProcessIfEmpty() { return emptyLocationSetting == MM_PROCESS_IF_EMPTY_LOCATION; }
-  
+
+  @Override public String getNodeName()
+  {
+    return "EmptyLocationDirective";
+  }
+
   public String toString() { return ParserUtil.getTokenName(emptyLocationSetting); }
 }

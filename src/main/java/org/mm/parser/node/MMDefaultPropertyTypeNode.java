@@ -1,31 +1,35 @@
-
 package org.mm.parser.node;
 
+import org.mm.parser.ASTMMDefaultPropertyType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
-import org.mm.parser.ASTMMDefaultPropertyType;
 
-public class MMDefaultPropertyTypeNode implements MappingMasterParserConstants
+public class MMDefaultPropertyTypeNode implements MMNode, MappingMasterParserConstants
 {
-	private int defaultType;
+  private int defaultType;
 
-	public MMDefaultPropertyTypeNode(ASTMMDefaultPropertyType node) throws ParseException
-	{
-		this.defaultType = node.defaultType;
-	}
+  public MMDefaultPropertyTypeNode(ASTMMDefaultPropertyType node) throws ParseException
+  {
+    this.defaultType = node.defaultType;
+  }
 
-	public int getType()
-	{
-		return defaultType;
-	}
+  public int getType()
+  {
+    return defaultType;
+  }
 
-	public String getTypeName()
-	{
-		return tokenImage[defaultType].substring(1, tokenImage[defaultType].length() - 1);
-	}
+  public String getTypeName()
+  {
+    return tokenImage[defaultType].substring(1, tokenImage[defaultType].length() - 1);
+  }
 
-	public String toString()
-	{
-		return "MM:DefaultPropertyType " + getTypeName();
-	}
+  @Override public String getNodeName()
+  {
+    return "MMDefaultPropertyType";
+  }
+
+  public String toString()
+  {
+    return "MM:DefaultPropertyType " + getTypeName();
+  }
 }

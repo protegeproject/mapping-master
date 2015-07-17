@@ -6,7 +6,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class NamespaceNode implements MappingMasterParserConstants
+public class NamespaceNode implements MMNode, MappingMasterParserConstants
 {
   private final String namespace;
 
@@ -17,7 +17,12 @@ public class NamespaceNode implements MappingMasterParserConstants
 
   public String getNamespace() { return namespace; }
 
-  public String toString() 
+  @Override public String getNodeName()
+  {
+    return "Namespace";
+  }
+
+  public String toString()
   { 
   	return ParserUtil.getTokenName(MM_NAMESPACE) + "=\"" + namespace + "\"";
   } 

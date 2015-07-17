@@ -6,7 +6,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultIDNode implements MappingMasterParserConstants
+public class DefaultIDNode implements MMNode, MappingMasterParserConstants
 {
   private String defaultID;
   
@@ -16,8 +16,13 @@ public class DefaultIDNode implements MappingMasterParserConstants
   } 
 
   public String getDefaultRDFID() { return defaultID; }
-  
-  public String toString() 
+
+  @Override public String getNodeName()
+  {
+    return "DefaultID";
+  }
+
+  public String toString()
   { 
     String representation = ParserUtil.getTokenName(MM_DEFAULT_ID) + "=\"" + defaultID + "\"";
 

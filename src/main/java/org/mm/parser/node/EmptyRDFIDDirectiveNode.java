@@ -6,7 +6,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class EmptyRDFIDDirectiveNode implements MappingMasterParserConstants
+public class EmptyRDFIDDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private int emptyRDFIDSetting;
   
@@ -21,6 +21,11 @@ public class EmptyRDFIDDirectiveNode implements MappingMasterParserConstants
   public boolean isWarningIfEmpty() { return emptyRDFIDSetting == MM_WARNING_IF_EMPTY_ID; }
   public boolean isSkipIfEmpty() { return emptyRDFIDSetting == MM_SKIP_IF_EMPTY_ID; }
   public boolean isProcessIfEmpty() { return emptyRDFIDSetting == MM_PROCESS_IF_EMPTY_ID; }
-  
+
+  @Override public String getNodeName()
+  {
+    return "EmptyRDFIDDirective";
+  }
+
   public String toString() { return ParserUtil.getTokenName(emptyRDFIDSetting); }
 }

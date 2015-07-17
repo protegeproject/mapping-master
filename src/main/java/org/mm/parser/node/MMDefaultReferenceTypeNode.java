@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class MMDefaultReferenceTypeNode
+public class MMDefaultReferenceTypeNode implements MMNode
 {
   private ReferenceTypeNode referenceTypeNode;
 
@@ -29,6 +29,11 @@ public class MMDefaultReferenceTypeNode
   public ReferenceType getReferenceType()
   {
     return referenceTypeNode.getReferenceType();
+  }
+
+  @Override public String getNodeName()
+  {
+    return "MMDefaultReferenceTypeNode";
   }
 
   public String toString()

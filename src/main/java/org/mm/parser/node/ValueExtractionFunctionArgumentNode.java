@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class ValueExtractionFunctionArgumentNode
+public class ValueExtractionFunctionArgumentNode implements MMNode
 {
   private ReferenceNode referenceNode;
   private OWLLiteralNode literalNode;
@@ -16,7 +16,7 @@ public class ValueExtractionFunctionArgumentNode
   public ValueExtractionFunctionArgumentNode(ASTValueExtractionFunctionArgument node) throws ParseException
   {
     if (node.jjtGetNumChildren() != 1)
-      throw new InternalParseException("expecting one child node for ValueExtractionFunctionArgument node");
+      throw new InternalParseException("expecting one child node for node " + getNodeName());
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "OWLLiteral"))
@@ -24,8 +24,7 @@ public class ValueExtractionFunctionArgumentNode
       else if (ParserUtil.hasName(child, "Reference"))
         referenceNode = new ReferenceNode((ASTReference)child);
       else
-        throw new InternalParseException(
-          "unexpected child node " + child.toString() + " for ValueExtractionFunctionArgument node");
+        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
     }
   }
 
@@ -47,6 +46,11 @@ public class ValueExtractionFunctionArgumentNode
   public boolean isReferenceNode()
   {
     return referenceNode != null;
+  }
+
+  @Override public String getNodeName()
+  {
+    return "ValueExtractionFunctionArgument";
   }
 
   public String toString()

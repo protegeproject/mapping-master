@@ -13,7 +13,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLRestrictionNode
+public class OWLRestrictionNode implements MMNode
 {
   private OWLPropertyNode propertyNode;
   private OWLMaxCardinalityRestrictionNode maxCardinalityRestrictionNode;
@@ -44,7 +44,7 @@ public class OWLRestrictionNode
       else if (ParserUtil.hasName(child, "OWLSomeValuesFromRestriction"))
         someValuesFromRestrictionNode = new OWLSomeValuesFromRestrictionNode((ASTOWLSomeValuesFromRestriction)child);
       else
-        throw new InternalParseException("invalid child node " + child.toString() + " for OWLRestrictionNode");
+        throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
     }
   }
 
@@ -73,6 +73,11 @@ public class OWLRestrictionNode
   public boolean isOWLAllValuesFrom() { return allValuesFromRestrictionNode != null; }
 
   public boolean isOWLSomeValuesFrom() { return someValuesFromRestrictionNode != null; }
+
+  @Override public String getNodeName()
+  {
+    return "OWLRestriction";
+  }
 
   public String toString()
   {

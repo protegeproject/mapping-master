@@ -4,7 +4,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTOWLMaxCardinalityRestriction;
 import org.mm.parser.ParseException;
 
-public class OWLMaxCardinalityRestrictionNode
+public class OWLMaxCardinalityRestrictionNode implements MMNode
 {
 	private int cardinality;
 
@@ -16,6 +16,11 @@ public class OWLMaxCardinalityRestrictionNode
 	public int getCardinality()
 	{
 		return cardinality;
+	}
+
+	@Override public String getNodeName()
+	{
+		return "OWLMaxCardinalityRestriction";
 	}
 
 	public String toString()

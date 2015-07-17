@@ -1,57 +1,63 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTOWLIntersectionClass;
-import org.mm.parser.ParseException;
 import org.mm.parser.ASTOWLUnionClass;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-public class OWLUnionClassNode
+public class OWLUnionClassNode implements MMNode
 {
-	private List<OWLIntersectionClassNode> owlIntersectionClasseNodes;
+  private List<OWLIntersectionClassNode> intersectionClassNodes;
 
-	public OWLUnionClassNode(ASTOWLUnionClass node) throws ParseException
-	{
-		owlIntersectionClasseNodes = new ArrayList<OWLIntersectionClassNode>();
+  public OWLUnionClassNode(ASTOWLUnionClass node) throws ParseException
+  {
+    intersectionClassNodes = new ArrayList<>();
 
-		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			Node child = node.jjtGetChild(i);
+    for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+      Node child = node.jjtGetChild(i);
 
-			if (ParserUtil.hasName(child, "OWLIntersectionClass")) {
-				OWLIntersectionClassNode owlIntersectionClass = new OWLIntersectionClassNode((ASTOWLIntersectionClass)child);
-				owlIntersectionClasseNodes.add(owlIntersectionClass);
-			} else
-				throw new InternalParseException("OWLUnionClass node expecting OWLIntersectionClass child, got " + child.toString());
-		} 
-	}
+      if (ParserUtil.hasName(child, "OWLIntersectionClass")) {
+        OWLIntersectionClassNode owlIntersectionClass = new OWLIntersectionClassNode((ASTOWLIntersectionClass)child);
+        intersectionClassNodes.add(owlIntersectionClass);
+      } else
+        throw new InternalParseException(
+          getNodeName() + "node expecting OWLIntersectionClass child, got " + child.toString());
+    }
+  }
 
-	public List<OWLIntersectionClassNode> getOWLIntersectionClasseNodes()
-	{
-		return owlIntersectionClasseNodes;
-	}
+  public List<OWLIntersectionClassNode> getOWLIntersectionClassNodes()
+  {
+    return intersectionClassNodes;
+  }
 
-	public String toString()
-	{
-		String representation = "";
+  @Override public String getNodeName()
+  {
+    return "OWLUnionClass";
+  }
 
-		if (owlIntersectionClasseNodes.size() == 1)
-			representation = owlIntersectionClasseNodes.get(0).toString();
-		else {
-			boolean isFirst = true;
+  public String toString()
+  {
+    String representation = "";
 
-			representation += "(";
-			for (OWLIntersectionClassNode owlIntersectionClass : owlIntersectionClasseNodes) {
-				if (!isFirst)
-					representation += " OR ";
-				representation += owlIntersectionClass.toString();
-				isFirst = false;
-			}
-			representation += ")";
-		}
-		return representation;
-	}
+    if (intersectionClassNodes.size() == 1)
+      representation = intersectionClassNodes.get(0).toString();
+    else {
+      boolean isFirst = true;
+
+      representation += "(";
+      for (OWLIntersectionClassNode owlIntersectionClass : intersectionClassNodes) {
+        if (!isFirst)
+          representation += " OR ";
+        representation += owlIntersectionClass.toString();
+        isFirst = false;
+      }
+      representation += ")";
+    }
+    return representation;
+  }
 }

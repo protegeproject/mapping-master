@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class AnnotationFactNode
+public class AnnotationFactNode implements MMNode
 {
 	private OWLPropertyNode owlPropertyNode;
 	private OWLAnnotationValueNode owlAnnotationValueNode;
@@ -22,7 +22,7 @@ public class AnnotationFactNode
 			else if (ParserUtil.hasName(child, "OWLAnnotationValue"))
 				owlAnnotationValueNode = new OWLAnnotationValueNode((ASTOWLAnnotationValue)child);
 			else
-				throw new InternalParseException("unexpected child node " + child.toString() + " for AnnotationFact");
+				throw new InternalParseException("unexpected child node " + child.toString() + " for " + getNodeName());
 		}
 	}
 
@@ -34,6 +34,11 @@ public class AnnotationFactNode
 	public OWLAnnotationValueNode getOWLAnnotationValueNode()
 	{
 		return this.owlAnnotationValueNode;
+	}
+
+	@Override public String getNodeName()
+	{
+		return "AnnotationFact";
 	}
 
 	public String toString()

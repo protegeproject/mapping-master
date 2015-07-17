@@ -11,13 +11,13 @@ import org.mm.parser.ParserUtil;
 
 public class OWLPropertyNode implements TypeNode
 {
-	private ReferenceNode referenceNode = null;
-	private NameNode nameNode = null;
+	private ReferenceNode referenceNode;
+	private NameNode nameNode;
 
 	public OWLPropertyNode(ASTOWLProperty node) throws ParseException
 	{
 		if (node.jjtGetNumChildren() != 1)
-			throw new InternalParseException("expecting one child node for OWLPropertyNode");
+			throw new InternalParseException("expecting one child node for node " + getNodeName());
 		else {
 			Node child = node.jjtGetChild(0);
 			if (ParserUtil.hasName(child, "Name"))
@@ -25,7 +25,7 @@ public class OWLPropertyNode implements TypeNode
 			else if (ParserUtil.hasName(child, "Reference"))
 				referenceNode = new ReferenceNode((ASTReference)child);
 			else
-				throw new InternalParseException("unexpected child node " + child.toString() + " for OWLPropertyNode");
+				throw new InternalParseException("unexpected child node " + child.toString() + " for " + getNodeName());
 		}
 	}
 

@@ -11,10 +11,10 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValueExtractionFunctionNode implements MappingMasterParserConstants
+public class ValueExtractionFunctionNode implements MMNode, MappingMasterParserConstants
 {
-  private int functionID;
-  private List<ValueExtractionFunctionArgumentNode> argumentNodes;
+  private final int functionID;
+  private final List<ValueExtractionFunctionArgumentNode> argumentNodes;
 
   public ValueExtractionFunctionNode(ASTValueExtractionFunction node) throws ParseException
   {
@@ -42,6 +42,11 @@ public class ValueExtractionFunctionNode implements MappingMasterParserConstants
   public boolean hasArguments() { return !argumentNodes.isEmpty(); }
 
   public List<ValueExtractionFunctionArgumentNode> getArgumentNodes() { return argumentNodes; }
+
+  @Override public String getNodeName()
+  {
+    return "ValueExtractionFunction";
+  }
 
   public String toString()
   {

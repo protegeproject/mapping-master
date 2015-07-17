@@ -5,7 +5,7 @@ import org.mm.parser.ASTMMDefaultPropertyValueType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class MMDefaultPropertyValueTypeNode implements MappingMasterParserConstants
+public class MMDefaultPropertyValueTypeNode implements MMNode, MappingMasterParserConstants
 {
 	private int defaultType;
 
@@ -22,6 +22,11 @@ public class MMDefaultPropertyValueTypeNode implements MappingMasterParserConsta
 	public String getTypeName()
 	{
 		return tokenImage[defaultType].substring(1, tokenImage[defaultType].length() - 1);
+	}
+
+	@Override public String getNodeName()
+	{
+		return "MMDefaultPropertyValueType";
 	}
 
 	public String toString()

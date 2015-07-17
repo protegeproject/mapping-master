@@ -174,16 +174,16 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLUnionClass(OWLUnionClassNode owlUnionClassNode) throws RendererException
   {
-    if (owlUnionClassNode.getOWLIntersectionClasseNodes().size() == 1) {
+    if (owlUnionClassNode.getOWLIntersectionClassNodes().size() == 1) {
       Optional<TextRendering> intersectionRendering = renderOWLIntersectionClass(
-        owlUnionClassNode.getOWLIntersectionClasseNodes().get(0));
+        owlUnionClassNode.getOWLIntersectionClassNodes().get(0));
 
       return intersectionRendering;
     } else {
       TextRendering rendering = new TextRendering();
       boolean isFirst = true;
 
-      for (OWLIntersectionClassNode owlIntersectionClassNode : owlUnionClassNode.getOWLIntersectionClasseNodes()) {
+      for (OWLIntersectionClassNode owlIntersectionClassNode : owlUnionClassNode.getOWLIntersectionClassNodes()) {
         Optional<TextRendering> intersectionRendering = renderOWLIntersectionClass(owlIntersectionClassNode);
 
         if (intersectionRendering.isPresent()) {

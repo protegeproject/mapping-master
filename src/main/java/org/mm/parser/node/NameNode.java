@@ -4,7 +4,7 @@ package org.mm.parser.node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ASTName;
 
-public class NameNode
+public class NameNode implements  MMNode
 {
 	private final String name;
 	private final boolean isQuotedName;
@@ -23,6 +23,11 @@ public class NameNode
 	public boolean isQuoted()
 	{
 		return isQuotedName;
+	}
+
+	@Override public String getNodeName()
+	{
+		return "Name";
 	}
 
 	public String toString()

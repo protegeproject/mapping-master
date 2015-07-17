@@ -5,7 +5,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class ShiftDirectiveNode implements MappingMasterParserConstants
+public class ShiftDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private int shiftSetting;
 
@@ -27,6 +27,11 @@ public class ShiftDirectiveNode implements MappingMasterParserConstants
   public int getShiftSetting() { return shiftSetting; }
 
   public String getShiftSettingName() { return ParserUtil.getTokenName(shiftSetting); }
+
+  @Override public String getNodeName()
+  {
+    return "ShiftDirective";
+  }
 
   public String toString() { return getShiftSettingName(); }
 }

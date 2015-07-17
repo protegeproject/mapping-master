@@ -10,7 +10,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLLiteralNode
+public class OWLLiteralNode implements  MMNode
 {
   private IntegerLiteralNode integerLiteralNode;
   private FloatLiteralNode floatLiteralNode;
@@ -20,7 +20,7 @@ public class OWLLiteralNode
   public OWLLiteralNode(ASTOWLLiteral node) throws ParseException
   {
     if (node.jjtGetNumChildren() != 1)
-      throw new InternalParseException("expecting one child of Literal node");
+      throw new InternalParseException("expecting one child of node " + getNodeName());
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "IntegerLiteralNode"))
@@ -32,7 +32,7 @@ public class OWLLiteralNode
       else if (ParserUtil.hasName(child, "BooleanLiteral"))
         booleanLiteralNode = new BooleanLiteralNode((ASTBooleanLiteral)child);
       else
-        throw new InternalParseException("unexpected child node " + child.toString() + " for Literal node");
+        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
     }
   }
 
@@ -74,6 +74,11 @@ public class OWLLiteralNode
   public BooleanLiteralNode getBooleanLiteralNode()
   {
     return booleanLiteralNode;
+  }
+
+  @Override public String getNodeName()
+  {
+    return "OWLLiteral";
   }
 
   public String toString()

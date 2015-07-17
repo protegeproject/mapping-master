@@ -6,7 +6,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class EmptyDataValueDirectiveNode implements MappingMasterParserConstants
+public class EmptyDataValueDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private int emptyDataValueSetting;
   
@@ -21,6 +21,11 @@ public class EmptyDataValueDirectiveNode implements MappingMasterParserConstants
   public boolean isWarningIfEmpty() { return emptyDataValueSetting == MM_WARNING_IF_EMPTY_DATA_VALUE; }
   public boolean isSkipIfEmpty() { return emptyDataValueSetting == MM_SKIP_IF_EMPTY_DATA_VALUE; }
   public boolean isProcessIfEmpty() { return emptyDataValueSetting == MM_PROCESS_IF_EMPTY_DATA_VALUE; }
-  
+
+  @Override public String getNodeName()
+  {
+    return "EmptyDataValueDirective";
+  }
+
   public String toString() { return ParserUtil.getTokenName(emptyDataValueSetting); }
 }

@@ -10,7 +10,7 @@ import org.mm.parser.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLEnumeratedClassNode
+public class OWLEnumeratedClassNode implements MMNode
 {
   private List<OWLNamedIndividualNode> namedIndividualNodes;
 
@@ -25,14 +25,19 @@ public class OWLEnumeratedClassNode
         OWLNamedIndividualNode owlIndividual = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
         namedIndividualNodes.add(owlIndividual);
       } else
-        throw new InternalParseException(
-          "OWLEnumeratedClass node expecting OWLNamedIndividual child, got " + child.toString());
+        throw new InternalParseException(getNodeName() +
+          " node expecting OWLNamedIndividual child, got " + child.toString());
     }
   }
 
   public List<OWLNamedIndividualNode> getOWLNamedIndividualNodes()
   {
     return namedIndividualNodes;
+  }
+
+  @Override public String getNodeName()
+  {
+    return "OWLEnumeratedClass";
   }
 
   public String toString()

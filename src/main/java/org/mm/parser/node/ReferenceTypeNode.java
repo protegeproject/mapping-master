@@ -6,7 +6,7 @@ import org.mm.parser.ASTReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class ReferenceTypeNode implements MappingMasterParserConstants
+public class ReferenceTypeNode implements MMNode, MappingMasterParserConstants
 {
 	private ReferenceType referenceType;
 
@@ -29,7 +29,12 @@ public class ReferenceTypeNode implements MappingMasterParserConstants
 	{
 		return referenceType;
 	}
-	
+
+	@Override public String getNodeName()
+	{
+		return "ReferenceType";
+	}
+
 	public String toString()
 	{
 		return referenceType.toString();

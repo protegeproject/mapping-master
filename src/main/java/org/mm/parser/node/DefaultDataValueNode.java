@@ -6,7 +6,7 @@ import org.mm.parser.ParseException;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
 
-public class DefaultDataValueNode implements MappingMasterParserConstants
+public class DefaultDataValueNode implements MMNode, MappingMasterParserConstants
 {
 	private String defaultDataValue;
 
@@ -18,6 +18,11 @@ public class DefaultDataValueNode implements MappingMasterParserConstants
 	public String getDefaultDataValue()
 	{
 		return defaultDataValue;
+	}
+
+	@Override public String getNodeName()
+	{
+		return "DefaultDataValue";
 	}
 
 	public String toString()

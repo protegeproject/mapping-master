@@ -8,10 +8,10 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLSomeValuesFromRestrictionNode
+public class OWLSomeValuesFromRestrictionNode implements MMNode
 {
-	private OWLDataSomeValuesFromNode dataSomeValuesFromNode = null;
-	private OWLObjectSomeValuesFromNode objectSomeValuesFromNode = null;
+	private OWLDataSomeValuesFromNode dataSomeValuesFromNode;
+	private OWLObjectSomeValuesFromNode objectSomeValuesFromNode;
 
 	public OWLSomeValuesFromRestrictionNode(ASTOWLSomeValuesFromRestriction node) throws ParseException
 	{
@@ -45,6 +45,11 @@ public class OWLSomeValuesFromRestrictionNode
 	public boolean hasOWLObjectSomeValuesFrom()
 	{
 		return objectSomeValuesFromNode != null;
+	}
+
+	@Override public String getNodeName()
+	{
+		return "OWLSomeValuesFromRestriction";
 	}
 
 	public String toString()

@@ -4,22 +4,27 @@ import org.mm.parser.ASTOWLDataAllValuesFrom;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class OWLDataAllValuesFromNode implements MappingMasterParserConstants
+public class OWLDataAllValuesFromNode implements MMNode, MappingMasterParserConstants
 {
-	int datatype;
+  int datatype;
 
-	OWLDataAllValuesFromNode(ASTOWLDataAllValuesFrom node) throws ParseException
-	{
-		datatype = node.datatype;
-	}
+  OWLDataAllValuesFromNode(ASTOWLDataAllValuesFrom node) throws ParseException
+  {
+    datatype = node.datatype;
+  }
 
-	public String getDataTypeName()
-	{
-		return tokenImage[datatype].substring(1, tokenImage[datatype].length() - 1);
-	}
+  public String getDataTypeName()
+  {
+    return tokenImage[datatype].substring(1, tokenImage[datatype].length() - 1);
+  }
 
-	public String toString()
-	{
-		return "ONLY " + getDataTypeName() + ")";
-	}
+  @Override public String getNodeName()
+  {
+    return "OWLDataAllValuesFrom";
+  }
+
+  public String toString()
+  {
+    return "ONLY " + getDataTypeName() + ")";
+  }
 }

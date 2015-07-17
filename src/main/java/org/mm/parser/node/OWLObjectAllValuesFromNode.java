@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLObjectAllValuesFromNode
+public class OWLObjectAllValuesFromNode implements MMNode
 {
   private OWLClassExpressionNode classExpressionNode;
   private OWLClassNode classNode;
@@ -21,8 +21,8 @@ public class OWLObjectAllValuesFromNode
     else if (ParserUtil.hasName(child, "OWLClass"))
       classNode = new OWLClassNode((ASTOWLClass)child);
     else
-      throw new InternalParseException(
-        "OWLObjectAllValuesFrom node expecting OWLClassExpression or OWLClass child,ren got " + child.toString());
+      throw new InternalParseException(getNodeName() +
+        " node expecting OWLClassExpression or OWLClass children got " + child.toString());
   }
 
   public boolean hasOWLClassExpression()
@@ -43,6 +43,11 @@ public class OWLObjectAllValuesFromNode
   public OWLClassNode getOWLClassNode()
   {
     return classNode;
+  }
+
+  @Override public String getNodeName()
+  {
+    return "OWLObjectAllValuesFrom";
   }
 
   public String toString()

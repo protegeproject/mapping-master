@@ -16,7 +16,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLIndividualDeclarationNode
+public class OWLIndividualDeclarationNode implements MMNode
 {
 	private OWLNamedIndividualNode namedIndividualNode;
 	private List<FactNode> factNodes;
@@ -47,7 +47,7 @@ public class OWLIndividualDeclarationNode
 			} else if (ParserUtil.hasName(child, "OWLDifferentFrom")) {
 				differentFromNode = new OWLDifferentFromNode((ASTOWLDifferentFrom)child);
 			} else
-				throw new InternalParseException("unexpect child node " + child.toString() + " for OWLIndividualDeclaration");
+				throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
 		}
 	}
 
@@ -104,6 +104,11 @@ public class OWLIndividualDeclarationNode
 	public OWLDifferentFromNode getOWLDifferentFromNode()
 	{
 		return differentFromNode;
+	}
+
+	@Override public String getNodeName()
+	{
+		return "OWLIndividualDeclaration";
 	}
 
 	public String toString()

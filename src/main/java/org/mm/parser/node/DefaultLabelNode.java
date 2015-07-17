@@ -6,7 +6,7 @@ import org.mm.parser.ASTDefaultLabel;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
 
-public class DefaultLabelNode implements MappingMasterParserConstants
+public class DefaultLabelNode implements MMNode, MappingMasterParserConstants
 {
   private String defaultLabel;
   
@@ -16,8 +16,13 @@ public class DefaultLabelNode implements MappingMasterParserConstants
   } 
 
   public String getDefaultRDFSLabel() { return defaultLabel; }
-  
-  public String toString() 
+
+  @Override public String getNodeName()
+  {
+    return "DefaultLabel";
+  }
+
+  public String toString()
   { 
     String representation = ParserUtil.getTokenName(MM_DEFAULT_LABEL) + "=\"" + defaultLabel + "\"";
 

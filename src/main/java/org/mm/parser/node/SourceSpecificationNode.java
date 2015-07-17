@@ -4,7 +4,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTSourceSpecification;
 import org.mm.parser.ParseException;
 
-public class SourceSpecificationNode
+public class SourceSpecificationNode implements MMNode
 {
   private final String source, location, literal;
 
@@ -23,7 +23,12 @@ public class SourceSpecificationNode
   public String getLocation() { return location; }
   public String getLiteral() { return literal; }
 
-  public String toString() 
+  @Override public String getNodeName()
+  {
+    return "SourceSpecification";
+  }
+
+  public String toString()
   { 
     String representation = "@";
 

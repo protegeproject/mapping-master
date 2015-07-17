@@ -6,7 +6,7 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class LanguageNode implements MappingMasterParserConstants
+public class LanguageNode implements MMNode, MappingMasterParserConstants
 {
   String language;
 
@@ -14,7 +14,12 @@ public class LanguageNode implements MappingMasterParserConstants
 
   public String getLanguage() { return language; }
 
-  public String toString() 
+  @Override public String getNodeName()
+  {
+    return "Language";
+  }
+
+  public String toString()
   { 
     String s = ParserUtil.getTokenName(XML_LANG);
     
