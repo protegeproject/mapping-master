@@ -332,8 +332,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
     Set<OWLClassExpression> classExpressions = new HashSet<>();
 
     for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClassNodes()) {
-      Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLIntersectionClass(
-        intersectionClassNode);
+      Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLIntersectionClass(intersectionClassNode);
       if (classExpressionRendering.isPresent()) {
         OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
         classExpressions.add(classExpression);
@@ -804,7 +803,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
         }
 
         OWLAnnotationAssertionAxiom axiom = this.owlDataFactory
-          .getOWLAnnotationAssertionAxiom(property, individual, annotationValue);
+          .getOWLAnnotationAssertionAxiom(property, individual.getIRI(), annotationValue);
         axioms.add(axiom);
       }
     }
@@ -943,7 +942,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
         Optional<OWLLiteralRendering> argumentRendering = renderValueExtractionFunctionArgument(argumentNode);
         if (argumentRendering.isPresent()) {
           OWLLiteral literal = argumentRendering.get().getOWLLiteral();
-          arguments.add(literal.toString()); // TODO
+          arguments.add(literal.getLiteral());
         }
       }
     }
@@ -1281,13 +1280,11 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
         valueSpecificationItemReferenceNode.setDefaultShiftSetting(referenceNode.getActualShiftDirective());
         Optional<ReferenceRendering> referenceRendering = renderReference(valueSpecificationItemReferenceNode);
         if (referenceRendering.isPresent()) {
-          if (valueSpecificationItemReferenceNode.getReferenceTypeNode().getReferenceType().isQuotedOWLDataValue()
-            && !referenceTextRendering.equals("") && referenceTextRendering.startsWith("\""))
-            processedValue += referenceTextRendering.substring(1, referenceTextRendering.length() - 1); // Strip quotes
-            // from quoted
-            // renderings
-          else
-            processedValue += referenceTextRendering;
+          if (referenceRendering.get().isOWLLiteral()) {
+            OWLLiteral literal = referenceRendering.get().getOWLLiteral().get();
+            processedValue += literal.getLiteral();
+          } else
+          throw new RendererException("expecting OWL literal for value specification, got " + referenceRendering.get());
         }
       } else if (valueSpecificationItemNode.hasValueExtractionFunction()) {
         ValueExtractionFunctionNode valueExtractionFunction = valueSpecificationItemNode
@@ -1297,8 +1294,7 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
         String capturingExpression = valueSpecificationItemNode.getCapturingExpression();
         processedValue += processCapturingExpression(value, capturingExpression);
       }
-    }
-    return processedValue;
+    } return processedValue;
   }
 
   private String processCapturingExpression(String locationValue, String capturingExpression) throws RendererException
