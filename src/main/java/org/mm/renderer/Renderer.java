@@ -31,7 +31,7 @@ import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.OWLSameAsNode;
-import org.mm.parser.node.StringOrReferenceNode;
+import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.TypesNode;
 import org.mm.parser.node.ValueEncodingNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
@@ -131,7 +131,8 @@ Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictio
   Optional<? extends Rendering> renderValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode)
     throws RendererException;
 
-  Optional<? extends Rendering> renderStringOrReference(StringOrReferenceNode stringOrReferenceNode)
+  Optional<? extends Rendering> renderValueExtractionFunctionArgument(
+    ValueExtractionFunctionArgumentNode valueExtractionFunctionArgumentNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException;

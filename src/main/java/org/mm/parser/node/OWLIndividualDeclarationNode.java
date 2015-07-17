@@ -138,9 +138,9 @@ public class OWLIndividualDeclarationNode
 		}
 
 		if (hasSameAs())
-			representation += OWLSameAsNode.toString();
+			representation += sameAsNode.toString();
 		if (hasDifferentFrom())
-			representation += OWLDifferentFromNode.toString();
+			representation += differentFromNode.toString();
 
 		return representation;
 	}

@@ -742,11 +742,6 @@ void owl_property() #OWLProperty : {}
 } 
 
  
-void string_or_reference() #StringOrReference : {}
-{
-  reference(XSD_STRING, defaultValueEncoding) | string_literal()
-}
-
 void types(int referenceType) #Types : 
 {
   int defaultType = ParserUtil.getDefaultType(referenceType);
@@ -1302,17 +1297,22 @@ void value_extraction_function() #ValueExtractionFunction:
      | t = <MM_REPLACE_FIRST> { functionID = t.kind; }
      | t = <MM_APPEND> { functionID = t.kind; }
      | t = <MM_PREPEND> { functionID = t.kind; }
-    ) ( LOOKAHEAD(2) "(" string_or_reference() ( "," string_or_reference() )* ")" )?
+    ) ( LOOKAHEAD(2) "(" value_extraction_function_argument() ( "," value_extraction_function_argument() )* ")" )?
    )
    |
-   ( "[" ( LOOKAHEAD(2) string_or_reference() ( "," string_or_reference() )* )? "]" )  { functionID = MM_CAPTURING; } 
+   ( "[" ( LOOKAHEAD(2) value_extraction_function_argument() ( "," value_extraction_function_argument() )* )? "]" )  { functionID = MM_CAPTURING; } 
   )
   {
     jjtThis.functionID = functionID;
   }
 }
 
- 
+void value_extraction_function_argument() #ValueExtractionFunctionArgument : {}
+{
+  reference(XSD_STRING, defaultValueEncoding) | owl_literal()
+}
+
+
 List<String> strings() :
 {
   List<String> strings = new ArrayList<String>();

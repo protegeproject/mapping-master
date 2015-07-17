@@ -1,11 +1,11 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTStringOrReference;
 import org.mm.parser.ASTValueExtractionFunction;
-import org.mm.parser.MappingMasterParserConstants;
-import org.mm.parser.ParseException;
+import org.mm.parser.ASTValueExtractionFunctionArgument;
 import org.mm.parser.InternalParseException;
+import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.Node;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
 import java.util.ArrayList;
@@ -14,23 +14,24 @@ import java.util.List;
 public class ValueExtractionFunctionNode implements MappingMasterParserConstants
 {
   private int functionID;
-  private List<StringOrReferenceNode> argumentNodes;
+  private List<ValueExtractionFunctionArgumentNode> argumentNodes;
 
   public ValueExtractionFunctionNode(ASTValueExtractionFunction node) throws ParseException
   {
     functionID = node.functionID;
 
-    argumentNodes = new ArrayList<StringOrReferenceNode>();
+    argumentNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
-      if (ParserUtil.hasName(child, "StringOrReference")) {
-        StringOrReferenceNode stringOrReference = new StringOrReferenceNode((ASTStringOrReference)child);
-        argumentNodes.add(stringOrReference);
+      if (ParserUtil.hasName(child, "ValueExtractionFunctionArgument")) {
+        ValueExtractionFunctionArgumentNode valueExtractionFunctionArgument = new ValueExtractionFunctionArgumentNode(
+          (ASTValueExtractionFunctionArgument)child);
+        argumentNodes.add(valueExtractionFunctionArgument);
       } else
         throw new InternalParseException(
-          "ValueExtractionFunction node expecting StringOrReference child, got " + child.toString());
+          "ValueExtractionFunction node expecting ValueExtractionFunctionArgument child, got " + child.toString());
     }
   }
 
@@ -40,7 +41,7 @@ public class ValueExtractionFunctionNode implements MappingMasterParserConstants
 
   public boolean hasArguments() { return !argumentNodes.isEmpty(); }
 
-  public List<StringOrReferenceNode> getArgumentNodes() { return argumentNodes; }
+  public List<ValueExtractionFunctionArgumentNode> getArgumentNodes() { return argumentNodes; }
 
   public String toString()
   {
@@ -49,7 +50,7 @@ public class ValueExtractionFunctionNode implements MappingMasterParserConstants
     if (hasArguments()) {
       boolean isFirst = true;
       representation += "(";
-      for (StringOrReferenceNode argument : argumentNodes) {
+      for (ValueExtractionFunctionArgumentNode argument : argumentNodes) {
         if (!isFirst)
           representation += " ";
         representation += argument.toString();
