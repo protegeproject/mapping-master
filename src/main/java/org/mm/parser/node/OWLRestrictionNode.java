@@ -16,12 +16,12 @@ import org.mm.parser.ParserUtil;
 public class OWLRestrictionNode implements MMNode
 {
   private OWLPropertyNode propertyNode;
-  private OWLMaxCardinalityRestrictionNode maxCardinalityRestrictionNode;
-  private OWLMinCardinalityRestrictionNode minCardinalityRestrictionNode;
-  private OWLExactCardinalityRestrictionNode exactCardinalityRestrictionNode;
-  private OWLHasValueRestrictionNode hasValueRestrictionNode;
-  private OWLAllValuesFromRestrictionNode allValuesFromRestrictionNode;
-  private OWLSomeValuesFromRestrictionNode someValuesFromRestrictionNode;
+  private OWLMaxCardinalityNode maxCardinalityNode;
+  private OWLMinCardinalityNode minCardinalityNode;
+  private OWLExactCardinalityNode exactCardinalityNode;
+  private OWLHasValueNode hasValueNode;
+  private OWLAllValuesFromNode allValuesFromNode;
+  private OWLSomeValuesFromNode someValuesFromNode;
 
   public OWLRestrictionNode(ASTOWLRestriction node) throws ParseException
   {
@@ -31,18 +31,18 @@ public class OWLRestrictionNode implements MMNode
       if (ParserUtil.hasName(child, "OWLProperty"))
         propertyNode = new OWLPropertyNode((ASTOWLProperty)child);
       else if (ParserUtil.hasName(child, "OWLMaxCardinalityRestriction"))
-        maxCardinalityRestrictionNode = new OWLMaxCardinalityRestrictionNode((ASTOWLMaxCardinalityRestriction)child);
+        maxCardinalityNode = new OWLMaxCardinalityNode((ASTOWLMaxCardinalityRestriction)child);
       else if (ParserUtil.hasName(child, "OWLMinCardinalityRestriction"))
-        minCardinalityRestrictionNode = new OWLMinCardinalityRestrictionNode((ASTOWLMinCardinalityRestriction)child);
+        minCardinalityNode = new OWLMinCardinalityNode((ASTOWLMinCardinalityRestriction)child);
       else if (ParserUtil.hasName(child, "OWLExactCardinalityRestriction"))
-        exactCardinalityRestrictionNode = new OWLExactCardinalityRestrictionNode(
+        exactCardinalityNode = new OWLExactCardinalityNode(
           (ASTOWLExactCardinalityRestriction)child);
       else if (ParserUtil.hasName(child, "OWLHasValueRestriction"))
-        hasValueRestrictionNode = new OWLHasValueRestrictionNode((ASTOWLHasValueRestriction)child);
+        hasValueNode = new OWLHasValueNode((ASTOWLHasValueRestriction)child);
       else if (ParserUtil.hasName(child, "OWLAllValuesFromRestriction"))
-        allValuesFromRestrictionNode = new OWLAllValuesFromRestrictionNode((ASTOWLAllValuesFromRestriction)child);
+        allValuesFromNode = new OWLAllValuesFromNode((ASTOWLAllValuesFromRestriction)child);
       else if (ParserUtil.hasName(child, "OWLSomeValuesFromRestriction"))
-        someValuesFromRestrictionNode = new OWLSomeValuesFromRestrictionNode((ASTOWLSomeValuesFromRestriction)child);
+        someValuesFromNode = new OWLSomeValuesFromNode((ASTOWLSomeValuesFromRestriction)child);
       else
         throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
     }
@@ -50,29 +50,29 @@ public class OWLRestrictionNode implements MMNode
 
   public OWLPropertyNode getOWLPropertyNode() { return propertyNode; }
 
-  public OWLMaxCardinalityRestrictionNode getOWLMaxCardinalityRestrictionNode() { return maxCardinalityRestrictionNode; }
+  public OWLMaxCardinalityNode getOWLMaxCardinalityNode() { return maxCardinalityNode; }
 
-  public OWLMinCardinalityRestrictionNode getOWLMinCardinalityRestrictionNode() { return minCardinalityRestrictionNode; }
+  public OWLMinCardinalityNode getOWLMinCardinalityNode() { return minCardinalityNode; }
 
-  public OWLExactCardinalityRestrictionNode getOWLExactCardinalityRestrictionNode() { return exactCardinalityRestrictionNode; }
+  public OWLExactCardinalityNode getOWLExactCardinalityNode() { return exactCardinalityNode; }
 
-  public OWLHasValueRestrictionNode getOWLHasValueRestrictionNode() { return hasValueRestrictionNode; }
+  public OWLHasValueNode getOWLHasValueNode() { return hasValueNode; }
 
-  public OWLAllValuesFromRestrictionNode getOWLAllValuesFromRestrictionNode() { return allValuesFromRestrictionNode; }
+  public OWLAllValuesFromNode getOWLAllValuesFromNode() { return allValuesFromNode; }
 
-  public OWLSomeValuesFromRestrictionNode getOWLSomeValuesFromRestrictionNode() { return someValuesFromRestrictionNode; }
+  public OWLSomeValuesFromNode getOWLSomeValuesFromNode() { return someValuesFromNode; }
 
-  public boolean isOWLMaxCardinality() { return maxCardinalityRestrictionNode != null; }
+  public boolean isOWLMaxCardinality() { return maxCardinalityNode != null; }
 
-  public boolean isOWLMinCardinality() { return minCardinalityRestrictionNode != null; }
+  public boolean isOWLMinCardinality() { return minCardinalityNode != null; }
 
-  public boolean isOWLExactCardinality() { return exactCardinalityRestrictionNode != null; }
+  public boolean isOWLExactCardinality() { return exactCardinalityNode != null; }
 
-  public boolean isOWLHasValue() { return hasValueRestrictionNode != null; }
+  public boolean isOWLHasValue() { return hasValueNode != null; }
 
-  public boolean isOWLAllValuesFrom() { return allValuesFromRestrictionNode != null; }
+  public boolean isOWLAllValuesFrom() { return allValuesFromNode != null; }
 
-  public boolean isOWLSomeValuesFrom() { return someValuesFromRestrictionNode != null; }
+  public boolean isOWLSomeValuesFrom() { return someValuesFromNode != null; }
 
   @Override public String getNodeName()
   {
@@ -83,18 +83,18 @@ public class OWLRestrictionNode implements MMNode
   {
     String representation = "(" + getOWLPropertyNode() + " ";
 
-    if (minCardinalityRestrictionNode != null)
-      representation += minCardinalityRestrictionNode.toString();
-    else if (maxCardinalityRestrictionNode != null)
-      representation += maxCardinalityRestrictionNode.toString();
-    else if (exactCardinalityRestrictionNode != null)
-      representation += exactCardinalityRestrictionNode.toString();
-    else if (hasValueRestrictionNode != null)
-      representation += hasValueRestrictionNode.toString();
-    else if (allValuesFromRestrictionNode != null)
-      representation += allValuesFromRestrictionNode.toString();
-    else if (someValuesFromRestrictionNode != null)
-      representation += someValuesFromRestrictionNode.toString();
+    if (minCardinalityNode != null)
+      representation += minCardinalityNode.toString();
+    else if (maxCardinalityNode != null)
+      representation += maxCardinalityNode.toString();
+    else if (exactCardinalityNode != null)
+      representation += exactCardinalityNode.toString();
+    else if (hasValueNode != null)
+      representation += hasValueNode.toString();
+    else if (allValuesFromNode != null)
+      representation += allValuesFromNode.toString();
+    else if (someValuesFromNode != null)
+      representation += someValuesFromNode.toString();
 
     representation += ")";
 

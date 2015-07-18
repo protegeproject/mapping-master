@@ -9,13 +9,13 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLHasValueRestrictionNode implements MMNode
+public class OWLHasValueNode implements MMNode
 {
   private ReferenceNode referenceNode;
   private NameNode nameNode;
   private OWLLiteralNode literalNode;
 
-  public OWLHasValueRestrictionNode(ASTOWLHasValueRestriction node) throws ParseException
+  public OWLHasValueNode(ASTOWLHasValueRestriction node) throws ParseException
   {
     if (node.jjtGetNumChildren() != 1)
       throw new InternalParseException("expecting one child of OWLHasValueRestriction node");

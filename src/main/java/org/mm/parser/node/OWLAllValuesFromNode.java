@@ -8,12 +8,12 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLAllValuesFromRestrictionNode implements MMNode
+public class OWLAllValuesFromNode implements MMNode
 {
   private OWLDataAllValuesFromNode dataAllValuesFromNode;
   private OWLObjectAllValuesFromNode objectAllValuesFromNode;
 
-  public OWLAllValuesFromRestrictionNode(ASTOWLAllValuesFromRestriction node) throws ParseException
+  public OWLAllValuesFromNode(ASTOWLAllValuesFromRestriction node) throws ParseException
   {
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
