@@ -35,7 +35,7 @@ public class OWLClassExpressionNode implements MMNode
 			else if (ParserUtil.hasName(child, "OWLClass"))
 				classNode = new OWLClassNode((ASTOWLClass)child);
 			else
-				throw new InternalParseException("invalid child node " + child.toString() + " for OWLClassExpression");
+				throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
 		}
 	}
 
@@ -69,22 +69,22 @@ public class OWLClassExpressionNode implements MMNode
 		return isNegated;
 	}
 
-	public boolean hasOWLEnumeratedClass()
+	public boolean hasOWLEnumeratedClassNode()
 	{
 		return enumeratedClassNode != null;
 	}
 
-	public boolean hasOWLUnionClass()
+	public boolean hasOWLUnionClassNode()
 	{
 		return unionClassNode != null;
 	}
 
-	public boolean hasOWLRestriction()
+	public boolean hasOWLRestrictionNode()
 	{
 		return restrictionNode != null;
 	}
 
-	public boolean hasOWLClass()
+	public boolean hasOWLClassNode()
 	{
 		return classNode != null;
 	}

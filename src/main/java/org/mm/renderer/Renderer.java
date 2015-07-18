@@ -100,7 +100,7 @@ Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictio
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLAllValuesFromRestriction(
-			OWLAllValuesFromRestrictionNode allValuesFroRestrictonNode)
+			OWLAllValuesFromRestrictionNode allValuesFromRestrictionNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLDataAllValuesFrom(OWLDataAllValuesFromNode dataAllValuesFromNode)

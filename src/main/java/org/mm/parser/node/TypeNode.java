@@ -1,7 +1,7 @@
 package org.mm.parser.node;
 
 /**
- * A TypeNode has subclasses OWLClassNode and ReferenceNode
+ * A TypeNode has subclasses OWLClassNode, OWLPropertyNode, and ReferenceNode
  *
  * @see OWLClassNode
  * @see OWLPropertyNode

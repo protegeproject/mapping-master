@@ -17,7 +17,7 @@ public class OWLNamedIndividualNode implements MMNode
 	public OWLNamedIndividualNode(ASTOWLNamedIndividual node) throws ParseException
 	{
 		if (node.jjtGetNumChildren() != 1)
-			throw new InternalParseException("expecting one child node of OWLNamedIndividual node");
+			throw new InternalParseException("expecting one child node for node " + getNodeName());
 		else {
 			Node child = node.jjtGetChild(0);
 			if (ParserUtil.hasName(child, "Name"))
@@ -44,21 +44,21 @@ public class OWLNamedIndividualNode implements MMNode
 		return nameNode;
 	}
 
-	public boolean isName()
+	public boolean hasNameNode()
 	{
 		return nameNode != null;
 	}
 
-	public boolean isReference()
+	public boolean hasReferenceNode()
 	{
 		return referenceNode != null;
 	}
 
 	public String toString()
 	{
-		if (isName())
+		if (hasNameNode())
 			return nameNode.toString();
-		else if (isReference())
+		else if (hasReferenceNode())
 			return referenceNode.toString();
 		else
 			return "";

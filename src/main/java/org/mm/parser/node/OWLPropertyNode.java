@@ -44,12 +44,12 @@ public class OWLPropertyNode implements TypeNode
 		return nameNode;
 	}
 
-	public boolean isName()
+	public boolean hasNameNode()
 	{
 		return nameNode != null;
 	}
 
-	public boolean isReferenceNode()
+	public boolean hasReferenceNode()
 	{
 		return referenceNode != null;
 	}
@@ -58,11 +58,13 @@ public class OWLPropertyNode implements TypeNode
 
 	@Override public boolean isOWLPropertyNode() { return false; }
 
+	@Override public boolean isReferenceNode() { return false; }
+
 	public String toString()
 	{
-		if (isName())
+		if (hasNameNode())
 			return nameNode.toString();
-		else if (isReferenceNode())
+		else if (hasReferenceNode())
 			return referenceNode.toString();
 		else
 			return "";

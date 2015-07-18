@@ -32,7 +32,12 @@ public class ValueSpecificationItemNode implements MMNode
     }
   }
 
-  public boolean hasStringLiteral()
+	@Override public String getNodeName()
+	{
+		return "ValueSpecificationItem";
+	}
+
+	public boolean hasStringLiteral()
   {
     return stringLiteral != null;
   }
@@ -42,7 +47,7 @@ public class ValueSpecificationItemNode implements MMNode
     return stringLiteral;
   }
 
-  public boolean hasReference()
+  public boolean hasReferenceNode()
   {
     return referenceNode != null;
   }
@@ -52,7 +57,7 @@ public class ValueSpecificationItemNode implements MMNode
     return referenceNode;
   }
 
-  public boolean hasValueExtractionFunction()
+  public boolean hasValueExtractionFunctionNode()
   {
     return valueExtractionFunctionNode != null;
   }
@@ -72,20 +77,15 @@ public class ValueSpecificationItemNode implements MMNode
     return capturingExpression;
   }
 
-  @Override public String getNodeName()
-  {
-    return "ValueSpecificationItem";
-  }
-
   public String toString()
   {
     String representation = "";
 
     if (hasStringLiteral())
       representation = "\"" + stringLiteral + "\"";
-    else if (hasReference())
+    else if (hasReferenceNode())
       representation = referenceNode.toString();
-    else if (hasValueExtractionFunction())
+    else if (hasValueExtractionFunctionNode())
       representation = valueExtractionFunctionNode.toString();
     else if (hasCapturingExpression())
       representation = "[\"" + capturingExpression + "\"]";

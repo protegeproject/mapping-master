@@ -202,26 +202,26 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
     }
   }
 
-  public Optional<TextRendering> renderOWLRestriction(OWLRestrictionNode owlRestrictionNode) throws RendererException
+  public Optional<TextRendering> renderOWLRestriction(OWLRestrictionNode restrictionNode) throws RendererException
   {
-    Optional<TextRendering> propertyRendering = renderOWLProperty(owlRestrictionNode.getOWLPropertyNode());
+    Optional<TextRendering> propertyRendering = renderOWLProperty(restrictionNode.getOWLPropertyNode());
     Optional<TextRendering> restrictionRendering;
 
-    if (owlRestrictionNode.isOWLMinCardinality())
-      restrictionRendering = renderOWLMinCardinality(owlRestrictionNode.getOWLMinCardinalityRestrictionNode());
-    else if (owlRestrictionNode.isOWLMaxCardinality())
-      restrictionRendering = renderOWLMaxCardinality(owlRestrictionNode.getOWLMaxCardinalityRestrictionNode());
-    else if (owlRestrictionNode.isOWLExactCardinality())
-      restrictionRendering = renderOWLCardinality(owlRestrictionNode.getOWLExactCardinalityRestrictionNode());
-    else if (owlRestrictionNode.isOWLHasValue())
-      restrictionRendering = renderOWLHasValueRestriction(owlRestrictionNode.getOWLHasValueRestrictionNode());
-    else if (owlRestrictionNode.isOWLAllValuesFrom())
-      restrictionRendering = renderOWLAllValuesFromRestriction(owlRestrictionNode.getOWLAllValuesFromRestrictionNode());
-    else if (owlRestrictionNode.isOWLSomeValuesFrom())
+    if (restrictionNode.isOWLMinCardinality())
+      restrictionRendering = renderOWLMinCardinality(restrictionNode.getOWLMinCardinalityRestrictionNode());
+    else if (restrictionNode.isOWLMaxCardinality())
+      restrictionRendering = renderOWLMaxCardinality(restrictionNode.getOWLMaxCardinalityRestrictionNode());
+    else if (restrictionNode.isOWLExactCardinality())
+      restrictionRendering = renderOWLCardinality(restrictionNode.getOWLExactCardinalityRestrictionNode());
+    else if (restrictionNode.isOWLHasValue())
+      restrictionRendering = renderOWLHasValueRestriction(restrictionNode.getOWLHasValueRestrictionNode());
+    else if (restrictionNode.isOWLAllValuesFrom())
+      restrictionRendering = renderOWLAllValuesFromRestriction(restrictionNode.getOWLAllValuesFromRestrictionNode());
+    else if (restrictionNode.isOWLSomeValuesFrom())
       restrictionRendering = renderOWLSomeValuesFromRestriction(
-        owlRestrictionNode.getOWLSomeValuesFromRestrictionNode());
+        restrictionNode.getOWLSomeValuesFromRestrictionNode());
     else
-      throw new RendererException("unkown OWLRestriction " + owlRestrictionNode);
+      throw new RendererException("unknown OWLRestriction " + restrictionNode);
 
     if (propertyRendering.isPresent() && restrictionRendering.isPresent())
       return Optional.of(new TextRendering(
@@ -256,9 +256,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLProperty(OWLPropertyNode propertyNode) throws RendererException
   {
-    if (propertyNode.isReferenceNode())
+    if (propertyNode.hasReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
-    else if (propertyNode.isName())
+    else if (propertyNode.hasNameNode())
       return renderName(propertyNode.getNameNode());
     else
       throw new RendererException("unknown OWLProperty node " + propertyNode);
@@ -266,9 +266,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException
   {
-    if (propertyNode.isReferenceNode())
+    if (propertyNode.hasReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
-    else if (propertyNode.isName())
+    else if (propertyNode.hasNameNode())
       return renderName(propertyNode.getNameNode());
     else
       throw new RendererException("unknown OWLProperty node " + propertyNode);
@@ -730,20 +730,20 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   {
     StringBuffer textRendering = new StringBuffer();
 
-    if (classExpressionNode.hasOWLEnumeratedClass()) {
+    if (classExpressionNode.hasOWLEnumeratedClassNode()) {
       Optional<TextRendering> enumeratedClassRendering = renderOWLEnumeratedClass(
         classExpressionNode.getOWLEnumeratedClassNode());
       if (enumeratedClassRendering.isPresent())
         textRendering.append(enumeratedClassRendering.get().getTextRendering());
-    } else if (classExpressionNode.hasOWLUnionClass()) {
+    } else if (classExpressionNode.hasOWLUnionClassNode()) {
       Optional<TextRendering> unionClassRendering = renderOWLUnionClass(classExpressionNode.getOWLUnionClassNode());
       if (unionClassRendering.isPresent())
         textRendering.append(unionClassRendering.get().getTextRendering());
-    } else if (classExpressionNode.hasOWLRestriction()) {
+    } else if (classExpressionNode.hasOWLRestrictionNode()) {
       Optional<TextRendering> restrictionRendering = renderOWLRestriction(classExpressionNode.getOWLRestrictionNode());
       if (restrictionRendering.isPresent())
         textRendering.append(restrictionRendering.get().getTextRendering());
-    } else if (classExpressionNode.hasOWLClass()) {
+    } else if (classExpressionNode.hasOWLClassNode()) {
       Optional<TextRendering> classRendering = renderOWLClass(classExpressionNode.getOWLClassNode());
       if (classRendering.isPresent())
         textRendering.append(classRendering.get().getTextRendering());
@@ -837,9 +837,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
   {
-    if (classNode.isReference())
+    if (classNode.hasReferenceNode())
       return renderReference(classNode.getReferenceNode());
-    else if (classNode.isName())
+    else if (classNode.hasNameNode())
       return renderName(classNode.getNameNode());
     else
       throw new RendererException("unknown OWLClass node " + classNode);
@@ -847,9 +847,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode) throws RendererException
   {
-    if (propertyNode.isReferenceNode())
+    if (propertyNode.hasReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
-    else if (propertyNode.isName())
+    else if (propertyNode.hasNameNode())
       return renderName(propertyNode.getNameNode());
     else
       throw new RendererException("unknown OWLProperty node " + propertyNode);
@@ -857,9 +857,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 
   public Optional<TextRendering> renderOWLDataProperty(OWLPropertyNode propertyNode) throws RendererException
   {
-    if (propertyNode.isReferenceNode())
+    if (propertyNode.hasReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
-    else if (propertyNode.isName())
+    else if (propertyNode.hasNameNode())
       return renderName(propertyNode.getNameNode());
     else
       throw new RendererException("unknown OWLProperty node " + propertyNode);
@@ -868,9 +868,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   public Optional<TextRendering> renderOWLNamedIndividual(OWLNamedIndividualNode namedIndividualNode)
     throws RendererException
   {
-    if (namedIndividualNode.isReference())
+    if (namedIndividualNode.hasReferenceNode())
       return renderReference(namedIndividualNode.getReferenceNode());
-    else if (namedIndividualNode.isName())
+    else if (namedIndividualNode.hasNameNode())
       return renderName(namedIndividualNode.getNameNode());
     else
       throw new RendererException("unknown OWLIndividual node " + namedIndividualNode);
@@ -1007,9 +1007,9 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
   {
     if (valueSpecificationItemNode.hasStringLiteral())
       return Optional.of(new TextRendering("\"" + valueSpecificationItemNode.getStringLiteral() + "\""));
-    else if (valueSpecificationItemNode.hasReference())
+    else if (valueSpecificationItemNode.hasReferenceNode())
       return renderReference(valueSpecificationItemNode.getReferenceNode());
-    else if (valueSpecificationItemNode.hasValueExtractionFunction())
+    else if (valueSpecificationItemNode.hasValueExtractionFunctionNode())
       return renderValueExtractionFunction(valueSpecificationItemNode.getValueExtractionFunctionNode());
     else if (valueSpecificationItemNode.hasCapturingExpression())
       return Optional.of(new TextRendering("[\"" + valueSpecificationItemNode.getCapturingExpression() + "\"]"));
