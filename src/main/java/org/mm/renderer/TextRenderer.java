@@ -38,7 +38,6 @@ import org.mm.parser.node.OWLSomeValuesFromNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
-import org.mm.parser.node.ReferenceTypeNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.parser.node.TypesNode;
@@ -234,7 +233,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 			restrictionRendering = renderOWLMaxCardinality(restrictionNode.getOWLPropertyNode(),
 					restrictionNode.getOWLMaxCardinalityNode());
 		else if (restrictionNode.isOWLExactCardinality())
-			restrictionRendering = renderOWLCardinality(restrictionNode.getOWLPropertyNode(),
+			restrictionRendering = renderOWLExactCardinality(restrictionNode.getOWLPropertyNode(),
 					restrictionNode.getOWLExactCardinalityNode());
 		else if (restrictionNode.isOWLHasValue())
 			restrictionRendering = renderOWLHasValue(restrictionNode.getOWLPropertyNode(),
@@ -256,7 +255,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 			return Optional.empty();
 	}
 
-	public Optional<TextRendering> renderOWLCardinality(OWLPropertyNode propertyNode,
+	public Optional<TextRendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
 			OWLExactCardinalityNode owlExactCardinalityNode) throws RendererException
 	{
 		String textRendering = "" + owlExactCardinalityNode.getCardinality();
@@ -267,7 +266,7 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 		return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering));
 	}
 
-	public Optional<TextRendering> renderOWLHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
+	private Optional<TextRendering> renderOWLHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
 			throws RendererException
 	{
 		if (hasValueNode.isReference())
@@ -277,7 +276,29 @@ public class TextRenderer implements Renderer, MappingMasterParserConstants
 		else if (hasValueNode.isLiteral())
 			return renderOWLLiteral(hasValueNode.getOWLLiteralNode());
 		else
-			throw new RendererException("unknown property value node " + hasValueNode);
+			throw new RendererException("unknown property value node " + hasValueNode + " for object has value restriction");
+	}
+
+	@Override public Optional<TextRendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode,
+			OWLHasValueNode hasValueNode) throws RendererException
+	{
+		if (hasValueNode.isReference())
+			return renderReference(hasValueNode.getReferenceNode());
+		else if (hasValueNode.isName())
+			return renderName(hasValueNode.getNameNode());
+		else
+			throw new RendererException("unknown property value node " + hasValueNode + " for object has value restriction");
+	}
+
+	@Override public Optional<TextRendering> renderOWLDataHasValue(OWLPropertyNode propertyNode,
+			OWLHasValueNode hasValueNode) throws RendererException
+	{
+		if (hasValueNode.isReference())
+			return renderReference(hasValueNode.getReferenceNode());
+		else if (hasValueNode.isLiteral())
+			return renderOWLLiteral(hasValueNode.getOWLLiteralNode());
+		else
+			throw new RendererException("unknown property value node " + hasValueNode + " for data has value restriction");
 	}
 
 	public Optional<TextRendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,

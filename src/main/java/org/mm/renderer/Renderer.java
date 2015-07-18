@@ -94,10 +94,13 @@ public interface Renderer
 	Optional<? extends Rendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
 			OWLMinCardinalityNode minCardinalityNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLCardinality(OWLPropertyNode propertyNode,
+	Optional<? extends Rendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
 			OWLExactCardinalityNode cardinalityNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
+	Optional<? extends Rendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
+			throws RendererException;
+
+	Optional<? extends Rendering> renderOWLDataHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
 			throws RendererException;
 
 	Optional<? extends Rendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
