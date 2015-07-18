@@ -422,13 +422,13 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 	@Override public Optional<OWLObjectPropertyRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode)
 			throws RendererException
 	{
+		OWLObjectProperty objectProperty = null; // TODO
+
 		if (propertyNode.hasNameNode()) {
-			OWLObjectProperty objectProperty = null; // TODO
 
 			return Optional.of(new OWLObjectPropertyRendering(objectProperty));
 
 		} else if (propertyNode.hasReferenceNode()) {
-			OWLObjectProperty objectProperty = null; // TODO
 
 			return Optional.of(new OWLObjectPropertyRendering(objectProperty));
 		} else
@@ -438,17 +438,33 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 	@Override public Optional<OWLDataPropertyRendering> renderOWLDataProperty(OWLPropertyNode propertyNode)
 			throws RendererException
 	{
-		OWLDataProperty property = null; // TODO
+		OWLDataProperty dataProperty = null; // TODO
 
-		return Optional.of(new OWLDataPropertyRendering(property));
+		if (propertyNode.hasNameNode()) {
+
+			return Optional.of(new OWLDataPropertyRendering(dataProperty));
+
+		} else if (propertyNode.hasReferenceNode()) {
+
+			return Optional.of(new OWLDataPropertyRendering(dataProperty));
+		} else
+			throw new RendererException("expecting property name or reference for node + " + propertyNode.getNodeName());
 	}
 
 	@Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
 			throws RendererException
 	{
-		OWLAnnotationProperty property = null; // TODO
+		OWLAnnotationProperty annotationProperty = null; // TODO
 
-		return Optional.of(new OWLAnnotationPropertyRendering(property));
+		if (propertyNode.hasNameNode()) {
+
+			return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
+
+		} else if (propertyNode.hasReferenceNode()) {
+
+			return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
+		} else
+			throw new RendererException("expecting property name or reference for node + " + propertyNode.getNodeName());
 	}
 
 	@Override public Optional<OWLAnnotationValueRendering> renderOWLAnnotationValue(
@@ -590,7 +606,8 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 					if (someValuesFromNode.hasOWLDataSomeValuesFromNode())
 						throw new RendererException("expecting class for object some values from restriction " + restrictionNode);
 
-			return renderOWLDataSomeValuesFrom(propertyNode, someValuesFromNode.getOWLDataSomeValuesFromNode());
+					return renderOWLDataSomeValuesFrom(restrictionNode.getOWLPropertyNode(),
+							someValuesFromNode.getOWLDataSomeValuesFromNode());
 				} else
 					return Optional.empty();
 			}
@@ -622,11 +639,9 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 		return Optional.empty(); // TODO
 	}
 
-	@Override public Optional<OWLRestrictionRendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
-			OWLSomeValuesFromNode someValuesFromNode) throws RendererException
+	@Override public Optional<OWLRestrictionRendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
+			OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException
 	{
-		OWLObjectSomeValuesFromNode objectSomeValuesFromNode = someValuesFromNode.getOWLObjectSomeValuesFromNode();
-
 		Optional<OWLPropertyRendering> propertyRendering = renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
@@ -656,9 +671,16 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 						return Optional.empty();
 				}
 			} else
-				throw new RendererException("property " + property.getIRI() + " is not an object property");
+				throw new RendererException(
+						"property " + property.getIRI() + " in object some values from restriction is not an object property");
 		} else
 			return Optional.empty();
+	}
+
+	@Override public Optional<OWLRestrictionRendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
+			OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException
+	{
+		return Optional.empty(); // TODO
 	}
 
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
@@ -693,25 +715,14 @@ public class OWLAPIRenderer implements Renderer, MappingMasterParserConstants
 						return Optional.empty();
 				}
 			} else
-				throw new RendererException("property " + property.getIRI() + " is not an object property");
+				throw new RendererException(
+						"property " + property.getIRI() + " in object all values from restriction is not an object property");
 		} else
 			return Optional.empty();
 	}
 
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
 			OWLDataAllValuesFromNode dataAllValuesFromNode) throws RendererException
-	{
-		return Optional.empty(); // TODO
-	}
-
-	@Override public Optional<? extends Rendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
-			OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException
-	{
-		return Optional.empty(); // TODO
-	}
-
-	@Override public Optional<? extends Rendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
-			OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException
 	{
 		return Optional.empty(); // TODO
 	}

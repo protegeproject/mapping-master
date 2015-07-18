@@ -67,10 +67,6 @@ public interface Renderer
 	Optional<? extends Rendering> renderOWLPropertyAssertionObject(
 			OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException;
 
-	Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException;
-
-	Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode) throws RendererException;
-
 	Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
 			throws RendererException;
 
@@ -104,9 +100,6 @@ public interface Renderer
 	Optional<? extends Rendering> renderOWLHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
 			throws RendererException;
 
-	Optional<? extends Rendering> renderOWLAllValuesFrom(OWLPropertyNode propertyNode,
-			OWLAllValuesFromNode allValuesFromNode) throws RendererException;
-
 	Optional<? extends Rendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
 			OWLDataAllValuesFromNode dataAllValuesFromNode) throws RendererException;
 
@@ -119,7 +112,13 @@ public interface Renderer
 	Optional<? extends Rendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
 			OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException;
 
+	Optional<? extends Rendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException;
+
 	Optional<? extends Rendering> renderReference(ReferenceNode referenceNode) throws RendererException;
+
+	Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException;
+
+	Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode) throws RendererException;
 
 	Optional<? extends Rendering> renderValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode)
 			throws RendererException;
@@ -128,8 +127,6 @@ public interface Renderer
 			ValueExtractionFunctionArgumentNode valueExtractionFunctionArgumentNode) throws RendererException;
 
 	Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException;
 
 	Optional<? extends Rendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException;
 

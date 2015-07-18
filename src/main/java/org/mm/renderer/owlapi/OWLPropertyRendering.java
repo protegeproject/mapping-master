@@ -2,7 +2,7 @@ package org.mm.renderer.owlapi;
 
 import org.semanticweb.owlapi.model.OWLProperty;
 
-public class OWLPropertyRendering extends OWLAPIRendering
+public abstract class OWLPropertyRendering extends OWLAPIRendering
 {
 	private final OWLProperty property;
 

@@ -822,6 +822,41 @@ void owl_restriction() #OWLRestriction : {}
                  )
 }
 
+void owl_exact_cardinality_restriction() #OWLExactCardinalityRestriction :
+{
+  int cardinality;
+}
+{
+  <EXACTLY> cardinality = cardinality_value()
+  {
+    jjtThis.cardinality = cardinality;
+  }
+}
+
+void owl_max_cardinality_restriction() #OWLMaxCardinalityRestriction :
+{
+  int cardinality;
+}
+{
+  <MAX> cardinality = cardinality_value()
+
+  {
+    jjtThis.cardinality = cardinality;
+  }
+}
+
+void owl_min_cardinality_restriction() #OWLMinCardinalityRestriction :
+{
+  int cardinality;
+}
+{
+   <MIN> cardinality = cardinality_value()
+
+  {
+    jjtThis.cardinality = cardinality;
+  }
+}
+
 void owl_has_value_restriction() #OWLHasValueRestriction : {}
 {
   <VALUE> (  reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding) 
@@ -872,40 +907,6 @@ void owl_data_some_values_from() #OWLDataSomeValuesFrom :
   }
 }
 
-void owl_max_cardinality_restriction() #OWLMaxCardinalityRestriction :
-{
-  int cardinality;
-}
-{
-  <MAX> cardinality = cardinality_value()
-
-  {
-    jjtThis.cardinality = cardinality;
-  }
-}
-
-void owl_min_cardinality_restriction() #OWLMinCardinalityRestriction :
-{
-  int cardinality;
-}
-{
-   <MIN> cardinality = cardinality_value()
-
-  {
-    jjtThis.cardinality = cardinality;
-  }
-}
-
-void owl_exact_cardinality_restriction() #OWLExactCardinalityRestriction :
-{
-  int cardinality;
-}
-{
-  <EXACTLY> cardinality = cardinality_value()
-  {
-    jjtThis.cardinality = cardinality;
-  }
-}
 
 void owl_property_assertion_object(int defaultPropertyValueType) #OWLPropertyAssertionObject : {}
 {
