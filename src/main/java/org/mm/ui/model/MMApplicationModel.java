@@ -1,6 +1,6 @@
 package org.mm.ui.model;
 
-import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 import org.mm.core.MappingExpressionsPersistenceLayer;
 import org.mm.renderer.MappingConfigurationOptionsManager;
 import org.mm.ss.SpreadSheetDataSource;
@@ -12,7 +12,7 @@ public class MMApplicationModel implements MMModel
 {
   private final DataSourceModel dataSourceModel;
   private final MappingsExpressionsModel expressionMappingsModel;
-  private final OWLAPIRenderer renderer;
+  private final OWLAPICoreRenderer renderer;
   private final MappingConfigurationOptionsManager optionsManager;
   private final MappingExpressionsPersistenceLayer mappingExpressionsPersistenceLayer;
 
@@ -20,7 +20,7 @@ public class MMApplicationModel implements MMModel
   private String mappingFileName = null;
   private SaveMappingsAction saveMappingsAction;
 
-  public MMApplicationModel(SpreadSheetDataSource dataSource, OWLAPIRenderer renderer,
+  public MMApplicationModel(SpreadSheetDataSource dataSource, OWLAPICoreRenderer renderer,
     MappingExpressionsPersistenceLayer mappingExpressionsPersistenceLayer)
   {
     dataSourceModel = new DataSourceModel(dataSource);
@@ -34,7 +34,7 @@ public class MMApplicationModel implements MMModel
 
   public MappingsExpressionsModel getMappingExpressionsModel() { return expressionMappingsModel; }
 
-  public OWLAPIRenderer getRenderer() { return renderer; }
+  public OWLAPICoreRenderer getRenderer() { return renderer; }
 
   public MappingConfigurationOptionsManager getMappingConfigurationOptionsManager() { return optionsManager; }
 

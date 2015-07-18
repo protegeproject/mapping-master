@@ -53,7 +53,8 @@ import java.util.Optional;
  * This renderer simply produces the standard presentation syntax rendering of the supplied entities. Subclasses will specialize and perform custom actions for
  * individual entities.
  */
-public class TextRenderer implements Renderer, MappingMasterParserConstants
+public class TextRenderer implements CoreRenderer, OWLEntityRenderer, OWLClassExpressionRenderer, OWLRestrictionRenderer,
+		MappingMasterParserConstants
 {
 	public Optional<TextRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
 	{

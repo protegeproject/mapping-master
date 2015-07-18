@@ -4,9 +4,8 @@ import jxl.Sheet;
 import jxl.Workbook;
 import org.mm.core.MappingExpression;
 import org.mm.exceptions.MappingMasterException;
-import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
-import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
@@ -14,7 +13,6 @@ import org.mm.ui.MMApplication;
 import org.mm.ui.dialog.MMApplicationDialogManager;
 import org.mm.ui.model.MMApplicationModel;
 import org.mm.ui.model.MappingsExpressionsModel;
-import org.mm.ss.SpreadSheetExpressionMapper;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.view.MMApplicationView;
 
@@ -36,7 +34,7 @@ public class MapExpressionsAction implements ActionListener
 			getApplicationDialogManager().showMessageDialog(getApplicationView(), "No data source loaded!");
 		else {
 			try {
-				OWLAPIRenderer renderer = getApplicationModel().getRenderer();
+				OWLAPICoreRenderer renderer = getApplicationModel().getRenderer();
 				Set<MappingExpression> mappingExpressions = getMappingExpressionsModel().getMappingExpressions(true);
 				SpreadSheetDataSource dataSource = getDataSourceModel().getDataSource();
 				Workbook workbook = dataSource.getWorkbook();

@@ -2,16 +2,16 @@ package org.mm.renderer;
 
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
-import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class MappingConfigurationOptionsManager implements MappingMasterParserConstants
 {
-  private OWLAPIRenderer renderer;
+  private OWLAPICoreRenderer renderer;
 
-  public MappingConfigurationOptionsManager(OWLAPIRenderer renderer)
+  public MappingConfigurationOptionsManager(OWLAPICoreRenderer renderer)
   {
     this.renderer = renderer;
   }
@@ -112,8 +112,8 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
   {
     Set<String> nameEncodings = new HashSet<>();
 
-    for (int i = 0; i < OWLAPIRenderer.NameEncodings.length; i++) {
-      nameEncodings.add(ParserUtil.getTokenName(OWLAPIRenderer.NameEncodings[i]));
+    for (int i = 0; i < OWLAPICoreRenderer.NameEncodings.length; i++) {
+      nameEncodings.add(ParserUtil.getTokenName(OWLAPICoreRenderer.NameEncodings[i]));
     }
     return nameEncodings;
   }
@@ -122,8 +122,8 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
   {
     Set<String> referenceValueTypes = new HashSet<String>();
 
-    for (int i = 0; i < OWLAPIRenderer.ReferenceValueTypes.length; i++) {
-      referenceValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.ReferenceValueTypes[i]));
+    for (int i = 0; i < OWLAPICoreRenderer.ReferenceValueTypes.length; i++) {
+      referenceValueTypes.add(ParserUtil.getTokenName(OWLAPICoreRenderer.ReferenceValueTypes[i]));
     }
 
     return referenceValueTypes;
@@ -133,8 +133,8 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
   {
     Set<String> propertyTypes = new HashSet<String>();
 
-    for (int i = 0; i < OWLAPIRenderer.PropertyTypes.length; i++) {
-      propertyTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.PropertyTypes[i]));
+    for (int i = 0; i < OWLAPICoreRenderer.PropertyTypes.length; i++) {
+      propertyTypes.add(ParserUtil.getTokenName(OWLAPICoreRenderer.PropertyTypes[i]));
     }
 
     return propertyTypes;
@@ -144,8 +144,8 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
   {
     Set<String> propertyValueTypes = new HashSet<String>();
 
-    for (int i = 0; i < OWLAPIRenderer.PropertyValueTypes.length; i++) {
-      propertyValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.PropertyValueTypes[i]));
+    for (int i = 0; i < OWLAPICoreRenderer.PropertyValueTypes.length; i++) {
+      propertyValueTypes.add(ParserUtil.getTokenName(OWLAPICoreRenderer.PropertyValueTypes[i]));
     }
 
     return propertyValueTypes;
@@ -155,8 +155,8 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
   {
     Set<String> dataPropertyValueTypes = new HashSet<String>();
 
-    for (int i = 0; i < OWLAPIRenderer.DataPropertyValueTypes.length; i++) {
-      dataPropertyValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.DataPropertyValueTypes[i]));
+    for (int i = 0; i < OWLAPICoreRenderer.DataPropertyValueTypes.length; i++) {
+      dataPropertyValueTypes.add(ParserUtil.getTokenName(OWLAPICoreRenderer.DataPropertyValueTypes[i]));
     }
 
     return dataPropertyValueTypes;

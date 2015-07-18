@@ -11,7 +11,9 @@ import org.mm.parser.MappingMasterParser;
 import org.mm.parser.ParseException;
 import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
-import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.owlapi.OWLAPIClassExpressionRenderer;
+import org.mm.renderer.owlapi.OWLAPICoreRenderer;
+import org.mm.renderer.owlapi.OWLAPIEntityRenderer;
 import org.mm.renderer.owlapi.OWLAPIRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -48,7 +50,9 @@ public class OWLAPIRendererTest
 
       SpreadSheetDataSource dataSource = new SpreadSheetDataSource(workbook);
 
-      OWLAPIRenderer renderer = new OWLAPIRenderer(ontology, dataSource);
+      OWLAPIEntityRenderer entityRenderer = null;
+      OWLAPIClassExpressionRenderer classExpressionRenderer = null;
+      OWLAPICoreRenderer renderer = new OWLAPICoreRenderer(ontology, dataSource);
 
       SimpleNode simpleNode = parser.expression();
       ExpressionNode expressionNode = new ExpressionNode((ASTExpression)simpleNode);

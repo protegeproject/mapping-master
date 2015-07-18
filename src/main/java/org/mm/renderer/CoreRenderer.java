@@ -39,7 +39,7 @@ import org.mm.parser.node.ValueSpecificationItemNode;
 
 import java.util.Optional;
 
-public interface Renderer
+public interface CoreRenderer
 {
 	Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode) throws RendererException;
 
@@ -51,69 +51,15 @@ public interface Renderer
 	Optional<? extends Rendering> renderOWLIndividualDeclaration(
 			OWLIndividualDeclarationNode owlIndividualDeclarationNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLClass(OWLClassNode classNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLSubclassOf(OWLSubclassOfNode subclassOfNode) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLProperty(OWLPropertyNode propertyNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLObjectProperty(OWLPropertyNode propertyNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLDataProperty(OWLPropertyNode propertyNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLNamedIndividual(OWLNamedIndividualNode namedIndividualNode)
-			throws RendererException;
+	Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAs) throws RendererException;
 
 	Optional<? extends Rendering> renderOWLPropertyAssertionObject(
 			OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException;
 
 	Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
 			throws RendererException;
-
-	// OWL class expressions
-	Optional<? extends Rendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
-			throws RendererException;
-
-	Optional<? extends Rendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLIntersectionClass(OWLIntersectionClassNode intersectionClassNode)
-			throws RendererException;
-
-	Optional<? extends Rendering> renderOWLSubclassOf(OWLSubclassOfNode subclassOfNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLClassEquivalentTo(OWLClassEquivalentToNode classEquivalentToNode)
-			throws RendererException;
-
-	Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAs) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictionNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLMaxCardinality(OWLPropertyNode propertyNode,
-			OWLMaxCardinalityNode maxCardinalityNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
-			OWLMinCardinalityNode minCardinalityNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
-			OWLExactCardinalityNode cardinalityNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
-			throws RendererException;
-
-	Optional<? extends Rendering> renderOWLDataHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
-			throws RendererException;
-
-	Optional<? extends Rendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
-			OWLDataAllValuesFromNode dataAllValuesFromNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
-			OWLObjectAllValuesFromNode objectAllValuesFromNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
-			OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException;
-
-	Optional<? extends Rendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
-			OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException;
 
 	Optional<? extends Rendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException;
 

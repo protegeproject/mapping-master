@@ -10,10 +10,9 @@ import org.mm.parser.ParseException;
 import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.renderer.RendererException;
-import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 
 import java.io.ByteArrayInputStream;
-import java.util.Set;
 
 /**
  * Class that converts a spreadsheet to OWL using the supplied mapping expressions.
@@ -21,7 +20,7 @@ import java.util.Set;
 public class SpreadSheetExpressionMapper
 {
 	private static void processMappingExpression(SpreadSheetDataSource dataSource, SpreadsheetLocation currentLocation,
-			OWLAPIRenderer renderer, MappingExpression mappingExpression) throws MappingMasterException, ParseException
+			OWLAPICoreRenderer renderer, MappingExpression mappingExpression) throws MappingMasterException, ParseException
 	{
 		String comment = mappingExpression.getComment();
 		String expressionText = mappingExpression.getExpression();
