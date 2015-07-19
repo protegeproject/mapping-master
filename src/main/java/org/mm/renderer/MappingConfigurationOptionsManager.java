@@ -3,42 +3,43 @@ package org.mm.renderer;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
 import org.mm.renderer.owlapi.OWLAPICoreRenderer;
+import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class MappingConfigurationOptionsManager implements MappingMasterParserConstants
 {
-  private OWLAPICoreRenderer renderer;
+  private ReferenceRenderer renderer;
 
-  public MappingConfigurationOptionsManager(OWLAPICoreRenderer renderer)
+  public MappingConfigurationOptionsManager(ReferenceRenderer renderer)
   {
     this.renderer = renderer;
   }
 
   public String getDefaultNameEncoding()
   {
-    return getSettingName(renderer.defaultValueEncoding);
+    return getSettingName(renderer.getDefaultValueEncoding());
   }
 
   public String getDefaultReferenceType()
   {
-    return getSettingName(renderer.defaultReferenceType);
+    return getSettingName(renderer.getDefaultReferenceType());
   }
 
   public String getDefaultPropertyType()
   {
-    return getSettingName(renderer.defaultOWLPropertyType);
+    return getSettingName(renderer.getDefaultOWLPropertyType());
   }
 
   public String getDefaultPropertyValueType()
   {
-    return getSettingName(renderer.defaultOWLPropertyAssertionObjectType);
+    return getSettingName(renderer.getDefaultOWLPropertyAssertionObjectType());
   }
 
   public String getDefaultDataPropertyValueType()
   {
-    return getSettingName(renderer.defaultOWLDataPropertyValueType);
+    return getSettingName(renderer.getDefaultOWLDataPropertyValueType());
   }
 
   public String getDefaultValueEncodingOptionName()
@@ -71,15 +72,15 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
     int optionID = getOptionID(optionName);
 
     if (optionID == MM_DEFAULT_VALUE_ENCODING)
-      return getSettingName(renderer.defaultValueEncoding);
+      return getSettingName(renderer.getDefaultValueEncoding());
     else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
-      return getSettingName(renderer.defaultReferenceType);
+      return getSettingName(renderer.getDefaultReferenceType());
     else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
-      return getSettingName(renderer.defaultOWLPropertyType);
+      return getSettingName(renderer.getDefaultOWLPropertyType());
     else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-      return getSettingName(renderer.defaultOWLPropertyAssertionObjectType);
+      return getSettingName(renderer.getDefaultOWLPropertyAssertionObjectType());
     else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
-      return getSettingName(renderer.defaultOWLDataPropertyValueType);
+      return getSettingName(renderer.getDefaultOWLDataPropertyValueType());
     else
       return "unknown option: " + optionName;
   }
@@ -96,15 +97,15 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
 
     if (settingID != -1) {
       if (optionID == MM_DEFAULT_VALUE_ENCODING)
-        renderer.defaultValueEncoding = settingID;
+        renderer.setDefaultValueEncoding(settingID);
       else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
-        renderer.defaultReferenceType = settingID;
+        renderer.setDefaultReferenceType(settingID);
       else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
-        renderer.defaultOWLPropertyType = settingID;
+        renderer.setDefaultOWLPropertyType(settingID);
       else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-        renderer.defaultOWLPropertyAssertionObjectType = settingID;
+        renderer.setDefaultOWLPropertyAssertionObjectType(settingID);
       else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
-        renderer.defaultOWLDataPropertyValueType = settingID;
+        renderer.setDefaultOWLDataPropertyValueType(settingID);
     }
   }
 

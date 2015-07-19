@@ -41,15 +41,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-public class XXXReferenceRenderer implements ReferenceRenderer, MappingMasterParserConstants
+public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMasterParserConstants
 {
-	public static int NameEncodings[] = { MM_LOCATION, MM_DATA_VALUE, RDF_ID, RDFS_LABEL };
-	public static int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY,
-			XSD_INT, XSD_STRING, XSD_FLOAT, XSD_DOUBLE, XSD_SHORT, XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DURATION };
-	public static int PropertyTypes[] = { OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY };
-	public static int PropertyValueTypes[] = ReferenceValueTypes;
-	public static int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INT, XSD_FLOAT, XSD_DOUBLE,
-			XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DATE, XSD_DURATION };
+	// Configuration options
+	public int defaultEmptyLocationDirective = MM_PROCESS_IF_EMPTY_LOCATION;
+	public int defaultEmptyRDFIDDirective = MM_PROCESS_IF_EMPTY_ID;
+	public int defaultEmptyRDFSLabelDirective = MM_PROCESS_IF_EMPTY_LABEL;
+	public int defaultIfExistsDirective = MM_RESOLVE_IF_EXISTS;
+	public int defaultIfNotExistsDirective = MM_CREATE_IF_NOT_EXISTS;
 
 	// Configuration options
 	public int defaultValueEncoding = RDFS_LABEL;
@@ -57,12 +56,6 @@ public class XXXReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 	public int defaultOWLPropertyType = OWL_OBJECT_PROPERTY;
 	public int defaultOWLPropertyAssertionObjectType = XSD_STRING;
 	public int defaultOWLDataPropertyValueType = XSD_STRING;
-
-	public int defaultEmptyLocationDirective = MM_PROCESS_IF_EMPTY_LOCATION;
-	public int defaultEmptyRDFIDDirective = MM_PROCESS_IF_EMPTY_ID;
-	public int defaultEmptyRDFSLabelDirective = MM_PROCESS_IF_EMPTY_LABEL;
-	public int defaultIfExistsDirective = MM_RESOLVE_IF_EXISTS;
-	public int defaultIfNotExistsDirective = MM_CREATE_IF_NOT_EXISTS;
 
 	private String defaultNamespace = "";
 	private String defaultLanguage = "";
@@ -73,7 +66,7 @@ public class XXXReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 	private final OWLAPIEntityRenderer entityRenderer;
 	private SpreadSheetDataSource dataSource;
 
-	public XXXReferenceRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource,
+	public OWLAPIReferenceRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource,
 			OWLAPIEntityRenderer entityRenderer)
 	{
 		this.ontology = ontology;
@@ -94,12 +87,13 @@ public class XXXReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 	}
 
 	// TODO Too long. Clean up.
-	@Override public Optional<ReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException
+	@Override public Optional<OWLAPIReferenceRendering> renderReference(ReferenceNode referenceNode)
+			throws RendererException
 	{
 		SpreadsheetLocation location = getLocation(referenceNode.getSourceSpecificationNode());
 		String defaultNamespace = getReferenceNamespace(referenceNode);
 		String language = getReferenceLanguage(referenceNode);
-		ReferenceRendering referenceRendering = new ReferenceRendering();
+		OWLAPIReferenceRendering referenceRendering = new OWLAPIReferenceRendering();
 
 		referenceRendering.logLine("<<<<<<<<<<<<<<<<<<<< Rendering reference [" + referenceNode + "] <<<<<<<<<<<<<<<<<<<<");
 
@@ -147,6 +141,56 @@ public class XXXReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 					"internal error: unknown reference type " + referenceType + " for reference " + referenceNode.toString());
 
 		return Optional.of(referenceRendering);
+	}
+
+	@Override public int getDefaultValueEncoding()
+	{
+		return this.defaultValueEncoding;
+	}
+
+	@Override public int getDefaultReferenceType()
+	{
+		return this.defaultReferenceType;
+	}
+
+	@Override public int getDefaultOWLPropertyType()
+	{
+		return this.defaultOWLPropertyType;
+	}
+
+	@Override public int getDefaultOWLPropertyAssertionObjectType()
+	{
+		return this.defaultOWLPropertyAssertionObjectType;
+	}
+
+	@Override public int getDefaultOWLDataPropertyValueType()
+	{
+		return this.defaultOWLDataPropertyValueType;
+	}
+
+	@Override public void setDefaultValueEncoding(int defaultValueEncoding)
+	{
+		this.defaultValueEncoding = defaultValueEncoding;
+	}
+
+	@Override public void setDefaultReferenceType(int defaultReferenceType)
+	{
+		this.defaultReferenceType = defaultReferenceType;
+	}
+
+	@Override public void setDefaultOWLPropertyType(int defaultOWLPropertyType)
+	{
+		this.defaultOWLDataPropertyValueType = defaultOWLPropertyType;
+	}
+
+	@Override public void setDefaultOWLPropertyAssertionObjectType(int defaultOWLPropertyAssertionObjectType)
+	{
+		this.defaultOWLPropertyAssertionObjectType = defaultOWLPropertyAssertionObjectType;
+	}
+
+	@Override public void setDefaultOWLDataPropertyValueType(int defaultOWLDataPropertyValueType)
+	{
+		this.defaultOWLDataPropertyValueType = defaultOWLDataPropertyValueType;
 	}
 
 	public Set<OWLAxiom> processTypesClause(OWLAPIRendering individualDeclarationRendering,
@@ -266,7 +310,7 @@ public class XXXReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 			else if (valueSpecificationItemNode.hasReferenceNode()) {
 				ReferenceNode valueSpecificationItemReferenceNode = valueSpecificationItemNode.getReferenceNode();
 				valueSpecificationItemReferenceNode.setDefaultShiftSetting(referenceNode.getActualShiftDirective());
-				Optional<ReferenceRendering> referenceRendering = renderReference(valueSpecificationItemReferenceNode);
+				Optional<OWLAPIReferenceRendering> referenceRendering = renderReference(valueSpecificationItemReferenceNode);
 				if (referenceRendering.isPresent()) {
 					if (referenceRendering.get().isOWLLiteral()) {
 						OWLLiteral literal = referenceRendering.get().getOWLLiteral().get();
@@ -602,7 +646,7 @@ public class XXXReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 			} else
 				return Optional.empty();
 		} else if (typeNode.isReferenceNode()) {
-			Optional<ReferenceRendering> referenceRendering = renderReference((ReferenceNode)typeNode);
+			Optional<OWLAPIReferenceRendering> referenceRendering = renderReference((ReferenceNode)typeNode);
 			if (referenceRendering.isPresent()) {
 				if (referenceRendering.get().isOWLEntity()) {
 					OWLEntity entity = referenceRendering.get().getOWLEntity().get();

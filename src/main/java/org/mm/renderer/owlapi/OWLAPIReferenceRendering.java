@@ -5,7 +5,7 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 
 import java.util.Optional;
 
-public class ReferenceRendering extends OWLAPIRendering
+public class OWLAPIReferenceRendering extends OWLAPIRendering
 {
   private Optional<OWLLiteral> literal = Optional.empty();
   private Optional<OWLEntity> entity = Optional.empty();

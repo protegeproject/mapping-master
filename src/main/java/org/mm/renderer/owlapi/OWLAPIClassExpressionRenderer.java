@@ -54,12 +54,12 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	private final OWLOntology ontology;
 	private final OWLDataFactory owlDataFactory;
 	private final OWLAPIEntityRenderer entityRenderer;
-	private final XXXReferenceRenderer referenceRenderer;
+	private final OWLAPIReferenceRenderer referenceRenderer;
 	private final OWLAPILiteralRenderer literalRenderer;
 	private final OWLAPIObjectHandler owlObjectHandler;
 
 	public OWLAPIClassExpressionRenderer(OWLOntology ontology, OWLAPIEntityRenderer entityRenderer,
-			XXXReferenceRenderer referenceRenderer, OWLAPILiteralRenderer literalRenderer)
+			OWLAPIReferenceRenderer referenceRenderer, OWLAPILiteralRenderer literalRenderer)
 	{
 		this.ontology = ontology;
 		this.owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
@@ -288,7 +288,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 					} else
 						return Optional.empty();
 				} else if (objectHasValueNode.isReference()) {
-					Optional<ReferenceRendering> referenceRendering = this.referenceRenderer
+					Optional<OWLAPIReferenceRendering> referenceRendering = this.referenceRenderer
 							.renderReference(objectHasValueNode.getReferenceNode());
 					if (referenceRendering.isPresent()) {
 						// TODO
@@ -323,7 +323,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 					} else
 						return Optional.empty();
 				} else if (hasValueNode.isReference()) {
-					Optional<ReferenceRendering> referenceRendering = referenceRenderer
+					Optional<OWLAPIReferenceRendering> referenceRendering = referenceRenderer
 							.renderReference(hasValueNode.getReferenceNode());
 					if (referenceRendering.isPresent()) {
 						// TODO

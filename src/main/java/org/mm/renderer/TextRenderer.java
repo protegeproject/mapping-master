@@ -46,8 +46,8 @@ import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
+import org.mm.ss.SpreadSheetDataSource;
 
-import java.sql.Ref;
 import java.util.Optional;
 
 /**
@@ -58,6 +58,37 @@ public class TextRenderer
 		implements CoreRenderer, OWLEntityRenderer, OWLLiteralRenderer, ReferenceRenderer, OWLClassExpressionRenderer,
 		MappingMasterParserConstants
 {
+	private int defaultValueEncoding = RDFS_LABEL;
+	private int defaultReferenceType = OWL_CLASS;
+	private int defaultOWLPropertyType = OWL_OBJECT_PROPERTY;
+	private int defaultOWLPropertyAssertionObjectType = XSD_STRING;
+	private int defaultOWLDataPropertyValueType = XSD_STRING;
+
+	@Override public void setDataSource(SpreadSheetDataSource dataSource)
+	{
+
+	}
+
+	@Override public OWLEntityRenderer getOWLEntityRenderer()
+	{
+		return this;
+	}
+
+	@Override public OWLClassExpressionRenderer getOWLClassExpressionRenderer()
+	{
+		return this;
+	}
+
+	@Override public OWLLiteralRenderer getOWLLiteralRenderer()
+	{
+		return this;
+	}
+
+	@Override public ReferenceRenderer getReferenceRenderer()
+	{
+		return this;
+	}
+
 	public Optional<TextRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
 	{
 		if (expressionNode.hasMMExpression())
@@ -1059,5 +1090,55 @@ public class TextRenderer
 		}
 
 		return Optional.of(rendering);
+	}
+
+	@Override public int getDefaultValueEncoding()
+	{
+		return this.defaultValueEncoding;
+	}
+
+	@Override public int getDefaultReferenceType()
+	{
+		return this.defaultReferenceType;
+	}
+
+	@Override public int getDefaultOWLPropertyType()
+	{
+		return this.defaultOWLPropertyType;
+	}
+
+	@Override public int getDefaultOWLPropertyAssertionObjectType()
+	{
+		return this.defaultOWLPropertyAssertionObjectType;
+	}
+
+	@Override public int getDefaultOWLDataPropertyValueType()
+	{
+		return this.defaultOWLDataPropertyValueType;
+	}
+
+	@Override public void setDefaultValueEncoding(int defaultValueEncoding)
+	{
+		this.defaultValueEncoding = defaultValueEncoding;
+	}
+
+	@Override public void setDefaultReferenceType(int defaultReferenceType)
+	{
+		this.defaultReferenceType = defaultReferenceType;
+	}
+
+	@Override public void setDefaultOWLPropertyType(int defaultOWLPropertyType)
+	{
+		this.defaultOWLDataPropertyValueType = defaultOWLPropertyType;
+	}
+
+	@Override public void setDefaultOWLPropertyAssertionObjectType(int defaultOWLPropertyAssertionObjectType)
+	{
+		this.defaultOWLPropertyAssertionObjectType = defaultOWLPropertyAssertionObjectType;
+	}
+
+	@Override public void setDefaultOWLDataPropertyValueType(int defaultOWLDataPropertyValueType)
+	{
+		this.defaultOWLDataPropertyValueType = defaultOWLDataPropertyValueType;
 	}
 }

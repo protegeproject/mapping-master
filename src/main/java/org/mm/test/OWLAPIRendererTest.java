@@ -16,7 +16,7 @@ import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 import org.mm.renderer.owlapi.OWLAPIEntityRenderer;
 import org.mm.renderer.owlapi.OWLAPILiteralRenderer;
 import org.mm.renderer.owlapi.OWLAPIRendering;
-import org.mm.renderer.owlapi.XXXReferenceRenderer;
+import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
 import org.mm.ss.SpreadSheetDataSource;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -52,13 +52,7 @@ public class OWLAPIRendererTest
 
 			SpreadSheetDataSource dataSource = new SpreadSheetDataSource(workbook);
 
-			OWLAPIEntityRenderer entityRenderer = new OWLAPIEntityRenderer();
-			OWLAPILiteralRenderer literalRenderer = new OWLAPILiteralRenderer(ontology.getOWLOntologyManager().getOWLDataFactory());
-			XXXReferenceRenderer referenceRenderer = new XXXReferenceRenderer(ontology, dataSource, entityRenderer);
-			OWLAPIClassExpressionRenderer classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology,
-				entityRenderer, referenceRenderer, literalRenderer);
-			OWLAPICoreRenderer coreRenderer = new OWLAPICoreRenderer(ontology, dataSource, entityRenderer,
-					classExpressionRenderer, referenceRenderer);
+			OWLAPICoreRenderer coreRenderer = new OWLAPICoreRenderer(ontology, dataSource);
 
 			SimpleNode simpleNode = parser.expression();
 			ExpressionNode expressionNode = new ExpressionNode((ASTExpression)simpleNode);

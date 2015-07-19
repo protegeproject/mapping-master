@@ -36,11 +36,22 @@ import org.mm.parser.node.TypesNode;
 import org.mm.parser.node.ValueEncodingNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
+import org.mm.ss.SpreadSheetDataSource;
 
 import java.util.Optional;
 
 public interface CoreRenderer
 {
+	void setDataSource(SpreadSheetDataSource dataSource);
+
+	OWLEntityRenderer getOWLEntityRenderer();
+
+	OWLClassExpressionRenderer getOWLClassExpressionRenderer();
+
+	OWLLiteralRenderer getOWLLiteralRenderer();
+
+	ReferenceRenderer getReferenceRenderer();
+
 	Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode) throws RendererException;
 
 	Optional<? extends Rendering> renderMMExpression(MMExpressionNode MMExpressionNode) throws RendererException;

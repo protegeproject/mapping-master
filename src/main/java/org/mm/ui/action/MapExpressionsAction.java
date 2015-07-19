@@ -4,6 +4,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import org.mm.core.MappingExpression;
 import org.mm.exceptions.MappingMasterException;
+import org.mm.renderer.CoreRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 import org.mm.ss.SpreadSheetDataSource;
@@ -34,7 +35,6 @@ public class MapExpressionsAction implements ActionListener
 			getApplicationDialogManager().showMessageDialog(getApplicationView(), "No data source loaded!");
 		else {
 			try {
-				OWLAPICoreRenderer renderer = getApplicationModel().getRenderer();
 				Set<MappingExpression> mappingExpressions = getMappingExpressionsModel().getMappingExpressions(true);
 				SpreadSheetDataSource dataSource = getDataSourceModel().getDataSource();
 				Workbook workbook = dataSource.getWorkbook();

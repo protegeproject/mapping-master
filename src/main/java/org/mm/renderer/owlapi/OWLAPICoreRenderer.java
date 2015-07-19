@@ -18,10 +18,11 @@ import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLSameAsNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.ReferenceNode;
-import org.mm.parser.node.TypesNode;
-import org.mm.parser.node.ValueEncodingNode;
-import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.renderer.CoreRenderer;
+import org.mm.renderer.OWLClassExpressionRenderer;
+import org.mm.renderer.OWLEntityRenderer;
+import org.mm.renderer.OWLLiteralRenderer;
+import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.renderer.Rendering;
 import org.mm.ss.SpreadSheetDataSource;
@@ -62,51 +63,59 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 	public static int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INT, XSD_FLOAT, XSD_DOUBLE,
 			XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DATE, XSD_DURATION };
 
-	// Configuration options
-	public int defaultValueEncoding = RDFS_LABEL;
-	public int defaultReferenceType = OWL_CLASS;
-	public int defaultOWLPropertyType = OWL_OBJECT_PROPERTY;
-	public int defaultOWLPropertyAssertionObjectType = XSD_STRING;
-	public int defaultOWLDataPropertyValueType = XSD_STRING;
-
-	public int defaultEmptyLocationDirective = MM_PROCESS_IF_EMPTY_LOCATION;
-	public int defaultEmptyRDFIDDirective = MM_PROCESS_IF_EMPTY_ID;
-	public int defaultEmptyRDFSLabelDirective = MM_PROCESS_IF_EMPTY_LABEL;
-	public int defaultIfExistsDirective = MM_RESOLVE_IF_EXISTS;
-	public int defaultIfNotExistsDirective = MM_CREATE_IF_NOT_EXISTS;
-
-	private String defaultNamespace = "";
-	private String defaultLanguage = "";
-
 	private final OWLOntology ontology;
 	private final OWLDataFactory owlDataFactory;
 	private final OWLAPIObjectHandler owlObjectHandler;
 	private final OWLAPIEntityRenderer entityRenderer;
+	private final OWLAPILiteralRenderer literalRenderer;
 	private final OWLAPIClassExpressionRenderer classExpressionRenderer;
-	private final XXXReferenceRenderer referenceRenderer;
+	private final OWLAPIReferenceRenderer referenceRenderer;
 	private SpreadSheetDataSource dataSource;
 
-	public OWLAPICoreRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource, OWLAPIEntityRenderer entityRenderer,
-			OWLAPIClassExpressionRenderer classExpressionRenderer, XXXReferenceRenderer referenceRenderer)
+	public OWLAPICoreRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
 	{
 		this.ontology = ontology;
 		this.owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-		this.owlObjectHandler = new OWLAPIObjectHandler(ontology);
-		this.classExpressionRenderer = classExpressionRenderer;
-		this.entityRenderer = entityRenderer;
-		this.referenceRenderer = referenceRenderer;
 		this.dataSource = dataSource;
+		this.owlObjectHandler = new OWLAPIObjectHandler(ontology);
+
+		this.entityRenderer = new OWLAPIEntityRenderer();
+		this.literalRenderer = new OWLAPILiteralRenderer(ontology.getOWLOntologyManager().getOWLDataFactory());
+		this.referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource, entityRenderer);
+		this.classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, entityRenderer, referenceRenderer,
+				literalRenderer);
 	}
+
 
 	public void reset()
 	{
 		owlObjectHandler.reset();
 	}
 
-	public void setDataSource(SpreadSheetDataSource dataSource)
+	@Override public void setDataSource(SpreadSheetDataSource dataSource)
 	{
 		this.dataSource = dataSource;
 		this.referenceRenderer.setDataSource(dataSource);
+	}
+
+	@Override public OWLAPIEntityRenderer getOWLEntityRenderer()
+	{
+		return this.entityRenderer;
+	}
+
+	@Override public OWLAPIClassExpressionRenderer getOWLClassExpressionRenderer()
+	{
+		return this.classExpressionRenderer;
+	}
+
+	@Override public OWLAPILiteralRenderer getOWLLiteralRenderer()
+	{
+		return this.literalRenderer;
+	}
+
+	@Override public OWLAPIReferenceRenderer getReferenceRenderer()
+	{
+		return this.referenceRenderer;
 	}
 
 	public Optional<OWLAPIRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
@@ -299,7 +308,6 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 	{
 		return Optional.empty(); // TODO
 	}
-
 
 	@Override public Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException
 	{
