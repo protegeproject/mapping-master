@@ -47,13 +47,15 @@ import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
 
+import java.sql.Ref;
 import java.util.Optional;
 
 /**
  * This renderer simply produces the standard presentation syntax rendering of the supplied entities. Subclasses will specialize and perform custom actions for
  * individual entities.
  */
-public class TextRenderer implements CoreRenderer, OWLEntityRenderer, OWLClassExpressionRenderer, OWLRestrictionRenderer,
+public class TextRenderer
+		implements CoreRenderer, OWLEntityRenderer, OWLLiteralRenderer, ReferenceRenderer, OWLClassExpressionRenderer,
 		MappingMasterParserConstants
 {
 	public Optional<TextRendering> renderExpression(ExpressionNode expressionNode) throws RendererException

@@ -61,26 +61,9 @@ public interface CoreRenderer
 	Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
 			throws RendererException;
 
-	Optional<? extends Rendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException;
-
-	Optional<? extends Rendering> renderReference(ReferenceNode referenceNode) throws RendererException;
-
 	Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException;
 
 	Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode) throws RendererException;
 
-	Optional<? extends Rendering> renderValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode)
-			throws RendererException;
-
-	Optional<? extends Rendering> renderValueExtractionFunctionArgument(
-			ValueExtractionFunctionArgumentNode valueExtractionFunctionArgumentNode) throws RendererException;
-
 	Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException;
-
-	Optional<? extends Rendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException;
-
-	Optional<? extends Rendering> renderValueSpecificationItem(ValueSpecificationItemNode valueSpecificationItemNode)
-			throws RendererException;
-
-	Optional<? extends Rendering> renderTypes(TypesNode typesNode) throws RendererException;
 }
