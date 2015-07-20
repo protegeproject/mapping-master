@@ -39,7 +39,6 @@ import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
 import org.semanticweb.owlapi.model.OWLObjectHasValue;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
-import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
 import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
@@ -167,7 +166,6 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
       return Optional.empty();
   }
 
-  // TODO Separate into data and object restrictions
   @Override public Optional<OWLRestrictionRendering> renderOWLRestriction(OWLRestrictionNode restrictionNode)
     throws RendererException
   {
@@ -179,25 +177,17 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
       if (this.owlObjectHandler.isOWLDataProperty(propertyIRI)) { // data property restrictions
         OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(propertyIRI);
         if (restrictionNode.isOWLMinCardinality()) {
-          int cardinality = restrictionNode.getOWLMinCardinalityNode().getCardinality();
-          OWLDataMinCardinality dataMinCardinality = this.owlDataFactory
-            .getOWLDataMinCardinality(cardinality, dataProperty);
-          return Optional.of(new OWLRestrictionRendering(dataMinCardinality));
+          OWLMinCardinalityNode dataMinCardinalityNode = restrictionNode.getOWLMinCardinalityNode();
+          return renderOWLDataMinCardinality(restrictionNode.getOWLPropertyNode(), dataMinCardinalityNode);
+
         } else if (restrictionNode.isOWLMaxCardinality()) {
-          int cardinality = restrictionNode.getOWLMaxCardinalityNode().getCardinality();
-          OWLDataMaxCardinality restriction = this.owlDataFactory.getOWLDataMaxCardinality(cardinality, dataProperty);
-
-          return Optional.of(new OWLRestrictionRendering(restriction));
+          OWLMaxCardinalityNode dataMaxCardinalityNode = restrictionNode.getOWLMaxCardinalityNode();
+          return renderOWLDataMaxCardinality(restrictionNode.getOWLPropertyNode(), dataMaxCardinalityNode);
         } else if (restrictionNode.isOWLExactCardinality()) {
-          OWLExactCardinalityNode exactCardinalityNode = restrictionNode.getOWLExactCardinalityNode();
-          int cardinality = exactCardinalityNode.getCardinality();
-          OWLDataExactCardinality dataExactCardinality = this.owlDataFactory
-            .getOWLDataExactCardinality(cardinality, dataProperty);
-
-          return Optional.of(new OWLRestrictionRendering(dataExactCardinality));
+          OWLExactCardinalityNode dataExactCardinalityNode = restrictionNode.getOWLExactCardinalityNode();
+          return renderOWLDataExactCardinality(restrictionNode.getOWLPropertyNode(), dataExactCardinalityNode);
         } else if (restrictionNode.isOWLHasValue()) { // data has value restriction
           OWLHasValueNode hasValueNode = restrictionNode.getOWLHasValueNode();
-
           return renderOWLDataHasValue(restrictionNode.getOWLPropertyNode(), hasValueNode);
         } else if (restrictionNode.isOWLAllValuesFrom()) { // data all values from restriction
           OWLAllValuesFromNode allValuesFromNode = restrictionNode.getOWLAllValuesFromNode();
@@ -215,7 +205,6 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
             throw new RendererException("expecting data value for some values data restriction " + restrictionNode);
 
           OWLDataSomeValuesFromNode dataSomeValuesFromNode = someValuesFromNode.getOWLDataSomeValuesFromNode();
-
           OWLDatatype datatype = this.owlObjectHandler.getOWLDatatype(dataSomeValuesFromNode.getDatatypeName());
           OWLDataSomeValuesFrom restriction = this.owlDataFactory.getOWLDataSomeValuesFrom(dataProperty, datatype);
 
@@ -223,28 +212,15 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
         } else
           return Optional.empty();
       } else { // Object property restrictions
-        OWLObjectProperty objectProperty = this.owlDataFactory.getOWLObjectProperty(propertyIRI);
         if (restrictionNode.isOWLMinCardinality()) {
           OWLMinCardinalityNode objectMinCardinalityNode = restrictionNode.getOWLMinCardinalityNode();
-          int cardinality = objectMinCardinalityNode.getCardinality();
-          OWLObjectMinCardinality restriction = this.owlDataFactory
-            .getOWLObjectMinCardinality(cardinality, objectProperty);
-
-          return Optional.of(new OWLRestrictionRendering(restriction));
+          return renderOWLObjectMinCardinality(restrictionNode.getOWLPropertyNode(), objectMinCardinalityNode);
         } else if (restrictionNode.isOWLMaxCardinality()) {
           OWLMaxCardinalityNode objectMaxCardinalityNode = restrictionNode.getOWLMaxCardinalityNode();
-          int cardinality = objectMaxCardinalityNode.getCardinality();
-          OWLObjectMaxCardinality objectMaxCardinalityRestriction = this.owlDataFactory
-            .getOWLObjectMaxCardinality(cardinality, objectProperty);
-
-          return Optional.of(new OWLRestrictionRendering(objectMaxCardinalityRestriction));
+          return renderOWLObjectMaxCardinality(restrictionNode.getOWLPropertyNode(), objectMaxCardinalityNode);
         } else if (restrictionNode.isOWLExactCardinality()) {
           OWLExactCardinalityNode objectExactCardinalityNode = restrictionNode.getOWLExactCardinalityNode();
-          int cardinality = objectExactCardinalityNode.getCardinality();
-          OWLObjectExactCardinality objectExactCardinality = this.owlDataFactory
-            .getOWLObjectExactCardinality(cardinality, objectProperty);
-
-          return Optional.of(new OWLRestrictionRendering(objectExactCardinality));
+          return renderOWLObjectExactCardinality(restrictionNode.getOWLPropertyNode(), objectExactCardinalityNode);
         } else if (restrictionNode.isOWLHasValue()) {
           OWLHasValueNode objectHasValueNode = restrictionNode.getOWLHasValueNode();
 
@@ -272,22 +248,107 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
       return Optional.empty();
   }
 
-  @Override public Optional<OWLRestrictionRendering> renderOWLMaxCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<OWLRestrictionRendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
+    OWLExactCardinalityNode exactCardinalityNode) throws RendererException
+  {
+    Optional<OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(propertyNode);
+
+    if (propertyRendering.isPresent()) {
+      IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
+      // TODO Check if is object property
+      OWLObjectProperty objectProperty = this.owlDataFactory.getOWLObjectProperty(propertyIRI);
+      int cardinality = exactCardinalityNode.getCardinality();
+      OWLObjectExactCardinality restriction = this.owlDataFactory
+        .getOWLObjectExactCardinality(cardinality, objectProperty);
+
+      return Optional.of(new OWLRestrictionRendering(restriction));
+    } else
+      return Optional.empty();
+  }
+
+  @Override public Optional<OWLRestrictionRendering> renderOWLDataExactCardinality(OWLPropertyNode propertyNode,
+    OWLExactCardinalityNode exactCardinalityNode) throws RendererException
+  {
+    Optional<OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(propertyNode);
+
+    if (propertyRendering.isPresent()) {
+      IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
+      // TODO Check if is data property
+      OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(propertyIRI);
+      int cardinality = exactCardinalityNode.getCardinality();
+      OWLDataExactCardinality restriction = this.owlDataFactory.getOWLDataExactCardinality(cardinality, dataProperty);
+
+      return Optional.of(new OWLRestrictionRendering(restriction));
+    } else
+      return Optional.empty();
+  }
+
+  @Override public Optional<OWLRestrictionRendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
     OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
   {
-    return Optional.empty(); // TODO
+    Optional<OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(propertyNode);
+
+    if (propertyRendering.isPresent()) {
+      IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
+      // TODO Check if is object property
+      OWLObjectProperty objectProperty = this.owlDataFactory.getOWLObjectProperty(propertyIRI);
+      int cardinality = maxCardinalityNode.getCardinality();
+      OWLObjectMinCardinality restriction = this.owlDataFactory.getOWLObjectMinCardinality(cardinality, objectProperty);
+
+      return Optional.of(new OWLRestrictionRendering(restriction));
+    } else
+      return Optional.empty();
   }
 
-  @Override public Optional<OWLRestrictionRendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<OWLRestrictionRendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
+    OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
+  {
+    Optional<OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(propertyNode);
+
+    if (propertyRendering.isPresent()) {
+      IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
+      // TODO Check if is data property
+      OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(propertyIRI);
+      int cardinality = maxCardinalityNode.getCardinality();
+      OWLDataMaxCardinality restriction = this.owlDataFactory.getOWLDataMaxCardinality(cardinality, dataProperty);
+
+      return Optional.of(new OWLRestrictionRendering(restriction));
+    } else
+      return Optional.empty();
+  }
+
+  @Override public Optional<OWLRestrictionRendering> renderOWLObjectMinCardinality(OWLPropertyNode propertyNode,
     OWLMinCardinalityNode minCardinalityNode) throws RendererException
   {
-    return Optional.empty(); // TODO
+    Optional<OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(propertyNode);
+
+    if (propertyRendering.isPresent()) {
+      IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
+      // TODO Check if is object property
+      OWLObjectProperty objectProperty = this.owlDataFactory.getOWLObjectProperty(propertyIRI);
+      int cardinality = minCardinalityNode.getCardinality();
+      OWLObjectMinCardinality restriction = this.owlDataFactory.getOWLObjectMinCardinality(cardinality, objectProperty);
+
+      return Optional.of(new OWLRestrictionRendering(restriction));
+    } else
+      return Optional.empty();
   }
 
-  @Override public Optional<OWLRestrictionRendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
-    OWLExactCardinalityNode cardinalityNode) throws RendererException
+  @Override public Optional<OWLRestrictionRendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
+    OWLMinCardinalityNode minCardinalityNode) throws RendererException
   {
-    return Optional.empty(); // TODO
+    Optional<OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(propertyNode);
+
+    if (propertyRendering.isPresent()) {
+      IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
+      // TODO Check if is data property
+      OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(propertyIRI);
+      int cardinality = minCardinalityNode.getCardinality();
+      OWLDataMinCardinality restriction = this.owlDataFactory.getOWLDataMinCardinality(cardinality, dataProperty);
+
+      return Optional.of(new OWLRestrictionRendering(restriction));
+    } else
+      return Optional.empty();
   }
 
   @Override public Optional<OWLRestrictionRendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode,

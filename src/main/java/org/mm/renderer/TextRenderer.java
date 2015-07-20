@@ -381,17 +381,6 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  public Optional<TextRendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
-    OWLExactCardinalityNode owlExactCardinalityNode) throws RendererException
-  {
-    String textRendering = "" + owlExactCardinalityNode.getCardinality();
-
-    if (textRendering.length() != 0)
-      textRendering += "EXACTLY " + textRendering;
-
-    return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering));
-  }
-
   private Optional<TextRendering> renderOWLHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
     throws RendererException
   {
@@ -836,7 +825,8 @@ public class TextRenderer
     return Optional.empty(); // TODO
   }
 
-  @Override public Optional<TextRendering> renderAnnotationFact(AnnotationFactNode annotationFactNode) throws RendererException
+  @Override public Optional<TextRendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
+    throws RendererException
   {
     Optional<TextRendering> propertyRendering = renderOWLProperty(annotationFactNode.getOWLPropertyNode());
     Optional<TextRendering> annotationValueRendering = renderOWLAnnotationValue(
@@ -884,26 +874,40 @@ public class TextRenderer
     return textRendering.length() != 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
   }
 
-  @Override public Optional<TextRendering> renderOWLMaxCardinality(OWLPropertyNode propertyNode,
-    OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
+  @Override public Optional<TextRendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
+    OWLExactCardinalityNode exactCardinalityNode) throws RendererException
   {
-    String textRendering = "" + maxCardinalityNode.getCardinality();
-
-    if (textRendering.length() != 0)
-      return Optional.of(new TextRendering("MAX " + textRendering));
-    else
-      return Optional.empty();
+    return renderOWLExactCardinality(propertyNode, exactCardinalityNode);
   }
 
-  @Override public Optional<TextRendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<TextRendering> renderOWLDataExactCardinality(OWLPropertyNode propertyNode,
+    OWLExactCardinalityNode exactCardinalityNode) throws RendererException
+  {
+    return renderOWLExactCardinality(propertyNode, exactCardinalityNode);
+  }
+
+  @Override public Optional<TextRendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
+    OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
+  {
+    return renderOWLMaxCardinality(propertyNode, maxCardinalityNode);
+  }
+
+  @Override public Optional<TextRendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
+    OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
+  {
+    return renderOWLMaxCardinality(propertyNode, maxCardinalityNode);
+  }
+
+  @Override public Optional<TextRendering> renderOWLObjectMinCardinality(OWLPropertyNode propertyNode,
     OWLMinCardinalityNode minCardinalityNode) throws RendererException
   {
-    String textRendering = "" + minCardinalityNode.getCardinality();
+    return renderOWLMinCardinality(propertyNode, minCardinalityNode);
+  }
 
-    if (textRendering.length() != 0)
-      return Optional.of(new TextRendering("MIN " + textRendering));
-    else
-      return Optional.empty();
+  @Override public Optional<TextRendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
+    OWLMinCardinalityNode minCardinalityNode) throws RendererException
+  {
+    return renderOWLMinCardinality(propertyNode, minCardinalityNode);
   }
 
   private Optional<TextRendering> renderOWLAllValuesFrom(OWLPropertyNode propertyNode,
@@ -1143,4 +1147,38 @@ public class TextRenderer
   {
     this.defaultOWLDataPropertyValueType = defaultOWLDataPropertyValueType;
   }
+
+  private Optional<TextRendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
+    OWLExactCardinalityNode owlExactCardinalityNode) throws RendererException
+  {
+    String textRendering = "" + owlExactCardinalityNode.getCardinality();
+
+    if (textRendering.length() != 0)
+      textRendering += "EXACTLY " + textRendering;
+
+    return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering));
+  }
+
+  private Optional<TextRendering> renderOWLMaxCardinality(OWLPropertyNode propertyNode,
+    OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
+  {
+    String textRendering = "" + maxCardinalityNode.getCardinality();
+
+    if (textRendering.length() != 0)
+      return Optional.of(new TextRendering("MAX " + textRendering));
+    else
+      return Optional.empty();
+  }
+
+  private Optional<TextRendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
+    OWLMinCardinalityNode minCardinalityNode) throws RendererException
+  {
+    String textRendering = "" + minCardinalityNode.getCardinality();
+
+    if (textRendering.length() != 0)
+      return Optional.of(new TextRendering("MIN " + textRendering));
+    else
+      return Optional.empty();
+  }
+
 }

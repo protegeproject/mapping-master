@@ -33,14 +33,23 @@ public interface OWLClassExpressionRenderer
 
   Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictionNode) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLMaxCardinality(OWLPropertyNode propertyNode,
+  Optional<? extends Rendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
+    OWLExactCardinalityNode cardinalityNode) throws RendererException;
+
+  Optional<? extends Rendering> renderOWLDataExactCardinality(OWLPropertyNode propertyNode,
+    OWLExactCardinalityNode cardinalityNode) throws RendererException;
+
+  Optional<? extends Rendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
     OWLMaxCardinalityNode maxCardinalityNode) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
+  Optional<? extends Rendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
+    OWLMaxCardinalityNode maxCardinalityNode) throws RendererException;
+
+  Optional<? extends Rendering> renderOWLObjectMinCardinality(OWLPropertyNode propertyNode,
     OWLMinCardinalityNode minCardinalityNode) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
-    OWLExactCardinalityNode cardinalityNode) throws RendererException;
+  Optional<? extends Rendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
+    OWLMinCardinalityNode minCardinalityNode) throws RendererException;
 
   Optional<? extends Rendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
     throws RendererException;
