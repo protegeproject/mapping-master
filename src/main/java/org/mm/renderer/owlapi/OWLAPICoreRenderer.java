@@ -1,5 +1,3 @@
-// TODO Needs to be seriously refactored. Way too long.
-
 package org.mm.renderer.owlapi;
 
 import org.mm.parser.MappingMasterParserConstants;
@@ -470,5 +468,4 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		}
 		return axioms;
 	}
-
 }

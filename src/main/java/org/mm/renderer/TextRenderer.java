@@ -362,9 +362,9 @@ public class TextRenderer
 	{
 		Optional<TextRendering> classRendering;
 
-		if (objectSomeValuesFromNode.hasOWLClass())
+		if (objectSomeValuesFromNode.hasOWLClassNode())
 			classRendering = renderOWLClass(objectSomeValuesFromNode.getOWLClassNode());
-		else if (objectSomeValuesFromNode.hasOWLClassExpression())
+		else if (objectSomeValuesFromNode.hasOWLClassExpressionNode())
 			classRendering = renderOWLClassExpression(objectSomeValuesFromNode.getOWLClassExpressionNode());
 		else
 			throw new RendererException("unknown OWLObjectSomeValuesFrom node " + objectSomeValuesFromNode);

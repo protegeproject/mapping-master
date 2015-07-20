@@ -279,7 +279,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 
 				if (objectHasValueNode.isName()) {
 					Optional<OWLNamedIndividualRendering> individualRendering = entityRenderer
-							.renderOWLNamedIndividual(null); // TODO
+							.renderOWLNamedIndividual(null); // TODO Render name node as individual
 					if (individualRendering.isPresent()) {
 						OWLNamedIndividual individual = individualRendering.get().getOWLNamedIndividual();
 						OWLObjectHasValue objectHasValueRestriction = this.owlDataFactory
@@ -291,7 +291,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 					Optional<OWLAPIReferenceRendering> referenceRendering = this.referenceRenderer
 							.renderReference(objectHasValueNode.getReferenceNode());
 					if (referenceRendering.isPresent()) {
-						// TODO
+						// TODO Render reference node as individual
 						return Optional.empty();
 					} else
 						return Optional.empty();
@@ -326,7 +326,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 					Optional<OWLAPIReferenceRendering> referenceRendering = referenceRenderer
 							.renderReference(hasValueNode.getReferenceNode());
 					if (referenceRendering.isPresent()) {
-						// TODO
+						// TODO Render reference as literal
 						return Optional.empty();
 					} else
 						return Optional.empty();
@@ -349,7 +349,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 			if (this.owlObjectHandler.isOWLObjectProperty(property)) {
 				OWLObjectProperty objectProperty = this.owlDataFactory.getOWLObjectProperty(property.getIRI());
 
-				if (objectSomeValuesFromNode.hasOWLClassExpression()) {
+				if (objectSomeValuesFromNode.hasOWLClassExpressionNode()) {
 					Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLClassExpression(
 							objectSomeValuesFromNode.getOWLClassExpressionNode());
 					if (classExpressionRendering.isPresent()) {
@@ -360,7 +360,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 						return Optional.of(new OWLRestrictionRendering(objectSomeValuesFromRestriction));
 					} else
 						return Optional.empty();
-				} else {
+				} else if (objectSomeValuesFromNode.hasOWLClassNode()) {
 					Optional<OWLClassRendering> classRendering = entityRenderer
 							.renderOWLClass(objectSomeValuesFromNode.getOWLClassNode());
 					if (classRendering.isPresent()) {
@@ -370,7 +370,8 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 						return Optional.of(new OWLRestrictionRendering(objectSomeValuesFromRestriction));
 					} else
 						return Optional.empty();
-				}
+				} else
+					throw new RendererException("unknown child node for node " + objectSomeValuesFromNode.getNodeName());
 			} else
 				throw new RendererException(
 						"property " + property.getIRI() + " in object some values from restriction is not an object property");
@@ -381,7 +382,19 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
 			OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException
 	{
-		return Optional.empty(); // TODO
+		Optional<OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(propertyNode);
+
+		if (propertyRendering.isPresent()) {
+			OWLProperty property = propertyRendering.get().getOWLProperty();
+			if (this.owlObjectHandler.isOWLDataProperty(property)) {
+				OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(property.getIRI());
+				// TODO Get datatype
+
+			} else
+				throw new RendererException(
+						"property " + property.getIRI() + " in object some values from restriction is not an object property");
+		} else
+			return Optional.empty();
 	}
 
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,

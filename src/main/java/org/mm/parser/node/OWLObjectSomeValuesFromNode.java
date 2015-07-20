@@ -25,12 +25,12 @@ public class OWLObjectSomeValuesFromNode implements MMNode
         getNodeName() + " node expecting OWLCLass or OWLClassExpression child, got " + child.toString());
   }
 
-  public boolean hasOWLClassExpression()
+  public boolean hasOWLClassExpressionNode()
   {
     return classExpressionNode != null;
   }
 
-  public boolean hasOWLClass()
+  public boolean hasOWLClassNode()
   {
     return classNode != null;
   }
@@ -54,9 +54,9 @@ public class OWLObjectSomeValuesFromNode implements MMNode
   {
     String representation = "SOME ";
 
-    if (hasOWLClassExpression())
+    if (hasOWLClassExpressionNode())
       representation += classExpressionNode.toString();
-    else if (hasOWLClass())
+    else if (hasOWLClassNode())
       representation += classNode.toString();
 
     return representation;

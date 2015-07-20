@@ -75,7 +75,7 @@ public class OWLAPIRendererTest
 
 	private static void Usage()
 	{
-		System.err.println("Usage: OWLAPIRendererTest <Expression>");
+		System.err.println("Usage: " + OWLAPIRendererTest.class.getName() + " <Expression>");
 		System.exit(-1);
 	}
 }

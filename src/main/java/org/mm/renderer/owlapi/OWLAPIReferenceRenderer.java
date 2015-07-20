@@ -354,12 +354,6 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 		return Optional.empty(); // TODO Deal with reference and literal
 	}
 
-	private Optional<? extends Rendering> renderValueSpecificationItem(
-			ValueSpecificationItemNode valueSpecificationItemNode) throws RendererException
-	{
-		return Optional.empty(); // TODO
-	}
-
 	// TODO Tentative. Need a more principled way of finding and invoking functions. What about calls to Excel?
 
 	private String processValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode, String value)
@@ -659,22 +653,6 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 			throw new RendererException("internal error: unknown type " + typeNode + " for node " + typeNode.getNodeName());
 	}
 
-	private Optional<? extends Rendering> renderTypes(TypesNode typesNode) throws RendererException
-	{
-		return Optional.empty(); // TODO
-	}
-
-	private Optional<? extends Rendering> renderValueExtractionFunction(
-			ValueExtractionFunctionNode valueExtractionFunctionNode) throws RendererException
-	{
-		return Optional.empty();
-	}
-
-	private Optional<? extends Rendering> renderValueEncoding(ValueEncodingNode valueEncodingNode)
-			throws RendererException
-	{
-		return Optional.empty(); // TODO
-	}
 
 	private String getReferenceNamespace(ReferenceNode referenceNode) throws RendererException
 	{
