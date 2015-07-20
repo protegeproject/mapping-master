@@ -388,7 +388,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 
         if (objectHasValueNode.isName()) {
           Optional<OWLNamedIndividualRendering> individualRendering = entityRenderer
-            .renderOWLNamedIndividual(null); // TODO Render name node as individual
+            .renderOWLNamedIndividual(objectHasValueNode.getNameNode()); // TODO Render name node as individual
           if (individualRendering.isPresent()) {
             OWLNamedIndividual individual = individualRendering.get().getOWLNamedIndividual();
             OWLObjectHasValue objectHasValueRestriction = this.owlDataFactory
