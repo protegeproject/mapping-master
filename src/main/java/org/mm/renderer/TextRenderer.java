@@ -18,7 +18,7 @@ import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLDataAllValuesFromNode;
 import org.mm.parser.node.OWLDataSomeValuesFromNode;
 import org.mm.parser.node.OWLDifferentFromNode;
-import org.mm.parser.node.OWLEnumeratedClassNode;
+import org.mm.parser.node.OWLObjectOneOfNode;
 import org.mm.parser.node.OWLEquivalentClassesNode;
 import org.mm.parser.node.OWLExactCardinalityNode;
 import org.mm.parser.node.OWLHasValueNode;
@@ -183,11 +183,11 @@ public class TextRenderer
   {
     StringBuffer textRendering = new StringBuffer();
 
-    if (classExpressionNode.hasOWLEnumeratedClassNode()) {
-      Optional<TextRendering> enumeratedClassRendering = renderOWLEnumeratedClass(
-        classExpressionNode.getOWLEnumeratedClassNode());
-      if (enumeratedClassRendering.isPresent())
-        textRendering.append(enumeratedClassRendering.get().getTextRendering());
+    if (classExpressionNode.hasOWLObjectOneOfNode()) {
+      Optional<TextRendering> objectOneOfRendering = renderOWLObjectOneOf(
+        classExpressionNode.getOWLObjectOneOfNode());
+      if (objectOneOfRendering.isPresent())
+        textRendering.append(objectOneOfRendering.get().getTextRendering());
     } else if (classExpressionNode.hasOWLUnionClassNode()) {
       Optional<TextRendering> unionClassRendering = renderOWLUnionClass(classExpressionNode.getOWLUnionClassNode());
       if (unionClassRendering.isPresent())
@@ -840,14 +840,14 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  @Override public Optional<TextRendering> renderOWLEnumeratedClass(OWLEnumeratedClassNode enumeratedClassNode)
+  @Override public Optional<TextRendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
     throws RendererException
   {
     StringBuffer textRendering = new StringBuffer();
 
-    if (enumeratedClassNode.getOWLNamedIndividualNodes().size() == 1) {
+    if (objectOneOfNode.getOWLNamedIndividualNodes().size() == 1) {
       Optional<TextRendering> individualRendering = renderOWLNamedIndividual(
-        enumeratedClassNode.getOWLNamedIndividualNodes().get(0));
+        objectOneOfNode.getOWLNamedIndividualNodes().get(0));
 
       if (!individualRendering.isPresent())
         return Optional.empty();
@@ -857,7 +857,7 @@ public class TextRenderer
       boolean isFirst = true;
 
       textRendering.append("{");
-      for (OWLNamedIndividualNode owlNamedIndividualNode : enumeratedClassNode.getOWLNamedIndividualNodes()) {
+      for (OWLNamedIndividualNode owlNamedIndividualNode : objectOneOfNode.getOWLNamedIndividualNodes()) {
         if (!isFirst)
           textRendering.append(" ");
         Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);

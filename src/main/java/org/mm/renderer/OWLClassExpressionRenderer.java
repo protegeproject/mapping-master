@@ -11,6 +11,7 @@ import org.mm.parser.node.OWLIntersectionClassNode;
 import org.mm.parser.node.OWLMaxCardinalityNode;
 import org.mm.parser.node.OWLMinCardinalityNode;
 import org.mm.parser.node.OWLObjectAllValuesFromNode;
+import org.mm.parser.node.OWLObjectOneOfNode;
 import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLRestrictionNode;
@@ -26,6 +27,9 @@ public interface OWLClassExpressionRenderer
   Optional<? extends Rendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode) throws RendererException;
 
   Optional<? extends Rendering> renderOWLIntersectionClass(OWLIntersectionClassNode intersectionClassNode)
+    throws RendererException;
+
+  Optional<? extends Rendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,

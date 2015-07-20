@@ -718,13 +718,13 @@ void owl_class_expression() #OWLClassExpression :
   ( <NOT> { isNegated = true; } )? (  LOOKAHEAD(owl_restriction()) owl_restriction() 
                                     | owl_class(defaultClassValueEncoding) 
                                     | "(" owl_union_class() ")"
-                                    | owl_enumerated_class() 
+                                    | owl_object_one_of() 
                                    )
 
   { jjtThis.isNegated = isNegated; }
 }
 
-void owl_enumerated_class() #OWLEnumeratedClass : {}
+void owl_object_one_of() #OWLObjectOneOf : {}
 {
   "{" ( owl_named_individual(defaultIndividualValueEncoding) )+ "}"
 }

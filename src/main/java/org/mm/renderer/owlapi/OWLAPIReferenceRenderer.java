@@ -7,7 +7,6 @@ import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.parser.node.TypeNode;
-import org.mm.parser.node.TypesNode;
 import org.mm.parser.node.ValueEncodingNode;
 import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
@@ -86,7 +85,6 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 		this.dataSource = dataSource;
 	}
 
-	// TODO Too long. Clean up.
 	@Override public Optional<OWLAPIReferenceRendering> renderReference(ReferenceNode referenceNode)
 			throws RendererException
 	{
@@ -108,11 +106,10 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 			throw new RendererException("untyped reference " + referenceNode);
 
 		if (referenceType.isOWLLiteral()) { // OWL literal
-			String processedLiteralValue = processOWLLiteral(location, locationValue, referenceType, referenceNode,
+      OWLLiteral literal = processOWLLiteral(location, locationValue, referenceType, referenceNode,
 					referenceRendering);
-			OWLLiteral literal = this.owlDataFactory.getOWLLiteral(processedLiteralValue); // TODO Literal type
 
-			if (processedLiteralValue.equals("")
+			if (literal.getLiteral().length() == 0
 					&& referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE) {
 				return Optional.empty();
 			}
@@ -517,38 +514,38 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 		return locationValue;
 	}
 
-	private String processOWLLiteral(SpreadsheetLocation location, String locationValue, ReferenceType referenceType,
+	private OWLLiteral processOWLLiteral(SpreadsheetLocation location, String locationValue, ReferenceType referenceType,
 			ReferenceNode referenceNode, Rendering rendering) throws RendererException
 	{
-		String processedLocationValue = locationValue.replace("\"", "\\\"");
-		String dataValue;
+		String rawLocationValue = locationValue.replace("\"", "\\\"");
+		String processedLocationValue;
 
 		if (referenceNode.hasLiteralValueEncoding()) {
 			if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding())
-				dataValue = processValueEncoding(processedLocationValue, referenceNode.getLiteralValueEncodingNode(),
+				processedLocationValue = processValueEncoding(rawLocationValue, referenceNode.getLiteralValueEncodingNode(),
 						referenceNode);
 			else if (referenceNode.hasValueExtractionFunction())
-				dataValue = processValueExtractionFunction(referenceNode.getValueExtractionFunctionNode(),
-						processedLocationValue);
+				processedLocationValue = processValueExtractionFunction(referenceNode.getValueExtractionFunctionNode(),
+						rawLocationValue);
 			else
-				dataValue = processedLocationValue;
+				processedLocationValue = rawLocationValue;
 		} else
-			dataValue = "";
+			processedLocationValue = "";
 
-		if (dataValue.equals("") && !referenceNode.getActualDefaultDataValue().equals(""))
-			dataValue = referenceNode.getActualDefaultDataValue();
+		if (processedLocationValue.equals("") && !referenceNode.getActualDefaultDataValue().equals(""))
+			processedLocationValue = referenceNode.getActualDefaultDataValue();
 
-		if (dataValue.equals("") && referenceNode.getActualEmptyDataValueDirective() == MM_ERROR_IF_EMPTY_DATA_VALUE)
+		if (processedLocationValue.equals("") && referenceNode.getActualEmptyDataValueDirective() == MM_ERROR_IF_EMPTY_DATA_VALUE)
 			throw new RendererException("empty data value in reference " + referenceNode + " at location " + location);
 
-		if (dataValue.equals("") && referenceNode.getActualEmptyDataValueDirective() == MM_WARNING_IF_EMPTY_DATA_VALUE)
+		if (processedLocationValue.equals("") && referenceNode.getActualEmptyDataValueDirective() == MM_WARNING_IF_EMPTY_DATA_VALUE)
 			rendering.logLine(
 					"processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
 
 		if (referenceType.isQuotedOWLDataValue())
-			dataValue = "\"" + dataValue + "\"";
+			processedLocationValue = "\"" + processedLocationValue + "\"";
 
-		return dataValue;
+		return this.owlDataFactory.getOWLLiteral(processedLocationValue); // TODO OWL Literal type
 	}
 
 	private void displayLanguage(String language, Rendering rendering)

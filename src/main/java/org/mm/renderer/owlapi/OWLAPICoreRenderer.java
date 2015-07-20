@@ -10,7 +10,7 @@ import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassNode;
-import org.mm.parser.node.OWLEnumeratedClassNode;
+import org.mm.parser.node.OWLObjectOneOfNode;
 import org.mm.parser.node.OWLEquivalentClassesNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
@@ -279,12 +279,6 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
   @Override public Optional<OWLPropertyAssertionObjectRendering> renderOWLPropertyAssertionObject(
     OWLPropertyAssertionObjectNode propertyAssertionObject) throws RendererException
-  {
-    return Optional.empty(); // TODO
-  }
-
-  @Override public Optional<? extends Rendering> renderOWLEnumeratedClass(OWLEnumeratedClassNode enumeratedClassNode)
-    throws RendererException
   {
     return Optional.empty(); // TODO
   }

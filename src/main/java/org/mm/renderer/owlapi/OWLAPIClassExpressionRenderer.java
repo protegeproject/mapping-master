@@ -11,7 +11,9 @@ import org.mm.parser.node.OWLHasValueNode;
 import org.mm.parser.node.OWLIntersectionClassNode;
 import org.mm.parser.node.OWLMaxCardinalityNode;
 import org.mm.parser.node.OWLMinCardinalityNode;
+import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLObjectAllValuesFromNode;
+import org.mm.parser.node.OWLObjectOneOfNode;
 import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLRestrictionNode;
@@ -40,6 +42,7 @@ import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
 import org.semanticweb.owlapi.model.OWLObjectHasValue;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
+import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
@@ -114,6 +117,28 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
       OWLObjectUnionOf restriction = this.owlDataFactory.getOWLObjectUnionOf(classExpressions);
 
       return Optional.of(new OWLClassExpressionRendering(restriction));
+    } else
+      return Optional.empty();
+  }
+
+  @Override public Optional<OWLClassExpressionRendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
+    throws RendererException
+  {
+    Set<OWLNamedIndividual> namedIndividuals = new HashSet<>();
+
+    for (OWLNamedIndividualNode namedIndividualNode : objectOneOfNode.getOWLNamedIndividualNodes()) {
+      Optional<OWLNamedIndividualRendering> namedIndividualRendering = entityRenderer
+        .renderOWLNamedIndividual(namedIndividualNode);
+      if (namedIndividualRendering.isPresent()) {
+        OWLNamedIndividual namedIndividual = namedIndividualRendering.get().getOWLNamedIndividual();
+        namedIndividuals.add(namedIndividual);
+      }
+    }
+
+    if (!namedIndividuals.isEmpty()) {
+      OWLObjectOneOf objectOneOf = this.owlDataFactory.getOWLObjectOneOf(namedIndividuals);
+      OWLClassExpressionRendering classExpressionRendering = new OWLClassExpressionRendering(objectOneOf);
+      return Optional.of(classExpressionRendering);
     } else
       return Optional.empty();
   }
@@ -410,8 +435,12 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
           Optional<OWLAPIReferenceRendering> referenceRendering = referenceRenderer
             .renderReference(hasValueNode.getReferenceNode());
           if (referenceRendering.isPresent()) {
-            // TODO Render reference as literal
-            return Optional.empty();
+            if (referenceRendering.get().isOWLLiteral()) {
+              OWLLiteral literal = referenceRendering.get().getOWLLiteral().get();
+              OWLDataHasValue dataHasValue = this.owlDataFactory.getOWLDataHasValue(dataProperty, literal);
+              return Optional.of(new OWLRestrictionRendering(dataHasValue));
+            } else
+              throw new RendererException("expecting literal reference for data has value restriction " + hasValueNode);
           } else
             return Optional.empty();
         } else

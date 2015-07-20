@@ -1,20 +1,20 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTOWLNamedIndividual;
+import org.mm.parser.ASTOWLObjectOneOf;
 import org.mm.parser.InternalParseException;
+import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
-import org.mm.parser.ASTOWLEnumeratedClass;
-import org.mm.parser.Node;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLEnumeratedClassNode implements MMNode
+public class OWLObjectOneOfNode implements MMNode
 {
   private List<OWLNamedIndividualNode> namedIndividualNodes;
 
-  public OWLEnumeratedClassNode(ASTOWLEnumeratedClass node) throws ParseException
+  public OWLObjectOneOfNode(ASTOWLObjectOneOf node) throws ParseException
   {
     this.namedIndividualNodes = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class OWLEnumeratedClassNode implements MMNode
         this.namedIndividualNodes.add(namedIndividualNode);
       } else
         throw new InternalParseException(getNodeName() +
-          " node expecting OWLNamedIndividualNode child, got " + child.toString());
+          " node expecting OWLNamedIndividual child node, got " + child.toString());
     }
   }
 
@@ -37,7 +37,7 @@ public class OWLEnumeratedClassNode implements MMNode
 
   @Override public String getNodeName()
   {
-    return "OWLEnumeratedClass";
+    return "OWLObjectOneOf";
   }
 
   public String toString()

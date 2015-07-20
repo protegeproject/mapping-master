@@ -2,7 +2,7 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTOWLClassExpression;
-import org.mm.parser.ASTOWLEnumeratedClass;
+import org.mm.parser.ASTOWLObjectOneOf;
 import org.mm.parser.ASTOWLClass;
 import org.mm.parser.ASTOWLRestriction;
 import org.mm.parser.ASTOWLUnionClass;
@@ -14,7 +14,7 @@ import org.mm.parser.ParserUtil;
 public class OWLClassExpressionNode implements MMNode
 {
 	private OWLClassNode classNode;
-	private OWLEnumeratedClassNode enumeratedClassNode;
+	private OWLObjectOneOfNode objectOneOfNode;
 	private OWLUnionClassNode unionClassNode;
 	private OWLRestrictionNode restrictionNode;
 	private boolean isNegated;
@@ -26,8 +26,8 @@ public class OWLClassExpressionNode implements MMNode
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
 
-			if (ParserUtil.hasName(child, "OWLEnumeratedClass"))
-				this.enumeratedClassNode = new OWLEnumeratedClassNode((ASTOWLEnumeratedClass)child);
+			if (ParserUtil.hasName(child, "OWLObjectOneOf"))
+				this.objectOneOfNode = new OWLObjectOneOfNode((ASTOWLObjectOneOf)child);
 			else if (ParserUtil.hasName(child, "OWLUnionClass"))
 				this.unionClassNode = new OWLUnionClassNode((ASTOWLUnionClass)child);
 			else if (ParserUtil.hasName(child, "OWLRestriction"))
@@ -44,9 +44,9 @@ public class OWLClassExpressionNode implements MMNode
 		return "OWLClassExpression";
 	}
 
-	public OWLEnumeratedClassNode getOWLEnumeratedClassNode()
+	public OWLObjectOneOfNode getOWLObjectOneOfNode()
 	{
-		return this.enumeratedClassNode;
+		return this.objectOneOfNode;
 	}
 
 	public OWLUnionClassNode getOWLUnionClassNode()
@@ -69,9 +69,9 @@ public class OWLClassExpressionNode implements MMNode
 		return isNegated;
 	}
 
-	public boolean hasOWLEnumeratedClassNode()
+	public boolean hasOWLObjectOneOfNode()
 	{
-		return enumeratedClassNode != null;
+		return objectOneOfNode != null;
 	}
 
 	public boolean hasOWLUnionClassNode()
@@ -96,8 +96,8 @@ public class OWLClassExpressionNode implements MMNode
 		if (isNegated)
 			representation += "NOT ";
 
-		if (enumeratedClassNode != null)
-			representation += enumeratedClassNode.toString();
+		if (objectOneOfNode != null)
+			representation += objectOneOfNode.toString();
 		else if (unionClassNode != null)
 			representation += unionClassNode.toString();
 		else if (restrictionNode != null)

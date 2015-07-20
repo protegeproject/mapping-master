@@ -8,7 +8,6 @@ import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassNode;
-import org.mm.parser.node.OWLEnumeratedClassNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLSameAsNode;
@@ -46,9 +45,6 @@ public interface CoreRenderer
 
   Optional<? extends Rendering> renderOWLPropertyAssertionObject(
     OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException;
-
-  Optional<? extends Rendering> renderOWLEnumeratedClass(OWLEnumeratedClassNode enumeratedClassNode)
-    throws RendererException;
 
   Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
     throws RendererException;
