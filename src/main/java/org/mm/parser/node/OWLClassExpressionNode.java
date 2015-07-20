@@ -21,19 +21,19 @@ public class OWLClassExpressionNode implements MMNode
 
 	public OWLClassExpressionNode(ASTOWLClassExpression node) throws ParseException
 	{
-		isNegated = node.isNegated;
+		this.isNegated = node.isNegated;
 
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
 
 			if (ParserUtil.hasName(child, "OWLEnumeratedClass"))
-				enumeratedClassNode = new OWLEnumeratedClassNode((ASTOWLEnumeratedClass)child);
+				this.enumeratedClassNode = new OWLEnumeratedClassNode((ASTOWLEnumeratedClass)child);
 			else if (ParserUtil.hasName(child, "OWLUnionClass"))
-				unionClassNode = new OWLUnionClassNode((ASTOWLUnionClass)child);
+				this.unionClassNode = new OWLUnionClassNode((ASTOWLUnionClass)child);
 			else if (ParserUtil.hasName(child, "OWLRestriction"))
-				restrictionNode = new OWLRestrictionNode((ASTOWLRestriction)child);
+				this.restrictionNode = new OWLRestrictionNode((ASTOWLRestriction)child);
 			else if (ParserUtil.hasName(child, "OWLClass"))
-				classNode = new OWLClassNode((ASTOWLClass)child);
+				this.classNode = new OWLClassNode((ASTOWLClass)child);
 			else
 				throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
 		}
@@ -46,12 +46,12 @@ public class OWLClassExpressionNode implements MMNode
 
 	public OWLEnumeratedClassNode getOWLEnumeratedClassNode()
 	{
-		return enumeratedClassNode;
+		return this.enumeratedClassNode;
 	}
 
 	public OWLUnionClassNode getOWLUnionClassNode()
 	{
-		return unionClassNode;
+		return this.unionClassNode;
 	}
 
 	public OWLRestrictionNode getOWLRestrictionNode()

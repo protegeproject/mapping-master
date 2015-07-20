@@ -18,6 +18,19 @@ public class OWLAPIRendering implements Rendering
     this.axioms = new HashSet<>();
   }
 
+  public OWLAPIRendering(Set<OWLAxiom> axioms)
+  {
+    this.loggingText = new StringBuffer();
+    this.axioms = new HashSet<>(axioms);
+  }
+
+  public OWLAPIRendering(OWLAxiom axiom)
+  {
+    this.loggingText = new StringBuffer();
+    this.axioms = new HashSet<>();
+    this.axioms.add(axiom);
+  }
+
   public void addOWLAxiom(OWLAxiom axiom) { this.axioms.add(axiom); }
 
   public void addOWLAxioms(Set<OWLAxiom> axioms)

@@ -8,22 +8,23 @@ import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class OWLUnionClassNode implements MMNode
 {
-  private List<OWLIntersectionClassNode> intersectionClassNodes;
+  private final List<OWLIntersectionClassNode> intersectionClassNodes;
 
   public OWLUnionClassNode(ASTOWLUnionClass node) throws ParseException
   {
-    intersectionClassNodes = new ArrayList<>();
+    this.intersectionClassNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLIntersectionClass")) {
         OWLIntersectionClassNode owlIntersectionClass = new OWLIntersectionClassNode((ASTOWLIntersectionClass)child);
-        intersectionClassNodes.add(owlIntersectionClass);
+        this.intersectionClassNodes.add(owlIntersectionClass);
       } else
         throw new InternalParseException(
           getNodeName() + "node expecting OWLIntersectionClass child, got " + child.toString());
@@ -32,7 +33,7 @@ public class OWLUnionClassNode implements MMNode
 
   public List<OWLIntersectionClassNode> getOWLIntersectionClassNodes()
   {
-    return intersectionClassNodes;
+    return Collections.unmodifiableList(intersectionClassNodes);
   }
 
   @Override public String getNodeName()
@@ -44,16 +45,16 @@ public class OWLUnionClassNode implements MMNode
   {
     String representation = "";
 
-    if (intersectionClassNodes.size() == 1)
-      representation = intersectionClassNodes.get(0).toString();
+    if (this.intersectionClassNodes.size() == 1)
+      representation = this.intersectionClassNodes.get(0).toString();
     else {
       boolean isFirst = true;
 
       representation += "(";
-      for (OWLIntersectionClassNode owlIntersectionClass : intersectionClassNodes) {
+      for (OWLIntersectionClassNode intersectionClass : this.intersectionClassNodes) {
         if (!isFirst)
           representation += " OR ";
-        representation += owlIntersectionClass.toString();
+        representation += intersectionClass.toString();
         isFirst = false;
       }
       representation += ")";

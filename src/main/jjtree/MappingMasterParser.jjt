@@ -1,4 +1,4 @@
- 
+
 options {
   LOOKAHEAD = 1;
   IGNORE_CASE = true;
@@ -532,7 +532,7 @@ void mm_default_property_type() #MMDefaultPropertyType:
 void owl_class_declaration() #OWLClassDeclaration : {}
 {
   <CLASS> owl_class(defaultClassValueEncoding)
-    (  owl_class_equivalent_to() 
+    (  owl_equivalent_classes() 
      | owl_subclass_of()
     ) *
    ( <ANNOTATIONS> annotation_fact_list() )?
@@ -540,7 +540,7 @@ void owl_class_declaration() #OWLClassDeclaration : {}
   // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
 
-void owl_class_equivalent_to() #OWLClassEquivalentTo : {}
+void owl_equivalent_classes() #OWLEquivalentClasses : {}
 {
    <EQUIVALENT_TO> owl_class_expression() ( "," owl_class_expression() )*
 } 
@@ -717,7 +717,8 @@ void owl_class_expression() #OWLClassExpression :
 {
   ( <NOT> { isNegated = true; } )? (  LOOKAHEAD(owl_restriction()) owl_restriction() 
                                     | owl_class(defaultClassValueEncoding) 
-                                    | "(" owl_union_class() ")" 
+                                    | "(" owl_union_class() ")"
+                                    | owl_enumerated_class() 
                                    )
 
   { jjtThis.isNegated = isNegated; }

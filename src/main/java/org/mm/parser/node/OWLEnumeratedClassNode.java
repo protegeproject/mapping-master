@@ -16,17 +16,17 @@ public class OWLEnumeratedClassNode implements MMNode
 
   public OWLEnumeratedClassNode(ASTOWLEnumeratedClass node) throws ParseException
   {
-    namedIndividualNodes = new ArrayList<>();
+    this.namedIndividualNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLNamedIndividual")) {
-        OWLNamedIndividualNode owlIndividual = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
-        namedIndividualNodes.add(owlIndividual);
+        OWLNamedIndividualNode namedIndividualNode = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
+        this.namedIndividualNodes.add(namedIndividualNode);
       } else
         throw new InternalParseException(getNodeName() +
-          " node expecting OWLNamedIndividual child, got " + child.toString());
+          " node expecting OWLNamedIndividualNode child, got " + child.toString());
     }
   }
 

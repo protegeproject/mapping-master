@@ -1,7 +1,7 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLClassEquivalentTo;
 import org.mm.parser.ASTOWLClassExpression;
+import org.mm.parser.ASTOWLEquivalentClasses;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
@@ -10,11 +10,11 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLClassEquivalentToNode implements MMNode
+public class OWLEquivalentClassesNode implements MMNode
 {
   private List<OWLClassExpressionNode> classExpressionNodes;
 
-  public OWLClassEquivalentToNode(ASTOWLClassEquivalentTo node) throws ParseException
+  public OWLEquivalentClassesNode(ASTOWLEquivalentClasses node) throws ParseException
   {
     classExpressionNodes = new ArrayList<>();
 
