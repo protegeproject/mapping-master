@@ -112,7 +112,13 @@ class OWLAPIObjectHandler
     return ontology.containsDataPropertyInSignature(property.getIRI());
   }
 
-  public boolean isOWLDataProperty(IRI iri)
+	public String getNamespaceForPrefix(String prefix)
+	{
+		return null; // TODO
+	}
+
+
+	public boolean isOWLDataProperty(IRI iri)
   {
     return ontology.containsDataPropertyInSignature(iri);
   }

@@ -63,15 +63,17 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 	private final OWLDataFactory owlDataFactory;
 	private final OWLAPIObjectHandler owlObjectHandler;
 	private final OWLAPIEntityRenderer entityRenderer;
+	private final OWLAPILiteralRenderer literalRenderer;
 	private SpreadSheetDataSource dataSource;
 
 	public OWLAPIReferenceRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource,
-			OWLAPIEntityRenderer entityRenderer)
+			OWLAPIEntityRenderer entityRenderer, OWLAPILiteralRenderer literalRenderer)
 	{
 		this.ontology = ontology;
 		this.owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
 		this.owlObjectHandler = new OWLAPIObjectHandler(ontology);
 		this.entityRenderer = entityRenderer;
+		this.literalRenderer = literalRenderer;
 		this.dataSource = dataSource;
 	}
 
@@ -106,8 +108,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 			throw new RendererException("untyped reference " + referenceNode);
 
 		if (referenceType.isOWLLiteral()) { // OWL literal
-      OWLLiteral literal = processOWLLiteral(location, locationValue, referenceType, referenceNode,
-					referenceRendering);
+			OWLLiteral literal = processOWLLiteral(location, locationValue, referenceType, referenceNode, referenceRendering);
 
 			if (literal.getLiteral().length() == 0
 					&& referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE) {
@@ -348,10 +349,26 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 	private Optional<OWLLiteralRendering> renderValueExtractionFunctionArgument(
 			ValueExtractionFunctionArgumentNode valueExtractionFunctionArgumentNode) throws RendererException
 	{
-		return Optional.empty(); // TODO Deal with reference and literal
+
+		if (valueExtractionFunctionArgumentNode.isOWLLiteralNode())
+			return this.literalRenderer.renderOWLLiteral(valueExtractionFunctionArgumentNode.getOWLLiteralNode());
+		else if (valueExtractionFunctionArgumentNode.isReferenceNode()) {
+			ReferenceNode referenceNode = valueExtractionFunctionArgumentNode.getReferenceNode();
+			Optional<OWLAPIReferenceRendering> referenceRendering = renderReference(referenceNode);
+			if (referenceRendering.isPresent()) {
+				if (referenceRendering.get().isOWLLiteral()) {
+					OWLLiteral literal = referenceRendering.get().getOWLLiteral().get();
+					return Optional.of(new OWLLiteralRendering(literal));
+				} else
+					throw new RendererException("expecting literal reference for value extraction function argument, got "
+							+ valueExtractionFunctionArgumentNode);
+			} else
+				return Optional.empty();
+		} else
+			throw new RendererException("unknown child for node " + valueExtractionFunctionArgumentNode.getNodeName());
 	}
 
-	// TODO Tentative. Need a more principled way of finding and invoking functions. What about calls to Excel?
+	// Tentative. Need a more principled way of finding and invoking functions. What about calls to Excel?
 
 	private String processValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode, String value)
 			throws RendererException
@@ -535,10 +552,12 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 		if (processedLocationValue.equals("") && !referenceNode.getActualDefaultDataValue().equals(""))
 			processedLocationValue = referenceNode.getActualDefaultDataValue();
 
-		if (processedLocationValue.equals("") && referenceNode.getActualEmptyDataValueDirective() == MM_ERROR_IF_EMPTY_DATA_VALUE)
+		if (processedLocationValue.equals("")
+				&& referenceNode.getActualEmptyDataValueDirective() == MM_ERROR_IF_EMPTY_DATA_VALUE)
 			throw new RendererException("empty data value in reference " + referenceNode + " at location " + location);
 
-		if (processedLocationValue.equals("") && referenceNode.getActualEmptyDataValueDirective() == MM_WARNING_IF_EMPTY_DATA_VALUE)
+		if (processedLocationValue.equals("")
+				&& referenceNode.getActualEmptyDataValueDirective() == MM_WARNING_IF_EMPTY_DATA_VALUE)
 			rendering.logLine(
 					"processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
 
@@ -650,13 +669,12 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 			throw new RendererException("internal error: unknown type " + typeNode + " for node " + typeNode.getNodeName());
 	}
 
-
 	private String getReferenceNamespace(ReferenceNode referenceNode) throws RendererException
 	{
 		// A reference will not have both a prefix and a namespace specified
 		if (referenceNode.hasExplicitlySpecifiedPrefix()) {
 			String prefix = referenceNode.getPrefixNode().getPrefix();
-			String namespace = getNamespaceForPrefix(prefix);
+			String namespace = this.owlObjectHandler.getNamespaceForPrefix(prefix);
 			if (namespace == null)
 				throw new RendererException("unknown prefix " + prefix + " specified in reference " + referenceNode);
 			return namespace;
@@ -687,11 +705,6 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 	private String getDefaultLanguage()
 	{
 		return this.defaultLanguage;
-	}
-
-	private String getNamespaceForPrefix(String prefix)
-	{
-		return null; // TODO
 	}
 
 	private boolean hasDefaultNamespace()
