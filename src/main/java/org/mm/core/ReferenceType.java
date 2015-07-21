@@ -64,7 +64,7 @@ public class ReferenceType implements MappingMasterParserConstants
 
   public boolean isOWLLiteral()
   {
-    return isXSDString() || isXSDShort() || isXSDFloat() || isXSDInteger() || isXSDLong() || isXSDFloat()
+    return isXSDString() || isXSDShort() || isXSDFloat() || isXSDInt() || isXSDLong() || isXSDFloat()
       || isXSDDouble() || isXSDBoolean() || isXSDTime() || isXSDDate() || isXSDDateTime() | isXSDDuration();
   }
 
@@ -73,12 +73,17 @@ public class ReferenceType implements MappingMasterParserConstants
     return type == XSD_STRING;
   }
 
+  public boolean isXSDByte()
+  {
+    return type == XSD_BYTE;
+  }
+
   public boolean isXSDShort()
   {
     return type == XSD_SHORT;
   }
 
-  public boolean isXSDInteger()
+  public boolean isXSDInt()
   {
     return type == XSD_INT;
   }

@@ -10,30 +10,30 @@ import org.mm.parser.ParserUtil;
 
 public class FactNode implements MMNode
 {
-  private OWLPropertyNode owlPropertyNode;
-  private OWLPropertyAssertionObjectNode owlPropertyAssertionObjectNode;
+  private OWLPropertyNode propertyNode;
+  private OWLPropertyAssertionObjectNode propertyAssertionObjectNode;
 
   public FactNode(ASTFact node) throws ParseException
   {
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
       if (ParserUtil.hasName(child, "OWLProperty"))
-        owlPropertyNode = new OWLPropertyNode((ASTOWLProperty)child);
+        propertyNode = new OWLPropertyNode((ASTOWLProperty)child);
       else if (ParserUtil.hasName(child, "OWLPropertyAssertionObject"))
-        owlPropertyAssertionObjectNode = new OWLPropertyAssertionObjectNode((ASTOWLPropertyAssertionObject)child);
+        propertyAssertionObjectNode = new OWLPropertyAssertionObjectNode((ASTOWLPropertyAssertionObject)child);
       else
-        throw new InternalParseException("unexpect child node " + child.toString() + " for Fact");
+        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
     }
   }
 
   public OWLPropertyNode getOWLPropertyNode()
   {
-    return owlPropertyNode;
+    return propertyNode;
   }
 
   public OWLPropertyAssertionObjectNode getOWLPropertyAssertionObjectNode()
   {
-    return owlPropertyAssertionObjectNode;
+    return propertyAssertionObjectNode;
   }
 
   @Override public String getNodeName()
@@ -43,6 +43,6 @@ public class FactNode implements MMNode
 
   public String toString()
   {
-    return owlPropertyNode.toString() + " " + owlPropertyAssertionObjectNode.toString();
+    return propertyNode.toString() + " " + propertyAssertionObjectNode.toString();
   }
 }

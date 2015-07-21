@@ -5,12 +5,10 @@ import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.MMExpressionNode;
-import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassNode;
-import org.mm.parser.node.OWLObjectOneOfNode;
 import org.mm.parser.node.OWLEquivalentClassesNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
@@ -273,14 +271,41 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
   @Override public Optional<OWLAPIRendering> renderOWLSubclassOf(OWLClassNode declaredClassNode,
     OWLSubclassOfNode subclassOfNode) throws RendererException
   {
-    return Optional.empty(); // TODO
+    Optional<OWLClassRendering> declaredClassRendering = this.entityRenderer.renderOWLClass(declaredClassNode);
+
+    if (declaredClassRendering.isPresent()) {
+      OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
+      Set<OWLAxiom> axioms = new HashSet<>();
+      for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
+        Optional<OWLClassExpressionRendering> subClassRendering = this.classExpressionRenderer
+          .renderOWLClassExpression(classExpressionNode);
+        if (subClassRendering.isPresent()) {
+          OWLClassExpression subClass = subClassRendering.get().getOWLClassExpression();
+          OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(declaredClass, subClass);
+          axioms.add(axiom);
+        }
+      }
+      if (!axioms.isEmpty())
+        return Optional.of(new OWLAPIRendering(axioms));
+      else
+        return Optional.empty();
+    } else
+      return Optional.empty();
   }
 
-
   @Override public Optional<OWLPropertyAssertionObjectRendering> renderOWLPropertyAssertionObject(
-    OWLPropertyAssertionObjectNode propertyAssertionObject) throws RendererException
+    OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException
   {
-    return Optional.empty(); // TODO
+    if (propertyAssertionObjectNode.isName()) {
+      String name = propertyAssertionObjectNode.getNameNode().getName();
+      // TODO
+      return Optional.empty();
+    } else if (propertyAssertionObjectNode.isLiteral()) {
+      return Optional.empty(); // TODO
+    } else if (propertyAssertionObjectNode.isReference()) {
+      return Optional.empty(); // TODO
+    } else
+      throw new RendererException("unknown child node for node " + propertyAssertionObjectNode.getNodeName());
   }
 
   @Override public Optional<OWLAnnotationValueRendering> renderOWLAnnotationValue(
@@ -296,16 +321,11 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
   @Override public Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException
   {
-    return Optional.empty();
+    return Optional.empty(); // TODO
   }
 
   @Override public Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
     throws RendererException
-  {
-    return Optional.empty(); // TODO
-  }
-
-  @Override public Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException
   {
     return Optional.empty(); // TODO
   }

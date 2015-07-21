@@ -4,7 +4,6 @@ import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.MMExpressionNode;
-import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassNode;
@@ -52,6 +51,4 @@ public interface CoreRenderer
   Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException;
 
   Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode) throws RendererException;
-
-  Optional<? extends Rendering> renderName(NameNode nameNode) throws RendererException;
 }

@@ -56,7 +56,7 @@ public class OWLLiteralNode implements  MMNode
     return booleanLiteralNode != null;
   }
 
-  public IntegerLiteralNode getIntegerLiteralNode()
+  public IntegerLiteralNode getIntLiteralNode()
   {
     return integerLiteralNode;
   }
