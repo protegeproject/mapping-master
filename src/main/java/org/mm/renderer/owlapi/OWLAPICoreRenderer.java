@@ -135,26 +135,27 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
   {
     OWLAPIRendering rendering = new OWLAPIRendering();
 
-    rendering.logLine("=====================OWLClassDeclaration================================");
-    rendering.logLine("MappingMaster DSL expression: " + classDeclarationNode);
-    if (dataSource.hasCurrentLocation())
-      rendering.logLine("********************Current location: " + dataSource.getCurrentLocation() + "*************");
+    // logLine("=====================OWLClassDeclaration================================");
+    // logLine("MappingMaster DSL expression: " + classDeclarationNode);
+    if (dataSource.hasCurrentLocation()) {
+      //logLine("********************Current location: " + dataSource.getCurrentLocation() + "*************");
+    }
 
     Optional<OWLClassRendering> declaredClassRendering = entityRenderer
       .renderOWLClass(classDeclarationNode.getOWLClassNode());
 
     if (!declaredClassRendering.isPresent()) {
-      rendering.logLine("processReference: skipping OWL class declaration because of missing class");
+      //rendering.logLine("processReference: skipping OWL class declaration because of missing class");
     } else {
       if (classDeclarationNode.hasOWLSubclassOfNodes()) {
         for (OWLSubclassOfNode subclassOfNode : classDeclarationNode.getOWLSubclassOfNodes()) {
           for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
             Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer
               .renderOWLClassExpression(classExpressionNode);
-            if (!classExpressionRendering.isPresent())
-              rendering.logLine(
-                "processReference: skipping subclass declaration [" + subclassOfNode + "] because of missing class");
-            else {
+            if (!classExpressionRendering.isPresent()) {
+              //logLine(
+              //  "processReference: skipping subclass declaration [" + subclassOfNode + "] because of missing class");
+            } else {
               OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
               OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
               OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(classExpression, declaredClass);
@@ -169,10 +170,10 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
           for (OWLClassExpressionNode classExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
             Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer
               .renderOWLClassExpression(classExpressionNode);
-            if (!classExpressionRendering.isPresent())
-              rendering.logLine("processReference: skipping equivalent declaration [" + equivalentClassesNode
-                + "] because of missing class");
-            else {
+            if (!classExpressionRendering.isPresent()) {
+              //logLine("processReference: skipping equivalent declaration [" + equivalentClassesNode
+              //  + "] because of missing class");
+            } else {
               OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
               OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
               OWLEquivalentClassesAxiom axiom = owlDataFactory
@@ -192,14 +193,14 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
             annotationValueNode);
 
           if (!propertyRendering.isPresent()) {
-            rendering.logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
-              + "] because of missing property name");
+            //logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
+            //  + "] because of missing property name");
             continue;
           }
 
           if (!annotationValueRendering.isPresent()) {
-            rendering.logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
-              + "] because of missing property value");
+            // logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
+            //  + "] because of missing property value");
             continue;
           }
 
@@ -220,31 +221,28 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
   {
     OWLAPIRendering individualDeclarationRendering = new OWLAPIRendering();
 
-    individualDeclarationRendering
-      .logLine("=====================OWLIndividualDeclaration================================");
-    individualDeclarationRendering.logLine("MappingMaster DSL expression: " + individualDeclarationNode);
-    if (dataSource.hasCurrentLocation())
-      individualDeclarationRendering
-        .logLine("********************Current location: " + dataSource.getCurrentLocation() + "*************");
+    // logLine("=====================OWLIndividualDeclaration================================");
+    // logLine("MappingMaster DSL expression: " + individualDeclarationNode);
+    if (dataSource.hasCurrentLocation()) {
+      // logLine("********************Current location: " + dataSource.getCurrentLocation() + "*************");
+    }
 
     Optional<OWLNamedIndividualRendering> declaredIndividualRendering = entityRenderer
       .renderOWLNamedIndividual(individualDeclarationNode.getOWLIndividualNode());
     if (!declaredIndividualRendering.isPresent()) {
-      individualDeclarationRendering.logLine("Skipping OWL individual declaration because of missing individual name");
+      // logLine("Skipping OWL individual declaration because of missing individual name");
     } else {
       OWLNamedIndividual declaredIndividual = declaredIndividualRendering.get().getOWLNamedIndividual();
 
       if (individualDeclarationNode.hasFacts()) { // We have a Facts: clause
         List<FactNode> factNodes = individualDeclarationNode.getFactNodes();
-        Set<OWLAxiom> axioms = processFactsClause(individualDeclarationRendering, declaredIndividualRendering,
-          factNodes);
+        Set<OWLAxiom> axioms = processFactsClause(declaredIndividualRendering, factNodes);
         individualDeclarationRendering.addOWLAxioms(axioms);
       }
 
       if (individualDeclarationNode.hasAnnotations()) { // We have an Annotations: clause
         List<AnnotationFactNode> annotationFactNodes = individualDeclarationNode.getAnnotationNodes();
-        Set<OWLAxiom> axioms = processAnnotationClause(individualDeclarationRendering, declaredIndividualRendering,
-          annotationFactNodes);
+        Set<OWLAxiom> axioms = processAnnotationClause(declaredIndividualRendering, annotationFactNodes);
         individualDeclarationRendering.addOWLAxioms(axioms);
       }
 
@@ -259,8 +257,8 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
       }
 
       if (individualDeclarationNode.hasTypes()) { // We have a Types: clause
-        Set<OWLAxiom> axioms = referenceRenderer.processTypesClause(individualDeclarationRendering, declaredIndividual,
-          individualDeclarationNode.getTypesNode().getTypeNodes());
+        Set<OWLAxiom> axioms = referenceRenderer
+          .processTypesClause(declaredIndividual, individualDeclarationNode.getTypesNode().getTypeNodes());
         individualDeclarationRendering.addOWLAxioms(axioms);
       }
       // TODO individual declaration axioms
@@ -377,9 +375,8 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
     return axioms;
   }
 
-  private Set<OWLAxiom> processAnnotationClause(Rendering individualDeclarationRendering,
-    Optional<OWLNamedIndividualRendering> declaredIndividualRendering, List<AnnotationFactNode> annotationFactNodes)
-    throws RendererException
+  private Set<OWLAxiom> processAnnotationClause(Optional<OWLNamedIndividualRendering> declaredIndividualRendering,
+    List<AnnotationFactNode> annotationFactNodes) throws RendererException
   {
     Set<OWLAxiom> axioms = new HashSet<>();
 
@@ -390,8 +387,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
           .renderOWLProperty(annotationFact.getOWLPropertyNode());
 
         if (!propertyRendering.isPresent()) {
-          individualDeclarationRendering
-            .logLine("Skipping OWL annotation clause [" + annotationFact + "] because of missing property name");
+          // logLine("Skipping OWL annotation clause [" + annotationFact + "] because of missing property name");
           continue;
         }
 
@@ -399,8 +395,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
         Optional<OWLAnnotationValueRendering> annotationValueRendering = renderOWLAnnotationValue(annotationValueNode);
 
         if (!annotationValueRendering.isPresent()) {
-          individualDeclarationRendering
-            .logLine("Skipping OWL annotation clause [" + annotationFact + "] because of missing annotation value");
+          // logLine("Skipping OWL annotation clause [" + annotationFact + "] because of missing annotation value");
           continue;
         }
 
@@ -424,8 +419,8 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
     return axioms;
   }
 
-  private Set<OWLAxiom> processFactsClause(Rendering finalRendering,
-    Optional<OWLNamedIndividualRendering> subjectIndividualRendering, List<FactNode> factNodes) throws RendererException
+  private Set<OWLAxiom> processFactsClause(Optional<OWLNamedIndividualRendering> subjectIndividualRendering,
+    List<FactNode> factNodes) throws RendererException
   {
     Set<OWLAxiom> axioms = new HashSet<>();
 
@@ -436,8 +431,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
           .renderOWLProperty(factNode.getOWLPropertyNode());
 
         if (!propertyRendering.isPresent()) {
-          finalRendering
-            .logLine("Skipping OWL fact declaration clause [" + factNode + "] because of missing property name");
+          // logLine("Skipping OWL fact declaration clause [" + factNode + "] because of missing property name");
           continue;
         }
 
@@ -446,8 +440,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
           propertyAssertionObjectNode);
 
         if (!propertyAssertionObjectRendering.isPresent()) {
-          finalRendering
-            .logLine("Skipping OWL fact declaration clause [" + factNode + "] because of missing property value");
+          // logLine("Skipping OWL fact declaration clause [" + factNode + "] because of missing property value");
           continue;
         }
 
@@ -477,8 +470,8 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
             .getOWLDataPropertyAssertionAxiom(dataProperty, subjectIndividual, literal);
           axioms.add(axiom);
         } else {
-          finalRendering.logLine(
-            "Skipping OWL fact declaration clause [" + factNode + "] because property is an annotation property");
+          // logLine(
+          //  "Skipping OWL fact declaration clause [" + factNode + "] because property is an annotation property");
           continue;
         }
       }

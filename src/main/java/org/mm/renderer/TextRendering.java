@@ -2,68 +2,43 @@ package org.mm.renderer;
 
 public class TextRendering implements Rendering
 {
-	private String rendering;
-	private StringBuffer loggingText;
+  private String rendering;
 
-	public TextRendering()
-	{
-		this.rendering = "";
-		this.loggingText = new StringBuffer();
-	}
+  public TextRendering()
+  {
+    this.rendering = "";
+  }
 
-	public TextRendering(String initialTextRendering)
-	{
-		rendering = initialTextRendering;
-	}
+  public TextRendering(String initialTextRendering)
+  {
+    rendering = initialTextRendering;
+  }
 
-	public boolean nothingRendered()
-	{
-		return rendering.equals("") || rendering.equals("\"\"");
-	} // TODO: last clause is hack
+  public boolean nothingRendered()
+  {
+    return rendering.equals("") || rendering.equals("\"\"");
+  } // TODO: last clause is hack
 
-	public void addText(String text)
-	{
-		this.rendering = rendering.concat(text);
-	}
+  public void addText(String text)
+  {
+    this.rendering = rendering.concat(text);
+  }
 
-	public String getTextRendering()
-	{
-		stripDoubleQuotesIfNecessary(); // TODO: hack
+  public String getTextRendering()
+  {
+    stripDoubleQuotesIfNecessary(); // TODO: hack
 
-		return this.rendering;
-	}
+    return this.rendering;
+  }
 
-	// TODO Use real logger
+  @Override public String toString()
+  {
+    return getTextRendering();
+  }
 
-	@Override public void log(String loggingText)
-	{
-		this.loggingText.append(loggingText);
-		System.err.print(loggingText);
-	}
-
-	@Override public void logLine(String loggingText)
-	{
-		log(loggingText + "\n");
-	}
-
-	@Override public void addLoggingTextNewLine()
-	{
-		log("\n");
-	}
-
-	@Override public String getLoggingText()
-	{
-		return loggingText.toString();
-	}
-
-	@Override public String toString()
-	{
-		return getTextRendering();
-	}
-
-	private void stripDoubleQuotesIfNecessary()
-	{
-		if (rendering.startsWith("\""))
-			rendering = rendering.substring(1, rendering.length() - 1);
-	}
+  private void stripDoubleQuotesIfNecessary()
+  {
+    if (rendering.startsWith("\""))
+      rendering = rendering.substring(1, rendering.length() - 1);
+  }
 }
