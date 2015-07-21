@@ -384,11 +384,11 @@ public class TextRenderer
   private Optional<TextRendering> renderOWLHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
     throws RendererException
   {
-    if (hasValueNode.isReference())
+    if (hasValueNode.hasReferenceNode())
       return renderReference(hasValueNode.getReferenceNode());
-    else if (hasValueNode.isName())
+    else if (hasValueNode.hasNameNone())
       return renderName(hasValueNode.getNameNode());
-    else if (hasValueNode.isLiteral())
+    else if (hasValueNode.hasLiteralNode())
       return renderOWLLiteral(hasValueNode.getOWLLiteralNode());
     else
       throw new RendererException("unknown property value node " + hasValueNode + " for object has value restriction");
@@ -397,9 +397,9 @@ public class TextRenderer
   @Override public Optional<TextRendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode,
     OWLHasValueNode hasValueNode) throws RendererException
   {
-    if (hasValueNode.isReference())
+    if (hasValueNode.hasReferenceNode())
       return renderReference(hasValueNode.getReferenceNode());
-    else if (hasValueNode.isName())
+    else if (hasValueNode.hasNameNone())
       return renderName(hasValueNode.getNameNode());
     else
       throw new RendererException("unknown property value node " + hasValueNode + " for object has value restriction");
@@ -408,9 +408,9 @@ public class TextRenderer
   @Override public Optional<TextRendering> renderOWLDataHasValue(OWLPropertyNode propertyNode,
     OWLHasValueNode hasValueNode) throws RendererException
   {
-    if (hasValueNode.isReference())
+    if (hasValueNode.hasReferenceNode())
       return renderReference(hasValueNode.getReferenceNode());
-    else if (hasValueNode.isLiteral())
+    else if (hasValueNode.hasLiteralNode())
       return renderOWLLiteral(hasValueNode.getOWLLiteralNode());
     else
       throw new RendererException("unknown property value node " + hasValueNode + " for data has value restriction");

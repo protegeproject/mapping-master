@@ -5,6 +5,7 @@ import org.mm.core.ReferenceType;
 import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDatatype;
@@ -39,17 +40,74 @@ class OWLAPIObjectHandler
     this.createdOWLEntitiesUsingLocation.clear();
   }
 
-  public OWLDatatype getOWLDatatype(String shortName)
+	public OWLClass getOWLClass(String shortName)
+	{
+		return null; // TODO
+	}
+
+	public OWLNamedIndividual getOWLNamedIndividual(String shortName)
+	{
+		return null; // TODO
+	}
+
+	public OWLObjectProperty getOWLObjectProperty(String shortName)
+	{
+		return null; // TODO
+	}
+
+	public OWLDataProperty getOWLDataProperty(String shortName)
+	{
+		return null; // TODO
+	}
+
+	public OWLAnnotationProperty getOWLAnnotationProperty(String shortName)
+	{
+		return null; // TODO
+	}
+
+	public OWLDatatype getOWLDatatype(String shortName)
   {
     return null; // TODO
   }
 
-  public boolean isOWLObjectProperty(OWLProperty property)
-  {
-    return ontology.containsObjectPropertyInSignature(property.getIRI());
-  }
+	public boolean isOWLClass(String shortName)
+	{
+		return  false; // TODO
+	}
 
-  public boolean isOWLDataProperty(OWLProperty property)
+	public boolean isOWLNamedIndividual(String shortName)
+	{
+		return  false; // TODO
+	}
+
+	public boolean isOWLObjectProperty(String shortName)
+	{
+		return  false; // TODO
+	}
+
+
+	public boolean isOWLDataProperty(String shortName)
+	{
+		return  false; // TODO
+	}
+
+
+	public boolean isOWLAnnotationProperty(String shortName)
+	{
+		return  false; // TODO
+	}
+
+	public boolean isOWLDatatype(String shortName)
+	{
+		return  false; // TODO
+	}
+
+	public boolean isOWLObjectProperty(OWLProperty property)
+	{
+		return ontology.containsObjectPropertyInSignature(property.getIRI());
+	}
+
+	public boolean isOWLDataProperty(OWLProperty property)
   {
     return ontology.containsDataPropertyInSignature(property.getIRI());
   }

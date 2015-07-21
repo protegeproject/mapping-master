@@ -53,28 +53,28 @@ public class OWLHasValueNode implements MMNode
     return literalNode;
   }
 
-  public boolean isReference()
+  public boolean hasReferenceNode()
   {
     return referenceNode != null;
   }
 
-  public boolean isName()
+  public boolean hasNameNone()
   {
     return nameNode != null;
   }
 
-  public boolean isLiteral()
+  public boolean hasLiteralNode()
   {
     return literalNode != null;
   }
 
   public String toString()
   {
-    if (isReference())
+    if (hasReferenceNode())
       return referenceNode.toString();
-    else if (isName())
-      return nameNode.toString();
-    else if (isLiteral())
+    else if (hasNameNone())
+      return nameNode.getName();
+    else if (hasLiteralNode())
       return literalNode.toString();
     else
       return "";
