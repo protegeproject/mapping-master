@@ -20,6 +20,7 @@ import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLRestrictionNode;
 import org.mm.parser.node.OWLSomeValuesFromNode;
 import org.mm.parser.node.OWLUnionClassNode;
+import org.mm.parser.node.ReferenceNode;
 import org.mm.renderer.OWLClassExpressionRenderer;
 import org.mm.renderer.RendererException;
 import org.semanticweb.owlapi.model.IRI;
@@ -399,17 +400,24 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 						throw new RendererException(
 								"value " + shortName + " supplied for object has value restriction is not an OWL named individual");
 				} else if (objectHasValueNode.hasReferenceNode()) {
-					Optional<OWLAPIReferenceRendering> referenceRendering = this.referenceRenderer
-							.renderReference(objectHasValueNode.getReferenceNode());
+					ReferenceNode referenceNode = objectHasValueNode.getReferenceNode();
+					Optional<OWLAPIReferenceRendering> referenceRendering = this.referenceRenderer.renderReference(referenceNode);
 					if (referenceRendering.isPresent()) {
-						// TODO Render reference node as individual
-						return Optional.empty();
+						if (referenceRendering.get().isOWLNamedIndividual()) {
+							OWLNamedIndividual individual = referenceRendering.get().getOWLEntity().get().asOWLNamedIndividual();
+							OWLObjectHasValue objectHasValueRestriction = this.owlDataFactory
+									.getOWLObjectHasValue(objectProperty, individual);
+							return Optional.of(new OWLRestrictionRendering(objectHasValueRestriction));
+						} else
+							throw new RendererException(
+									"reference value " + referenceNode + " for object has value is not an OWL named individual");
 					} else
 						return Optional.empty();
 				} else
 					throw new RendererException("unknown child node for node " + objectHasValueNode.getNodeName());
 			}
-			throw new RendererException("property " + property.getIRI() + " in  object has values restriction is not an object property");
+			throw new RendererException(
+					"property " + property.getIRI() + " in  object has values restriction is not an object property");
 		} else
 			return Optional.empty();
 	}
@@ -502,8 +510,10 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 			OWLProperty property = propertyRendering.get().getOWLProperty();
 			if (this.owlObjectHandler.isOWLDataProperty(property)) {
 				OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(property.getIRI());
-				// TODO Get datatype
-				return Optional.empty();
+				String datatypeName = dataSomeValuesFromNode.getDatatypeName();
+				OWLDatatype datatype = this.owlObjectHandler.getOWLDatatype(datatypeName);
+				OWLDataSomeValuesFrom dataSomeValuesFrom = this.owlDataFactory.getOWLDataSomeValuesFrom(dataProperty, datatype);
+				return Optional.of(new OWLRestrictionRendering(dataSomeValuesFrom));
 			} else
 				throw new RendererException(
 						"property " + property.getIRI() + " in object some values from restriction is not an object property");
