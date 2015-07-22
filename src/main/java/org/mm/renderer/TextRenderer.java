@@ -89,7 +89,7 @@ public class TextRenderer
     return this;
   }
 
-  public Optional<TextRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
+  public Optional<? extends TextRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
   {
     if (expressionNode.hasMMExpression())
       return renderMMExpression(expressionNode.getMMExpressionNode());
@@ -97,7 +97,7 @@ public class TextRenderer
       throw new RendererException("unknown expression node " + expressionNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderMMExpression(MMExpressionNode mmExpressionNode) throws RendererException
+  public Optional<? extends TextRendering> renderMMExpression(MMExpressionNode mmExpressionNode) throws RendererException
   {
     if (mmExpressionNode.hasOWLClassDeclaration())
       return renderOWLClassDeclaration(mmExpressionNode.getOWLClassDeclarationNode());
@@ -107,12 +107,12 @@ public class TextRenderer
       throw new RendererException("unknown Mapping Master expression node " + mmExpressionNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode individualDeclarationNode)
+  public Optional<? extends TextRendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode individualDeclarationNode)
     throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
-    Optional<TextRendering> individualRendering = renderOWLNamedIndividual(
+    Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(
       individualDeclarationNode.getOWLIndividualNode());
 
     if (!individualRendering.isPresent())
@@ -126,7 +126,7 @@ public class TextRenderer
       textRepresentation.append(" Facts: ");
 
       for (FactNode fact : individualDeclarationNode.getFactNodes()) {
-        Optional<TextRendering> factRendering = renderFact(fact);
+        Optional<? extends TextRendering> factRendering = renderFact(fact);
 
         if (!factRendering.isPresent())
           continue;
@@ -139,7 +139,7 @@ public class TextRenderer
     }
 
     if (individualDeclarationNode.hasTypes()) {
-      Optional<TextRendering> typesRendering = renderTypes(individualDeclarationNode.getTypesNode());
+      Optional<? extends TextRendering> typesRendering = renderTypes(individualDeclarationNode.getTypesNode());
 
       if (typesRendering.isPresent())
         textRepresentation.append(" Types: " + typesRendering.get().getTextRendering());
@@ -150,7 +150,7 @@ public class TextRenderer
       textRepresentation.append(" Annotations:");
 
       for (AnnotationFactNode factNode : individualDeclarationNode.getAnnotationNodes()) {
-        Optional<TextRendering> factRendering = renderAnnotationFact(factNode);
+        Optional<? extends TextRendering> factRendering = renderAnnotationFact(factNode);
 
         if (!factRendering.isPresent())
           continue;
@@ -163,13 +163,13 @@ public class TextRenderer
     }
 
     if (individualDeclarationNode.hasSameAs()) {
-      Optional<TextRendering> sameAsRendering = renderOWLSameAs(individualDeclarationNode.getOWLSameAsNode());
+      Optional<? extends TextRendering> sameAsRendering = renderOWLSameAs(individualDeclarationNode.getOWLSameAsNode());
       if (sameAsRendering.isPresent())
         textRepresentation.append(sameAsRendering.get().getTextRendering());
     }
 
     if (individualDeclarationNode.hasDifferentFrom()) {
-      Optional<TextRendering> differentFromRendering = renderDifferentFrom(
+      Optional<? extends TextRendering> differentFromRendering = renderDifferentFrom(
         individualDeclarationNode.getOWLDifferentFromNode());
       if (differentFromRendering.isPresent())
         textRepresentation.append(differentFromRendering.get().getTextRendering());
@@ -178,25 +178,25 @@ public class TextRenderer
     return Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
-  @Override public Optional<TextRendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
+  @Override public Optional<? extends TextRendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
     throws RendererException
   {
     StringBuffer textRendering = new StringBuffer();
 
     if (classExpressionNode.hasOWLObjectOneOfNode()) {
-      Optional<TextRendering> objectOneOfRendering = renderOWLObjectOneOf(classExpressionNode.getOWLObjectOneOfNode());
+      Optional<? extends TextRendering> objectOneOfRendering = renderOWLObjectOneOf(classExpressionNode.getOWLObjectOneOfNode());
       if (objectOneOfRendering.isPresent())
         textRendering.append(objectOneOfRendering.get().getTextRendering());
     } else if (classExpressionNode.hasOWLUnionClassNode()) {
-      Optional<TextRendering> unionClassRendering = renderOWLUnionClass(classExpressionNode.getOWLUnionClassNode());
+      Optional<? extends TextRendering> unionClassRendering = renderOWLUnionClass(classExpressionNode.getOWLUnionClassNode());
       if (unionClassRendering.isPresent())
         textRendering.append(unionClassRendering.get().getTextRendering());
     } else if (classExpressionNode.hasOWLRestrictionNode()) {
-      Optional<TextRendering> restrictionRendering = renderOWLRestriction(classExpressionNode.getOWLRestrictionNode());
+      Optional<? extends TextRendering> restrictionRendering = renderOWLRestriction(classExpressionNode.getOWLRestrictionNode());
       if (restrictionRendering.isPresent())
         textRendering.append(restrictionRendering.get().getTextRendering());
     } else if (classExpressionNode.hasOWLClassNode()) {
-      Optional<TextRendering> classRendering = renderOWLClass(classExpressionNode.getOWLClassNode());
+      Optional<? extends TextRendering> classRendering = renderOWLClass(classExpressionNode.getOWLClassNode());
       if (classRendering.isPresent())
         textRendering.append(classRendering.get().getTextRendering());
     } else
@@ -209,10 +209,10 @@ public class TextRenderer
     return textRendering.length() != 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
   }
 
-  @Override public Optional<TextRendering> renderFact(FactNode factNode) throws RendererException
+  @Override public Optional<? extends TextRendering> renderFact(FactNode factNode) throws RendererException
   {
-    Optional<TextRendering> propertyRendering = renderOWLProperty(factNode.getOWLPropertyNode());
-    Optional<TextRendering> propertyValueRendering = renderOWLPropertyAssertionObject(
+    Optional<? extends TextRendering> propertyRendering = renderOWLProperty(factNode.getOWLPropertyNode());
+    Optional<? extends TextRendering> propertyValueRendering = renderOWLPropertyAssertionObject(
       factNode.getOWLPropertyAssertionObjectNode());
 
     if (propertyRendering.isPresent() && propertyValueRendering.isPresent()) {
@@ -223,7 +223,7 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  @Override public Optional<TextRendering> renderOWLPropertyAssertionObject(
+  @Override public Optional<? extends TextRendering> renderOWLPropertyAssertionObject(
     OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException
   {
     if (propertyAssertionObjectNode.isReference())
@@ -236,11 +236,11 @@ public class TextRenderer
       throw new RendererException("unknown property value node " + propertyAssertionObjectNode.getNodeName());
   }
 
-  @Override public Optional<TextRendering> renderOWLIntersectionClass(OWLIntersectionClassNode intersectionClassNode)
+  @Override public Optional<? extends TextRendering> renderOWLIntersectionClass(OWLIntersectionClassNode intersectionClassNode)
     throws RendererException
   {
     if (intersectionClassNode.getOWLClassExpressionNodes().size() == 1) {
-      Optional<TextRendering> classExpressionRendering = renderOWLClassExpression(
+      Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
         intersectionClassNode.getOWLClassExpressionNodes().get(0));
 
       return classExpressionRendering;
@@ -249,7 +249,7 @@ public class TextRenderer
       boolean isFirst = true;
 
       for (OWLClassExpressionNode classExpressionNode : intersectionClassNode.getOWLClassExpressionNodes()) {
-        Optional<TextRendering> classesExpressionRendering = renderOWLClassExpression(classExpressionNode);
+        Optional<? extends TextRendering> classesExpressionRendering = renderOWLClassExpression(classExpressionNode);
 
         if (classesExpressionRendering.isPresent()) {
           if (isFirst)
@@ -266,7 +266,7 @@ public class TextRenderer
     }
   }
 
-  @Override public Optional<TextRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
+  @Override public Optional<? extends TextRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
     OWLEquivalentClassesNode equivalentClassesNode) throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
@@ -274,7 +274,7 @@ public class TextRenderer
     textRepresentation.append(" EquivalentTo: ");
 
     if (equivalentClassesNode.getClassExpressionNodes().size() == 1) {
-      Optional<TextRendering> classExpressionRendering = renderOWLClassExpression(
+      Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
         equivalentClassesNode.getClassExpressionNodes().get(0));
       if (!classExpressionRendering.isPresent())
         return classExpressionRendering;
@@ -284,7 +284,7 @@ public class TextRenderer
       boolean isFirst = true;
 
       for (OWLClassExpressionNode owlClassExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
-        Optional<TextRendering> classExpressionRendering = renderOWLClassExpression(owlClassExpressionNode);
+        Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(owlClassExpressionNode);
         if (!classExpressionRendering.isPresent())
           continue; // Any empty class expression will generate an empty rendering
         if (!isFirst)
@@ -298,11 +298,11 @@ public class TextRenderer
       Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
-  @Override public Optional<TextRendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode)
+  @Override public Optional<? extends TextRendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode)
     throws RendererException
   {
     if (unionClassNode.getOWLIntersectionClassNodes().size() == 1) {
-      Optional<TextRendering> intersectionRendering = renderOWLIntersectionClass(
+      Optional<? extends TextRendering> intersectionRendering = renderOWLIntersectionClass(
         unionClassNode.getOWLIntersectionClassNodes().get(0));
 
       return intersectionRendering;
@@ -311,7 +311,7 @@ public class TextRenderer
       boolean isFirst = true;
 
       for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClassNodes()) {
-        Optional<TextRendering> intersectionRendering = renderOWLIntersectionClass(intersectionClassNode);
+        Optional<? extends TextRendering> intersectionRendering = renderOWLIntersectionClass(intersectionClassNode);
 
         if (intersectionRendering.isPresent()) {
           if (isFirst)
@@ -331,7 +331,7 @@ public class TextRenderer
     }
   }
 
-  public Optional<TextRendering> renderOWLProperty(OWLPropertyNode propertyNode) throws RendererException
+  public Optional<? extends TextRendering> renderOWLProperty(OWLPropertyNode propertyNode) throws RendererException
   {
     if (propertyNode.hasReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
@@ -341,7 +341,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + propertyNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException
+  public Optional<? extends TextRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException
   {
     if (propertyNode.hasReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
@@ -351,10 +351,10 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + propertyNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLRestriction(OWLRestrictionNode restrictionNode) throws RendererException
+  public Optional<? extends TextRendering> renderOWLRestriction(OWLRestrictionNode restrictionNode) throws RendererException
   {
-    Optional<TextRendering> propertyRendering = renderOWLProperty(restrictionNode.getOWLPropertyNode());
-    Optional<TextRendering> restrictionRendering;
+    Optional<? extends TextRendering> propertyRendering = renderOWLProperty(restrictionNode.getOWLPropertyNode());
+    Optional<? extends TextRendering> restrictionRendering;
 
     if (restrictionNode.isOWLMinCardinality())
       restrictionRendering = renderOWLMinCardinality(restrictionNode.getOWLPropertyNode(),
@@ -384,7 +384,7 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  private Optional<TextRendering> renderOWLHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
+  private Optional<? extends TextRendering> renderOWLHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
     throws RendererException
   {
     if (hasValueNode.hasReferenceNode())
@@ -397,7 +397,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + hasValueNode.getNodeName());
   }
 
-  @Override public Optional<TextRendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode,
     OWLHasValueNode hasValueNode) throws RendererException
   {
     if (hasValueNode.hasReferenceNode())
@@ -408,7 +408,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + hasValueNode.getNodeName());
   }
 
-  @Override public Optional<TextRendering> renderOWLDataHasValue(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLDataHasValue(OWLPropertyNode propertyNode,
     OWLHasValueNode dataHasValueNode) throws RendererException
   {
     if (dataHasValueNode.hasReferenceNode())
@@ -419,7 +419,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + dataHasValueNode.getNodeName());
   }
 
-  @Override public Optional<TextRendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
     OWLDataAllValuesFromNode dataAllValuesFromNode) throws RendererException
   {
     String datatypeName = dataAllValuesFromNode.getDatatypeName();
@@ -430,7 +430,7 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  @Override public Optional<TextRendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
     OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException
   {
     String datatypeName = dataSomeValuesFromNode.getDatatypeName();
@@ -441,10 +441,10 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  @Override public Optional<TextRendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
     OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException
   {
-    Optional<TextRendering> classRendering;
+    Optional<? extends TextRendering> classRendering;
 
     if (objectSomeValuesFromNode.hasOWLClassNode())
       classRendering = renderOWLClass(objectSomeValuesFromNode.getOWLClassNode());
@@ -459,13 +459,13 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  @Override public Optional<TextRendering> renderOWLSubclassOf(OWLClassNode declaredClassNode,
+  @Override public Optional<? extends TextRendering> renderOWLSubclassOf(OWLClassNode declaredClassNode,
     OWLSubclassOfNode subclassOfNode) throws RendererException
   {
     StringBuffer subClassesRepresentation = new StringBuffer();
 
     if (subclassOfNode.getClassExpressionNodes().size() == 1) {
-      Optional<TextRendering> classExpressionRendering = renderOWLClassExpression(
+      Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
         subclassOfNode.getClassExpressionNodes().get(0));
       if (!classExpressionRendering.isPresent())
         return Optional.empty();
@@ -475,7 +475,7 @@ public class TextRenderer
       boolean isFirst = true;
 
       for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
-        Optional<TextRendering> classExpressionRendering = renderOWLClassExpression(classExpressionNode);
+        Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(classExpressionNode);
         if (!classExpressionRendering.isPresent())
           continue; // Any empty class expression will generate an empty rendering
         if (!isFirst)
@@ -491,7 +491,7 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  @Override public Optional<TextReferenceRendering> renderReference(ReferenceNode referenceNode)
+  @Override public Optional<? extends TextReferenceRendering> renderReference(ReferenceNode referenceNode)
     throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
@@ -658,14 +658,14 @@ public class TextRenderer
       Optional.of(new TextReferenceRendering(textRepresentation.toString()));
   }
 
-  private Optional<TextRendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException
+  private Optional<? extends TextRendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
 
     textRepresentation.append(valueEncodingNode.getEncodingTypeName());
 
     if (valueEncodingNode.hasValueSpecification()) {
-      Optional<TextRendering> valueSpecificationRendering = renderValueSpecification(
+      Optional<? extends TextRendering> valueSpecificationRendering = renderValueSpecification(
         valueEncodingNode.getValueSpecification());
       if (valueSpecificationRendering.isPresent())
         textRepresentation.append(valueSpecificationRendering.get().getTextRendering());
@@ -675,13 +675,13 @@ public class TextRenderer
       Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
-  private Optional<TextRendering> renderTypes(TypesNode types) throws RendererException
+  private Optional<? extends TextRendering> renderTypes(TypesNode types) throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
 
     for (TypeNode typeNode : types.getTypeNodes()) {
-      Optional<TextRendering> typeRendering = renderType(typeNode);
+      Optional<? extends TextRendering> typeRendering = renderType(typeNode);
       if (typeRendering.isPresent()) {
         if (!isFirst)
           textRepresentation.append(", ");
@@ -694,7 +694,7 @@ public class TextRenderer
       Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
-  public Optional<TextRendering> renderType(TypeNode typeNode) throws RendererException
+  public Optional<? extends TextRendering> renderType(TypeNode typeNode) throws RendererException
   {
     if (typeNode instanceof ReferenceNode)
       return renderReference((ReferenceNode)typeNode);
@@ -704,13 +704,13 @@ public class TextRenderer
       throw new RendererException("do not know how to render type node " + typeNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLSameAs(OWLSameAsNode OWLSameAsNode) throws RendererException
+  public Optional<? extends TextRendering> renderOWLSameAs(OWLSameAsNode OWLSameAsNode) throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
 
     for (OWLNamedIndividualNode owlNamedIndividualNode : OWLSameAsNode.getIndividualNodes()) {
-      Optional<TextRendering> namedIndividualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
+      Optional<? extends TextRendering> namedIndividualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
 
       if (namedIndividualRendering.isPresent()) {
         if (!isFirst)
@@ -724,7 +724,7 @@ public class TextRenderer
       Optional.of(new TextRendering(" SameAs: " + textRepresentation.toString()));
   }
 
-  public Optional<TextRendering> renderValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode)
+  public Optional<? extends TextRendering> renderValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode)
     throws RendererException
   {
     String valueExtractionFunctionName = valueExtractionFunctionNode.getFunctionName();
@@ -736,7 +736,7 @@ public class TextRenderer
 
       for (ValueExtractionFunctionArgumentNode valueExtractionFunctionArgumentNode : valueExtractionFunctionNode
         .getArgumentNodes()) {
-        Optional<TextRendering> valueExtractionFunctionArgumentRendering = renderValueExtractionFunctionArgument(
+        Optional<? extends TextRendering> valueExtractionFunctionArgumentRendering = renderValueExtractionFunctionArgument(
           valueExtractionFunctionArgumentNode);
         if (valueExtractionFunctionArgumentRendering.isPresent()) {
           if (!isFirst)
@@ -752,7 +752,7 @@ public class TextRenderer
       Optional.of(new TextRendering(valueExtractionFunctionName + functionArgumentsRepresentation.toString()));
   }
 
-  public Optional<TextRendering> renderSourceSpecification(SourceSpecificationNode sourceSpecificationNode)
+  public Optional<? extends TextRendering> renderSourceSpecification(SourceSpecificationNode sourceSpecificationNode)
     throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
@@ -770,7 +770,7 @@ public class TextRenderer
       Optional.of(new TextRendering("@" + textRepresentation.toString()));
   }
 
-  public Optional<TextRendering> renderValueExtractionFunctionArgument(
+  public Optional<? extends TextRendering> renderValueExtractionFunctionArgument(
     ValueExtractionFunctionArgumentNode valueExtractionFunctionArgumentNode) throws RendererException
   {
     if (valueExtractionFunctionArgumentNode.isOWLLiteralNode())
@@ -781,7 +781,7 @@ public class TextRenderer
       throw new RendererException("unknown node " + valueExtractionFunctionArgumentNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLClassDeclaration(OWLClassDeclarationNode classDeclarationNode)
+  public Optional<? extends TextRendering> renderOWLClassDeclaration(OWLClassDeclarationNode classDeclarationNode)
     throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer("Class: " + classDeclarationNode.getOWLClassNode().toString());
@@ -790,7 +790,7 @@ public class TextRenderer
     if (classDeclarationNode.hasOWLSubclassOfNodes()) {
       textRepresentation.append(" SubclassOf: ");
       for (OWLSubclassOfNode subclassOf : classDeclarationNode.getOWLSubclassOfNodes()) {
-        Optional<TextRendering> subclassOfRendering = renderOWLSubclassOf(classDeclarationNode.getOWLClassNode(),
+        Optional<? extends TextRendering> subclassOfRendering = renderOWLSubclassOf(classDeclarationNode.getOWLClassNode(),
           subclassOf);
         if (!subclassOfRendering.isPresent())
           continue;
@@ -807,7 +807,7 @@ public class TextRenderer
     if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
       textRepresentation.append(" EquivalentTo: ");
       for (OWLEquivalentClassesNode equivalentTo : classDeclarationNode.getOWLEquivalentClassesNodes()) {
-        Optional<TextRendering> equivalentToRendering = renderOWLEquivalentClasses(
+        Optional<? extends TextRendering> equivalentToRendering = renderOWLEquivalentClasses(
           classDeclarationNode.getOWLClassNode(), equivalentTo);
         if (!equivalentToRendering.isPresent())
           continue;
@@ -824,7 +824,7 @@ public class TextRenderer
     if (classDeclarationNode.hasAnnotationFactNodes()) {
       textRepresentation.append(" Annotations: ");
       for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
-        Optional<TextRendering> factRendering = renderAnnotationFact(annotationFactNode);
+        Optional<? extends TextRendering> factRendering = renderAnnotationFact(annotationFactNode);
 
         if (factRendering.isPresent())
           continue;
@@ -841,17 +841,17 @@ public class TextRenderer
       Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
-  @Override public Optional<TextRendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
+  @Override public Optional<? extends TextRendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
     throws RendererException
   {
     return Optional.empty(); // TODO
   }
 
-  @Override public Optional<TextRendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
+  @Override public Optional<? extends TextRendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
     throws RendererException
   {
-    Optional<TextRendering> propertyRendering = renderOWLProperty(annotationFactNode.getOWLPropertyNode());
-    Optional<TextRendering> annotationValueRendering = renderOWLAnnotationValue(
+    Optional<? extends TextRendering> propertyRendering = renderOWLProperty(annotationFactNode.getOWLPropertyNode());
+    Optional<? extends TextRendering> annotationValueRendering = renderOWLAnnotationValue(
       annotationFactNode.getOWLAnnotationValueNode());
 
     if (propertyRendering.isPresent() && annotationValueRendering.isPresent()) {
@@ -862,13 +862,13 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  @Override public Optional<TextRendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
+  @Override public Optional<? extends TextRendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
     throws RendererException
   {
     StringBuffer textRendering = new StringBuffer();
 
     if (objectOneOfNode.getOWLNamedIndividualNodes().size() == 1) {
-      Optional<TextRendering> individualRendering = renderOWLNamedIndividual(
+      Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(
         objectOneOfNode.getOWLNamedIndividualNodes().get(0));
 
       if (!individualRendering.isPresent())
@@ -882,7 +882,7 @@ public class TextRenderer
       for (OWLNamedIndividualNode owlNamedIndividualNode : objectOneOfNode.getOWLNamedIndividualNodes()) {
         if (!isFirst)
           textRendering.append(" ");
-        Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
+        Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
 
         if (!individualRendering.isPresent())
           return Optional.empty();
@@ -896,43 +896,43 @@ public class TextRenderer
     return textRendering.length() != 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
   }
 
-  @Override public Optional<TextRendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
     OWLExactCardinalityNode exactCardinalityNode) throws RendererException
   {
     return renderOWLExactCardinality(propertyNode, exactCardinalityNode);
   }
 
-  @Override public Optional<TextRendering> renderOWLDataExactCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLDataExactCardinality(OWLPropertyNode propertyNode,
     OWLExactCardinalityNode exactCardinalityNode) throws RendererException
   {
     return renderOWLExactCardinality(propertyNode, exactCardinalityNode);
   }
 
-  @Override public Optional<TextRendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
     OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
   {
     return renderOWLMaxCardinality(propertyNode, maxCardinalityNode);
   }
 
-  @Override public Optional<TextRendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
     OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
   {
     return renderOWLMaxCardinality(propertyNode, maxCardinalityNode);
   }
 
-  @Override public Optional<TextRendering> renderOWLObjectMinCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLObjectMinCardinality(OWLPropertyNode propertyNode,
     OWLMinCardinalityNode minCardinalityNode) throws RendererException
   {
     return renderOWLMinCardinality(propertyNode, minCardinalityNode);
   }
 
-  @Override public Optional<TextRendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
+  @Override public Optional<? extends TextRendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
     OWLMinCardinalityNode minCardinalityNode) throws RendererException
   {
     return renderOWLMinCardinality(propertyNode, minCardinalityNode);
   }
 
-  private Optional<TextRendering> renderOWLAllValuesFrom(OWLPropertyNode propertyNode,
+  private Optional<? extends TextRendering> renderOWLAllValuesFrom(OWLPropertyNode propertyNode,
     OWLAllValuesFromNode allValuesFromNode) throws RendererException
   {
     if (allValuesFromNode.hasOWLDataAllValuesFromNode())
@@ -943,7 +943,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + allValuesFromNode.getNodeName());
   }
 
-  private Optional<TextRendering> renderOWLSomeValuesFrom(OWLPropertyNode propertyNode,
+  private Optional<? extends TextRendering> renderOWLSomeValuesFrom(OWLPropertyNode propertyNode,
     OWLSomeValuesFromNode someValuesFromNode) throws RendererException
   {
     if (someValuesFromNode.hasOWLDataSomeValuesFromNode())
@@ -954,10 +954,10 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + someValuesFromNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
+  public Optional<? extends TextRendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
     OWLObjectAllValuesFromNode objectAllValuesFromNode) throws RendererException
   {
-    Optional<TextRendering> classRendering;
+    Optional<? extends TextRendering> classRendering;
 
     if (objectAllValuesFromNode.hasOWLClass())
       classRendering = renderOWLClass(objectAllValuesFromNode.getOWLClassNode());
@@ -972,7 +972,7 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  public Optional<TextRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
+  public Optional<? extends TextRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
   {
     if (classNode.hasReferenceNode())
       return renderReference(classNode.getReferenceNode());
@@ -982,7 +982,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + classNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode) throws RendererException
+  public Optional<? extends TextRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode) throws RendererException
   {
     if (propertyNode.hasReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
@@ -992,7 +992,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + propertyNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLDataProperty(OWLPropertyNode propertyNode) throws RendererException
+  public Optional<? extends TextRendering> renderOWLDataProperty(OWLPropertyNode propertyNode) throws RendererException
   {
     if (propertyNode.hasReferenceNode())
       return renderReference(propertyNode.getReferenceNode());
@@ -1002,7 +1002,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + propertyNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLNamedIndividual(OWLNamedIndividualNode namedIndividualNode)
+  public Optional<? extends TextRendering> renderOWLNamedIndividual(OWLNamedIndividualNode namedIndividualNode)
     throws RendererException
   {
     if (namedIndividualNode.hasReferenceNode())
@@ -1013,7 +1013,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + namedIndividualNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
+  public Optional<? extends TextRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
   {
     if (literalNode.isInteger())
       return Optional.of(new TextRendering(literalNode.getIntLiteralNode().toString()));
@@ -1027,7 +1027,7 @@ public class TextRenderer
       throw new RendererException("unknown child for node " + literalNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderValueSpecification(ValueSpecificationNode valueSpecificationNode)
+  public Optional<? extends TextRendering> renderValueSpecification(ValueSpecificationNode valueSpecificationNode)
     throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
@@ -1038,7 +1038,7 @@ public class TextRenderer
 
     for (ValueSpecificationItemNode valueSpecificationItemNode : valueSpecificationNode
       .getValueSpecificationItemNodes()) {
-      Optional<TextRendering> valueSpecificationItemRendering = renderValueSpecificationItem(
+      Optional<? extends TextRendering> valueSpecificationItemRendering = renderValueSpecificationItem(
         valueSpecificationItemNode);
 
       if (valueSpecificationItemRendering.isPresent()) {
@@ -1059,29 +1059,29 @@ public class TextRenderer
       Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
-  public Optional<TextRendering> renderDefaultLocationValue(DefaultLocationValueNode defaultLocationValueNode)
+  public Optional<? extends TextRendering> renderDefaultLocationValue(DefaultLocationValueNode defaultLocationValueNode)
     throws RendererException
   {
     return Optional.of(new TextRendering(defaultLocationValueNode.toString()));
   }
 
-  public Optional<TextRendering> renderDefaultDataValue(DefaultDataValueNode defaultDataValueNode)
+  public Optional<? extends TextRendering> renderDefaultDataValue(DefaultDataValueNode defaultDataValueNode)
     throws RendererException
   {
     return Optional.of(new TextRendering(defaultDataValueNode.toString()));
   }
 
-  public Optional<TextRendering> renderDefaultID(DefaultIDNode defaultIDNode) throws RendererException
+  public Optional<? extends TextRendering> renderDefaultID(DefaultIDNode defaultIDNode) throws RendererException
   {
     return Optional.of(new TextRendering(defaultIDNode.toString()));
   }
 
-  public Optional<TextRendering> renderDefaultLabel(DefaultLabelNode defaultLabelNode) throws RendererException
+  public Optional<? extends TextRendering> renderDefaultLabel(DefaultLabelNode defaultLabelNode) throws RendererException
   {
     return Optional.of(new TextRendering(defaultLabelNode.toString()));
   }
 
-  public Optional<TextRendering> renderValueSpecificationItem(ValueSpecificationItemNode valueSpecificationItemNode)
+  public Optional<? extends TextRendering> renderValueSpecificationItem(ValueSpecificationItemNode valueSpecificationItemNode)
     throws RendererException
   {
     if (valueSpecificationItemNode.hasStringLiteral())
@@ -1096,13 +1096,13 @@ public class TextRenderer
       throw new RendererException("unknown ValueSpecificationItem node " + valueSpecificationItemNode);
   }
 
-  public Optional<TextRendering> renderDifferentFrom(OWLDifferentFromNode differentFromNode) throws RendererException
+  public Optional<? extends TextRendering> renderDifferentFrom(OWLDifferentFromNode differentFromNode) throws RendererException
   {
     StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
 
     for (OWLNamedIndividualNode namedIndividualNode : differentFromNode.getNamedIndividualNodes()) {
-      Optional<TextRendering> individualRendering = renderOWLNamedIndividual(namedIndividualNode);
+      Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(namedIndividualNode);
 
       if (individualRendering.isPresent()) {
         if (!isFirst)
@@ -1166,7 +1166,7 @@ public class TextRenderer
     this.defaultOWLDataPropertyValueType = defaultOWLDataPropertyValueType;
   }
 
-  private Optional<TextRendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
+  private Optional<? extends TextRendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
     OWLExactCardinalityNode owlExactCardinalityNode) throws RendererException
   {
     String textRendering = "" + owlExactCardinalityNode.getCardinality();
@@ -1177,7 +1177,7 @@ public class TextRenderer
     return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering));
   }
 
-  private Optional<TextRendering> renderOWLMaxCardinality(OWLPropertyNode propertyNode,
+  private Optional<? extends TextRendering> renderOWLMaxCardinality(OWLPropertyNode propertyNode,
     OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
   {
     String textRendering = "" + maxCardinalityNode.getCardinality();
@@ -1188,7 +1188,7 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  private Optional<TextRendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
+  private Optional<? extends TextRendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
     OWLMinCardinalityNode minCardinalityNode) throws RendererException
   {
     String textRendering = "" + minCardinalityNode.getCardinality();
@@ -1199,7 +1199,7 @@ public class TextRenderer
       return Optional.empty();
   }
 
-  private Optional<TextRendering> renderName(NameNode nameNode) throws RendererException
+  private Optional<? extends TextRendering> renderName(NameNode nameNode) throws RendererException
   {
     String name = nameNode.isQuoted() ? "'" + nameNode.getName() + "'" : nameNode.getName();
 
