@@ -74,13 +74,13 @@ public class TextRenderer extends BaseReferenceRenderer
     throws RendererException
   {
     SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
+    ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
 
     if (sourceSpecificationNode.hasLiteral()) {
       String literalValue = sourceSpecificationNode.getLiteral();
 
-      return Optional.empty(); // TODO
+      return Optional.of(new TextReferenceRendering(literalValue, referenceType));
     } else {
-      ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
       SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
       String language = getReferenceLanguage(referenceNode);
       String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);

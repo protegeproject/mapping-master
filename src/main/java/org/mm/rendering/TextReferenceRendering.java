@@ -1,14 +1,20 @@
 package org.mm.rendering;
 
+import org.mm.core.ReferenceType;
+
 public class TextReferenceRendering extends TextRendering implements ReferenceRendering
 {
   private final String rawValue;
+  private final ReferenceType referenceType;
 
-  public TextReferenceRendering(String rawValue)
+  public TextReferenceRendering(String rawValue, ReferenceType referenceType)
   {
     super(rawValue);
     this.rawValue = rawValue;
+    this.referenceType = referenceType;
   }
+
+  @Override public ReferenceType getReferenceType() { return this.referenceType; }
 
   @Override public String getRawValue()
   {
@@ -17,41 +23,41 @@ public class TextReferenceRendering extends TextRendering implements ReferenceRe
 
   @Override public boolean isOWLLiteral()
   {
-    return false; // TODO
+    return this.referenceType.isOWLLiteral();
   }
 
   @Override public boolean isOWLEntity()
   {
-    return false; // TODO
+    return this.referenceType.isOWLEntity();
   }
 
   @Override public boolean isOWLClass()
   {
-    return false; // TODO
+    return this.referenceType.isOWLClass();
   }
 
   @Override public boolean isOWLNamedIndividual()
   {
-    return false; // TODO
+    return this.referenceType.isOWLNamedIndividual();
   }
 
   @Override public boolean isOWLObjectProperty()
   {
-    return false; // TODO
+    return this.referenceType.isOWLObjectProperty();
   }
 
   @Override public boolean isOWLDataProperty()
   {
-    return false; // TODO
+    return this.referenceType.isOWLDataProperty();
   }
 
   @Override public boolean isOWLAnnotationProperty()
   {
-    return false;// TODO
+    return this.referenceType.isOWLAnnotationProperty();
   }
 
   @Override public boolean isOWLDatatype()
   {
-    return false;// TODO
+    return this.referenceType.isOWLDatatype();
   }
 }

@@ -58,13 +58,13 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
     throws RendererException
   {
     SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
+    ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
 
     if (sourceSpecificationNode.hasLiteral()) {
       String literalValue = sourceSpecificationNode.getLiteral();
       OWLLiteral literal = this.literalRenderer.createOWLLiteral(literalValue);
-      return Optional.of(new OWLAPIReferenceRendering(literal));
+      return Optional.of(new OWLAPIReferenceRendering(literal, referenceType));
     } else {
-      ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
       SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
       String defaultNamespace = getReferenceNamespace(referenceNode);
       String language = getReferenceLanguage(referenceNode);
@@ -86,7 +86,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
 
         OWLLiteral literal = literalRenderer.createOWLLiteral(literalReferenceValue, referenceType);
 
-        return Optional.of(new OWLAPIReferenceRendering(literal));
+        return Optional.of(new OWLAPIReferenceRendering(literal, referenceType));
       } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
         String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
         String rdfsLabel = getReferenceRDFSLabel(resolvedReferenceValue, referenceNode);
@@ -96,7 +96,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
             language, referenceNode.getReferenceDirectives());
         Set<OWLAxiom> axioms = addDefiningTypesFromReference(owlEntity, referenceNode);
 
-        return Optional.of(new OWLAPIReferenceRendering(owlEntity, axioms));
+        return Optional.of(new OWLAPIReferenceRendering(owlEntity, axioms, referenceType));
       } else
         throw new RendererException(
           "internal error: unknown reference type " + referenceType + " for reference " + referenceNode.toString());
@@ -137,7 +137,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
     }
     return axioms;
   }
-  
+
   private String getReferenceNamespace(ReferenceNode referenceNode) throws RendererException
   {
     // A reference will not have both a prefix and a namespace specified

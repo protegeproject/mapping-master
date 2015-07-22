@@ -1,5 +1,6 @@
 package org.mm.rendering.owlapi;
 
+import org.mm.core.ReferenceType;
 import org.mm.rendering.ReferenceRendering;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
@@ -12,33 +13,39 @@ public class OWLAPIReferenceRendering extends OWLAPIRendering implements Referen
 {
   private final Optional<OWLLiteral> literal;
   private final Optional<OWLEntity> entity;
+  private final ReferenceType referenceType;
   private final String rawRendering;
 
-  public OWLAPIReferenceRendering(OWLLiteral literal)
+  public OWLAPIReferenceRendering(OWLLiteral literal, ReferenceType referenceType)
   {
     this.literal = Optional.of(literal);
     this.entity = Optional.empty();
     this.rawRendering = literal.getLiteral();
+    this.referenceType = referenceType;
   }
 
-  public OWLAPIReferenceRendering(OWLEntity entity)
+  public OWLAPIReferenceRendering(OWLEntity entity, ReferenceType referenceType)
   {
     this.entity = Optional.of(entity);
     this.literal = Optional.empty();
     this.rawRendering = entity.getIRI().toString();
+    this.referenceType = referenceType;
   }
 
-  public OWLAPIReferenceRendering(OWLEntity entity, Set<OWLAxiom> axioms)
+  public OWLAPIReferenceRendering(OWLEntity entity, Set<OWLAxiom> axioms, ReferenceType referenceType)
   {
     super(axioms);
     this.entity = Optional.of(entity);
     this.literal = Optional.empty();
     this.rawRendering = entity.getIRI().toString();
+    this.referenceType = referenceType;
   }
 
   public Optional<OWLEntity> getOWLEntity() { return entity; }
 
   public Optional<OWLLiteral> getOWLLiteral() { return literal; }
+
+  @Override public ReferenceType getReferenceType() { return this.referenceType; }
 
   @Override public String getRawValue() { return this.rawRendering; }
 
@@ -48,11 +55,20 @@ public class OWLAPIReferenceRendering extends OWLAPIRendering implements Referen
 
   @Override public boolean isOWLClass() { return this.entity.isPresent() && this.entity.get().isOWLClass(); }
 
-  @Override public boolean isOWLNamedIndividual() { return this.entity.isPresent() && this.entity.get().isOWLNamedIndividual(); }
+  @Override public boolean isOWLNamedIndividual()
+  {
+    return this.entity.isPresent() && this.entity.get().isOWLNamedIndividual();
+  }
 
-  @Override public boolean isOWLObjectProperty() { return this.entity.isPresent() && this.entity.get().isOWLObjectProperty(); }
+  @Override public boolean isOWLObjectProperty()
+  {
+    return this.entity.isPresent() && this.entity.get().isOWLObjectProperty();
+  }
 
-  @Override public boolean isOWLDataProperty() { return this.entity.isPresent() && this.entity.get().isOWLDataProperty(); }
+  @Override public boolean isOWLDataProperty()
+  {
+    return this.entity.isPresent() && this.entity.get().isOWLDataProperty();
+  }
 
   @Override public boolean isOWLAnnotationProperty()
   {
