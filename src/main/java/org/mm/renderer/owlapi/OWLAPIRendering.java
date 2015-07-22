@@ -27,13 +27,6 @@ public class OWLAPIRendering implements Rendering
     this.axioms.add(axiom);
   }
 
-  public void addOWLAxiom(OWLAxiom axiom) { this.axioms.add(axiom); }
-
-  public void addOWLAxioms(Set<OWLAxiom> axioms)
-  {
-    this.axioms.addAll(axioms);
-  }
-
   public Set<OWLAxiom> getOWLAxioms()
   {
     return Collections.unmodifiableSet(this.axioms);

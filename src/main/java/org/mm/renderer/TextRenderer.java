@@ -107,10 +107,10 @@ public class TextRenderer
       throw new RendererException("unknown Mapping Master expression node " + mmExpressionNode.getNodeName());
   }
 
-  public Optional<TextRendering> renderOWLIndividualDeclaration(
-    OWLIndividualDeclarationNode individualDeclarationNode) throws RendererException
+  public Optional<TextRendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode individualDeclarationNode)
+    throws RendererException
   {
-    TextRendering rendering = new TextRendering();
+    StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
     Optional<TextRendering> individualRendering = renderOWLNamedIndividual(
       individualDeclarationNode.getOWLIndividualNode());
@@ -118,12 +118,12 @@ public class TextRenderer
     if (!individualRendering.isPresent())
       return Optional.empty();
 
-    rendering.addText("Individual: ");
+    textRepresentation.append("Individual: ");
 
-    rendering.addText(individualRendering.get().getTextRendering());
+    textRepresentation.append(individualRendering.get().getTextRendering());
 
     if (individualDeclarationNode.hasFacts()) {
-      rendering.addText(" Facts: ");
+      textRepresentation.append(" Facts: ");
 
       for (FactNode fact : individualDeclarationNode.getFactNodes()) {
         Optional<TextRendering> factRendering = renderFact(fact);
@@ -132,8 +132,8 @@ public class TextRenderer
           continue;
 
         if (!isFirst)
-          rendering.addText(", ");
-        rendering.addText(factRendering.get().getTextRendering());
+          textRepresentation.append(", ");
+        textRepresentation.append(factRendering.get().getTextRendering());
         isFirst = false;
       }
     }
@@ -142,12 +142,12 @@ public class TextRenderer
       Optional<TextRendering> typesRendering = renderTypes(individualDeclarationNode.getTypesNode());
 
       if (typesRendering.isPresent())
-        rendering.addText(" Types: " + typesRendering.get().getTextRendering());
+        textRepresentation.append(" Types: " + typesRendering.get().getTextRendering());
     }
 
     isFirst = true;
     if (individualDeclarationNode.hasAnnotations()) {
-      rendering.addText(" Annotations:");
+      textRepresentation.append(" Annotations:");
 
       for (AnnotationFactNode factNode : individualDeclarationNode.getAnnotationNodes()) {
         Optional<TextRendering> factRendering = renderAnnotationFact(factNode);
@@ -156,8 +156,8 @@ public class TextRenderer
           continue;
 
         if (!isFirst)
-          rendering.addText(", ");
-        rendering.addText(factRendering.get().getTextRendering());
+          textRepresentation.append(", ");
+        textRepresentation.append(factRendering.get().getTextRendering());
         isFirst = false;
       }
     }
@@ -165,17 +165,17 @@ public class TextRenderer
     if (individualDeclarationNode.hasSameAs()) {
       Optional<TextRendering> sameAsRendering = renderOWLSameAs(individualDeclarationNode.getOWLSameAsNode());
       if (sameAsRendering.isPresent())
-        rendering.addText(sameAsRendering.get().getTextRendering());
+        textRepresentation.append(sameAsRendering.get().getTextRendering());
     }
 
     if (individualDeclarationNode.hasDifferentFrom()) {
       Optional<TextRendering> differentFromRendering = renderDifferentFrom(
         individualDeclarationNode.getOWLDifferentFromNode());
       if (differentFromRendering.isPresent())
-        rendering.addText(differentFromRendering.get().getTextRendering());
+        textRepresentation.append(differentFromRendering.get().getTextRendering());
     }
 
-    return Optional.of(rendering);
+    return Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
   @Override public Optional<TextRendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
@@ -245,7 +245,7 @@ public class TextRenderer
 
       return classExpressionRendering;
     } else {
-      TextRendering rendering = new TextRendering();
+      StringBuffer textRepresentation = new StringBuffer();
       boolean isFirst = true;
 
       for (OWLClassExpressionNode classExpressionNode : intersectionClassNode.getOWLClassExpressionNodes()) {
@@ -253,25 +253,25 @@ public class TextRenderer
 
         if (classesExpressionRendering.isPresent()) {
           if (isFirst)
-            rendering.addText("(");
+            textRepresentation.append("(");
           else
-            rendering.addText(" AND ");
-          rendering.addText(classesExpressionRendering.get().getTextRendering());
+            textRepresentation.append(" AND ");
+          textRepresentation.append(classesExpressionRendering.get().getTextRendering());
           isFirst = false;
         }
       }
-      if (!rendering.nothingRendered())
-        rendering.addText(")");
-      return Optional.of(rendering);
+      if (textRepresentation.length() != 0)
+        textRepresentation.append(")");
+      return Optional.of(new TextRendering(textRepresentation.toString()));
     }
   }
 
   @Override public Optional<TextRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
     OWLEquivalentClassesNode equivalentClassesNode) throws RendererException
   {
-    StringBuffer textRendering = new StringBuffer();
+    StringBuffer textRepresentation = new StringBuffer();
 
-    textRendering.append(" EquivalentTo: ");
+    textRepresentation.append(" EquivalentTo: ");
 
     if (equivalentClassesNode.getClassExpressionNodes().size() == 1) {
       Optional<TextRendering> classExpressionRendering = renderOWLClassExpression(
@@ -279,7 +279,7 @@ public class TextRenderer
       if (!classExpressionRendering.isPresent())
         return classExpressionRendering;
       else
-        textRendering.append(classExpressionRendering.get().getTextRendering());
+        textRepresentation.append(classExpressionRendering.get().getTextRendering());
     } else {
       boolean isFirst = true;
 
@@ -288,12 +288,14 @@ public class TextRenderer
         if (!classExpressionRendering.isPresent())
           continue; // Any empty class expression will generate an empty rendering
         if (!isFirst)
-          textRendering.append(", ");
-        textRendering.append(classExpressionRendering.get().getTextRendering());
+          textRepresentation.append(", ");
+        textRepresentation.append(classExpressionRendering.get().getTextRendering());
         isFirst = false;
       }
     }
-    return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
   @Override public Optional<TextRendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode)
@@ -305,7 +307,7 @@ public class TextRenderer
 
       return intersectionRendering;
     } else {
-      TextRendering rendering = new TextRendering();
+      StringBuffer textRepresentation = new StringBuffer();
       boolean isFirst = true;
 
       for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClassNodes()) {
@@ -313,17 +315,19 @@ public class TextRenderer
 
         if (intersectionRendering.isPresent()) {
           if (isFirst)
-            rendering.addText("(");
+            textRepresentation.append("(");
           else
-            rendering.addText(" OR ");
-          rendering.addText(intersectionRendering.get().getTextRendering());
+            textRepresentation.append(" OR ");
+          textRepresentation.append(intersectionRendering.get().getTextRendering());
           isFirst = false;
         }
       }
-      if (!rendering.nothingRendered())
-        rendering.addText(")");
+      if (textRepresentation.length() != 0)
+        textRepresentation.append(")");
 
-      return Optional.of(rendering);
+      return textRepresentation.length() == 0 ?
+        Optional.empty() :
+        Optional.of(new TextRendering(textRepresentation.toString()));
     }
   }
 
@@ -334,7 +338,7 @@ public class TextRenderer
     else if (propertyNode.hasNameNode())
       return renderName(propertyNode.getNameNode());
     else
-      throw new RendererException("unknown OWLProperty node " + propertyNode);
+      throw new RendererException("unknown child for node " + propertyNode.getNodeName());
   }
 
   public Optional<TextRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException
@@ -458,8 +462,7 @@ public class TextRenderer
   @Override public Optional<TextRendering> renderOWLSubclassOf(OWLClassNode declaredClassNode,
     OWLSubclassOfNode subclassOfNode) throws RendererException
   {
-    TextRendering rendering = new TextRendering();
-    rendering.addText(" SubClassOf: ");
+    StringBuffer subClassesRepresentation = new StringBuffer();
 
     if (subclassOfNode.getClassExpressionNodes().size() == 1) {
       Optional<TextRendering> classExpressionRendering = renderOWLClassExpression(
@@ -467,7 +470,7 @@ public class TextRenderer
       if (!classExpressionRendering.isPresent())
         return Optional.empty();
       else
-        rendering.addText(classExpressionRendering.get().getTextRendering());
+        subClassesRepresentation.append(classExpressionRendering.get().getTextRendering());
     } else {
       boolean isFirst = true;
 
@@ -476,63 +479,67 @@ public class TextRenderer
         if (!classExpressionRendering.isPresent())
           continue; // Any empty class expression will generate an empty rendering
         if (!isFirst)
-          rendering.addText(", ");
-        rendering.addText(classExpressionRendering.get().getTextRendering());
+          subClassesRepresentation.append(", ");
+        subClassesRepresentation.append(classExpressionRendering.get().getTextRendering());
         isFirst = false;
       }
     }
 
-    return Optional.of(rendering);
+    if (subClassesRepresentation.length() != 0)
+      return Optional.of(new TextRendering(" SubClassOf: " + subClassesRepresentation));
+    else
+      return Optional.empty();
   }
 
-  @Override public Optional<TextRendering> renderReference(ReferenceNode referenceNode) throws RendererException
+  @Override public Optional<TextReferenceRendering> renderReference(ReferenceNode referenceNode)
+    throws RendererException
   {
-    StringBuffer textRendering = new StringBuffer();
+    StringBuffer textRepresentation = new StringBuffer();
     boolean hasExplicitOptions = referenceNode.hasExplicitOptions();
     boolean atLeastOneOptionProcessed = false;
 
-    textRendering.append(referenceNode.getSourceSpecificationNode().toString());
+    textRepresentation.append(referenceNode.getSourceSpecificationNode().toString());
 
     if (hasExplicitOptions)
-      textRendering.append("(");
+      textRepresentation.append("(");
 
     if (referenceNode.hasExplicitlySpecifiedReferenceType()) {
-      textRendering.append(referenceNode.getReferenceTypeNode().getReferenceType().getTypeName());
+      textRepresentation.append(referenceNode.getReferenceTypeNode().getReferenceType().getTypeName());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedPrefix()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
+        textRepresentation.append(" ");
       else
         atLeastOneOptionProcessed = true;
-      textRendering.append(referenceNode.getPrefixNode().getPrefix());
+      textRepresentation.append(referenceNode.getPrefixNode().getPrefix());
     }
 
     if (referenceNode.hasExplicitlySpecifiedNamespace()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
+        textRepresentation.append(" ");
       else
         atLeastOneOptionProcessed = true;
-      textRendering.append(referenceNode.getNamespaceNode().getNamespace());
+      textRepresentation.append(referenceNode.getNamespaceNode().getNamespace());
     }
 
     if (referenceNode.hasValueExtractionFunction()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
+        textRepresentation.append(" ");
       else
         atLeastOneOptionProcessed = true;
-      textRendering.append(referenceNode.getValueExtractionFunctionNode().getFunctionName());
+      textRepresentation.append(referenceNode.getValueExtractionFunctionNode().getFunctionName());
     }
 
     if (referenceNode.hasExplicitlySpecifiedValueEncodings()) {
       boolean isFirst = true;
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
+        textRepresentation.append(" ");
       for (ValueEncodingNode valueEncodingNode : referenceNode.getValueEncodingNodes()) {
         if (!isFirst)
-          textRendering.append(" ");
-        textRendering.append(valueEncodingNode.getEncodingTypeName());
+          textRepresentation.append(" ");
+        textRepresentation.append(valueEncodingNode.getEncodingTypeName());
         isFirst = false;
       }
       atLeastOneOptionProcessed = true;
@@ -540,144 +547,151 @@ public class TextRenderer
 
     if (referenceNode.hasExplicitlySpecifiedDefaultLocationValue()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getDefaultLocationValueNode().getDefaultLocationValue());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getDefaultLocationValueNode().getDefaultLocationValue());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedDefaultDataValue()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getDefaultDataValueNode().getDefaultDataValue());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getDefaultDataValueNode().getDefaultDataValue());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedDefaultRDFID()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getDefaultRDFIDNode().getDefaultRDFID());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getDefaultRDFIDNode().getDefaultRDFID());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedDefaultRDFSLabel()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getDefaultRDFSLabelNode().getDefaultRDFSLabel());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getDefaultRDFSLabelNode().getDefaultRDFSLabel());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedLanguage()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getLanguageNode().getLanguage());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getLanguageNode().getLanguage());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedPrefix()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getPrefixNode().getPrefix());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getPrefixNode().getPrefix());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedNamespace()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getNamespaceNode().getNamespace());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getNamespaceNode().getNamespace());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedEmptyLocationDirective()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getEmptyLocationDirectiveNode().toString());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getEmptyLocationDirectiveNode().toString());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedEmptyDataValueDirective()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getEmptyDataValueDirectiveNode().toString());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getEmptyDataValueDirectiveNode().toString());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedEmptyRDFIDDirective()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getEmptyRDFIDDirectiveNode().toString());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getEmptyRDFIDDirectiveNode().toString());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedEmptyRDFSLabelDirective()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getEmptyRDFSLabelDirectiveNode().getEmptyRDFSLabelSettingName());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getEmptyRDFSLabelDirectiveNode().getEmptyRDFSLabelSettingName());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedShiftDirective()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getShiftDirectiveNode().getShiftSettingName());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getShiftDirectiveNode().getShiftSettingName());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedTypes()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getTypesNode().toString());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getTypesNode().toString());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedIfExistsDirective()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getIfExistsDirectiveNode().getIfExistsSettingName());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getIfExistsDirectiveNode().getIfExistsSettingName());
       atLeastOneOptionProcessed = true;
     }
 
     if (referenceNode.hasExplicitlySpecifiedIfNotExistsDirective()) {
       if (atLeastOneOptionProcessed)
-        textRendering.append(" ");
-      textRendering.append(referenceNode.getIfNotExistsDirectiveNode().toString());
+        textRepresentation.append(" ");
+      textRepresentation.append(referenceNode.getIfNotExistsDirectiveNode().toString());
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitOptions)
-      textRendering.append(")");
+      textRepresentation.append(")");
 
-    return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextReferenceRendering(textRepresentation.toString()));
   }
 
   private Optional<TextRendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException
   {
-    TextRendering rendering = new TextRendering(valueEncodingNode.getEncodingTypeName());
+    StringBuffer textRepresentation = new StringBuffer();
+
+    textRepresentation.append(valueEncodingNode.getEncodingTypeName());
 
     if (valueEncodingNode.hasValueSpecification()) {
       Optional<TextRendering> valueSpecificationRendering = renderValueSpecification(
         valueEncodingNode.getValueSpecification());
       if (valueSpecificationRendering.isPresent())
-        rendering.addText(valueSpecificationRendering.get().getTextRendering());
+        textRepresentation.append(valueSpecificationRendering.get().getTextRendering());
     }
-    return Optional.of(rendering);
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
   private Optional<TextRendering> renderTypes(TypesNode types) throws RendererException
   {
-    TextRendering rendering = new TextRendering();
+    StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
 
     for (TypeNode typeNode : types.getTypeNodes()) {
       Optional<TextRendering> typeRendering = renderType(typeNode);
       if (typeRendering.isPresent()) {
         if (!isFirst)
-          rendering.addText(", ");
-        rendering.addText(typeRendering.get().getTextRendering());
+          textRepresentation.append(", ");
+        textRepresentation.append(typeRendering.get().getTextRendering());
         isFirst = false;
       }
     }
-
-    return Optional.of(rendering);
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
   public Optional<TextRendering> renderType(TypeNode typeNode) throws RendererException
@@ -692,7 +706,7 @@ public class TextRenderer
 
   public Optional<TextRendering> renderOWLSameAs(OWLSameAsNode OWLSameAsNode) throws RendererException
   {
-    TextRendering rendering = new TextRendering(" SameAs: ");
+    StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
 
     for (OWLNamedIndividualNode owlNamedIndividualNode : OWLSameAsNode.getIndividualNodes()) {
@@ -700,22 +714,25 @@ public class TextRenderer
 
       if (namedIndividualRendering.isPresent()) {
         if (!isFirst)
-          rendering.addText(", ");
-        rendering.addText(namedIndividualRendering.get().getTextRendering());
+          textRepresentation.append(", ");
+        textRepresentation.append(namedIndividualRendering.get().getTextRendering());
         isFirst = false;
       }
     }
-    return Optional.of(rendering);
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(" SameAs: " + textRepresentation.toString()));
   }
 
   public Optional<TextRendering> renderValueExtractionFunction(ValueExtractionFunctionNode valueExtractionFunctionNode)
     throws RendererException
   {
-    TextRendering rendering = new TextRendering(valueExtractionFunctionNode.getFunctionName());
+    String valueExtractionFunctionName = valueExtractionFunctionNode.getFunctionName();
+    StringBuffer functionArgumentsRepresentation = new StringBuffer();
 
     if (valueExtractionFunctionNode.hasArguments()) {
       boolean isFirst = true;
-      rendering.addText("(");
+      functionArgumentsRepresentation.append("(");
 
       for (ValueExtractionFunctionArgumentNode valueExtractionFunctionArgumentNode : valueExtractionFunctionNode
         .getArgumentNodes()) {
@@ -723,30 +740,34 @@ public class TextRenderer
           valueExtractionFunctionArgumentNode);
         if (valueExtractionFunctionArgumentRendering.isPresent()) {
           if (!isFirst)
-            rendering.addText(" ");
-          rendering.addText(valueExtractionFunctionArgumentRendering.get().getTextRendering());
+            functionArgumentsRepresentation.append(" ");
+          functionArgumentsRepresentation.append(valueExtractionFunctionArgumentRendering.get().getTextRendering());
           isFirst = false;
         }
       }
-      rendering.addText(")");
+      functionArgumentsRepresentation.append(")");
     }
-    return Optional.of(rendering);
+    return functionArgumentsRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(valueExtractionFunctionName + functionArgumentsRepresentation.toString()));
   }
 
   public Optional<TextRendering> renderSourceSpecification(SourceSpecificationNode sourceSpecificationNode)
     throws RendererException
   {
-    TextRendering rendering = new TextRendering("@");
+    StringBuffer textRepresentation = new StringBuffer();
 
     if (sourceSpecificationNode.hasSource())
-      rendering.addText("'" + sourceSpecificationNode.getSource() + "'!");
+      textRepresentation.append("'" + sourceSpecificationNode.getSource() + "'!");
 
     if (sourceSpecificationNode.hasLocation())
-      rendering.addText(sourceSpecificationNode.getLocation());
+      textRepresentation.append(sourceSpecificationNode.getLocation());
     else
-      rendering.addText("\"" + sourceSpecificationNode.getLiteral() + "\""); // A literal
+      textRepresentation.append("\"" + sourceSpecificationNode.getLiteral() + "\""); // A literal
 
-    return Optional.of(rendering);
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering("@" + textRepresentation.toString()));
   }
 
   public Optional<TextRendering> renderValueExtractionFunctionArgument(
@@ -763,11 +784,11 @@ public class TextRenderer
   public Optional<TextRendering> renderOWLClassDeclaration(OWLClassDeclarationNode classDeclarationNode)
     throws RendererException
   {
-    TextRendering rendering = new TextRendering("Class: " + classDeclarationNode.getOWLClassNode().toString());
+    StringBuffer textRepresentation = new StringBuffer("Class: " + classDeclarationNode.getOWLClassNode().toString());
     boolean isFirst = true;
 
     if (classDeclarationNode.hasOWLSubclassOfNodes()) {
-      rendering.addText(" SubclassOf: ");
+      textRepresentation.append(" SubclassOf: ");
       for (OWLSubclassOfNode subclassOf : classDeclarationNode.getOWLSubclassOfNodes()) {
         Optional<TextRendering> subclassOfRendering = renderOWLSubclassOf(classDeclarationNode.getOWLClassNode(),
           subclassOf);
@@ -775,16 +796,16 @@ public class TextRenderer
           continue;
 
         if (!isFirst)
-          rendering.addText(", ");
+          textRepresentation.append(", ");
 
-        rendering.addText(subclassOfRendering.get().getTextRendering());
+        textRepresentation.append(subclassOfRendering.get().getTextRendering());
         isFirst = false;
       }
     }
 
     isFirst = true;
     if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
-      rendering.addText(" EquivalentTo: ");
+      textRepresentation.append(" EquivalentTo: ");
       for (OWLEquivalentClassesNode equivalentTo : classDeclarationNode.getOWLEquivalentClassesNodes()) {
         Optional<TextRendering> equivalentToRendering = renderOWLEquivalentClasses(
           classDeclarationNode.getOWLClassNode(), equivalentTo);
@@ -792,16 +813,16 @@ public class TextRenderer
           continue;
 
         if (!isFirst)
-          rendering.addText(", ");
+          textRepresentation.append(", ");
 
-        rendering.addText(equivalentToRendering.get().getTextRendering());
+        textRepresentation.append(equivalentToRendering.get().getTextRendering());
         isFirst = false;
       }
     }
 
     isFirst = true;
     if (classDeclarationNode.hasAnnotationFactNodes()) {
-      rendering.addText(" Annotations: ");
+      textRepresentation.append(" Annotations: ");
       for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
         Optional<TextRendering> factRendering = renderAnnotationFact(annotationFactNode);
 
@@ -809,13 +830,15 @@ public class TextRenderer
           continue;
 
         if (!isFirst)
-          rendering.addText(", ");
-        rendering.addText(factRendering.get().getTextRendering());
+          textRepresentation.append(", ");
+        textRepresentation.append(factRendering.get().getTextRendering());
         isFirst = false;
       }
     }
 
-    return Optional.of(rendering);
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
   @Override public Optional<TextRendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
@@ -832,9 +855,9 @@ public class TextRenderer
       annotationFactNode.getOWLAnnotationValueNode());
 
     if (propertyRendering.isPresent() && annotationValueRendering.isPresent()) {
-      String textRendering =
+      String textRepresentation =
         propertyRendering.get().getTextRendering() + " " + annotationValueRendering.get().getTextRendering();
-      return Optional.of(new TextRendering(textRendering));
+      return Optional.of(new TextRendering(textRepresentation));
     } else
       return Optional.empty();
   }
@@ -956,7 +979,7 @@ public class TextRenderer
     else if (classNode.hasNameNode())
       return renderName(classNode.getNameNode());
     else
-      throw new RendererException("unknown OWLClass node " + classNode);
+      throw new RendererException("unknown child for node " + classNode.getNodeName());
   }
 
   public Optional<TextRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode) throws RendererException
@@ -966,7 +989,7 @@ public class TextRenderer
     else if (propertyNode.hasNameNode())
       return renderName(propertyNode.getNameNode());
     else
-      throw new RendererException("unknown OWLProperty node " + propertyNode);
+      throw new RendererException("unknown child for node " + propertyNode.getNodeName());
   }
 
   public Optional<TextRendering> renderOWLDataProperty(OWLPropertyNode propertyNode) throws RendererException
@@ -976,7 +999,7 @@ public class TextRenderer
     else if (propertyNode.hasNameNode())
       return renderName(propertyNode.getNameNode());
     else
-      throw new RendererException("unknown OWLProperty node " + propertyNode);
+      throw new RendererException("unknown child for node " + propertyNode.getNodeName());
   }
 
   public Optional<TextRendering> renderOWLNamedIndividual(OWLNamedIndividualNode namedIndividualNode)
@@ -987,7 +1010,7 @@ public class TextRenderer
     else if (namedIndividualNode.hasNameNode())
       return renderName(namedIndividualNode.getNameNode());
     else
-      throw new RendererException("unknown OWLIndividual node " + namedIndividualNode);
+      throw new RendererException("unknown child for node " + namedIndividualNode.getNodeName());
   }
 
   public Optional<TextRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
@@ -1001,17 +1024,17 @@ public class TextRenderer
     else if (literalNode.isBoolean())
       return Optional.of(new TextRendering(literalNode.getBooleanLiteralNode().toString()));
     else
-      throw new RendererException("unknown Literal node " + literalNode);
+      throw new RendererException("unknown child for node " + literalNode.getNodeName());
   }
 
   public Optional<TextRendering> renderValueSpecification(ValueSpecificationNode valueSpecificationNode)
     throws RendererException
   {
-    StringBuffer textRendering = new StringBuffer();
+    StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
 
     if (valueSpecificationNode.getNumberOfValueSpecificationItems() > 1)
-      textRendering.append("(");
+      textRepresentation.append("(");
 
     for (ValueSpecificationItemNode valueSpecificationItemNode : valueSpecificationNode
       .getValueSpecificationItemNodes()) {
@@ -1020,18 +1043,20 @@ public class TextRenderer
 
       if (valueSpecificationItemRendering.isPresent()) {
         if (isFirst)
-          textRendering.append("=");
+          textRepresentation.append("=");
         else
-          textRendering.append(", ");
-        textRendering.append(valueSpecificationItemRendering.get().getTextRendering());
+          textRepresentation.append(", ");
+        textRepresentation.append(valueSpecificationItemRendering.get().getTextRendering());
         isFirst = false;
       }
     }
 
     if (valueSpecificationNode.getNumberOfValueSpecificationItems() > 1)
-      textRendering.append(")");
+      textRepresentation.append(")");
 
-    return textRendering.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRendering.toString()));
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
   public Optional<TextRendering> renderDefaultLocationValue(DefaultLocationValueNode defaultLocationValueNode)
@@ -1071,23 +1096,24 @@ public class TextRenderer
       throw new RendererException("unknown ValueSpecificationItem node " + valueSpecificationItemNode);
   }
 
-  public Optional<TextRendering> renderDifferentFrom(OWLDifferentFromNode OWLDifferentFromNode) throws RendererException
+  public Optional<TextRendering> renderDifferentFrom(OWLDifferentFromNode differentFromNode) throws RendererException
   {
-    TextRendering rendering = new TextRendering(" DifferentFrom: ");
+    StringBuffer textRepresentation = new StringBuffer();
     boolean isFirst = true;
 
-    for (OWLNamedIndividualNode owlNamedIndividualNode : OWLDifferentFromNode.getNamedIndividualNodes()) {
-      Optional<TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
+    for (OWLNamedIndividualNode namedIndividualNode : differentFromNode.getNamedIndividualNodes()) {
+      Optional<TextRendering> individualRendering = renderOWLNamedIndividual(namedIndividualNode);
 
       if (individualRendering.isPresent()) {
         if (!isFirst)
-          rendering.addText(", ");
-        rendering.addText(individualRendering.get().getTextRendering());
+          textRepresentation.append(", ");
+        textRepresentation.append(individualRendering.get().getTextRendering());
         isFirst = false;
       }
     }
-
-    return Optional.of(rendering);
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(" DifferentFrom: " + textRepresentation.toString()));
   }
 
   @Override public int getDefaultValueEncoding()

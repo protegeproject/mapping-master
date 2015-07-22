@@ -432,7 +432,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 			if (this.owlObjectHandler.isOWLDataProperty(property)) {
 				OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(property.getIRI());
 				if (hasValueNode.hasLiteralNode()) {
-					Optional<OWLLiteralRendering> literalRendering = literalRenderer
+					Optional<OWLAPILiteralRendering> literalRendering = literalRenderer
 							.renderOWLLiteral(hasValueNode.getOWLLiteralNode());
 					if (literalRendering.isPresent()) {
 						OWLLiteral literal = literalRendering.get().getOWLLiteral();

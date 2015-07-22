@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface ReferenceRenderer
 {
+	Optional<? extends ReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException;
+
 	int getDefaultValueEncoding();
 
 	int getDefaultReferenceType();
@@ -25,6 +27,4 @@ public interface ReferenceRenderer
 	void setDefaultOWLPropertyAssertionObjectType(int defaultOWLPropertyAssertionObjectType);
 
 	void setDefaultOWLDataPropertyValueType(int defaultOWLDataPropertyValueType);
-
-	Optional<? extends Rendering> renderReference(ReferenceNode referenceNode) throws RendererException;
 }

@@ -19,19 +19,19 @@ public class OWLAPILiteralRenderer implements OWLLiteralRenderer
 		this.owlDataFactory = owlDataFactory;
 	}
 
-	@Override public Optional<OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
+	@Override public Optional<OWLAPILiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
 	{
 		if (literalNode.isBoolean())
 			return Optional.of(
-        new OWLLiteralRendering(this.owlDataFactory.getOWLLiteral(literalNode.getBooleanLiteralNode().getValue())));
+        new OWLAPILiteralRendering(this.owlDataFactory.getOWLLiteral(literalNode.getBooleanLiteralNode().getValue())));
 		else if (literalNode.isInteger())
-			return Optional.of(new OWLLiteralRendering(
+			return Optional.of(new OWLAPILiteralRendering(
 					this.owlDataFactory.getOWLLiteral(literalNode.getIntLiteralNode().getValue())));
 		else if (literalNode.isFloat())
 			return Optional
-					.of(new OWLLiteralRendering(this.owlDataFactory.getOWLLiteral(literalNode.getFloatLiteralNode().getValue())));
+					.of(new OWLAPILiteralRendering(this.owlDataFactory.getOWLLiteral(literalNode.getFloatLiteralNode().getValue())));
 		else if (literalNode.isString())
-			return Optional.of(new OWLLiteralRendering(
+			return Optional.of(new OWLAPILiteralRendering(
 					this.owlDataFactory.getOWLLiteral(literalNode.getStringLiteralNode().getValue())));
 		else
 			throw new RendererException("unknown type for node " + literalNode.getNodeName());

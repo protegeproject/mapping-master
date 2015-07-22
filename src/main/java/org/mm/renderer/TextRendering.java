@@ -2,43 +2,23 @@ package org.mm.renderer;
 
 public class TextRendering implements Rendering
 {
-  private String rendering;
+  private final String textRendering;
 
-  public TextRendering()
+  public TextRendering(String textRendering)
   {
-    this.rendering = "";
-  }
-
-  public TextRendering(String initialTextRendering)
-  {
-    rendering = initialTextRendering;
-  }
-
-  public boolean nothingRendered()
-  {
-    return rendering.equals("") || rendering.equals("\"\"");
-  } // TODO: last clause is hack
-
-  public void addText(String text)
-  {
-    this.rendering = rendering.concat(text);
+    this.textRendering = textRendering;
   }
 
   public String getTextRendering()
   {
-    stripDoubleQuotesIfNecessary(); // TODO: hack
-
-    return this.rendering;
+    if (textRendering.startsWith("\"")) // TODO Hack
+      return textRendering.substring(1, textRendering.length() - 1);
+    else
+      return textRendering;
   }
 
   @Override public String toString()
   {
     return getTextRendering();
-  }
-
-  private void stripDoubleQuotesIfNecessary()
-  {
-    if (rendering.startsWith("\""))
-      rendering = rendering.substring(1, rendering.length() - 1);
   }
 }
