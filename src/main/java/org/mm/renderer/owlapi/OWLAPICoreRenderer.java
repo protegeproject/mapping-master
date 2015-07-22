@@ -9,6 +9,7 @@ import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassNode;
+import org.mm.parser.node.OWLDifferentFromNode;
 import org.mm.parser.node.OWLEquivalentClassesNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
@@ -328,6 +329,12 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 	}
 
 	@Override public Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAsNode) throws RendererException
+	{
+		return Optional.empty(); // TODO
+	}
+
+	@Override public Optional<? extends Rendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
+		throws RendererException
 	{
 		return Optional.empty(); // TODO
 	}

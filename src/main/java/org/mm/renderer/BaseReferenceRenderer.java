@@ -132,7 +132,7 @@ public abstract class BaseReferenceRenderer
     return this.defaultNamespace.length() != 0;
   }
 
-  protected String getReferenceValueFromLocation(SpreadsheetLocation location, ReferenceNode referenceNode)
+  protected String resolveReferenceValue(SpreadsheetLocation location, ReferenceNode referenceNode)
     throws RendererException
   {
     SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
@@ -160,7 +160,45 @@ public abstract class BaseReferenceRenderer
     return referenceValue;
   }
 
-  protected String getReferenceRDFIDValue(String locationValue, ReferenceNode referenceNode) throws RendererException
+  protected String processLiteralReferenceValue(SpreadsheetLocation location, String rawLocationValue,
+    ReferenceNode referenceNode) throws RendererException
+  {
+    ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+    String locationValue = rawLocationValue.replace("\"", "\\\"");
+    String processedLocationValue;
+
+    if (referenceNode.hasLiteralValueEncoding()) {
+      if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding())
+        processedLocationValue = processValueEncoding(locationValue, referenceNode.getLiteralValueEncodingNode(),
+          referenceNode);
+      else if (referenceNode.hasValueExtractionFunction()) {
+        ValueExtractionFunctionNode valueExtractionFunctionNode = referenceNode.getValueExtractionFunctionNode();
+        processedLocationValue = processValueExtractionFunction(locationValue, valueExtractionFunctionNode);
+      } else
+        processedLocationValue = locationValue;
+    } else
+      processedLocationValue = "";
+
+    if (processedLocationValue.equals("") && !referenceNode.getActualDefaultDataValue().equals(""))
+      processedLocationValue = referenceNode.getActualDefaultDataValue();
+
+    if (processedLocationValue.equals("")
+      && referenceNode.getActualEmptyDataValueDirective() == MM_ERROR_IF_EMPTY_DATA_VALUE)
+      throw new RendererException("empty data value in reference " + referenceNode + " at location " + location);
+
+    if (processedLocationValue.equals("")
+      && referenceNode.getActualEmptyDataValueDirective() == MM_WARNING_IF_EMPTY_DATA_VALUE) {
+      //logLine(
+      //  "processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
+    }
+
+    if (referenceType.isQuotedOWLDataValue())
+      processedLocationValue = "\"" + processedLocationValue + "\"";
+
+    return processedLocationValue;
+  }
+
+  protected String getReferenceRDFID(String locationValue, ReferenceNode referenceNode) throws RendererException
   {
     String rdfIDValue;
 
@@ -187,7 +225,7 @@ public abstract class BaseReferenceRenderer
     return rdfIDValue;
   }
 
-  protected String getReferenceRDFSLabelText(String locationValue, ReferenceNode referenceNode) throws RendererException
+  protected String getReferenceRDFSLabel(String locationValue, ReferenceNode referenceNode) throws RendererException
   {
     String rdfsLabelText;
 
@@ -409,44 +447,6 @@ public abstract class BaseReferenceRenderer
     } catch (PatternSyntaxException e) {
       throw new RendererException("invalid capturing expression: " + capturingExpression + ": " + e.getMessage());
     }
-  }
-
-  private String processLiteralReferenceValue(SpreadsheetLocation location, String rawLocationValue,
-    ReferenceNode referenceNode) throws RendererException
-  {
-    ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-    String locationValue = rawLocationValue.replace("\"", "\\\"");
-    String processedLocationValue;
-
-    if (referenceNode.hasLiteralValueEncoding()) {
-      if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding())
-        processedLocationValue = processValueEncoding(locationValue, referenceNode.getLiteralValueEncodingNode(),
-          referenceNode);
-      else if (referenceNode.hasValueExtractionFunction()) {
-        ValueExtractionFunctionNode valueExtractionFunctionNode = referenceNode.getValueExtractionFunctionNode();
-        processedLocationValue = processValueExtractionFunction(locationValue, valueExtractionFunctionNode);
-      } else
-        processedLocationValue = locationValue;
-    } else
-      processedLocationValue = "";
-
-    if (processedLocationValue.equals("") && !referenceNode.getActualDefaultDataValue().equals(""))
-      processedLocationValue = referenceNode.getActualDefaultDataValue();
-
-    if (processedLocationValue.equals("")
-      && referenceNode.getActualEmptyDataValueDirective() == MM_ERROR_IF_EMPTY_DATA_VALUE)
-      throw new RendererException("empty data value in reference " + referenceNode + " at location " + location);
-
-    if (processedLocationValue.equals("")
-      && referenceNode.getActualEmptyDataValueDirective() == MM_WARNING_IF_EMPTY_DATA_VALUE) {
-      //logLine(
-      //  "processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
-    }
-
-    if (referenceType.isQuotedOWLDataValue())
-      processedLocationValue = "\"" + processedLocationValue + "\"";
-
-    return processedLocationValue;
   }
 
   private String reverse(String source)

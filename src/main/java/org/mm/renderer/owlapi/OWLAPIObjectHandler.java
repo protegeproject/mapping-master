@@ -124,7 +124,7 @@ class OWLAPIObjectHandler
   }
 
   public OWLEntity createOrResolveOWLEntity(SpreadsheetLocation location, String locationValue,
-    ReferenceType referenceType, String rdfID, String labelText, String defaultNamespace, String language,
+    ReferenceType referenceType, String rdfID, String rdfsLabel, String defaultNamespace, String language,
     ReferenceDirectives referenceDirectives) throws RendererException
   {
     OWLEntity createdOrResolvedOWLEntity;
@@ -135,7 +135,7 @@ class OWLAPIObjectHandler
       createdOrResolvedOWLEntity = resolveOWLEntityWithLocationEncoding(location, defaultNamespace, referenceType);
     } else { // Uses rdf:ID or rdfs:label encoding
       boolean isEmptyRDFIDValue = rdfID == null || rdfID.equals("");
-      boolean isEmptyRDFSLabelText = labelText == null | labelText.equals("");
+      boolean isEmptyRDFSLabelText = rdfsLabel == null | rdfsLabel.equals("");
 
       if (isEmptyRDFIDValue && referenceDirectives.actualEmptyRDFIDDirectiveIsSkipIfEmpty()) {
         System.err.println("--processReference: skipping because of empty rdf:ID");
@@ -150,14 +150,14 @@ class OWLAPIObjectHandler
         } else { // One or both of rdf:ID and label have values
           if (isEmptyRDFIDValue) { // rdf:ID is empty, label must then have a value. Use label to resolve possible existing entity.
             createdOrResolvedOWLEntity = createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(location, referenceType,
-              defaultNamespace, labelText, language, referenceDirectives);
+              defaultNamespace, rdfsLabel, language, referenceDirectives);
           } else { // Has an rdf:ID value, may or may not have a label value
             if (isEmptyRDFSLabelText) { // Has a value for rdf:ID and an empty rdfs:label value
               createdOrResolvedOWLEntity = createOrResolveOWLEntityWithNonEmptyIDAndEmptyLabel(location, rdfID,
                 referenceType, defaultNamespace, referenceDirectives);
             } else { // Has rdf:ID and rdfs:label values. Use rdf:ID to resolve resolve possible existing entity.
               createdOrResolvedOWLEntity = createOrResolveOWLEntityWithNonEmptyIDAndNonEmptyLabel(location, rdfID,
-                labelText, referenceType, defaultNamespace, language, referenceDirectives);
+                rdfsLabel, referenceType, defaultNamespace, language, referenceDirectives);
             }
           }
         }

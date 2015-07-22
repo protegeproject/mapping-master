@@ -1,5 +1,6 @@
 package org.mm.renderer;
 
+import org.mm.core.ReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.ExpressionNode;
@@ -42,9 +43,11 @@ import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
+import org.mm.rendering.TextLiteralRendering;
 import org.mm.rendering.TextReferenceRendering;
 import org.mm.rendering.TextRendering;
 import org.mm.ss.SpreadSheetDataSource;
+import org.mm.ss.SpreadsheetLocation;
 
 import java.util.Optional;
 
@@ -70,8 +73,42 @@ public class TextRenderer extends BaseReferenceRenderer
   @Override public Optional<TextReferenceRendering> renderReference(ReferenceNode referenceNode)
     throws RendererException
   {
-    // TODO
-    return Optional.empty();
+    SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
+
+    if (sourceSpecificationNode.hasLiteral()) {
+      String literalValue = sourceSpecificationNode.getLiteral();
+
+      return Optional.empty(); // TODO
+    } else {
+      ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+      SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
+      String language = getReferenceLanguage(referenceNode);
+      String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
+
+      if (referenceType.isUntyped())
+        throw new RendererException("untyped reference " + referenceNode);
+
+      if (resolvedReferenceValue.equals("")
+        && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
+        return Optional.empty();
+
+      if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
+        String literalReferenceValue = processLiteralReferenceValue(location, resolvedReferenceValue, referenceNode);
+
+        if (literalReferenceValue.length() == 0
+          && referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE)
+          return Optional.empty();
+
+        return Optional.empty(); // TODO
+      } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
+        String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
+        String rdfsLabel = getReferenceRDFSLabel(resolvedReferenceValue, referenceNode);
+
+        return Optional.empty(); // TODO
+      } else
+        throw new RendererException(
+          "internal error: unknown reference type " + referenceType + " for reference " + referenceNode.toString());
+    }
   }
 
   @Override public Optional<? extends TextRendering> renderExpression(ExpressionNode expressionNode)
@@ -216,7 +253,7 @@ public class TextRenderer extends BaseReferenceRenderer
     }
 
     if (individualDeclarationNode.hasDifferentFrom()) {
-      Optional<? extends TextRendering> differentFromRendering = renderDifferentFrom(
+      Optional<? extends TextRendering> differentFromRendering = renderOWLDifferentFrom(
         individualDeclarationNode.getOWLDifferentFromNode());
       if (differentFromRendering.isPresent())
         textRepresentation.append(differentFromRendering.get().getTextRendering());
@@ -525,6 +562,27 @@ public class TextRenderer extends BaseReferenceRenderer
       Optional.of(new TextRendering(" SameAs: " + textRepresentation.toString()));
   }
 
+  @Override public Optional<? extends TextRendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
+    throws RendererException
+  {
+    StringBuilder textRepresentation = new StringBuilder();
+    boolean isFirst = true;
+
+    for (OWLNamedIndividualNode namedIndividualNode : differentFromNode.getNamedIndividualNodes()) {
+      Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(namedIndividualNode);
+
+      if (individualRendering.isPresent()) {
+        if (!isFirst)
+          textRepresentation.append(", ");
+        textRepresentation.append(individualRendering.get().getTextRendering());
+        isFirst = false;
+      }
+    }
+    return textRepresentation.length() == 0 ?
+      Optional.empty() :
+      Optional.of(new TextRendering(" DifferentFrom: " + textRepresentation.toString()));
+  }
+
   @Override public Optional<? extends TextRendering> renderOWLPropertyAssertionObject(
     OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException
   {
@@ -704,40 +762,19 @@ public class TextRenderer extends BaseReferenceRenderer
       throw new RendererException("unknown child for node " + namedIndividualNode.getNodeName());
   }
 
-  @Override public Optional<? extends TextRendering> renderOWLLiteral(OWLLiteralNode literalNode)
+  @Override public Optional<? extends TextLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode)
     throws RendererException
-  {
+  { // TODO Need to maintain type information on literal creation
     if (literalNode.isInteger())
-      return Optional.of(new TextRendering(literalNode.getIntLiteralNode().toString()));
+      return Optional.of(new TextLiteralRendering(literalNode.getIntLiteralNode().toString()));
     else if (literalNode.isFloat())
-      return Optional.of(new TextRendering(literalNode.getFloatLiteralNode().toString()));
+      return Optional.of(new TextLiteralRendering(literalNode.getFloatLiteralNode().toString()));
     else if (literalNode.isString())
-      return Optional.of(new TextRendering(literalNode.toString()));
+      return Optional.of(new TextLiteralRendering(literalNode.toString()));
     else if (literalNode.isBoolean())
-      return Optional.of(new TextRendering(literalNode.getBooleanLiteralNode().toString()));
+      return Optional.of(new TextLiteralRendering(literalNode.getBooleanLiteralNode().toString()));
     else
       throw new RendererException("unknown child for node " + literalNode.getNodeName());
-  }
-
-  public Optional<? extends TextRendering> renderDifferentFrom(OWLDifferentFromNode differentFromNode)
-    throws RendererException
-  {
-    StringBuilder textRepresentation = new StringBuilder();
-    boolean isFirst = true;
-
-    for (OWLNamedIndividualNode namedIndividualNode : differentFromNode.getNamedIndividualNodes()) {
-      Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(namedIndividualNode);
-
-      if (individualRendering.isPresent()) {
-        if (!isFirst)
-          textRepresentation.append(", ");
-        textRepresentation.append(individualRendering.get().getTextRendering());
-        isFirst = false;
-      }
-    }
-    return textRepresentation.length() == 0 ?
-      Optional.empty() :
-      Optional.of(new TextRendering(" DifferentFrom: " + textRepresentation.toString()));
   }
 
   @Override public int getDefaultValueEncoding()
@@ -893,24 +930,6 @@ public class TextRenderer extends BaseReferenceRenderer
     return name.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(name));
   }
 
-  private Optional<? extends TextRendering> renderSourceSpecification(SourceSpecificationNode sourceSpecificationNode)
-    throws RendererException
-  {
-    StringBuilder textRepresentation = new StringBuilder();
-
-    if (sourceSpecificationNode.hasSource())
-      textRepresentation.append("'" + sourceSpecificationNode.getSource() + "'!");
-
-    if (sourceSpecificationNode.hasLocation())
-      textRepresentation.append(sourceSpecificationNode.getLocation());
-    else
-      textRepresentation.append("\"" + sourceSpecificationNode.getLiteral() + "\""); // A literal
-
-    return textRepresentation.length() == 0 ?
-      Optional.empty() :
-      Optional.of(new TextRendering("@" + textRepresentation.toString()));
-  }
-
   private Optional<? extends TextRendering> renderType(TypeNode typeNode) throws RendererException
   {
     if (typeNode instanceof ReferenceNode)
@@ -958,8 +977,8 @@ public class TextRenderer extends BaseReferenceRenderer
       Optional.of(new TextRendering(textRepresentation.toString()));
   }
 
-  private Optional<? extends TextRendering> renderValueSpecification(
-    ValueSpecificationNode valueSpecificationNode) throws RendererException
+  private Optional<? extends TextRendering> renderValueSpecification(ValueSpecificationNode valueSpecificationNode)
+    throws RendererException
   {
     StringBuilder textRepresentation = new StringBuilder();
     boolean isFirst = true;

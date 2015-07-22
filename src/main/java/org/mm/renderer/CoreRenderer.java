@@ -7,6 +7,7 @@ import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassNode;
+import org.mm.parser.node.OWLDifferentFromNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLSameAsNode;
@@ -42,6 +43,8 @@ public interface CoreRenderer
     OWLIndividualDeclarationNode owlIndividualDeclarationNode) throws RendererException;
 
   Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAs) throws RendererException;
+
+  Optional<? extends Rendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode) throws RendererException;
 
   Optional<? extends Rendering> renderOWLPropertyAssertionObject(
     OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException;

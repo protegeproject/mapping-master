@@ -17,7 +17,7 @@ public class TextLiteralRendering extends TextRendering implements OWLLiteralRen
 
   @Override public boolean isString()
   {
-    return false; // TODO
+    return true; // TODO
   }
 
   @Override public boolean isBoolean()

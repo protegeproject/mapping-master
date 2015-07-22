@@ -84,15 +84,11 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
       return "unknown option: " + optionName;
   }
 
-  // TODO: test for valid settings for each option: checkOption
+  // TODO Test for valid settings for each option
   public void setMappingConfigurationOption(String optionName, String settingName)
   {
     int settingID = getSettingID(settingName);
     int optionID = getOptionID(optionName);
-
-    System.err.println(
-      "ReferenceRendererOptionsManager.setMappingConfigurationOption: optionName: " + optionName + ", settingName: "
-        + settingName);
 
     if (settingID != -1) {
       if (optionID == MM_DEFAULT_VALUE_ENCODING)
@@ -131,7 +127,7 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
 
   public Set<String> getPropertyTypes()
   {
-    Set<String> propertyTypes = new HashSet<String>();
+    Set<String> propertyTypes = new HashSet<>();
 
     for (int i = 0; i < OWLAPICoreRenderer.PropertyTypes.length; i++) {
       propertyTypes.add(ParserUtil.getTokenName(OWLAPICoreRenderer.PropertyTypes[i]));
@@ -142,7 +138,7 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
 
   public Set<String> getPropertyValueTypes()
   {
-    Set<String> propertyValueTypes = new HashSet<String>();
+    Set<String> propertyValueTypes = new HashSet<>();
 
     for (int i = 0; i < OWLAPICoreRenderer.PropertyValueTypes.length; i++) {
       propertyValueTypes.add(ParserUtil.getTokenName(OWLAPICoreRenderer.PropertyValueTypes[i]));
@@ -153,7 +149,7 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
 
   public Set<String> getDataPropertyValueTypes()
   {
-    Set<String> dataPropertyValueTypes = new HashSet<String>();
+    Set<String> dataPropertyValueTypes = new HashSet<>();
 
     for (int i = 0; i < OWLAPICoreRenderer.DataPropertyValueTypes.length; i++) {
       dataPropertyValueTypes.add(ParserUtil.getTokenName(OWLAPICoreRenderer.DataPropertyValueTypes[i]));

@@ -8,12 +8,10 @@ import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.parser.node.TypeNode;
-import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.renderer.BaseReferenceRenderer;
 import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.RendererException;
-import org.mm.rendering.Rendering;
-import org.mm.rendering.owlapi.OWLAPILiteralRendering;
+import org.mm.rendering.OWLLiteralRendering;
 import org.mm.rendering.owlapi.OWLAPIReferenceRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
@@ -41,7 +39,6 @@ import java.util.Set;
 public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
   implements ReferenceRenderer, MappingMasterParserConstants
 {
-  private final OWLOntology ontology;
   private final OWLDataFactory owlDataFactory;
   private final OWLAPIObjectHandler owlObjectHandler;
   private final OWLAPIEntityRenderer entityRenderer;
@@ -51,7 +48,6 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
     OWLAPIEntityRenderer entityRenderer, OWLAPILiteralRenderer literalRenderer)
   {
     super(dataSource);
-    this.ontology = ontology;
     this.owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
     this.owlObjectHandler = new OWLAPIObjectHandler(ontology);
     this.entityRenderer = entityRenderer;
@@ -68,25 +64,21 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
       OWLLiteral literal = this.literalRenderer.createOWLLiteral(literalValue);
       return Optional.of(new OWLAPIReferenceRendering(literal));
     } else {
+      ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
       SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
       String defaultNamespace = getReferenceNamespace(referenceNode);
       String language = getReferenceLanguage(referenceNode);
-
-      // logLine("<<<<<<<<<<<<<<<<<<<< Rendering reference [" + referenceNode + "] <<<<<<<<<<<<<<<<<<<<");
-
-      String referenceLocationValue = getReferenceValueFromLocation(location, referenceNode);
-
-      if (referenceLocationValue.equals("")
-        && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
-        return Optional.empty();
-
-      ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+      String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
 
       if (referenceType.isUntyped())
         throw new RendererException("untyped reference " + referenceNode);
 
+      if (resolvedReferenceValue.equals("")
+        && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
+        return Optional.empty();
+
       if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
-        String literalReferenceValue = processLiteralReferenceValue(location, referenceLocationValue, referenceNode);
+        String literalReferenceValue = processLiteralReferenceValue(location, resolvedReferenceValue, referenceNode);
 
         if (literalReferenceValue.length() == 0
           && referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE)
@@ -94,33 +86,25 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
 
         OWLLiteral literal = literalRenderer.createOWLLiteral(literalReferenceValue, referenceType);
 
-        // logLine(
-        //  ">>>>>>>>>>>>>>>>>>>> Reference [" + referenceNode.toString() + "] rendered as " + referenceNode
-        //    .getReferenceTypeNode() + " " + referenceRendering.toString() + " >>>>>>>>>>>>>>>>>>>>");
-
         return Optional.of(new OWLAPIReferenceRendering(literal));
       } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
-        String rdfID = getReferenceRDFIDValue(referenceLocationValue, referenceNode);
-        String rdfsLabelText = getReferenceRDFSLabelText(referenceLocationValue, referenceNode);
+        String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
+        String rdfsLabel = getReferenceRDFSLabel(resolvedReferenceValue, referenceNode);
 
         OWLEntity owlEntity = this.owlObjectHandler
-          .createOrResolveOWLEntity(location, referenceLocationValue, referenceType, rdfID, rdfsLabelText,
-            defaultNamespace, language, referenceNode.getReferenceDirectives());
+          .createOrResolveOWLEntity(location, resolvedReferenceValue, referenceType, rdfID, rdfsLabel, defaultNamespace,
+            language, referenceNode.getReferenceDirectives());
         Set<OWLAxiom> axioms = addDefiningTypesFromReference(owlEntity, referenceNode);
 
-        // logLine(
-        //  ">>>>>>>>>>>>>>>>>>>> Reference [" + referenceNode.toString() + "] rendered as " + referenceNode
-        //    .getReferenceTypeNode() + " " + referenceRendering.toString() + " >>>>>>>>>>>>>>>>>>>>");
-
         return Optional.of(new OWLAPIReferenceRendering(owlEntity, axioms));
-
       } else
         throw new RendererException(
           "internal error: unknown reference type " + referenceType + " for reference " + referenceNode.toString());
     }
   }
 
-  @Override public Optional<? extends Rendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
+  @Override public Optional<? extends OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode)
+    throws RendererException
   {
     return this.literalRenderer.renderOWLLiteral(literalNode);
   }
@@ -153,65 +137,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
     }
     return axioms;
   }
-
-  private Optional<OWLAPILiteralRendering> renderValueExtractionFunctionArgument(
-    ValueExtractionFunctionArgumentNode valueExtractionFunctionArgumentNode) throws RendererException
-  {
-    if (valueExtractionFunctionArgumentNode.isOWLLiteralNode())
-      return this.literalRenderer.renderOWLLiteral(valueExtractionFunctionArgumentNode.getOWLLiteralNode());
-    else if (valueExtractionFunctionArgumentNode.isReferenceNode()) {
-      ReferenceNode referenceNode = valueExtractionFunctionArgumentNode.getReferenceNode();
-      Optional<OWLAPIReferenceRendering> referenceRendering = renderReference(referenceNode);
-      if (referenceRendering.isPresent()) {
-        if (referenceRendering.get().isOWLLiteral()) {
-          OWLLiteral literal = referenceRendering.get().getOWLLiteral().get();
-          return Optional.of(new OWLAPILiteralRendering(literal));
-        } else
-          throw new RendererException("expecting literal reference for value extraction function argument, got "
-            + valueExtractionFunctionArgumentNode);
-      } else
-        return Optional.empty();
-    } else
-      throw new RendererException("unknown child for node " + valueExtractionFunctionArgumentNode.getNodeName());
-  }
-
-  private String processLiteralReferenceValue(SpreadsheetLocation location, String rawLocationValue,
-    ReferenceNode referenceNode) throws RendererException
-  {
-    ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-    String locationValue = rawLocationValue.replace("\"", "\\\"");
-    String processedLocationValue;
-
-    if (referenceNode.hasLiteralValueEncoding()) {
-      if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding())
-        processedLocationValue = processValueEncoding(locationValue, referenceNode.getLiteralValueEncodingNode(),
-          referenceNode);
-      else if (referenceNode.hasValueExtractionFunction())
-        processedLocationValue = processValueExtractionFunction(locationValue,
-          referenceNode.getValueExtractionFunctionNode());
-      else
-        processedLocationValue = locationValue;
-    } else
-      processedLocationValue = "";
-
-    if (processedLocationValue.equals("") && !referenceNode.getActualDefaultDataValue().equals(""))
-      processedLocationValue = referenceNode.getActualDefaultDataValue();
-
-    if (processedLocationValue.equals("")
-      && referenceNode.getActualEmptyDataValueDirective() == MM_ERROR_IF_EMPTY_DATA_VALUE)
-      throw new RendererException("empty data value in reference " + referenceNode + " at location " + location);
-
-    if (processedLocationValue.equals("")
-      && referenceNode.getActualEmptyDataValueDirective() == MM_WARNING_IF_EMPTY_DATA_VALUE)
-      //logLine(
-      //  "processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
-
-      if (referenceType.isQuotedOWLDataValue())
-        processedLocationValue = "\"" + processedLocationValue + "\"";
-
-    return processedLocationValue;
-  }
-
+  
   private String getReferenceNamespace(ReferenceNode referenceNode) throws RendererException
   {
     // A reference will not have both a prefix and a namespace specified
