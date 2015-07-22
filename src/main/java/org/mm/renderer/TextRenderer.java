@@ -59,12 +59,6 @@ public class TextRenderer extends BaseReferenceRenderer
   implements CoreRenderer, OWLEntityRenderer, OWLLiteralRenderer, ReferenceRenderer, OWLClassExpressionRenderer,
   MappingMasterParserConstants
 {
-  private int defaultValueEncoding = RDFS_LABEL;
-  private int defaultReferenceType = OWL_CLASS;
-  private int defaultOWLPropertyType = OWL_OBJECT_PROPERTY;
-  private int defaultOWLPropertyAssertionObjectType = XSD_STRING;
-  private int defaultOWLDataPropertyValueType = XSD_STRING;
-
   public TextRenderer(SpreadSheetDataSource dataSource)
   {
     super(dataSource);
