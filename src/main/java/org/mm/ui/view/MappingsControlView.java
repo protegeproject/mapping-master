@@ -1,9 +1,9 @@
 package org.mm.ui.view;
 
+import org.mm.renderer.ReferenceRendererOptionsManager;
 import org.mm.ui.MMApplication;
 import org.mm.ui.action.SaveMappingsAction;
 import org.mm.ui.model.MMApplicationModel;
-import org.mm.renderer.MappingConfigurationOptionsManager;
 import org.mm.ui.action.CloseMappingsAction;
 import org.mm.ui.action.MapExpressionsAction;
 import org.mm.ui.action.OpenMappingsAction;
@@ -61,7 +61,7 @@ public class MappingsControlView extends JPanel implements MMView
 		statusWindow.append(text);
 	}
 
-	// TODO: need to make option stuff more generic. MappingConfigurationOptionsManager should return list of options
+	// TODO: need to make option stuff more generic. ReferenceRendererOptionsManager should return list of options
 	private void createComponents()
 	{
 		JPanel headingPanel, mappingsButtonPanel, optionsPanel, fileButtonPanel, footerPanel;
@@ -185,7 +185,7 @@ public class MappingsControlView extends JPanel implements MMView
 		return application.getApplicationModel();
 	}
 
-	private MappingConfigurationOptionsManager getOptionsManager()
+	private ReferenceRendererOptionsManager getOptionsManager()
 	{
 		return getApplicationModel().getMappingConfigurationOptionsManager();
 	}

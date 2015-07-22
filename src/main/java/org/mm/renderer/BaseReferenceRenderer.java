@@ -9,6 +9,8 @@ import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
+import org.mm.rendering.ReferenceRendering;
+import org.mm.rendering.Rendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 

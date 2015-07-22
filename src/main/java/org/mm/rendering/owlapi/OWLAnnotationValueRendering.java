@@ -1,5 +1,6 @@
-package org.mm.renderer.owlapi;
+package org.mm.rendering.owlapi;
 
+import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 
 public class OWLAnnotationValueRendering extends OWLAPIRendering

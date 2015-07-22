@@ -2,8 +2,7 @@ package org.mm.ui.model;
 
 import org.mm.core.MappingExpressionsPersistenceLayer;
 import org.mm.renderer.CoreRenderer;
-import org.mm.renderer.MappingConfigurationOptionsManager;
-import org.mm.renderer.ReferenceRenderer;
+import org.mm.renderer.ReferenceRendererOptionsManager;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ui.action.SaveMappingsAction;
 import org.mm.ui.view.MMApplicationView;
@@ -14,7 +13,7 @@ public class MMApplicationModel implements MMModel
 	private final DataSourceModel dataSourceModel;
 	private final MappingsExpressionsModel expressionMappingsModel;
 	private final CoreRenderer coreRenderer;
-	private final MappingConfigurationOptionsManager optionsManager;
+	private final ReferenceRendererOptionsManager optionsManager;
 	private final MappingExpressionsPersistenceLayer mappingExpressionsPersistenceLayer;
 
 	private MMApplicationView applicationView;
@@ -27,7 +26,7 @@ public class MMApplicationModel implements MMModel
 		this.dataSourceModel = new DataSourceModel(dataSource);
 		this.expressionMappingsModel = new MappingsExpressionsModel();
 		this.coreRenderer = coreRenderer;
-		this.optionsManager = new MappingConfigurationOptionsManager(coreRenderer.getReferenceRenderer());
+		this.optionsManager = new ReferenceRendererOptionsManager(coreRenderer.getReferenceRenderer());
 		this.mappingExpressionsPersistenceLayer = mappingExpressionsPersistenceLayer;
 	}
 
@@ -37,7 +36,7 @@ public class MMApplicationModel implements MMModel
 
 	public CoreRenderer getCoreRenderer() { return coreRenderer; }
 
-	public MappingConfigurationOptionsManager getMappingConfigurationOptionsManager() { return optionsManager; }
+	public ReferenceRendererOptionsManager getMappingConfigurationOptionsManager() { return optionsManager; }
 
 	public MappingExpressionsPersistenceLayer getMappingExpressionsPersistenceLayer() { return mappingExpressionsPersistenceLayer; }
 

@@ -4,6 +4,7 @@ import org.mm.core.ReferenceType;
 import org.mm.parser.node.OWLLiteralNode;
 import org.mm.renderer.OWLLiteralRenderer;
 import org.mm.renderer.RendererException;
+import org.mm.rendering.owlapi.OWLAPILiteralRendering;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;

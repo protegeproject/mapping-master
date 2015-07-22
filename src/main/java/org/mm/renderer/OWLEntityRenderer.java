@@ -3,6 +3,7 @@ package org.mm.renderer;
 import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLPropertyNode;
+import org.mm.rendering.Rendering;
 
 import java.util.Optional;
 

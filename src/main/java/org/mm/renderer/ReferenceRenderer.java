@@ -1,6 +1,7 @@
 package org.mm.renderer;
 
 import org.mm.parser.node.ReferenceNode;
+import org.mm.rendering.ReferenceRendering;
 
 import java.util.Optional;
 

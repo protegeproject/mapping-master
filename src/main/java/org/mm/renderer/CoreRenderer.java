@@ -11,6 +11,7 @@ import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLSameAsNode;
 import org.mm.parser.node.OWLSubclassOfNode;
+import org.mm.rendering.Rendering;
 import org.mm.ss.SpreadSheetDataSource;
 
 import java.util.Optional;

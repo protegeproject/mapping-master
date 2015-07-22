@@ -1,7 +1,5 @@
-package org.mm.renderer.owlapi;
+package org.mm.rendering.owlapi;
 
-import org.mm.renderer.Rendering;
-import org.mm.renderer.TextRendering;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
 public class OWLClassExpressionRendering extends OWLAPIRendering

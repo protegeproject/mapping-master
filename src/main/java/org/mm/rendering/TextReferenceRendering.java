@@ -1,4 +1,4 @@
-package org.mm.renderer;
+package org.mm.rendering;
 
 public class TextReferenceRendering extends TextRendering implements ReferenceRendering
 {

@@ -1,6 +1,6 @@
-package org.mm.renderer.owlapi;
+package org.mm.rendering.owlapi;
 
-import org.mm.renderer.Rendering;
+import org.mm.rendering.Rendering;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 import java.util.Collections;

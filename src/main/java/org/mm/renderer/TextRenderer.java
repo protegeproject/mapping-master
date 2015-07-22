@@ -42,6 +42,8 @@ import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
+import org.mm.rendering.TextReferenceRendering;
+import org.mm.rendering.TextRendering;
 import org.mm.ss.SpreadSheetDataSource;
 
 import java.util.Optional;

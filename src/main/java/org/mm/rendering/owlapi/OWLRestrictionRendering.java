@@ -1,4 +1,4 @@
-package org.mm.renderer.owlapi;
+package org.mm.rendering.owlapi;
 
 import org.semanticweb.owlapi.model.OWLRestriction;
 

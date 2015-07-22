@@ -16,6 +16,7 @@ import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLRestrictionNode;
 import org.mm.parser.node.OWLUnionClassNode;
+import org.mm.rendering.Rendering;
 
 import java.util.Optional;
 

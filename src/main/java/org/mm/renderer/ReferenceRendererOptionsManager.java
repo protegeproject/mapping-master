@@ -3,43 +3,42 @@ package org.mm.renderer;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
 import org.mm.renderer.owlapi.OWLAPICoreRenderer;
-import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class MappingConfigurationOptionsManager implements MappingMasterParserConstants
+public class ReferenceRendererOptionsManager implements MappingMasterParserConstants
 {
-  private ReferenceRenderer renderer;
+  private final ReferenceRenderer referenceRenderer;
 
-  public MappingConfigurationOptionsManager(ReferenceRenderer renderer)
+  public ReferenceRendererOptionsManager(ReferenceRenderer referenceRenderer)
   {
-    this.renderer = renderer;
+    this.referenceRenderer = referenceRenderer;
   }
 
   public String getDefaultNameEncoding()
   {
-    return getSettingName(renderer.getDefaultValueEncoding());
+    return getSettingName(referenceRenderer.getDefaultValueEncoding());
   }
 
   public String getDefaultReferenceType()
   {
-    return getSettingName(renderer.getDefaultReferenceType());
+    return getSettingName(referenceRenderer.getDefaultReferenceType());
   }
 
   public String getDefaultPropertyType()
   {
-    return getSettingName(renderer.getDefaultOWLPropertyType());
+    return getSettingName(referenceRenderer.getDefaultOWLPropertyType());
   }
 
   public String getDefaultPropertyValueType()
   {
-    return getSettingName(renderer.getDefaultOWLPropertyAssertionObjectType());
+    return getSettingName(referenceRenderer.getDefaultOWLPropertyAssertionObjectType());
   }
 
   public String getDefaultDataPropertyValueType()
   {
-    return getSettingName(renderer.getDefaultOWLDataPropertyValueType());
+    return getSettingName(referenceRenderer.getDefaultOWLDataPropertyValueType());
   }
 
   public String getDefaultValueEncodingOptionName()
@@ -72,15 +71,15 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
     int optionID = getOptionID(optionName);
 
     if (optionID == MM_DEFAULT_VALUE_ENCODING)
-      return getSettingName(renderer.getDefaultValueEncoding());
+      return getSettingName(referenceRenderer.getDefaultValueEncoding());
     else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
-      return getSettingName(renderer.getDefaultReferenceType());
+      return getSettingName(referenceRenderer.getDefaultReferenceType());
     else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
-      return getSettingName(renderer.getDefaultOWLPropertyType());
+      return getSettingName(referenceRenderer.getDefaultOWLPropertyType());
     else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-      return getSettingName(renderer.getDefaultOWLPropertyAssertionObjectType());
+      return getSettingName(referenceRenderer.getDefaultOWLPropertyAssertionObjectType());
     else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
-      return getSettingName(renderer.getDefaultOWLDataPropertyValueType());
+      return getSettingName(referenceRenderer.getDefaultOWLDataPropertyValueType());
     else
       return "unknown option: " + optionName;
   }
@@ -92,20 +91,20 @@ public class MappingConfigurationOptionsManager implements MappingMasterParserCo
     int optionID = getOptionID(optionName);
 
     System.err.println(
-      "MappingConfigurationOptionsManager.setMappingConfigurationOption: optionName: " + optionName + ", settingName: "
+      "ReferenceRendererOptionsManager.setMappingConfigurationOption: optionName: " + optionName + ", settingName: "
         + settingName);
 
     if (settingID != -1) {
       if (optionID == MM_DEFAULT_VALUE_ENCODING)
-        renderer.setDefaultValueEncoding(settingID);
+        referenceRenderer.setDefaultValueEncoding(settingID);
       else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
-        renderer.setDefaultReferenceType(settingID);
+        referenceRenderer.setDefaultReferenceType(settingID);
       else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
-        renderer.setDefaultOWLPropertyType(settingID);
+        referenceRenderer.setDefaultOWLPropertyType(settingID);
       else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-        renderer.setDefaultOWLPropertyAssertionObjectType(settingID);
+        referenceRenderer.setDefaultOWLPropertyAssertionObjectType(settingID);
       else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
-        renderer.setDefaultOWLDataPropertyValueType(settingID);
+        referenceRenderer.setDefaultOWLDataPropertyValueType(settingID);
     }
   }
 

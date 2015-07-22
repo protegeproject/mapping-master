@@ -1,6 +1,6 @@
-package org.mm.renderer.owlapi;
+package org.mm.rendering.owlapi;
 
-import org.mm.renderer.OWLLiteralRendering;
+import org.mm.rendering.OWLLiteralRendering;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 

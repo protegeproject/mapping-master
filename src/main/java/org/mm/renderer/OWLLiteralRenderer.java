@@ -1,6 +1,7 @@
 package org.mm.renderer;
 
 import org.mm.parser.node.OWLLiteralNode;
+import org.mm.rendering.Rendering;
 
 import java.util.Optional;
 

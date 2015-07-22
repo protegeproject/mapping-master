@@ -1,4 +1,4 @@
-package org.mm.renderer;
+package org.mm.rendering;
 
 public interface OWLLiteralRendering extends Rendering
 {

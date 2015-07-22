@@ -1,6 +1,6 @@
-package org.mm.renderer.owlapi;
+package org.mm.rendering.owlapi;
 
-import org.mm.renderer.ReferenceRendering;
+import org.mm.rendering.ReferenceRendering;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
