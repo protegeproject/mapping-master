@@ -11,7 +11,7 @@ import org.mm.parser.ParserUtil;
 public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
 {
   private int encodingType;
-  private ValueSpecificationNode valueSpecification;
+  private ValueSpecificationNode valueSpecificationNode;
 
   public ValueEncodingNode(ASTValueEncoding node) throws ParseException
   {
@@ -21,7 +21,7 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "ValueSpecification")) {
-        valueSpecification = new ValueSpecificationNode((ASTValueSpecification)child);
+        valueSpecificationNode = new ValueSpecificationNode((ASTValueSpecification)child);
       } else
         throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
     }
@@ -29,9 +29,9 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
 
   public ValueEncodingNode(int defaultValueEncoding) { encodingType = defaultValueEncoding; }
 
-  public boolean hasValueSpecification() { return valueSpecification != null; }
+  public boolean hasValueSpecificationNode() { return valueSpecificationNode != null; }
 
-  public ValueSpecificationNode getValueSpecification() { return valueSpecification; }
+  public ValueSpecificationNode getValueSpecificationNode() { return valueSpecificationNode; }
 
   public int getEncodingType() { return encodingType; }
 
@@ -59,8 +59,8 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
   {
     String representation = getEncodingTypeName();
 
-    if (hasValueSpecification())
-      representation += valueSpecification.toString();
+    if (hasValueSpecificationNode())
+      representation += valueSpecificationNode.toString();
 
     return representation;
   }
@@ -72,8 +72,8 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
     if ((obj == null) || (obj.getClass() != this.getClass()))
       return false;
     ValueEncodingNode ve = (ValueEncodingNode)obj;
-    return (getEncodingType() == ve.getEncodingType() && (valueSpecification != null && ve.valueSpecification != null
-      && valueSpecification.equals(ve.valueSpecification)));
+    return (getEncodingType() == ve.getEncodingType() && (valueSpecificationNode != null && ve.valueSpecificationNode != null
+      && valueSpecificationNode.equals(ve.valueSpecificationNode)));
   }
 
   public int hashCode()
@@ -81,7 +81,7 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
     int hash = 15;
 
     hash = hash + encodingType;
-    hash = hash + (null == valueSpecification ? 0 : valueSpecification.hashCode());
+    hash = hash + (null == valueSpecificationNode ? 0 : valueSpecificationNode.hashCode());
 
     return hash;
   }

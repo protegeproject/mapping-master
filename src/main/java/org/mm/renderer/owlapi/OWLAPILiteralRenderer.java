@@ -78,4 +78,10 @@ public class OWLAPILiteralRenderer implements OWLLiteralRenderer
 			throw new RendererException(
 				"unknown type " + referenceType.getTypeName() + " for literal " + rawValue);
 	}
+
+	public OWLLiteral createOWLLiteral(String rawValue)
+		throws RendererException
+	{
+			return this.owlDataFactory.getOWLLiteral(rawValue);
+	}
 }

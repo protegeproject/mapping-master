@@ -38,7 +38,7 @@ public class OWLLiteralNode implements  MMNode
 
   public boolean isInteger()
   {
-    return integerLiteralNode != null;
+    return this.integerLiteralNode != null;
   }
 
   public boolean isFloat()
