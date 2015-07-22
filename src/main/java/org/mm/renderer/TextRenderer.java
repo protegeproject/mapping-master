@@ -54,7 +54,7 @@ import java.util.Optional;
  * This renderer produces a text rendering of a Mapping Master expression with reference values
  * substituted inline.
  */
-public class TextRenderer
+public class TextRenderer extends BaseReferenceRenderer
   implements CoreRenderer, OWLEntityRenderer, OWLLiteralRenderer, ReferenceRenderer, OWLClassExpressionRenderer,
   MappingMasterParserConstants
 {
@@ -64,11 +64,11 @@ public class TextRenderer
   private int defaultOWLPropertyAssertionObjectType = XSD_STRING;
   private int defaultOWLDataPropertyValueType = XSD_STRING;
 
-  @Override public void setDataSource(SpreadSheetDataSource dataSource)
-  {
-
-  }
-
+	public TextRenderer(SpreadSheetDataSource dataSource)
+	{
+		super(dataSource);
+	}
+	
   @Override public OWLEntityRenderer getOWLEntityRenderer()
   {
     return this;
@@ -78,16 +78,16 @@ public class TextRenderer
   {
     return this;
   }
-
-  @Override public OWLLiteralRenderer getOWLLiteralRenderer()
-  {
-    return this;
-  }
-
+	
   @Override public ReferenceRenderer getReferenceRenderer()
   {
     return this;
   }
+
+	@Override public OWLLiteralRenderer getOWLLiteralRenderer()
+	{
+		return this;
+	}
 
   public Optional<? extends TextRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
   {
@@ -110,7 +110,7 @@ public class TextRenderer
   public Optional<? extends TextRendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode individualDeclarationNode)
     throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
     boolean isFirst = true;
     Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(
       individualDeclarationNode.getOWLIndividualNode());
@@ -181,7 +181,7 @@ public class TextRenderer
   @Override public Optional<? extends TextRendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
     throws RendererException
   {
-    StringBuffer textRendering = new StringBuffer();
+    StringBuilder textRendering = new StringBuilder();
 
     if (classExpressionNode.hasOWLObjectOneOfNode()) {
       Optional<? extends TextRendering> objectOneOfRendering = renderOWLObjectOneOf(classExpressionNode.getOWLObjectOneOfNode());
@@ -245,7 +245,7 @@ public class TextRenderer
 
       return classExpressionRendering;
     } else {
-      StringBuffer textRepresentation = new StringBuffer();
+      StringBuilder textRepresentation = new StringBuilder();
       boolean isFirst = true;
 
       for (OWLClassExpressionNode classExpressionNode : intersectionClassNode.getOWLClassExpressionNodes()) {
@@ -269,7 +269,7 @@ public class TextRenderer
   @Override public Optional<? extends TextRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
     OWLEquivalentClassesNode equivalentClassesNode) throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
 
     textRepresentation.append(" EquivalentTo: ");
 
@@ -307,7 +307,7 @@ public class TextRenderer
 
       return intersectionRendering;
     } else {
-      StringBuffer textRepresentation = new StringBuffer();
+      StringBuilder textRepresentation = new StringBuilder();
       boolean isFirst = true;
 
       for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClassNodes()) {
@@ -462,7 +462,7 @@ public class TextRenderer
   @Override public Optional<? extends TextRendering> renderOWLSubclassOf(OWLClassNode declaredClassNode,
     OWLSubclassOfNode subclassOfNode) throws RendererException
   {
-    StringBuffer subClassesRepresentation = new StringBuffer();
+    StringBuilder subClassesRepresentation = new StringBuilder();
 
     if (subclassOfNode.getClassExpressionNodes().size() == 1) {
       Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
@@ -494,7 +494,7 @@ public class TextRenderer
   @Override public Optional<? extends TextReferenceRendering> renderReference(ReferenceNode referenceNode)
     throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
     boolean hasExplicitOptions = referenceNode.hasExplicitOptions();
     boolean atLeastOneOptionProcessed = false;
 
@@ -660,7 +660,7 @@ public class TextRenderer
 
   private Optional<? extends TextRendering> renderValueEncoding(ValueEncodingNode valueEncodingNode) throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
 
     textRepresentation.append(valueEncodingNode.getEncodingTypeName());
 
@@ -677,7 +677,7 @@ public class TextRenderer
 
   private Optional<? extends TextRendering> renderTypes(TypesNode types) throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
     boolean isFirst = true;
 
     for (TypeNode typeNode : types.getTypeNodes()) {
@@ -706,7 +706,7 @@ public class TextRenderer
 
   public Optional<? extends TextRendering> renderOWLSameAs(OWLSameAsNode OWLSameAsNode) throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
     boolean isFirst = true;
 
     for (OWLNamedIndividualNode owlNamedIndividualNode : OWLSameAsNode.getIndividualNodes()) {
@@ -728,7 +728,7 @@ public class TextRenderer
     throws RendererException
   {
     String valueExtractionFunctionName = valueExtractionFunctionNode.getFunctionName();
-    StringBuffer functionArgumentsRepresentation = new StringBuffer();
+    StringBuilder functionArgumentsRepresentation = new StringBuilder();
 
     if (valueExtractionFunctionNode.hasArguments()) {
       boolean isFirst = true;
@@ -755,7 +755,7 @@ public class TextRenderer
   public Optional<? extends TextRendering> renderSourceSpecification(SourceSpecificationNode sourceSpecificationNode)
     throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
 
     if (sourceSpecificationNode.hasSource())
       textRepresentation.append("'" + sourceSpecificationNode.getSource() + "'!");
@@ -784,7 +784,7 @@ public class TextRenderer
   public Optional<? extends TextRendering> renderOWLClassDeclaration(OWLClassDeclarationNode classDeclarationNode)
     throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer("Class: " + classDeclarationNode.getOWLClassNode().toString());
+    StringBuilder textRepresentation = new StringBuilder("Class: " + classDeclarationNode.getOWLClassNode().toString());
     boolean isFirst = true;
 
     if (classDeclarationNode.hasOWLSubclassOfNodes()) {
@@ -865,7 +865,7 @@ public class TextRenderer
   @Override public Optional<? extends TextRendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
     throws RendererException
   {
-    StringBuffer textRendering = new StringBuffer();
+    StringBuilder textRendering = new StringBuilder();
 
     if (objectOneOfNode.getOWLNamedIndividualNodes().size() == 1) {
       Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(
@@ -1030,7 +1030,7 @@ public class TextRenderer
   public Optional<? extends TextRendering> renderValueSpecification(ValueSpecificationNode valueSpecificationNode)
     throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
     boolean isFirst = true;
 
     if (valueSpecificationNode.getNumberOfValueSpecificationItems() > 1)
@@ -1098,7 +1098,7 @@ public class TextRenderer
 
   public Optional<? extends TextRendering> renderDifferentFrom(OWLDifferentFromNode differentFromNode) throws RendererException
   {
-    StringBuffer textRepresentation = new StringBuffer();
+    StringBuilder textRepresentation = new StringBuilder();
     boolean isFirst = true;
 
     for (OWLNamedIndividualNode namedIndividualNode : differentFromNode.getNamedIndividualNodes()) {

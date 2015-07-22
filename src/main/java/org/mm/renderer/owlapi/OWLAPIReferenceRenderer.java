@@ -715,7 +715,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
   private String reverse(String source)
   {
     int i, len = source.length();
-    StringBuffer dest = new StringBuffer(len);
+    StringBuilder dest = new StringBuilder(len);
 
     for (i = (len - 1); i >= 0; i--)
       dest.append(source.charAt(i));

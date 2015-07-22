@@ -23,7 +23,7 @@ public class OWLLiteralNode implements  MMNode
       throw new InternalParseException("expecting one child of node " + getNodeName());
     else {
       Node child = node.jjtGetChild(0);
-      if (ParserUtil.hasName(child, "IntegerLiteralNode"))
+      if (ParserUtil.hasName(child, "IntegerLiteral"))
         integerLiteralNode = new IntegerLiteralNode((ASTIntegerLiteral)child);
       else if (ParserUtil.hasName(child, "FloatLiteral"))
         floatLiteralNode = new FloatLiteralNode((ASTFloatLiteral)child);

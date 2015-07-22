@@ -12,34 +12,34 @@ import java.io.ByteArrayInputStream;
 
 public class MappingMasterParserTest
 {
-  public static void main(String args[])
-  {
-    if (args.length != 1)
-      Usage();
+	public static void main(String args[])
+	{
+		if (args.length != 1)
+			Usage();
 
-    String expressionText = args[0];
+		String expressionText = args[0];
 
-    try {
-      MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expressionText.getBytes()));
-      CoreRenderer renderer = new TextRenderer();
+		try {
+			MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expressionText.getBytes()));
+			CoreRenderer renderer = new TextRenderer(null); // TODO
 
-      SimpleNode expressionNode = parser.expression();
-      ExpressionNode expression = new ExpressionNode((ASTExpression)expressionNode);
+			SimpleNode expressionNode = parser.expression();
+			ExpressionNode expression = new ExpressionNode((ASTExpression)expressionNode);
 
-      expressionNode.dump(" ");
+			expressionNode.dump(" ");
 
-      System.err.println("expression.toString()      : " + expression.toString());
-      System.err.println("renderer.render(expression): " + renderer.renderExpression(expression));
+			System.err.println("expression.toString()      : " + expression.toString());
+			System.err.println("renderer.render(expression): " + renderer.renderExpression(expression));
 
-    } catch (ParseException e) {
-      System.err.println("ParseException: " + e.getMessage());
-      e.printStackTrace();
-    }
-  }
+		} catch (ParseException e) {
+			System.err.println("ParseException: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
 
-  private static void Usage()
-  {
-    System.err.println("Usage: MappingMasterParserTest <Expression>");
-    System.exit(-1);
-  }
+	private static void Usage()
+	{
+		System.err.println("Usage: " + MappingMasterParserTest.class.getSimpleName() + " < Expression > ");
+		System.exit(-1);
+	}
 }
