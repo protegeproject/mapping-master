@@ -71,12 +71,12 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
       return Collections.emptyList();
   }
 
-  public String getLocationValue(SpreadsheetLocation location, ReferenceNode reference) throws RendererException
+  public String getLocationValue(SpreadsheetLocation location, ReferenceNode referenceNode) throws RendererException
   {
     String locationValue = getLocationValue(location);
 
-    if (reference.getActualShiftDirective() != MM_NO_SHIFT)
-      locationValue = getLocationValueWithShifting(location, reference);
+    if (referenceNode.getActualShiftDirective() != MM_NO_SHIFT)
+      locationValue = getLocationValueWithShifting(location, referenceNode);
 
     return locationValue;
   }
@@ -102,21 +102,21 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
       return cell.getContents();
   }
 
-  public String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode reference)
+  public String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode referenceNode)
     throws RendererException
   {
     String shiftedLocationValue = getLocationValue(location);
     Sheet sheet = workbook.getSheet(location.getSheetName());
 
     if (shiftedLocationValue == null || shiftedLocationValue.equals("")) {
-      if (reference.getActualShiftDirective() == MM_SHIFT_LEFT) {
+      if (referenceNode.getActualShiftDirective() == MM_SHIFT_LEFT) {
         for (int currentColumn = location.getColumnNumber() - 1; currentColumn >= 1; currentColumn--) {
           shiftedLocationValue = getLocationValue(
             new SpreadsheetLocation(location.getSheetName(), currentColumn, location.getRowNumber()));
           if (shiftedLocationValue != null)
             return shiftedLocationValue;
         }
-      } else if (reference.getActualShiftDirective() == MM_SHIFT_RIGHT) {
+      } else if (referenceNode.getActualShiftDirective() == MM_SHIFT_RIGHT) {
         for (int currentColumn = location.getColumnNumber() + 1;
              currentColumn <= sheet.getColumns(); currentColumn++) {
           shiftedLocationValue = getLocationValue(
@@ -124,14 +124,14 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
           if (shiftedLocationValue != null)
             return shiftedLocationValue;
         }
-      } else if (reference.getActualShiftDirective() == MM_SHIFT_DOWN) {
+      } else if (referenceNode.getActualShiftDirective() == MM_SHIFT_DOWN) {
         for (int currentRow = location.getRowNumber() + 1; currentRow <= sheet.getRows(); currentRow++) {
           shiftedLocationValue = getLocationValue(
             new SpreadsheetLocation(location.getSheetName(), location.getColumnNumber(), currentRow));
           if (shiftedLocationValue != null)
             return shiftedLocationValue;
         }
-      } else if (reference.getActualShiftDirective() == MM_SHIFT_UP) {
+      } else if (referenceNode.getActualShiftDirective() == MM_SHIFT_UP) {
         for (int currentRow = location.getRowNumber() - 1; currentRow >= 1; currentRow--) {
           shiftedLocationValue = getLocationValue(
             new SpreadsheetLocation(location.getSheetName(), location.getColumnNumber(), currentRow));
@@ -139,9 +139,9 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
             return shiftedLocationValue;
         }
       }
-      throw new InternalRendererException("unknown shift setting " + reference.getActualShiftDirective());
+      throw new InternalRendererException("unknown shift setting " + referenceNode.getActualShiftDirective());
     } else {
-      reference.setShiftedLocation(location);
+      referenceNode.setShiftedLocation(location);
       return shiftedLocationValue;
     }
   }
