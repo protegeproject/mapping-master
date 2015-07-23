@@ -46,6 +46,7 @@ import org.mm.parser.node.ValueSpecificationNode;
 import org.mm.rendering.TextLiteralRendering;
 import org.mm.rendering.TextReferenceRendering;
 import org.mm.rendering.TextRendering;
+import org.mm.rendering.owlapi.OWLClassRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 
@@ -93,15 +94,15 @@ public class TextRenderer extends BaseReferenceRenderer
           && referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE)
           return Optional.empty();
 
-        return Optional.empty(); // TODO
+        return Optional.of(new TextReferenceRendering(literalReferenceValue, referenceType));
       } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
         String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
         String rdfsLabel = getReferenceRDFSLabel(resolvedReferenceValue, referenceNode);
 
-        return Optional.empty(); // TODO
+				return Optional.of(new TextReferenceRendering(rdfsLabel, referenceType));
       } else
         throw new RendererException(
-          "internal error: unknown reference type " + referenceType + " for reference " + referenceNode.toString());
+          "unknown reference type " + referenceType + " for reference " + referenceNode.toString());
     }
   }
 
@@ -125,10 +126,18 @@ public class TextRenderer extends BaseReferenceRenderer
       throw new RendererException("unknown Mapping Master expression node " + mmExpressionNode.getNodeName());
   }
 
+	// TODO Refactor - too long
   @Override public Optional<? extends TextRendering> renderOWLClassDeclaration(
     OWLClassDeclarationNode classDeclarationNode) throws RendererException
   {
-    StringBuilder textRepresentation = new StringBuilder("Class: " + classDeclarationNode.getOWLClassNode().toString());
+		OWLClassNode declaredClassNode = classDeclarationNode.getOWLClassNode();
+		Optional<? extends TextRendering> declaredClassRendering = renderOWLClass(declaredClassNode);
+
+		if (!declaredClassRendering.isPresent())
+			return Optional.empty();
+
+		String declaredClassName = declaredClassRendering.get().getTextRendering();
+    StringBuilder textRepresentation = new StringBuilder("Class: " + declaredClassName);
     boolean isFirst = true;
 
     if (classDeclarationNode.hasOWLSubclassOfNodes()) {
@@ -329,7 +338,7 @@ public class TextRenderer extends BaseReferenceRenderer
 
     if (equivalentClassesNode.getClassExpressionNodes().size() == 1) {
       Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
-        equivalentClassesNode.getClassExpressionNodes().get(0));
+					equivalentClassesNode.getClassExpressionNodes().get(0));
       if (!classExpressionRendering.isPresent())
         return classExpressionRendering;
       else
@@ -400,7 +409,7 @@ public class TextRenderer extends BaseReferenceRenderer
     throws RendererException
   {
     if (propertyNode.hasReferenceNode())
-      return renderReference(propertyNode.getReferenceNode());
+			return renderReference(propertyNode.getReferenceNode());
     else if (propertyNode.hasNameNode())
       return renderName(propertyNode.getNameNode());
     else
@@ -435,8 +444,8 @@ public class TextRenderer extends BaseReferenceRenderer
       throw new RendererException("unknown child for node " + restrictionNode.getNodeName());
 
     if (propertyRendering.isPresent() && restrictionRendering.isPresent())
-      return Optional.of(new TextRendering(
-        "(" + propertyRendering.get().getTextRendering() + " " + restrictionRendering.get().getTextRendering() + ")"));
+			return Optional.of(new TextRendering(
+					"(" + propertyRendering.get().getTextRendering() + " " + restrictionRendering.get().getTextRendering() + ")"));
     else
       return Optional.empty();
   }
@@ -673,8 +682,8 @@ public class TextRenderer extends BaseReferenceRenderer
 
   @Override public Optional<? extends TextRendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
     OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
-  {
-    return renderOWLMaxCardinality(propertyNode, maxCardinalityNode);
+	{
+		return renderOWLMaxCardinality(propertyNode, maxCardinalityNode);
   }
 
   @Override public Optional<? extends TextRendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
@@ -691,8 +700,8 @@ public class TextRenderer extends BaseReferenceRenderer
 
   @Override public Optional<? extends TextRendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
     OWLMinCardinalityNode minCardinalityNode) throws RendererException
-  {
-    return renderOWLMinCardinality(propertyNode, minCardinalityNode);
+	{
+		return renderOWLMinCardinality(propertyNode, minCardinalityNode);
   }
 
   @Override public Optional<? extends TextRendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
@@ -760,9 +769,9 @@ public class TextRenderer extends BaseReferenceRenderer
     throws RendererException
   { // TODO Need to maintain type information on literal creation
     if (literalNode.isInteger())
-      return Optional.of(new TextLiteralRendering(literalNode.getIntLiteralNode().toString()));
+			return Optional.of(new TextLiteralRendering(literalNode.getIntLiteralNode().toString()));
     else if (literalNode.isFloat())
-      return Optional.of(new TextLiteralRendering(literalNode.getFloatLiteralNode().toString()));
+			return Optional.of(new TextLiteralRendering(literalNode.getFloatLiteralNode().toString()));
     else if (literalNode.isString())
       return Optional.of(new TextLiteralRendering(literalNode.toString()));
     else if (literalNode.isBoolean())
