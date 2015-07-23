@@ -2,6 +2,7 @@ package org.mm.renderer.owlapi;
 
 import org.mm.core.ReferenceDirectives;
 import org.mm.core.ReferenceType;
+import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.IRI;
@@ -18,6 +19,8 @@ import org.semanticweb.owlapi.model.OWLProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO Lots of unimplemented methods
+
 class OWLAPIObjectHandler
 {
   private final Map<String, Map<String, OWLEntity>> createdOWLEntitiesUsingLabel; // Map of namespace to map of rdfs:label to rdf:ID
@@ -29,96 +32,86 @@ class OWLAPIObjectHandler
   public OWLAPIObjectHandler(OWLOntology ontology)
   {
     this.ontology = ontology;
-
     this.createdOWLEntitiesUsingLabel = new HashMap<>();
     this.createdOWLEntitiesUsingLocation = new HashMap<>();
   }
 
-  public void reset()
-  {
-    this.createdOWLEntitiesUsingLabel.clear();
-    this.createdOWLEntitiesUsingLocation.clear();
-  }
-
-	public OWLClass getOWLClass(String shortName)
-	{
-		return null; // TODO
-	}
-
-	public OWLNamedIndividual getOWLNamedIndividual(String shortName)
-	{
-		return null; // TODO
-	}
-
-	public OWLObjectProperty getOWLObjectProperty(String shortName)
-	{
-		return null; // TODO
-	}
-
-	public OWLDataProperty getOWLDataProperty(String shortName)
-	{
-		return null; // TODO
-	}
-
-	public OWLAnnotationProperty getOWLAnnotationProperty(String shortName)
-	{
-		return null; // TODO
-	}
-
-	public OWLDatatype getOWLDatatype(String shortName)
+  public OWLClass getOWLClass(String shortName)
   {
     return null; // TODO
   }
 
-	public boolean isOWLClass(String shortName)
-	{
-		return  false; // TODO
-	}
+  public OWLNamedIndividual getOWLNamedIndividual(String shortName)
+  {
+    return null; // TODO
+  }
 
-	public boolean isOWLNamedIndividual(String shortName)
-	{
-		return  false; // TODO
-	}
+  public OWLObjectProperty getOWLObjectProperty(String shortName)
+  {
+    return null; // TODO
+  }
 
-	public boolean isOWLObjectProperty(String shortName)
-	{
-		return  false; // TODO
-	}
+  public OWLDataProperty getOWLDataProperty(String shortName)
+  {
+    return null; // TODO
+  }
 
+  public OWLAnnotationProperty getOWLAnnotationProperty(String shortName)
+  {
+    return null; // TODO
+  }
 
-	public boolean isOWLDataProperty(String shortName)
-	{
-		return  false; // TODO
-	}
+  public OWLDatatype getOWLDatatype(String shortName)
+  {
+    return null; // TODO
+  }
 
+  public boolean isOWLClass(String shortName)
+  {
+    return false; // TODO
+  }
 
-	public boolean isOWLAnnotationProperty(String shortName)
-	{
-		return  false; // TODO
-	}
+  public boolean isOWLNamedIndividual(String shortName)
+  {
+    return false; // TODO
+  }
 
-	public boolean isOWLDatatype(String shortName)
-	{
-		return  false; // TODO
-	}
+  public boolean isOWLObjectProperty(String shortName)
+  {
+    return false; // TODO
+  }
 
-	public boolean isOWLObjectProperty(OWLProperty property)
-	{
-		return ontology.containsObjectPropertyInSignature(property.getIRI());
-	}
+  public boolean isOWLDataProperty(String shortName)
+  {
+    return false; // TODO
+  }
 
-	public boolean isOWLDataProperty(OWLProperty property)
+  public boolean isOWLAnnotationProperty(String shortName)
+  {
+    return false; // TODO
+  }
+
+  public boolean isOWLDatatype(String shortName)
+  {
+    return false; // TODO
+  }
+
+  public boolean isOWLObjectProperty(OWLProperty property)
+  {
+    return ontology.containsObjectPropertyInSignature(property.getIRI());
+  }
+
+  public boolean isOWLDataProperty(OWLProperty property)
   {
     return ontology.containsDataPropertyInSignature(property.getIRI());
   }
 
-	public String getNamespaceForPrefix(String prefix)
-	{
-		return null; // TODO
-	}
+  public String getNamespaceForPrefix(String prefix)
+  {
+    return null; // TODO
+  }
 
-
-	public boolean isOWLDataProperty(IRI iri)
+  public boolean isOWLDataProperty(IRI iri)
   {
     return ontology.containsDataPropertyInSignature(iri);
   }
@@ -443,7 +436,7 @@ class OWLAPIObjectHandler
     } else if (referenceType.isOWLDataProperty()) {
       return createOWLDataProperty(namespace);
     } else
-      throw new RendererException("invalid entity type " + referenceType);
+      throw new InternalRendererException("unknown entity type " + referenceType);
   }
 
   private boolean hasOWLEntityBeenCreatedAtLocation(SpreadsheetLocation location, String namespace)
@@ -462,9 +455,8 @@ class OWLAPIObjectHandler
       .containsKey(location))
       return createdOWLEntitiesUsingLocation.get(namespace).get(location);
     else
-      throw new RendererException(
-        "internal error: " + referenceType + " with namespace " + namespace + " was not created at location "
-          + location);
+      throw new InternalRendererException(
+        "" + referenceType + " with namespace " + namespace + " was not created at location " + location);
   }
 
   private void recordCreatedOWLEntityRDFIDAtLocation(ReferenceType referenceType, SpreadsheetLocation location,
@@ -531,9 +523,8 @@ class OWLAPIObjectHandler
       .containsKey(key))
       return createdOWLEntitiesUsingLabel.get(namespace).get(key);
     else
-      throw new RendererException(
-        "internal error: " + referenceType + " with namespace " + namespace + " was not created with rdfs:label "
-          + key);
+      throw new InternalRendererException(
+        "" + referenceType + " with namespace " + namespace + " was not created with rdfs:label " + key);
   }
 
   private void addRDFSLabelToOWLEntity(OWLEntity entity, String labelText, String language)

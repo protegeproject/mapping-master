@@ -9,6 +9,7 @@ import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.BaseReferenceRenderer;
+import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.OWLLiteralRendering;
@@ -207,7 +208,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
               .getOWLSubDataPropertyOfAxiom(property, entity.asOWLDataProperty());
             axioms.add(axiom);
           } else
-            throw new RendererException("invalid entity type " + referenceType);
+            throw new InternalRendererException("unknown entity type " + referenceType);
         }
       }
     }
@@ -239,6 +240,6 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
       } else
         return Optional.empty();
     } else
-      throw new RendererException("internal error: unknown type " + typeNode + " for node " + typeNode.getNodeName());
+      throw new InternalRendererException("unknown type " + typeNode + " for node " + typeNode.getNodeName());
   }
 }

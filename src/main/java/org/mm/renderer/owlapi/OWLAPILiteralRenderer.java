@@ -2,6 +2,7 @@ package org.mm.renderer.owlapi;
 
 import org.mm.core.ReferenceType;
 import org.mm.parser.node.OWLLiteralNode;
+import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.OWLLiteralRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.owlapi.OWLAPILiteralRendering;
@@ -35,7 +36,7 @@ public class OWLAPILiteralRenderer implements OWLLiteralRenderer
 			return Optional.of(new OWLAPILiteralRendering(
 					this.owlDataFactory.getOWLLiteral(literalNode.getStringLiteralNode().getValue())));
 		else
-			throw new RendererException("unknown type for node " + literalNode.getNodeName());
+			throw new InternalRendererException("unknown type for node " + literalNode.getNodeName());
 	}
 
 	public OWLLiteral createOWLLiteral(String rawValue, ReferenceType referenceType)

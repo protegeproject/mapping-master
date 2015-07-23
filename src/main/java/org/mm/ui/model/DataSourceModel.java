@@ -7,9 +7,9 @@ import java.util.List;
 
 public class DataSourceModel implements MMModel
 {
-  private SpreadSheetDataSource dataSource = null;
-  private MMView view = null;
-  private String fileName = null;
+  private SpreadSheetDataSource dataSource;
+  private MMView view;
+  private String fileName;
 
   public DataSourceModel(SpreadSheetDataSource dataSource) { this.dataSource = dataSource; }
 

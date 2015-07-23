@@ -9,6 +9,7 @@ import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
+import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.RendererException;
 
 import java.util.Arrays;
@@ -138,7 +139,7 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
             return shiftedLocationValue;
         }
       }
-      throw new RendererException("unknown shift setting " + reference.getActualShiftDirective());
+      throw new InternalRendererException("unknown shift setting " + reference.getActualShiftDirective());
     } else {
       reference.setShiftedLocation(location);
       return shiftedLocationValue;

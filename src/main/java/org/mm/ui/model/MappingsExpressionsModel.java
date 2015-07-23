@@ -19,7 +19,7 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
   private static final int FINISH_ROW_COLUMN = 7;
   private static final int NUMBER_OF_COLUMNS = 8;
 
-  private MMView view = null;
+  private MMView view;
   private boolean isModified = false;
 
   private Set<MappingExpression> mappingExpressions;

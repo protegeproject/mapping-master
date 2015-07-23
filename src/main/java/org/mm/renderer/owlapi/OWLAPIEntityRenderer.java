@@ -3,6 +3,7 @@ package org.mm.renderer.owlapi;
 import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLPropertyNode;
+import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.OWLEntityRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.owlapi.OWLAnnotationPropertyRendering;
@@ -19,92 +20,93 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 
 import java.util.Optional;
 
+// TODO Implement methods
+
 public class OWLAPIEntityRenderer implements OWLEntityRenderer
 {
-	@Override public Optional<OWLClassRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
-	{
-		if (classNode.hasNameNode()) {
-			OWLClass cls = null; // TODO
-			return Optional.of(new OWLClassRendering(cls));
+  @Override public Optional<OWLClassRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
+  {
+    if (classNode.hasNameNode()) {
+      OWLClass cls = null; // TODO
+      return Optional.of(new OWLClassRendering(cls));
 
-		} else if (classNode.hasReferenceNode()) {
-			OWLClass cls = null; // TODO
-			return Optional.of(new OWLClassRendering(cls));
+    } else if (classNode.hasReferenceNode()) {
+      OWLClass cls = null; // TODO
+      return Optional.of(new OWLClassRendering(cls));
 
-		} else
-			throw new RendererException("expecting class name or reference for node + " + classNode.getNodeName());
-	}
+    } else
+      throw new InternalRendererException("unknown child for node " + classNode.getNodeName());
+  }
 
-	@Override public Optional<OWLNamedIndividualRendering> renderOWLNamedIndividual(
-			OWLNamedIndividualNode namedIndividualNode) throws RendererException
-	{
-		if (namedIndividualNode.hasNameNode()) {
-			OWLNamedIndividual individual = null; // TODO
+  @Override public Optional<OWLNamedIndividualRendering> renderOWLNamedIndividual(
+    OWLNamedIndividualNode namedIndividualNode) throws RendererException
+  {
+    if (namedIndividualNode.hasNameNode()) {
+      OWLNamedIndividual individual = null; // TODO
 
-			return Optional.of(new OWLNamedIndividualRendering(individual));
+      return Optional.of(new OWLNamedIndividualRendering(individual));
 
-		} else if (namedIndividualNode.hasReferenceNode()) {
-			OWLNamedIndividual individual = null; // TODO
+    } else if (namedIndividualNode.hasReferenceNode()) {
+      OWLNamedIndividual individual = null; // TODO
 
-			return Optional.of(new OWLNamedIndividualRendering(individual));
-		} else
-			throw new RendererException(
-					"expecting individual name or reference for node + " + namedIndividualNode.getNodeName());
-	}
+      return Optional.of(new OWLNamedIndividualRendering(individual));
+    } else
+      throw new InternalRendererException("unknown child for node " + namedIndividualNode.getNodeName());
+  }
 
-	@Override public Optional<OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
-			throws RendererException
-	{
-		OWLObjectProperty property = null; // TODO
+  @Override public Optional<OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
+    throws RendererException
+  {
+    OWLObjectProperty property = null; // TODO
 
-		return Optional.of(new OWLObjectPropertyRendering(property));
-	}
+    return Optional.of(new OWLObjectPropertyRendering(property));
+  }
 
-	@Override public Optional<OWLObjectPropertyRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode)
-			throws RendererException
-	{
-		OWLObjectProperty objectProperty = null; // TODO
+  @Override public Optional<OWLObjectPropertyRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode)
+    throws RendererException
+  {
+    OWLObjectProperty objectProperty = null; // TODO
 
-		if (propertyNode.hasNameNode()) {
+    if (propertyNode.hasNameNode()) {
 
-			return Optional.of(new OWLObjectPropertyRendering(objectProperty));
+      return Optional.of(new OWLObjectPropertyRendering(objectProperty));
 
-		} else if (propertyNode.hasReferenceNode()) {
+    } else if (propertyNode.hasReferenceNode()) {
 
-			return Optional.of(new OWLObjectPropertyRendering(objectProperty));
-		} else
-			throw new RendererException("expecting property name or reference for node + " + propertyNode.getNodeName());
-	}
+      return Optional.of(new OWLObjectPropertyRendering(objectProperty));
+    } else
+      throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+  }
 
-	@Override public Optional<OWLDataPropertyRendering> renderOWLDataProperty(OWLPropertyNode propertyNode)
-			throws RendererException
-	{
-		OWLDataProperty dataProperty = null; // TODO
+  @Override public Optional<OWLDataPropertyRendering> renderOWLDataProperty(OWLPropertyNode propertyNode)
+    throws RendererException
+  {
+    OWLDataProperty dataProperty = null; // TODO
 
-		if (propertyNode.hasNameNode()) {
+    if (propertyNode.hasNameNode()) {
 
-			return Optional.of(new OWLDataPropertyRendering(dataProperty));
+      return Optional.of(new OWLDataPropertyRendering(dataProperty));
 
-		} else if (propertyNode.hasReferenceNode()) {
+    } else if (propertyNode.hasReferenceNode()) {
 
-			return Optional.of(new OWLDataPropertyRendering(dataProperty));
-		} else
-			throw new RendererException("expecting property name or reference for node + " + propertyNode.getNodeName());
-	}
+      return Optional.of(new OWLDataPropertyRendering(dataProperty));
+    } else
+      throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+  }
 
-	@Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
-			throws RendererException
-	{
-		OWLAnnotationProperty annotationProperty = null; // TODO
+  @Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
+    throws RendererException
+  {
+    OWLAnnotationProperty annotationProperty = null; // TODO
 
-		if (propertyNode.hasNameNode()) {
+    if (propertyNode.hasNameNode()) {
 
-			return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
+      return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
 
-		} else if (propertyNode.hasReferenceNode()) {
+    } else if (propertyNode.hasReferenceNode()) {
 
-			return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
-		} else
-			throw new RendererException("expecting property name or reference for node + " + propertyNode.getNodeName());
-	}
+      return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
+    } else
+      throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+  }
 }

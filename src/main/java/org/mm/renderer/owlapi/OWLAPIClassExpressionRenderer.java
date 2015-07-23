@@ -21,6 +21,7 @@ import org.mm.parser.node.OWLRestrictionNode;
 import org.mm.parser.node.OWLSomeValuesFromNode;
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
+import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.OWLClassExpressionRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.owlapi.OWLAPILiteralRendering;
@@ -95,7 +96,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 		else if (classExpressionNode.hasOWLClassNode())
 			classExpressionRendering = entityRenderer.renderOWLClass(classExpressionNode.getOWLClassNode());
 		else
-			throw new RendererException("unknown child for node " + classExpressionNode.getNodeName());
+			throw new InternalRendererException("unknown child for node " + classExpressionNode.getNodeName());
 
 		if (classExpressionRendering.isPresent()) {
 			OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
@@ -422,7 +423,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 					} else
 						return Optional.empty();
 				} else
-					throw new RendererException("unknown child node for node " + objectHasValueNode.getNodeName());
+					throw new InternalRendererException("unknown child node for node " + objectHasValueNode.getNodeName());
 			}
 			throw new RendererException(
 					"property " + property.getIRI() + " in  object has values restriction is not an object property");
@@ -501,7 +502,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 					} else
 						return Optional.empty();
 				} else
-					throw new RendererException("unknown child node for node " + objectSomeValuesFromNode.getNodeName());
+					throw new InternalRendererException("unknown child node for node " + objectSomeValuesFromNode.getNodeName());
 			} else
 				throw new RendererException(
 						"property " + property.getIRI() + " in object some values from restriction is not an object property");

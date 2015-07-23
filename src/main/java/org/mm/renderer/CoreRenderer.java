@@ -19,16 +19,6 @@ import java.util.Optional;
 
 public interface CoreRenderer
 {
-  void setDataSource(SpreadSheetDataSource dataSource);
-
-  OWLEntityRenderer getOWLEntityRenderer();
-
-  OWLClassExpressionRenderer getOWLClassExpressionRenderer();
-
-  OWLLiteralRenderer getOWLLiteralRenderer();
-
-  ReferenceRenderer getReferenceRenderer();
-
   Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode) throws RendererException;
 
   Optional<? extends Rendering> renderMMExpression(MMExpressionNode MMExpressionNode) throws RendererException;
@@ -55,4 +45,8 @@ public interface CoreRenderer
   Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException;
 
   Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode) throws RendererException;
+
+  void setDataSource(SpreadSheetDataSource dataSource);
+
+  ReferenceRenderer getReferenceRenderer();
 }
