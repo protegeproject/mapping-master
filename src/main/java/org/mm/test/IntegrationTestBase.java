@@ -24,6 +24,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -120,5 +121,26 @@ public class IntegrationTestBase
     MMExpressionNode mmExpressionNode = parseExpression(expression);
 
     return renderer.renderMMExpression(mmExpressionNode);
+  }
+
+  /**
+   *
+   * @param content Content of the cell
+   * @param columnNumber 1-based column number
+   * @param rowNumber 1-based row number
+   * @return A cell
+   */
+  protected Label createCell(String content, int columnNumber, int rowNumber)
+  {
+    return new Label(columnNumber - 1, rowNumber -1, content); // JXL is 0-based
+  }
+
+  protected Set<Label> createCells(Label... cells)
+  {
+    Set<Label> cellSet = new HashSet<>();
+    for (Label cell : cells) {
+      cellSet.add(cell);
+    }
+    return cellSet;
   }
 }

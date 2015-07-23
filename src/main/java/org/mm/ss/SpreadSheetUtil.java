@@ -71,18 +71,14 @@ public class SpreadSheetUtil
 
   static public int row2Number(String row) throws MappingMasterException
   {
-    int result = -1;
-
-    if (row.equals(""))
+    if (row.length() == 0)
       throw new MappingMasterException("empty row number");
 
     try {
-      result = Integer.parseInt(row);
+      return Integer.parseInt(row);
     } catch (NumberFormatException e) {
       throw new MappingMasterException(row + " is not a valid row number");
     }
-
-    return result;
   }
 
   public static int getColumnNumber(Sheet sheet, String columnSpecification) throws MappingMasterException
