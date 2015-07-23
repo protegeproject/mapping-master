@@ -1,4 +1,6 @@
-package org.mm.rendering;
+package org.mm.rendering.text;
+
+import org.mm.rendering.OWLLiteralRendering;
 
 public class TextLiteralRendering extends TextRendering implements OWLLiteralRendering
 {

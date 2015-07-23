@@ -1,6 +1,7 @@
-package org.mm.rendering;
+package org.mm.rendering.text;
 
 import org.mm.core.ReferenceType;
+import org.mm.rendering.ReferenceRendering;
 
 public class TextReferenceRendering extends TextRendering implements ReferenceRendering
 {

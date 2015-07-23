@@ -11,14 +11,11 @@ import org.mm.parser.MappingMasterParser;
 import org.mm.parser.ParseException;
 import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
-import org.mm.renderer.TextRenderer;
-import org.mm.renderer.owlapi.OWLAPICoreRenderer;
-import org.mm.rendering.TextRendering;
-import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.mm.renderer.text.TextRenderer;
+import org.mm.rendering.text.TextRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -27,7 +24,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Set;
 
 public class OWLAPIRendererTest
 {

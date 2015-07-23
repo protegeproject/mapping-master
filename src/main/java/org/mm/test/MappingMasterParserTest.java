@@ -4,7 +4,7 @@ import org.mm.parser.ASTExpression;
 import org.mm.parser.MappingMasterParser;
 import org.mm.parser.ParseException;
 import org.mm.parser.node.ExpressionNode;
-import org.mm.renderer.TextRenderer;
+import org.mm.renderer.text.TextRenderer;
 import org.mm.parser.SimpleNode;
 import org.mm.renderer.CoreRenderer;
 
