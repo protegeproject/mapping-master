@@ -26,7 +26,7 @@ public class OWLAPILiteralRenderer implements OWLLiteralRenderer
 		if (literalNode.isBoolean())
 			return Optional.of(
         new OWLAPILiteralRendering(this.owlDataFactory.getOWLLiteral(literalNode.getBooleanLiteralNode().getValue())));
-		else if (literalNode.isInteger())
+		else if (literalNode.isInt())
 			return Optional.of(new OWLAPILiteralRendering(
 					this.owlDataFactory.getOWLLiteral(literalNode.getIntLiteralNode().getValue())));
 		else if (literalNode.isFloat())

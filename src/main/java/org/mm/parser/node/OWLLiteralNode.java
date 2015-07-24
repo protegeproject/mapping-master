@@ -12,7 +12,7 @@ import org.mm.parser.ParserUtil;
 
 public class OWLLiteralNode implements  MMNode
 {
-  private IntegerLiteralNode integerLiteralNode;
+  private IntegerLiteralNode intLiteralNode;
   private FloatLiteralNode floatLiteralNode;
   private StringLiteralNode stringLiteralNode;
   private BooleanLiteralNode booleanLiteralNode;
@@ -24,7 +24,7 @@ public class OWLLiteralNode implements  MMNode
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "IntegerLiteral"))
-        this.integerLiteralNode = new IntegerLiteralNode((ASTIntegerLiteral)child);
+        this.intLiteralNode = new IntegerLiteralNode((ASTIntegerLiteral)child);
       else if (ParserUtil.hasName(child, "FloatLiteral"))
         this.floatLiteralNode = new FloatLiteralNode((ASTFloatLiteral)child);
       else if (ParserUtil.hasName(child, "StringLiteral"))
@@ -36,9 +36,9 @@ public class OWLLiteralNode implements  MMNode
     }
   }
 
-  public boolean isInteger()
+  public boolean isInt()
   {
-    return this.integerLiteralNode != null;
+    return this.intLiteralNode != null;
   }
 
   public boolean isFloat()
@@ -58,7 +58,7 @@ public class OWLLiteralNode implements  MMNode
 
   public IntegerLiteralNode getIntLiteralNode()
   {
-    return this.integerLiteralNode;
+    return this.intLiteralNode;
   }
 
   public FloatLiteralNode getFloatLiteralNode()
@@ -83,8 +83,8 @@ public class OWLLiteralNode implements  MMNode
 
   public String toString()
   {
-    if (isInteger())
-      return this.integerLiteralNode.toString();
+    if (isInt())
+      return this.intLiteralNode.toString();
     else if (isFloat())
       return this.floatLiteralNode.toString();
     else if (isString())

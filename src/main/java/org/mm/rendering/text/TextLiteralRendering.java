@@ -1,17 +1,38 @@
 package org.mm.rendering.text;
 
+import org.mm.core.OWLLiteralType;
 import org.mm.rendering.OWLLiteralRendering;
-
-//TODO Need to maintain datatype information
 
 public class TextLiteralRendering extends TextRendering implements OWLLiteralRendering
 {
+  private final OWLLiteralType literalType;
   private final String rawValue;
 
-  public TextLiteralRendering(String rawValue)
+  public TextLiteralRendering(String rawValue, OWLLiteralType literalType)
   {
     super(rawValue);
+    this.literalType = literalType;
     this.rawValue = rawValue;
+  }
+
+  public TextLiteralRendering(String value)
+  {
+    this(value, OWLLiteralType.STRING_LITERAL_TYPE);
+  }
+
+  public TextLiteralRendering(int value)
+  {
+    this("" + value, OWLLiteralType.INT_LITERAL_TYPE);
+  }
+
+  public TextLiteralRendering(boolean value)
+  {
+    this("" + value, OWLLiteralType.BOOLEAN_LITERAL_TYPE);
+  }
+
+  public TextLiteralRendering(float value)
+  {
+    this("" + value, OWLLiteralType.FLOAT_LITERAL_TYPE);
   }
 
   @Override public String getRawValue()
@@ -19,63 +40,5 @@ public class TextLiteralRendering extends TextRendering implements OWLLiteralRen
     return this.rawValue;
   }
 
-  @Override public boolean isString()
-  {
-    return true; // TODO
-  }
-
-  @Override public boolean isBoolean()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isByte()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isShort()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isInt()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isLong()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isFloat()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isDouble()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isDate()
-  {
-    return false;   // TODO
-  }
-
-  @Override public boolean isTime()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isDateTime()
-  {
-    return false;  // TODO
-  }
-
-  @Override public boolean isDuration()
-  {
-    return false;  // TODO
-  }
+  @Override public OWLLiteralType getOWLLiteralType() { return this.literalType; }
 }

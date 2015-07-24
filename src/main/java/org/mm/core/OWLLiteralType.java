@@ -6,6 +6,14 @@ public class OWLLiteralType implements MappingMasterParserConstants
 {
   private final int type;
 
+  public static OWLLiteralType STRING_LITERAL_TYPE = new OWLLiteralType(XSD_STRING);
+
+  public static OWLLiteralType BOOLEAN_LITERAL_TYPE = new OWLLiteralType(XSD_BOOLEAN);
+
+  public static OWLLiteralType INT_LITERAL_TYPE = new OWLLiteralType(XSD_INT);
+
+  public static OWLLiteralType FLOAT_LITERAL_TYPE = new OWLLiteralType(XSD_FLOAT);
+
   public OWLLiteralType(int type)
   {
     this.type = type;
@@ -90,5 +98,4 @@ public class OWLLiteralType implements MappingMasterParserConstants
   {
     return getTypeName();
   }
-
 }

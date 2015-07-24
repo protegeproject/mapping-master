@@ -783,15 +783,15 @@ public class TextRenderer extends BaseReferenceRenderer
 
   @Override public Optional<? extends TextLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode)
     throws RendererException
-  { // TODO Would like to maintain datatype information on literal creation
-    if (literalNode.isInteger())
-      return Optional.of(new TextLiteralRendering(literalNode.getIntLiteralNode().toString()));
+  { 
+    if (literalNode.isInt())
+      return Optional.of(new TextLiteralRendering(literalNode.getIntLiteralNode().getValue()));
     else if (literalNode.isFloat())
-      return Optional.of(new TextLiteralRendering(literalNode.getFloatLiteralNode().toString()));
+      return Optional.of(new TextLiteralRendering(literalNode.getFloatLiteralNode().getValue()));
     else if (literalNode.isString())
-      return Optional.of(new TextLiteralRendering(literalNode.toString()));
+      return Optional.of(new TextLiteralRendering(literalNode.getStringLiteralNode().getValue()));
     else if (literalNode.isBoolean())
-      return Optional.of(new TextLiteralRendering(literalNode.getBooleanLiteralNode().toString()));
+      return Optional.of(new TextLiteralRendering(literalNode.getBooleanLiteralNode().getValue()));
     else
       throw new InternalRendererException("unknown child for node " + literalNode.getNodeName());
   }
