@@ -21,7 +21,7 @@ import java.util.*;
 public class MappingMasterParser 
 {
   public String defaultLocationValue = "";
-  public String defaultDataValue = "";
+  public String defaultLiteral = "";
   public String defaultID = "";
   public String defaultLabel = "";
   public String defaultLanguage = "";
@@ -42,7 +42,7 @@ public class MappingMasterParser
   public int defaultIndividualValueEncoding = defaultValueEncoding;
   public int defaultShiftSetting = MM_NO_SHIFT;
   public int defaultEmptyLocationSetting = MM_PROCESS_IF_EMPTY_LOCATION;
-  public int defaultEmptyDataValueSetting = MM_PROCESS_IF_EMPTY_DATA_VALUE;
+  public int defaultEmptyLiteralSetting = MM_PROCESS_IF_EMPTY_LITERAL;
   public int defaultEmptyRDFIDSetting = MM_PROCESS_IF_EMPTY_ID;
   public int defaultEmptyRDFSLabelSetting = MM_PROCESS_IF_EMPTY_LABEL;
   public int defaultIfExistsSetting = MM_RESOLVE_IF_EXISTS;
@@ -180,7 +180,7 @@ TOKEN: { <RDFS_LABEL: "rdfs:label"> }
 TOKEN: { <XML_LANG: "xml:lang" > }
 TOKEN: { <MM_NULL: "mm:null" > }
 
-TOKEN: { <MM_DATA_VALUE: "mm:DataValue"> }
+TOKEN: { <MM_LITERAL: "mm:Literal"> }
 
 TOKEN: { <MM_DEFAULT_VALUE_ENCODING: "mm:DefaultValueEncoding"> }
 TOKEN: { <MM_DEFAULT_REFERENCE_TYPE: "mm:DefaultReferenceType"> }
@@ -190,7 +190,7 @@ TOKEN: { <MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE: "mm:DefaultDataPropertyValueType"
 TOKEN: { <MM_DEFAULT_ANNOTATION_PROPERTY_VALUE_TYPE: "mm:DefaultAnnotationPropertyValueType"> }
 TOKEN: { <MM_DEFAULT_SHIFT: "mm:DefaultShift"> }
 
-TOKEN: { <MM_DEFAULT_EMPTY_DATA_VALUE: "mm:DefaultEmptyDataValue"> }
+TOKEN: { <MM_DEFAULT_EMPTY_LITERAL: "mm:DefaultEmptyLiteral"> }
 TOKEN: { <MM_DEFAULT_EMPTY_LOCATION: "mm:DefaultEmptyLocation"> }
 TOKEN: { <MM_DEFAULT_EMPTY_RDF_ID: "mm:DefaultEmptyID"> }
 TOKEN: { <MM_DEFAULT_EMPTY_RDFS_LABEL: "mm:DefaultEmptyLabel"> }
@@ -222,7 +222,7 @@ TOKEN: { <MM_APPEND: "mm:append"> }
 TOKEN: { <MM_PREPEND: "mm:prepend"> }
 
 TOKEN: { <MM_DEFAULT_LOCATION_VALUE: "mm:DefaultLocationValue"> }
-TOKEN: { <MM_DEFAULT_DATA_VALUE: "mm:DefaultDataValue"> }
+TOKEN: { <MM_DEFAULT_LITERAL: "mm:DefaultLiteral"> }
 TOKEN: { <MM_DEFAULT_ID: "mm:DefaultID"> }
 TOKEN: { <MM_DEFAULT_LABEL: "mm:DefaultLabel"> }
 
@@ -241,10 +241,10 @@ TOKEN: { <MM_WARNING_IF_EMPTY_LOCATION: "mm:WarningIfEmptyLocation"> }
 TOKEN: { <MM_SKIP_IF_EMPTY_LOCATION: "mm:SkipIfEmptyLocation"> }
 TOKEN: { <MM_PROCESS_IF_EMPTY_LOCATION: "mm:ProcessIfEmptyLocation"> }
 
-TOKEN: { <MM_PROCESS_IF_EMPTY_DATA_VALUE: "mm:ProcessIfEmptyDataValue"> }
-TOKEN: { <MM_ERROR_IF_EMPTY_DATA_VALUE: "mm:ErrorIfEmptyDataValue"> }
-TOKEN: { <MM_WARNING_IF_EMPTY_DATA_VALUE: "mm:WarningIfEmptyDataValue"> }
-TOKEN: { <MM_SKIP_IF_EMPTY_DATA_VALUE: "mm:SkipIfEmptyDataValue"> }
+TOKEN: { <MM_PROCESS_IF_EMPTY_LITERAL: "mm:ProcessIfEmptyLiteral"> }
+TOKEN: { <MM_ERROR_IF_EMPTY_LITERAL: "mm:ErrorIfEmptyLiteral"> }
+TOKEN: { <MM_WARNING_IF_EMPTY_LITERAL: "mm:WarningIfEmptyLiteral"> }
+TOKEN: { <MM_SKIP_IF_EMPTY_LITERAL: "mm:SkipIfEmptyLiteral"> }
 
 TOKEN: { <MM_PROCESS_IF_EMPTY_ID: "mm:ProcessIfEmptyID"> }
 TOKEN: { <MM_ERROR_IF_EMPTY_ID: "mm:ErrorIfEmptyID"> }
@@ -304,7 +304,7 @@ void mm_directive() #MMDirective : {}
    | mm_default_property_value_type()
    | mm_default_shift_setting()
    | mm_default_empty_location_setting()
-   | mm_default_empty_data_value_setting()
+   | mm_default_empty_literal_setting()
    | mm_default_empty_rdf_id_setting()
    | mm_default_empty_rdfs_label_setting()
    | mm_default_if_exists_setting()
@@ -330,7 +330,7 @@ void mm_default_value_encoding() #MMDefaultValueEncoding:
   <MM_DEFAULT_VALUE_ENCODING> 
       (  <RDF_ID> { encodingType = RDF_ID; }  
        | <RDFS_LABEL> { encodingType = RDFS_LABEL; } 
-       | <MM_DATA_VALUE> { encodingType = MM_DATA_VALUE; } 
+       | <MM_LITERAL> { encodingType = MM_LITERAL; } 
        | <MM_LOCATION> { encodingType = MM_LOCATION; } 
       )
   {
@@ -365,16 +365,16 @@ void mm_default_empty_location_setting() #MMDefaultEmptyLocationSetting:
   }
 }
 
-void mm_default_empty_data_value_setting() #MMDefaultEmptyDataValueSetting: 
+void mm_default_empty_literal_setting() #MMDefaultEmptyLiteralSetting: 
 {
-  int emptyDataValueSetting;
+  int emptyLiteralSetting;
 }
 {
-  <MM_DEFAULT_EMPTY_DATA_VALUE> emptyDataValueSetting = empty_data_value_setting()
+  <MM_DEFAULT_EMPTY_LITERAL> emptyLiteralSetting = empty_literal_setting()
 
   {
-    jjtThis.emptyDataValueSetting = emptyDataValueSetting;
-    defaultEmptyDataValueSetting = emptyDataValueSetting;
+    jjtThis.emptyLiteralSetting = emptyLiteralSetting;
+    defaultEmptyLiteralSetting = emptyLiteralSetting;
   }
 }
 
@@ -976,10 +976,10 @@ void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : 
        )?
   {
     jjtThis.defaultReferenceDirectives = new DefaultReferenceDirectives(defaultReferenceType, defaultValueEncoding, 
-                        defaultLocationValue, defaultDataValue, defaultID,
+                        defaultLocationValue, defaultLiteral, defaultID,
 			defaultLabel, defaultLanguage, defaultPrefix, defaultNamespace, 
                         defaultShiftSetting, 
-                        defaultEmptyLocationSetting, defaultEmptyDataValueSetting, defaultEmptyRDFIDSetting,
+                        defaultEmptyLocationSetting, defaultEmptyLiteralSetting, defaultEmptyRDFIDSetting,
 			defaultEmptyRDFSLabelSetting,
                         defaultIfExistsSetting, defaultIfNotExistsSetting);
 
@@ -994,10 +994,10 @@ void directive(int defaultValueEncoding) : {}
    | value_extraction_function() 
    | value_encoding(defaultValueEncoding) 
    | default_location_value() 
-   | default_data_value() 
+   | default_literal() 
    | default_label() 
    | default_id() 
-   | empty_data_value_setting()
+   | empty_literal_setting()
    | empty_location_setting()
    | empty_rdf_id_setting() 
    | empty_rdfs_label_setting() 
@@ -1041,7 +1041,7 @@ int value_encoding(int defaultValueEncoding) #ValueEncoding :
      (
       (  <RDF_ID> { encodingType = RDF_ID; } 
        | <RDFS_LABEL> { encodingType = RDFS_LABEL; } 
-       | <MM_DATA_VALUE> { encodingType = MM_DATA_VALUE; } 
+       | <MM_LITERAL> { encodingType = MM_LITERAL; } 
       )
       ( value_specification() )?
     )
@@ -1109,22 +1109,22 @@ int if_not_exists_directive() #IfNotExistsDirective :
   }
 }
 
-int empty_data_value_setting() #EmptyDataValueSetting :
+int empty_literal_setting() #EmptyLiteralSetting :
 {
   Token t;
-  int emptyDataValueSetting;
+  int emptyLiteralSetting;
 }
 {
   (
-     t = <MM_ERROR_IF_EMPTY_DATA_VALUE> { emptyDataValueSetting = t.kind; }
-   | t = <MM_WARNING_IF_EMPTY_DATA_VALUE> { emptyDataValueSetting = t.kind; }
-   | t = <MM_SKIP_IF_EMPTY_DATA_VALUE> { emptyDataValueSetting = t.kind; }
-   | t = <MM_PROCESS_IF_EMPTY_DATA_VALUE> { emptyDataValueSetting = t.kind; }
+     t = <MM_ERROR_IF_EMPTY_LITERAL> { emptyLiteralSetting = t.kind; }
+   | t = <MM_WARNING_IF_EMPTY_LITERAL> { emptyLiteralSetting = t.kind; }
+   | t = <MM_SKIP_IF_EMPTY_LITERAL> { emptyLiteralSetting = t.kind; }
+   | t = <MM_PROCESS_IF_EMPTY_LITERAL> { emptyLiteralSetting = t.kind; }
   )
 
   {
-    jjtThis.emptyDataValueSetting = emptyDataValueSetting;
-    return emptyDataValueSetting;
+    jjtThis.emptyLiteralSetting = emptyLiteralSetting;
+    return emptyLiteralSetting;
   }
 }
 
@@ -1186,15 +1186,15 @@ int shift_setting() #ShiftSetting :
   }
 }
 
-void default_data_value() #DefaultDataValue :
+void default_literal() #DefaultLiteral :
 {
-  String defaultDataValue;
+  String defaultLiteral;
 }
 {
-  <MM_DEFAULT_DATA_VALUE> "=" defaultDataValue = string()
+  <MM_DEFAULT_LITERAL> "=" defaultLiteral = string()
 
   {
-    jjtThis.defaultDataValue = defaultDataValue;
+    jjtThis.defaultLiteral = defaultLiteral;
   }
 }
 

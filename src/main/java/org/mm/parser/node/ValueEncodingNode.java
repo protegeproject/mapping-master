@@ -44,7 +44,7 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
 
   public boolean hasLocationWithDuplicatesEncoding() { return this.encodingType == MM_LOCATION_WITH_DUPLICATES; }
 
-  public boolean hasDataValueEncoding() { return this.encodingType == MM_DATA_VALUE; }
+  public boolean hasLiteralEncoding() { return this.encodingType == MM_LITERAL; }
 
   public boolean hasRDFIDEncoding() { return this.encodingType == RDF_ID; }
 

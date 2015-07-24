@@ -11,7 +11,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   private boolean hasExplicitlySpecifiedReferenceType;
   private boolean hasExplicitlySpecifiedValueEncodings;
   private boolean hasExplicitlySpecifiedDefaultLocationValue;
-  private boolean hasExplicitlySpecifiedDefaultDataValue;
+  private boolean hasExplicitlySpecifiedDefaultLiteral;
   private boolean hasExplicitlySpecifiedDefaultRDFID;
   private boolean hasExplicitlySpecifiedDefaultRDFSLabel;
   private boolean hasExplicitlySpecifiedShiftDirective;
@@ -21,12 +21,12 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   private boolean hasExplicitlySpecifiedIfExistsDirective;
   private boolean hasExplicitlySpecifiedIfNotExistsDirective;
   private boolean hasExplicitlySpecifiedEmptyLocationDirective;
-  private boolean hasExplicitlySpecifiedEmptyDataValueDirective;
+  private boolean hasExplicitlySpecifiedEmptyLiteralDirective;
   private boolean hasExplicitlySpecifiedEmptyRDFIDDirective;
   private boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective;
   private ReferenceType explicitlySpecifiedReferenceType;
   private String explicitlySpecifiedDefaultLocationValue;
-  private String explicitlySpecifiedDefaultDataValue;
+  private String explicitlySpecifiedDefaultLiteral;
   private String explicitlySpecifiedDefaultRDFID;
   private String explicitlySpecifiedDefaultRDFSLabel;
   private int explicitlySpecifiedShiftDirective = -1;
@@ -36,7 +36,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   private int explicitlySpecifiedIfExistsDirective = -1;
   private int explicitlySpecifiedIfNotExistsDirective = -1;
   private int explicitlySpecifiedEmptyLocationDirective = -1;
-  private int explicitlySpecifiedEmptyDataValueDirective = -1;
+  private int explicitlySpecifiedEmptyLiteralDirective = -1;
   private int explicitlySpecifiedEmptyRDFIDDirective = -1;
   private int explicitlySpecifiedEmptyRDFSLabelDirective = -1;
 
@@ -77,9 +77,9 @@ public class ReferenceDirectives implements MappingMasterParserConstants
     return this.usesLocationWithDuplicatesEncoding;
   }
 
-  public boolean isDefaultDataValueEncoding()
+  public boolean isDefaultLiteralEncoding()
   {
-    return this.defaultReferenceDirectives.getDefaultValueEncoding() == MM_DATA_VALUE;
+    return this.defaultReferenceDirectives.getDefaultValueEncoding() == MM_LITERAL;
   }
 
   public boolean isDefaultLocationValueEncoding()
@@ -168,23 +168,23 @@ public class ReferenceDirectives implements MappingMasterParserConstants
       this.defaultReferenceDirectives.getDefaultLocationValue();
   }
 
-  public boolean hasExplicitlySpecifiedDefaultDataValue()
+  public boolean hasExplicitlySpecifiedDefaultLiteral()
   {
-    return this.hasExplicitlySpecifiedDefaultDataValue;
+    return this.hasExplicitlySpecifiedDefaultLiteral;
   }
 
-  public void setExplicitlySpecifiedDefaultDataValue(String dataValue)
+  public void setExplicitlySpecifiedDefaultLiteral(String literal)
   {
     this.hasExplicitlySpecifiedOptions = true;
-    this.hasExplicitlySpecifiedDefaultDataValue = true;
-    this.explicitlySpecifiedDefaultDataValue = dataValue;
+    this.hasExplicitlySpecifiedDefaultLiteral = true;
+    this.explicitlySpecifiedDefaultLiteral = literal;
   }
 
-  public String getActualDefaultDataValue()
+  public String getActualDefaultLiteral()
   {
-    return hasExplicitlySpecifiedDefaultDataValue() ?
-      this.explicitlySpecifiedDefaultDataValue :
-      this.defaultReferenceDirectives.getDefaultDataValue();
+    return hasExplicitlySpecifiedDefaultLiteral() ?
+      this.explicitlySpecifiedDefaultLiteral :
+      this.defaultReferenceDirectives.getDefaultLiteral();
   }
 
   public boolean hasExplicitlySpecifiedDefaultID()
@@ -387,23 +387,23 @@ public class ReferenceDirectives implements MappingMasterParserConstants
       this.defaultReferenceDirectives.getDefaultEmptyLocationDirective();
   }
 
-  public boolean hasExplicitlySpecifiedEmptyDataValueDirective()
+  public boolean hasExplicitlySpecifiedEmptyLiteralDirective()
   {
-    return this.hasExplicitlySpecifiedEmptyDataValueDirective;
+    return this.hasExplicitlySpecifiedEmptyLiteralDirective;
   }
 
-  public void setHasExplicitlySpecifiedEmptyDataValueDirective(int emptyDataValueDirective)
+  public void setHasExplicitlySpecifiedEmptyLiteralDirective(int emptyLiteralDirective)
   {
     this.hasExplicitlySpecifiedOptions = true;
-    this.hasExplicitlySpecifiedEmptyDataValueDirective = true;
-    this.explicitlySpecifiedEmptyDataValueDirective = emptyDataValueDirective;
+    this.hasExplicitlySpecifiedEmptyLiteralDirective = true;
+    this.explicitlySpecifiedEmptyLiteralDirective = emptyLiteralDirective;
   }
 
-  public int getActualEmptyDataValueDirective()
+  public int getActualEmptyLiteralDirective()
   {
-    return hasExplicitlySpecifiedEmptyDataValueDirective() ?
-      this.explicitlySpecifiedEmptyDataValueDirective :
-      this.defaultReferenceDirectives.getDefaultEmptyDataValueDirective();
+    return hasExplicitlySpecifiedEmptyLiteralDirective() ?
+      this.explicitlySpecifiedEmptyLiteralDirective :
+      this.defaultReferenceDirectives.getDefaultEmptyLiteralDirective();
   }
 
   public boolean hasExplicitlySpecifiedEmptyRDFIDDirective()

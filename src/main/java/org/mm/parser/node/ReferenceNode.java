@@ -1,11 +1,11 @@
 package org.mm.parser.node;
 
 import org.mm.core.ReferenceDirectives;
-import org.mm.parser.ASTDefaultDataValue;
 import org.mm.parser.ASTDefaultID;
 import org.mm.parser.ASTDefaultLabel;
+import org.mm.parser.ASTDefaultLiteral;
 import org.mm.parser.ASTDefaultLocationValue;
-import org.mm.parser.ASTEmptyDataValueSetting;
+import org.mm.parser.ASTEmptyLiteralSetting;
 import org.mm.parser.ASTEmptyLocationSetting;
 import org.mm.parser.ASTEmptyRDFIDSetting;
 import org.mm.parser.ASTEmptyRDFSLabelSetting;
@@ -41,11 +41,11 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
   private LanguageNode languageNode;
   private TypesNode typesNode;
   private DefaultLocationValueNode defaultLocationValueNode;
-  private DefaultDataValueNode defaultDataValueNode;
+  private DefaultLiteralNode defaultLiteralNode;
   private DefaultIDNode defaultRDFIDNode;
   private DefaultLabelNode defaultRDFSLabelNode;
   private EmptyLocationDirectiveNode emptyLocationDirectiveNode;
-  private EmptyDataValueDirectiveNode emptyDataValueDirectiveNode;
+  private EmptyLiteralDirectiveNode emptyLiteralDirectiveNode;
   private EmptyRDFIDDirectiveNode emptyRDFIDDirectiveNode;
   private EmptyRDFSLabelDirectiveNode emptyRDFSLabelDirectiveNode;
   private IfExistsDirectiveNode ifExistsDirectiveNode;
@@ -82,10 +82,10 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
         if (this.defaultLocationValueNode != null)
           throw new RendererException("only one default location value directive can be specified for a Reference");
         this.defaultLocationValueNode = new DefaultLocationValueNode((ASTDefaultLocationValue)child);
-      } else if (ParserUtil.hasName(child, "DefaultDataValue")) {
-        if (this.defaultDataValueNode != null)
-          throw new RendererException("only one default data value directive can be specified for a Reference");
-        this.defaultDataValueNode = new DefaultDataValueNode((ASTDefaultDataValue)child);
+      } else if (ParserUtil.hasName(child, "DefaultLiteral")) {
+        if (this.defaultLiteralNode != null)
+          throw new RendererException("only one default literal directive can be specified for a Reference");
+        this.defaultLiteralNode = new DefaultLiteralNode((ASTDefaultLiteral)child);
       } else if (ParserUtil.hasName(child, "DefaultID")) {
         if (this.defaultRDFIDNode != null)
           throw new RendererException("only one default ID directive can be specified for a Reference");
@@ -106,10 +106,10 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
         if (this.ifNotExistsDirectiveNode != null)
           throw new RendererException("only one if not exists directive can be specified for a Reference");
         this.ifNotExistsDirectiveNode = new IfNotExistsDirectiveNode((ASTIfNotExistsDirective)child);
-      } else if (ParserUtil.hasName(child, "EmptyDataValueSetting")) {
-        if (this.emptyDataValueDirectiveNode != null)
-          throw new RendererException("only one empty data value directive can be specified for a Reference");
-        this.emptyDataValueDirectiveNode = new EmptyDataValueDirectiveNode((ASTEmptyDataValueSetting)child);
+      } else if (ParserUtil.hasName(child, "EmptyLiteralSetting")) {
+        if (this.emptyLiteralDirectiveNode != null)
+          throw new RendererException("only one empty literal directive can be specified for a Reference");
+        this.emptyLiteralDirectiveNode = new EmptyLiteralDirectiveNode((ASTEmptyLiteralSetting)child);
       } else if (ParserUtil.hasName(child, "EmptyRDFIDSetting")) {
         if (this.emptyRDFIDDirectiveNode != null)
           throw new RendererException("only one empty rdf:ID directive can be specified for a Reference");
@@ -158,8 +158,8 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       this.referenceDirectives
         .setExplicitlySpecifiedDefaultLocationValue(this.defaultLocationValueNode.getDefaultLocationValue());
 
-    if (this.defaultDataValueNode != null)
-      this.referenceDirectives.setExplicitlySpecifiedDefaultDataValue(this.defaultDataValueNode.getDefaultDataValue());
+    if (this.defaultLiteralNode != null)
+      this.referenceDirectives.setExplicitlySpecifiedDefaultLiteral(this.defaultLiteralNode.getDefaultLiteral());
 
     if (this.defaultRDFIDNode != null)
       this.referenceDirectives.setHasExplicitlySpecifiedDefaultID(this.defaultRDFIDNode.getDefaultRDFID());
@@ -180,9 +180,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       this.referenceDirectives
         .setHasExplicitlySpecifiedEmptyLocationDirective(this.emptyLocationDirectiveNode.getEmptyLocationSetting());
 
-    if (this.emptyDataValueDirectiveNode != null)
+    if (this.emptyLiteralDirectiveNode != null)
       this.referenceDirectives
-        .setHasExplicitlySpecifiedEmptyDataValueDirective(this.emptyDataValueDirectiveNode.getEmptyDataValueSetting());
+        .setHasExplicitlySpecifiedEmptyLiteralDirective(this.emptyLiteralDirectiveNode.getEmptyLiteralSetting());
 
     if (this.emptyRDFIDDirectiveNode != null)
       this.referenceDirectives
@@ -245,9 +245,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return this.typesNode;
   }
 
-  public DefaultDataValueNode getDefaultDataValueNode()
+  public DefaultLiteralNode getDefaultLiteralNode()
   {
-    return this.defaultDataValueNode;
+    return this.defaultLiteralNode;
   }
 
   public DefaultIDNode getDefaultRDFIDNode()
@@ -275,9 +275,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return this.ifNotExistsDirectiveNode;
   }
 
-  public EmptyDataValueDirectiveNode getEmptyDataValueDirectiveNode()
+  public EmptyLiteralDirectiveNode getEmptyLiteralDirectiveNode()
   {
-    return this.emptyDataValueDirectiveNode;
+    return this.emptyLiteralDirectiveNode;
   }
 
   public EmptyLocationDirectiveNode getEmptyLocationDirectiveNode()
@@ -340,9 +340,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return this.referenceDirectives.hasExplicitlySpecifiedDefaultLocationValue();
   }
 
-  public boolean hasExplicitlySpecifiedDefaultDataValue()
+  public boolean hasExplicitlySpecifiedDefaultLiteral()
   {
-    return this.referenceDirectives.hasExplicitlySpecifiedDefaultDataValue();
+    return this.referenceDirectives.hasExplicitlySpecifiedDefaultLiteral();
   }
 
   public boolean hasExplicitlySpecifiedDefaultRDFID()
@@ -355,9 +355,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return this.referenceDirectives.hasExplicitlySpecifiedDefaultLabel();
   }
 
-  public boolean hasExplicitlySpecifiedEmptyDataValueDirective()
+  public boolean hasExplicitlySpecifiedEmptyLiteralDirective()
   {
-    return this.referenceDirectives.hasExplicitlySpecifiedEmptyDataValueDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedEmptyLiteralDirective();
   }
 
   public boolean hasExplicitlySpecifiedEmptyLocationDirective()
@@ -405,9 +405,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return this.referenceDirectives.getActualEmptyLocationDirective();
   }
 
-  public int getActualEmptyDataValueDirective()
+  public int getActualEmptyLiteralDirective()
   {
-    return this.referenceDirectives.getActualEmptyDataValueDirective();
+    return this.referenceDirectives.getActualEmptyLiteralDirective();
   }
 
   public int getActualEmptyRDFSLabelDirective()
@@ -425,9 +425,9 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return this.referenceDirectives.getActualDefaultLocationValue();
   }
 
-  public String getActualDefaultDataValue()
+  public String getActualDefaultLiteral()
   {
-    return this.referenceDirectives.getActualDefaultDataValue();
+    return this.referenceDirectives.getActualDefaultLiteral();
   }
 
   public String getActualDefaultRDFID()
@@ -503,7 +503,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     else if (hasExplicitlySpecifiedValueEncodings())
       return hasExplicitlySpecifiedLiteralValueEncoding();
     else
-      return this.referenceDirectives.isDefaultDataValueEncoding();
+      return this.referenceDirectives.isDefaultLiteralEncoding();
   }
 
   public boolean hasExplicitlySpecifiedRDFSLabelValueEncoding()
@@ -532,7 +532,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
   {
     if (hasExplicitlySpecifiedValueEncodings()) {
       for (ValueEncodingNode valueEncoding : getValueEncodingNodes())
-        if (valueEncoding.hasDataValueEncoding())
+        if (valueEncoding.hasLiteralEncoding())
           return true;
       return false;
     } else
@@ -560,7 +560,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
   public ValueEncodingNode getLiteralValueEncodingNode()
   {
     for (ValueEncodingNode valueEncoding : getValueEncodingNodes())
-      if (valueEncoding.hasDataValueEncoding())
+      if (valueEncoding.hasLiteralEncoding())
         return valueEncoding;
 
     return null;
@@ -615,10 +615,10 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       atLeastOneOptionProcessed = true;
     }
 
-    if (hasExplicitlySpecifiedDefaultDataValue()) {
+    if (hasExplicitlySpecifiedDefaultLiteral()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += this.defaultDataValueNode;
+      representation += this.defaultLiteralNode;
       atLeastOneOptionProcessed = true;
     }
 
@@ -664,10 +664,10 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       atLeastOneOptionProcessed = true;
     }
 
-    if (hasExplicitlySpecifiedEmptyDataValueDirective()) {
+    if (hasExplicitlySpecifiedEmptyLiteralDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += this.emptyDataValueDirectiveNode;
+      representation += this.emptyLiteralDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
@@ -721,15 +721,15 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 
   private void checkValueEncodings() throws RendererException
   {
-    boolean location = false, dataValue = false, locationWithDuplicates = false, rdfID = false, rdfsLabel = false;
+    boolean location = false, literal = false, locationWithDuplicates = false, rdfID = false, rdfsLabel = false;
 
     if (this.valueEncodingsNodes.isEmpty())
       throw new RendererException("empty value encoding in reference");
 
     for (ValueEncodingNode valueEncoding : this.valueEncodingsNodes) {
 
-      if (valueEncoding.hasDataValueEncoding())
-        dataValue = true;
+      if (valueEncoding.hasLiteralEncoding())
+        literal = true;
 
       if (valueEncoding.useLocationEncoding())
         location = true;
@@ -744,16 +744,16 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
         rdfsLabel = true;
     }
 
-    if (dataValue && (location || locationWithDuplicates))
+    if (literal && (location || locationWithDuplicates))
       throw new RendererException(
-        "location encoding in reference " + toString() + " invalid because it also uses data value encoding");
+        "location encoding in reference " + toString() + " invalid because it also uses literal encoding");
 
     if ((location || locationWithDuplicates) && (rdfID || rdfsLabel))
       throw new RendererException(
         "location encoding in reference " + toString() + " invalid because it also uses rdf:ID or rdfs:label encoding");
 
-    if (dataValue && (rdfID || rdfsLabel))
-      throw new RendererException("data value encoding in reference " + toString()
+    if (literal && (rdfID || rdfsLabel))
+      throw new RendererException("literal encoding in reference " + toString()
         + " invalid because it also uses rdf:ID or rdfs:label encoding");
   }
 
@@ -761,25 +761,25 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
   {
     if (this.referenceDirectives.hasExplicitlySpecifiedLanguage() && this.referenceTypeNode.getReferenceType().isOWLLiteral())
       throw new ParseException(
-        "use of language specification in reference " + toString() + " invalid because it is an OWL data value");
+        "use of language specification in reference " + toString() + " invalid because it is an OWL literal");
 
     if (this.referenceDirectives.hasExplicitlySpecifiedPrefix() && this.referenceTypeNode.getReferenceType().isOWLLiteral())
-      throw new ParseException("use of prefix in reference " + toString() + " invalid because it is an OWL data value");
+      throw new ParseException("use of prefix in reference " + toString() + " invalid because it is an OWL literal");
 
     if (this.referenceDirectives.hasExplicitlySpecifiedNamespace() && this.referenceTypeNode.getReferenceType().isOWLLiteral())
       throw new ParseException(
-        "use of namespace in reference " + toString() + " invalid because it is an OWL data value");
+        "use of namespace in reference " + toString() + " invalid because it is an OWL literal");
 
-    if (this.referenceDirectives.hasExplicitlySpecifiedEmptyDataValueDirective() && !this.referenceTypeNode
+    if (this.referenceDirectives.hasExplicitlySpecifiedEmptyLiteralDirective() && !this.referenceTypeNode
       .getReferenceType()
       .isOWLLiteral())
       throw new ParseException(
-        "use of empty data value setting in reference " + toString() + " invalid because it is not an OWL data value");
+        "use of empty literal setting in reference " + toString() + " invalid because it is not an OWL literal");
 
     if (this.referenceDirectives.hasExplicitlySpecifiedReferenceType() && this.referenceTypeNode.getReferenceType().isOWLLiteral()
       && hasExplicitlySpecifiedTypes())
       throw new ParseException(
         "entity type " + this.referenceTypeNode.getReferenceType().getTypeName() + " in reference " + toString()
-          + " should not have defining types because it is an OWL data value");
+          + " should not have defining types because it is an OWL literal");
   }
 }

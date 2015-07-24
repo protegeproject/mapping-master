@@ -180,17 +180,17 @@ public abstract class BaseReferenceRenderer
     } else
       processedLocationValue = "";
 
-    if (processedLocationValue.isEmpty() && !referenceNode.getActualDefaultDataValue().isEmpty())
-      processedLocationValue = referenceNode.getActualDefaultDataValue();
+    if (processedLocationValue.isEmpty() && !referenceNode.getActualDefaultLiteral().isEmpty())
+      processedLocationValue = referenceNode.getActualDefaultLiteral();
 
-    if (processedLocationValue.isEmpty() && referenceNode.getActualEmptyDataValueDirective()
-      == MM_ERROR_IF_EMPTY_DATA_VALUE)
-      throw new RendererException("empty data value in reference " + referenceNode + " at location " + location);
+    if (processedLocationValue.isEmpty() && referenceNode.getActualEmptyLiteralDirective()
+      == MM_ERROR_IF_EMPTY_LITERAL)
+      throw new RendererException("empty literal in reference " + referenceNode + " at location " + location);
 
-    if (processedLocationValue.isEmpty() && referenceNode.getActualEmptyDataValueDirective()
-      == MM_WARNING_IF_EMPTY_DATA_VALUE) {
+    if (processedLocationValue.isEmpty() && referenceNode.getActualEmptyLiteralDirective()
+      == MM_WARNING_IF_EMPTY_LITERAL) {
       //logLine(
-      //  "processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
+      //  "processReference: WARNING: empty literal in reference " + referenceNode + " at location " + location);
     }
 
     return processedLocationValue;
@@ -448,7 +448,7 @@ public abstract class BaseReferenceRenderer
       }
       return result;
     } catch (PatternSyntaxException e) {
-      throw new RendererException("invalid capturing expression: " + capturingExpression + ": " + e.getMessage());
+      throw new RendererException("invalid capturing expression " + capturingExpression + ": " + e.getMessage());
     }
   }
 

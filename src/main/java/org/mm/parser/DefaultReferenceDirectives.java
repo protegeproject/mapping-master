@@ -10,7 +10,7 @@ public class DefaultReferenceDirectives
 	private final int defaultValueEncoding;
 
 	private final String defaultLocationValue;
-	private final String defaultDataValue;
+	private final String defaultLiteral;
 	private final String defaultRDFID;
 	private final String defaultRDFSLabel;
 	private final String defaultLanguage;
@@ -18,7 +18,7 @@ public class DefaultReferenceDirectives
 	private final String defaultNamespace;
 
 	private final int defaultEmptyLocationDirective;
-	private final int defaultEmptyDataValueDirective;
+	private final int defaultEmptyLiteralDirective;
 	private final int defaultEmptyRDFIDDirective;
 	private final int defaultEmptyRDFSLabelDirective;
 	private final int defaultIfExistsDirective;
@@ -26,9 +26,9 @@ public class DefaultReferenceDirectives
 
 	private int defaultShiftDirective;
 
-	public DefaultReferenceDirectives(int defaultReferenceType, int defaultValueEncoding, String defaultLocationValue, String defaultDataValue, String defaultRDFID,
+	public DefaultReferenceDirectives(int defaultReferenceType, int defaultValueEncoding, String defaultLocationValue, String defaultLiteral, String defaultRDFID,
 			String defaultRDFSLabel, String defaultLanguage, String defaultPrefix, String defaultNamespace, int defaultShiftDirective,
-			int defaultEmptyLocationDirective, int defaultEmptyDataValueDirective, int defaultEmptyRDFIDDirective, int defaultEmptyRDFSLabelDirective,
+			int defaultEmptyLocationDirective, int defaultEmptyLiteralDirective, int defaultEmptyRDFIDDirective, int defaultEmptyRDFSLabelDirective,
 			int defaultIfExistsDirective, int defaultIfNotExistsDirective)
 	{
 		this.defaultReferenceType = new ReferenceType(defaultReferenceType);
@@ -36,7 +36,7 @@ public class DefaultReferenceDirectives
 		this.defaultValueEncoding = defaultValueEncoding;
 
 		this.defaultLocationValue = defaultLocationValue;
-		this.defaultDataValue = defaultDataValue;
+		this.defaultLiteral = defaultLiteral;
 		this.defaultRDFID = defaultRDFID;
 		this.defaultRDFSLabel = defaultRDFSLabel;
 		this.defaultLanguage = defaultLanguage;
@@ -45,7 +45,7 @@ public class DefaultReferenceDirectives
 
 		this.defaultShiftDirective = defaultShiftDirective;
 		this.defaultEmptyLocationDirective = defaultEmptyLocationDirective;
-		this.defaultEmptyDataValueDirective = defaultEmptyDataValueDirective;
+		this.defaultEmptyLiteralDirective = defaultEmptyLiteralDirective;
 		this.defaultEmptyRDFIDDirective = defaultEmptyRDFIDDirective;
 		this.defaultEmptyRDFSLabelDirective = defaultEmptyRDFSLabelDirective;
 		this.defaultIfExistsDirective = defaultIfExistsDirective;
@@ -72,9 +72,9 @@ public class DefaultReferenceDirectives
 		return this.defaultLocationValue;
 	}
 
-	public String getDefaultDataValue()
+	public String getDefaultLiteral()
 	{
-		return this.defaultDataValue;
+		return this.defaultLiteral;
 	}
 
 	public String getDefaultRDFID()
@@ -122,9 +122,9 @@ public class DefaultReferenceDirectives
 		return this.defaultEmptyLocationDirective;
 	}
 
-	public int getDefaultEmptyDataValueDirective()
+	public int getDefaultEmptyLiteralDirective()
 	{
-		return this.defaultEmptyDataValueDirective;
+		return this.defaultEmptyLiteralDirective;
 	}
 
 	public int getDefaultEmptyRDFIDDirective()

@@ -128,7 +128,7 @@ public class ReferenceType implements MappingMasterParserConstants
     return this.type == XSD_DURATION;
   }
 
-  public boolean isQuotedOWLDataValue()
+  public boolean isQuotedOWLLiteral()
   {
     return isXSDString() || isXSDTime() || isXSDDate() || isXSDDateTime() || isXSDDuration();
   }

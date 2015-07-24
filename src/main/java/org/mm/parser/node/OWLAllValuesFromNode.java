@@ -18,7 +18,7 @@ public class OWLAllValuesFromNode implements MMNode
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
-      if (ParserUtil.hasName(child, "OWLAllDataValuesFrom"))
+      if (ParserUtil.hasName(child, "OWLDataAllValuesFrom"))
         this.dataAllValuesFromNode = new OWLDataAllValuesFromNode((ASTOWLDataAllValuesFrom)child);
       else if (ParserUtil.hasName(child, "OWLObjectAllValuesFrom"))
         this.objectAllValuesFromNode = new OWLObjectAllValuesFromNode((ASTOWLObjectAllValuesFrom)child);

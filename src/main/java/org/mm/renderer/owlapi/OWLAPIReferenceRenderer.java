@@ -81,8 +81,8 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
       if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
         String literalReferenceValue = processLiteralReferenceValue(location, resolvedReferenceValue, referenceNode);
 
-        if (literalReferenceValue.isEmpty() && referenceNode.getActualEmptyDataValueDirective()
-          == MM_SKIP_IF_EMPTY_DATA_VALUE)
+        if (literalReferenceValue.isEmpty() && referenceNode.getActualEmptyLiteralDirective()
+          == MM_SKIP_IF_EMPTY_LITERAL)
           return Optional.empty();
 
         OWLLiteral literal = this.literalRenderer.createOWLLiteral(literalReferenceValue, referenceType);

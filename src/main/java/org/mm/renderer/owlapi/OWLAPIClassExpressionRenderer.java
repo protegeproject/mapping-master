@@ -238,7 +238,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 					OWLSomeValuesFromNode someValuesFromNode = restrictionNode.getOWLSomeValuesFromNode();
 
 					if (!someValuesFromNode.hasOWLDataSomeValuesFromNode())
-						throw new RendererException("expecting data value for some values data restriction " + restrictionNode);
+						throw new RendererException("expecting literal for some values data restriction " + restrictionNode);
 
 					OWLDataSomeValuesFromNode dataSomeValuesFromNode = someValuesFromNode.getOWLDataSomeValuesFromNode();
 					OWLDatatype datatype = this.owlObjectHandler.getOWLDatatype(dataSomeValuesFromNode.getDatatypeName());
