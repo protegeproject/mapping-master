@@ -27,11 +27,11 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer
   @Override public Optional<OWLClassRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
   {
     if (classNode.hasNameNode()) {
-      OWLClass cls = null; // TODO
+      OWLClass cls = null; // TODO Implement
       return Optional.of(new OWLClassRendering(cls));
 
     } else if (classNode.hasReferenceNode()) {
-      OWLClass cls = null; // TODO
+      OWLClass cls = null; // TODO Implement
       return Optional.of(new OWLClassRendering(cls));
 
     } else
@@ -42,12 +42,12 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer
     OWLNamedIndividualNode namedIndividualNode) throws RendererException
   {
     if (namedIndividualNode.hasNameNode()) {
-      OWLNamedIndividual individual = null; // TODO
+      OWLNamedIndividual individual = null; // TODO Implement
 
       return Optional.of(new OWLNamedIndividualRendering(individual));
 
     } else if (namedIndividualNode.hasReferenceNode()) {
-      OWLNamedIndividual individual = null; // TODO
+      OWLNamedIndividual individual = null; // TODO Implement
 
       return Optional.of(new OWLNamedIndividualRendering(individual));
     } else
@@ -57,7 +57,7 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer
   @Override public Optional<OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
     throws RendererException
   {
-    OWLObjectProperty property = null; // TODO
+    OWLObjectProperty property = null; // TODO Implement
 
     return Optional.of(new OWLObjectPropertyRendering(property));
   }
@@ -65,7 +65,7 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer
   @Override public Optional<OWLObjectPropertyRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode)
     throws RendererException
   {
-    OWLObjectProperty objectProperty = null; // TODO
+    OWLObjectProperty objectProperty = null; // TODO Implement
 
     if (propertyNode.hasNameNode()) {
 
@@ -81,7 +81,7 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer
   @Override public Optional<OWLDataPropertyRendering> renderOWLDataProperty(OWLPropertyNode propertyNode)
     throws RendererException
   {
-    OWLDataProperty dataProperty = null; // TODO
+    OWLDataProperty dataProperty = null; // TODO Implement
 
     if (propertyNode.hasNameNode()) {
 
@@ -97,7 +97,7 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer
   @Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
     throws RendererException
   {
-    OWLAnnotationProperty annotationProperty = null; // TODO
+    OWLAnnotationProperty annotationProperty = null; // TODO Implement
 
     if (propertyNode.hasNameNode()) {
 

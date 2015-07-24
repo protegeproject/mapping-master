@@ -34,6 +34,6 @@ public class OWLAPIRendering implements Rendering
 
   @Override public String toString()
   {
-    return "TODO"; // TODO
+    return "TODO"; // TODO Pretty print
   }
 }

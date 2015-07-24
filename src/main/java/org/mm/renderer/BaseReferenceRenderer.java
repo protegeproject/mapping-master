@@ -157,7 +157,6 @@ public abstract class BaseReferenceRenderer
 
       if (referenceValue.equals("")
         && referenceNode.getActualEmptyLocationDirective() == MM_WARNING_IF_EMPTY_LOCATION) {
-        // TODO Log a warning
       }
     }
     return referenceValue;
@@ -194,9 +193,6 @@ public abstract class BaseReferenceRenderer
       //logLine(
       //  "processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
     }
-
-    if (referenceType.isQuotedOWLDataValue())
-      processedLocationValue = "\"" + processedLocationValue + "\"";
 
     return processedLocationValue;
   }
@@ -319,7 +315,7 @@ public abstract class BaseReferenceRenderer
       for (ValueExtractionFunctionArgumentNode argumentNode : valueExtractionFunctionNode.getArgumentNodes()) {
         Optional<? extends Rendering> argumentRendering = renderValueExtractionFunctionArgument(argumentNode);
         if (argumentRendering.isPresent()) {
-          // TODO arguments.add(literal.getLiteral());
+          //  TODO arguments.add(literal.getLiteral());
         }
       }
     }

@@ -317,9 +317,8 @@ void mm_expression() #MMExpression : {}
   (  owl_class_declaration() 
    | owl_individual_declaration()
   )
-  // TODO Other clauses: datatype, object property, data property, and annotation property declarations;
-  // negative property assertions, equivalent classes, disjoint classes, disjoint properties, equivalent properties;
-  // same individual, different individuals
+  // TODO datatype, object property, data property, and annotation property declarations
+  // TODO negative property assertions, disjoint classes, disjoint properties, equivalent properties
   // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
 

@@ -106,7 +106,6 @@ public class TextRenderer extends BaseReferenceRenderer
       return Optional.of(new TextReferenceRendering(literalValue, referenceType));
     } else {
       SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
-      String language = getReferenceLanguage(referenceNode);
       String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
 
       if (referenceType.isUntyped())
@@ -125,7 +124,8 @@ public class TextRenderer extends BaseReferenceRenderer
 
         return Optional.of(new TextReferenceRendering(literalReferenceValue, referenceType));
       } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
-        String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
+        // TODO If the rendering uses the ID then we should use it
+        // String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
         String rdfsLabel = getReferenceRDFSLabel(resolvedReferenceValue, referenceNode);
 
         return Optional.of(new TextReferenceRendering(rdfsLabel, referenceType));

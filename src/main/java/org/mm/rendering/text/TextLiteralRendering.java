@@ -2,6 +2,8 @@ package org.mm.rendering.text;
 
 import org.mm.rendering.OWLLiteralRendering;
 
+//TODO Need to maintain datatype information
+
 public class TextLiteralRendering extends TextRendering implements OWLLiteralRendering
 {
   private final String rawValue;

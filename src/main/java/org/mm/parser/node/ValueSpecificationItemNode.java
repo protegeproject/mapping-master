@@ -17,8 +17,8 @@ public class ValueSpecificationItemNode implements MMNode
 
   public ValueSpecificationItemNode(ASTValueSpecificationItem node) throws ParseException
   {
-    stringLiteral = node.stringLiteral;
-    capturingExpression = node.captureExpression;
+    this.stringLiteral = node.stringLiteral;
+    this.capturingExpression = node.captureExpression;
 
     if (node.jjtGetNumChildren() != 0) {
       Node child = node.jjtGetChild(0);
@@ -44,7 +44,7 @@ public class ValueSpecificationItemNode implements MMNode
 
   public String getStringLiteral()
   {
-    return stringLiteral;
+    return this.stringLiteral;
   }
 
   public boolean hasReferenceNode()
@@ -82,7 +82,7 @@ public class ValueSpecificationItemNode implements MMNode
     String representation = "";
 
     if (hasStringLiteral())
-      representation = "\"" + stringLiteral + "\"";
+      representation = "\"" + this.stringLiteral + "\"";
     else if (hasReferenceNode())
       representation = referenceNode.toString();
     else if (hasValueExtractionFunctionNode())

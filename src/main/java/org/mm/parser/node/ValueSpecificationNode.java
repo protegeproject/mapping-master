@@ -11,7 +11,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValueSpecificationNode implements MappingMasterParserConstants
+public class ValueSpecificationNode implements MMNode, MappingMasterParserConstants
 {
   private List<ValueSpecificationItemNode> valueSpecificationItemNodes = new ArrayList<>();
 
@@ -25,7 +25,7 @@ public class ValueSpecificationNode implements MappingMasterParserConstants
           (ASTValueSpecificationItem)child);
         valueSpecificationItemNodes.add(valueSpecificationItem);
       } else
-        throw new InternalParseException("invalid child node " + child.toString() + " for ValueSpecification");
+        throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
     }
 
     if (valueSpecificationItemNodes.isEmpty())
@@ -40,6 +40,11 @@ public class ValueSpecificationNode implements MappingMasterParserConstants
   public List<ValueSpecificationItemNode> getValueSpecificationItemNodes()
   {
     return valueSpecificationItemNodes;
+  }
+
+  @Override public String getNodeName()
+  {
+    return "ValueSpecification";
   }
 
   public String toString()
