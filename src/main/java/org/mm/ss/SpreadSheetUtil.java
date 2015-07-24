@@ -23,7 +23,7 @@ public class SpreadSheetUtil
 
   static public void checkRowSpecification(String rowSpecification) throws MappingMasterException
   {
-    if (rowSpecification.equals(""))
+    if (rowSpecification.length() == 0)
       throw new MappingMasterException("empty row specification");
 
     if (!rowSpecification.equals(MappingExpression.FinishRowOrColumnWildcard)) {

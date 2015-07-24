@@ -193,9 +193,8 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
         else
           rowNumber = SpreadSheetUtil.getRowNumber(sheet, rowSpecification);
       } catch (MappingMasterException e) {
-        throw new RendererException("invalid sourceSpecification " + sourceSpecification + ": " + e.getMessage());
+        throw new RendererException("invalid source specification " + sourceSpecification + " - " + e.getMessage());
       }
-
       resolvedLocation = new SpreadsheetLocation(sheet.getName(), columnNumber, rowNumber);
     } else
       throw new RendererException("invalid source specification " + sourceSpecification);
