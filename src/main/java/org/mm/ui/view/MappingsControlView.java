@@ -61,7 +61,7 @@ public class MappingsControlView extends JPanel implements MMView
 		this.statusWindow.append(text);
 	}
 
-	// TODO: need to make option stuff more generic. ReferenceRendererOptionsManager should return list of options
+	// TODO Need to make option stuff more generic. ReferenceRendererOptionsManager should return list of options.
 	private void createComponents()
 	{
 		JPanel headingPanel, mappingsButtonPanel, optionsPanel, fileButtonPanel, footerPanel;

@@ -52,7 +52,7 @@ public class SpreadSheetUtil
     return pos;
   }
 
-  // TODO: error checking
+  // TODO Check column and row
   static public String columnRow2Name(int column, int row)
   {
     return columnNumber2Name(column) + row;

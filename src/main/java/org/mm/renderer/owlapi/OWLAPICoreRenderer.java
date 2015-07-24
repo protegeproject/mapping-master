@@ -60,8 +60,9 @@ import java.util.Set;
 public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserConstants
 {
   public static final int NameEncodings[] = { MM_LOCATION, MM_LITERAL, RDF_ID, RDFS_LABEL };
-  public static final int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY,
-    XSD_INT, XSD_STRING, XSD_FLOAT, XSD_DOUBLE, XSD_SHORT, XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DURATION };
+  public static final int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY,
+    OWL_DATA_PROPERTY, XSD_INT, XSD_STRING, XSD_FLOAT, XSD_DOUBLE, XSD_SHORT, XSD_BOOLEAN, XSD_TIME, XSD_DATETIME,
+    XSD_DURATION };
   public static final int PropertyTypes[] = { OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY };
   public static final int PropertyValueTypes[] = ReferenceValueTypes;
   public static final int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INT, XSD_FLOAT, XSD_DOUBLE,
@@ -401,7 +402,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
         }
 
         OWLNamedIndividual individual = declaredIndividualRendering.get().getOWLNamedIndividual();
-        // TODO Check cast
+        // TODO Check that it is an annotation property
         OWLAnnotationProperty property = (OWLAnnotationProperty)propertyRendering.get().getOWLProperty();
         OWLAnnotationValue annotationValue = annotationValueRendering.get().getOWLAnnotationValue();
 
@@ -461,14 +462,16 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
         if (this.owlObjectHandler.isOWLObjectProperty(property)) {
           OWLObjectProperty objectProperty = (OWLObjectProperty)property;
-          OWLIndividual objectIndividual = (OWLIndividual)propertyAssertionObject; // TODO Check
+          // TODO Check this cast
+          OWLIndividual objectIndividual = (OWLIndividual)propertyAssertionObject;
 
           OWLObjectPropertyAssertionAxiom axiom = this.owlDataFactory
             .getOWLObjectPropertyAssertionAxiom(objectProperty, subjectIndividual, objectIndividual);
           axioms.add(axiom);
         } else if (this.owlObjectHandler.isOWLDataProperty(property)) {
           OWLDataProperty dataProperty = (OWLDataProperty)property;
-          OWLLiteral literal = (OWLLiteral)propertyAssertionObject; // TODO Check
+          // TODO Check this cast
+          OWLLiteral literal = (OWLLiteral)propertyAssertionObject;
 
           OWLDataPropertyAssertionAxiom axiom = this.owlDataFactory
             .getOWLDataPropertyAssertionAxiom(dataProperty, subjectIndividual, literal);

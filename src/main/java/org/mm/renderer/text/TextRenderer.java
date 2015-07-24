@@ -783,7 +783,7 @@ public class TextRenderer extends BaseReferenceRenderer
 
   @Override public Optional<? extends TextLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode)
     throws RendererException
-  { 
+  {
     if (literalNode.isInt())
       return Optional.of(new TextLiteralRendering(literalNode.getIntLiteralNode().getValue()));
     else if (literalNode.isFloat())

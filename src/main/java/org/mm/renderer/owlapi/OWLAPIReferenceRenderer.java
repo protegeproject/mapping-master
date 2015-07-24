@@ -74,15 +74,15 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
       if (referenceType.isUntyped())
         throw new RendererException("untyped reference " + referenceNode);
 
-      if (resolvedReferenceValue.isEmpty() && referenceNode.getActualEmptyLocationDirective()
-        == MM_SKIP_IF_EMPTY_LOCATION)
+      if (resolvedReferenceValue.isEmpty()
+        && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
         return Optional.empty();
 
       if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
         String literalReferenceValue = processLiteralReferenceValue(location, resolvedReferenceValue, referenceNode);
 
-        if (literalReferenceValue.isEmpty() && referenceNode.getActualEmptyLiteralDirective()
-          == MM_SKIP_IF_EMPTY_LITERAL)
+        if (literalReferenceValue.isEmpty()
+          && referenceNode.getActualEmptyLiteralDirective() == MM_SKIP_IF_EMPTY_LITERAL)
           return Optional.empty();
 
         OWLLiteral literal = this.literalRenderer.createOWLLiteral(literalReferenceValue, referenceType);
@@ -99,8 +99,8 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
 
         return Optional.of(new OWLAPIReferenceRendering(owlEntity, axioms, referenceType));
       } else
-        throw new RendererException(
-          "internal error: unknown reference type " + referenceType + " for reference " + referenceNode);
+        throw new InternalRendererException(
+          "unknown reference type " + referenceType + " for reference " + referenceNode);
     }
   }
 
