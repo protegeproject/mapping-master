@@ -25,9 +25,9 @@ public class SaveAsMappingsAction implements ActionListener
 
   public void saveMappings()
   {
-    MappingsExpressionsModel mappingExpressionsModel = application.getApplicationModel().getMappingExpressionsModel();
-    MMApplicationView applicationView = application.getApplicationView();
-    MMApplicationModel applicationModel = application.getApplicationModel();
+    MappingsExpressionsModel mappingExpressionsModel = this.application.getApplicationModel().getMappingExpressionsModel();
+    MMApplicationView applicationView = this.application.getApplicationView();
+    MMApplicationModel applicationModel = this.application.getApplicationModel();
     MappingsControlView mappingsControlView = applicationView.getMappingsControlView();
 
     JFileChooser fileChooser = getApplicationDialogManager()
@@ -44,7 +44,7 @@ public class SaveAsMappingsAction implements ActionListener
       mappingsControlView.statusWindowAppend("Saving mappings ontology '" + fileName + "'...\n");
 
       try {
-        application.getMappingExpressionsPersistenceLayer().putMappingExpressions(mappingExpressions, fileName);
+        this.application.getMappingExpressionsPersistenceLayer().putMappingExpressions(mappingExpressions, fileName);
 
         applicationModel.setMappingFileName(fileName);
         applicationModel.clearModifiedStatus();
@@ -57,7 +57,7 @@ public class SaveAsMappingsAction implements ActionListener
     }
   }
 
-  private MMApplicationView getApplicationView() { return application.getApplicationView(); }
+  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
 
   private MMApplicationDialogManager getApplicationDialogManager()
   {

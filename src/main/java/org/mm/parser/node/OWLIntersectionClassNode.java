@@ -12,27 +12,27 @@ import java.util.List;
 
 public class OWLIntersectionClassNode implements MMNode
 {
-  private List<OWLClassExpressionNode> classExpressionNodes;
+  private final List<OWLClassExpressionNode> classExpressionNodes;
 
   public OWLIntersectionClassNode(ASTOWLIntersectionClass node) throws ParseException
   {
-    classExpressionNodes = new ArrayList<>();
+    this.classExpressionNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLClassExpression")) {
         OWLClassExpressionNode owlClassExpression = new OWLClassExpressionNode((ASTOWLClassExpression)child);
-        classExpressionNodes.add(owlClassExpression);
+        this.classExpressionNodes.add(owlClassExpression);
       } else
         throw new InternalParseException(getNodeName() +
-          " node expecting OWLClassExpression child, got " + child.toString());
+          " node expecting OWLClassExpression child, got " + child);
     }
   }
 
   public List<OWLClassExpressionNode> getOWLClassExpressionNodes()
   {
-    return classExpressionNodes;
+    return this.classExpressionNodes;
   }
 
   @Override public String getNodeName()

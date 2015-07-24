@@ -1,4 +1,3 @@
-
 package org.mm.parser.node;
 
 import org.mm.core.ReferenceType;
@@ -8,35 +7,35 @@ import org.mm.parser.ParseException;
 
 public class ReferenceTypeNode implements MMNode, MappingMasterParserConstants
 {
-	private ReferenceType referenceType;
+  private final ReferenceType referenceType;
 
-	public ReferenceTypeNode(ASTReferenceType node) throws ParseException
-	{
-		referenceType = new ReferenceType(node.referenceType);
-	}
+  public ReferenceTypeNode(ASTReferenceType node) throws ParseException
+  {
+    this.referenceType = new ReferenceType(node.referenceType);
+  }
 
-	public ReferenceTypeNode(int type)
-	{
-		referenceType = new ReferenceType(type);
-	}
+  public ReferenceTypeNode(int type)
+  {
+    this.referenceType = new ReferenceType(type);
+  }
 
-	public ReferenceTypeNode(ReferenceType referenceType)
-	{
-		this.referenceType = referenceType;
-	}
+  public ReferenceTypeNode(ReferenceType referenceType)
+  {
+    this.referenceType = referenceType;
+  }
 
-	public ReferenceType getReferenceType()
-	{
-		return referenceType;
-	}
+  public ReferenceType getReferenceType()
+  {
+    return this.referenceType;
+  }
 
-	@Override public String getNodeName()
-	{
-		return "ReferenceType";
-	}
+  @Override public String getNodeName()
+  {
+    return "ReferenceType";
+  }
 
-	public String toString()
-	{
-		return referenceType.toString();
-	}
+  public String toString()
+  {
+    return this.referenceType.toString();
+  }
 }

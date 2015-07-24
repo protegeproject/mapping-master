@@ -24,7 +24,7 @@ public class OWLPropertyNode implements TypeNode
       else if (ParserUtil.hasName(child, "Reference"))
         this.referenceNode = new ReferenceNode((ASTReference)child);
       else
-        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
     }
   }
 
@@ -35,22 +35,22 @@ public class OWLPropertyNode implements TypeNode
 
   public ReferenceNode getReferenceNode()
   {
-    return referenceNode;
+    return this.referenceNode;
   }
 
   public NameNode getNameNode()
   {
-    return nameNode;
+    return this.nameNode;
   }
 
   public boolean hasNameNode()
   {
-    return nameNode != null;
+    return this.nameNode != null;
   }
 
   public boolean hasReferenceNode()
   {
-    return referenceNode != null;
+    return this.referenceNode != null;
   }
 
   @Override public boolean isOWLClassNode() { return false; }

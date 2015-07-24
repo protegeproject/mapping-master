@@ -22,13 +22,13 @@ public class OWLPropertyAssertionObjectNode implements MMNode
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "Reference"))
-        referenceNode = new ReferenceNode((ASTReference)child);
+        this.referenceNode = new ReferenceNode((ASTReference)child);
       else if (ParserUtil.hasName(child, "Name"))
-        nameNode = new NameNode((ASTName)child);
+        this.nameNode = new NameNode((ASTName)child);
       else if (ParserUtil.hasName(child, "OWLLiteral"))
-        literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
+        this.literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
       else
-        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
     }
   }
 
@@ -39,42 +39,42 @@ public class OWLPropertyAssertionObjectNode implements MMNode
 
   public ReferenceNode getReferenceNode()
   {
-    return referenceNode;
+    return this.referenceNode;
   }
 
   public NameNode getNameNode()
   {
-    return nameNode;
+    return this.nameNode;
   }
 
   public OWLLiteralNode getOWLLiteralNode()
   {
-    return literalNode;
+    return this.literalNode;
   }
 
   public boolean isReference()
   {
-    return referenceNode != null;
+    return this.referenceNode != null;
   }
 
   public boolean isName()
   {
-    return nameNode != null;
+    return this.nameNode != null;
   }
 
   public boolean isLiteral()
   {
-    return literalNode != null;
+    return this.literalNode != null;
   }
 
   public String toString()
   {
     if (isReference())
-      return referenceNode.toString();
+      return this.referenceNode.toString();
     else if (isName())
-      return nameNode.toString();
+      return this.nameNode.toString();
     else if (isLiteral())
-      return literalNode.toString();
+      return this.literalNode.toString();
     else
       return "";
   }

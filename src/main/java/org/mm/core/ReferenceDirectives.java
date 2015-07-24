@@ -8,31 +8,31 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 {
   private final DefaultReferenceDirectives defaultReferenceDirectives;
   private final int explicitlySpecifiedValueEncoding = -1;
-  private boolean hasExplicitlySpecifiedReferenceType = false;
-  private boolean hasExplicitlySpecifiedValueEncodings = false;
-  private boolean hasExplicitlySpecifiedDefaultLocationValue = false;
-  private boolean hasExplicitlySpecifiedDefaultDataValue = false;
-  private boolean hasExplicitlySpecifiedDefaultRDFID = false;
-  private boolean hasExplicitlySpecifiedDefaultRDFSLabel = false;
-  private boolean hasExplicitlySpecifiedShiftDirective = false;
-  private boolean hasExplicitlySpecifiedLanguage = false;
-  private boolean hasExplicitlySpecifiedPrefix = false;
-  private boolean hasExplicitlySpecifiedNamespace = false;
-  private boolean hasExplicitlySpecifiedIfExistsDirective = false;
-  private boolean hasExplicitlySpecifiedIfNotExistsDirective = false;
-  private boolean hasExplicitlySpecifiedEmptyLocationDirective = false;
-  private boolean hasExplicitlySpecifiedEmptyDataValueDirective = false;
-  private boolean hasExplicitlySpecifiedEmptyRDFIDDirective = false;
-  private boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective = false;
-  private ReferenceType explicitlySpecifiedReferenceType = null;
-  private String explicitlySpecifiedDefaultLocationValue = null;
-  private String explicitlySpecifiedDefaultDataValue = null;
-  private String explicitlySpecifiedDefaultRDFID = null;
-  private String explicitlySpecifiedDefaultRDFSLabel = null;
+  private boolean hasExplicitlySpecifiedReferenceType;
+  private boolean hasExplicitlySpecifiedValueEncodings;
+  private boolean hasExplicitlySpecifiedDefaultLocationValue;
+  private boolean hasExplicitlySpecifiedDefaultDataValue;
+  private boolean hasExplicitlySpecifiedDefaultRDFID;
+  private boolean hasExplicitlySpecifiedDefaultRDFSLabel;
+  private boolean hasExplicitlySpecifiedShiftDirective;
+  private boolean hasExplicitlySpecifiedLanguage;
+  private boolean hasExplicitlySpecifiedPrefix;
+  private boolean hasExplicitlySpecifiedNamespace;
+  private boolean hasExplicitlySpecifiedIfExistsDirective;
+  private boolean hasExplicitlySpecifiedIfNotExistsDirective;
+  private boolean hasExplicitlySpecifiedEmptyLocationDirective;
+  private boolean hasExplicitlySpecifiedEmptyDataValueDirective;
+  private boolean hasExplicitlySpecifiedEmptyRDFIDDirective;
+  private boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective;
+  private ReferenceType explicitlySpecifiedReferenceType;
+  private String explicitlySpecifiedDefaultLocationValue;
+  private String explicitlySpecifiedDefaultDataValue;
+  private String explicitlySpecifiedDefaultRDFID;
+  private String explicitlySpecifiedDefaultRDFSLabel;
   private int explicitlySpecifiedShiftDirective = -1;
-  private String explicitlySpecifiedLanguage = null;
-  private String explicitlySpecifiedPrefix = null;
-  private String explicitlySpecifiedNamespace = null;
+  private String explicitlySpecifiedLanguage;
+  private String explicitlySpecifiedPrefix;
+  private String explicitlySpecifiedNamespace;
   private int explicitlySpecifiedIfExistsDirective = -1;
   private int explicitlySpecifiedIfNotExistsDirective = -1;
   private int explicitlySpecifiedEmptyLocationDirective = -1;
@@ -40,12 +40,12 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   private int explicitlySpecifiedEmptyRDFIDDirective = -1;
   private int explicitlySpecifiedEmptyRDFSLabelDirective = -1;
 
-  private boolean usesLocationEncoding = false;
-  private boolean usesLocationWithDuplicatesEncoding = false;
-  private boolean hasExplicitlySpecifiedTypes = false;
+  private boolean usesLocationEncoding;
+  private boolean usesLocationWithDuplicatesEncoding;
+  private boolean hasExplicitlySpecifiedTypes;
   private SpreadsheetLocation shiftedLocation;
 
-  private boolean hasExplicitlySpecifiedOptions = false;
+  private boolean hasExplicitlySpecifiedOptions;
 
   public ReferenceDirectives(DefaultReferenceDirectives defaultReferenceDirectives)
   {
@@ -54,67 +54,67 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
   public boolean hasExplicitlySpecifiedOptions()
   {
-    return hasExplicitlySpecifiedOptions;
+    return this.hasExplicitlySpecifiedOptions;
   }
 
   public void setUsesLocationEncoding()
   {
-    usesLocationEncoding = true;
+    this.usesLocationEncoding = true;
   }
 
   public void setUsesLocationWithDuplicatesEncoding()
   {
-    usesLocationWithDuplicatesEncoding = true;
+    this.usesLocationWithDuplicatesEncoding = true;
   }
 
   public boolean usesLocationEncoding()
   {
-    return usesLocationEncoding;
+    return this.usesLocationEncoding;
   }
 
   public boolean usesLocationWithDuplicatesEncoding()
   {
-    return usesLocationWithDuplicatesEncoding;
+    return this.usesLocationWithDuplicatesEncoding;
   }
 
   public boolean isDefaultDataValueEncoding()
   {
-    return defaultReferenceDirectives.getDefaultValueEncoding() == MM_DATA_VALUE;
+    return this.defaultReferenceDirectives.getDefaultValueEncoding() == MM_DATA_VALUE;
   }
 
   public boolean isDefaultLocationValueEncoding()
   {
-    return defaultReferenceDirectives.getDefaultValueEncoding() == MM_LOCATION;
+    return this.defaultReferenceDirectives.getDefaultValueEncoding() == MM_LOCATION;
   }
 
   public boolean isDefaultRDFIDValueEncoding()
   {
-    return defaultReferenceDirectives.getDefaultValueEncoding() == RDF_ID;
+    return this.defaultReferenceDirectives.getDefaultValueEncoding() == RDF_ID;
   }
 
   public boolean isDefaultRDFSLabelValueEncoding()
   {
-    return defaultReferenceDirectives.getDefaultValueEncoding() == RDFS_LABEL;
+    return this.defaultReferenceDirectives.getDefaultValueEncoding() == RDFS_LABEL;
   }
 
   public int getDefaultShiftDirective()
   {
-    return defaultReferenceDirectives.getDefaultShiftDirective();
+    return this.defaultReferenceDirectives.getDefaultShiftDirective();
   }
 
   public void setDefaultShiftDirective(int shiftDirective)
   {
-    defaultReferenceDirectives.setDefaultShiftDirective(shiftDirective);
+    this.defaultReferenceDirectives.setDefaultShiftDirective(shiftDirective);
   }
 
   public String getDefaultLocationValue()
   {
-    return defaultReferenceDirectives.getDefaultLocationValue();
+    return this.defaultReferenceDirectives.getDefaultLocationValue();
   }
 
   public boolean hasExplicitlySpecifiedReferenceType()
   {
-    return hasExplicitlySpecifiedReferenceType;
+    return this.hasExplicitlySpecifiedReferenceType;
   }
 
   public void setExplicitlySpecifiedReferenceType(ReferenceType referenceType)
@@ -126,36 +126,37 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
   public ReferenceType getActualReferenceType()
   {
-    return hasExplicitlySpecifiedReferenceType() ? explicitlySpecifiedReferenceType :
-      defaultReferenceDirectives.getDefaultReferenceType();
+    return hasExplicitlySpecifiedReferenceType() ?
+      this.explicitlySpecifiedReferenceType :
+      this.defaultReferenceDirectives.getDefaultReferenceType();
   }
 
   public boolean hasExplicitlySpecifiedValueEncodings()
   {
-    return hasExplicitlySpecifiedValueEncodings;
+    return this.hasExplicitlySpecifiedValueEncodings;
   }
 
   public void setHasExplicitlySpecifiedValueEncodings()
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedValueEncodings = true;
   }
 
   public int getActualValueEncoding()
   {
     return hasExplicitlySpecifiedValueEncodings() ?
-      explicitlySpecifiedValueEncoding :
-      defaultReferenceDirectives.getDefaultValueEncoding();
+      this.explicitlySpecifiedValueEncoding :
+      this.defaultReferenceDirectives.getDefaultValueEncoding();
   }
 
   public boolean hasExplicitlySpecifiedDefaultLocationValue()
   {
-    return hasExplicitlySpecifiedDefaultLocationValue;
+    return this.hasExplicitlySpecifiedDefaultLocationValue;
   }
 
   public void setExplicitlySpecifiedDefaultLocationValue(String locationValue)
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedDefaultLocationValue = true;
     this.explicitlySpecifiedDefaultLocationValue = locationValue;
   }
@@ -163,18 +164,18 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public String getActualDefaultLocationValue()
   {
     return hasExplicitlySpecifiedDefaultLocationValue() ?
-      explicitlySpecifiedDefaultLocationValue :
-      defaultReferenceDirectives.getDefaultLocationValue();
+      this.explicitlySpecifiedDefaultLocationValue :
+      this.defaultReferenceDirectives.getDefaultLocationValue();
   }
 
   public boolean hasExplicitlySpecifiedDefaultDataValue()
   {
-    return hasExplicitlySpecifiedDefaultDataValue;
+    return this.hasExplicitlySpecifiedDefaultDataValue;
   }
 
   public void setExplicitlySpecifiedDefaultDataValue(String dataValue)
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedDefaultDataValue = true;
     this.explicitlySpecifiedDefaultDataValue = dataValue;
   }
@@ -182,13 +183,13 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public String getActualDefaultDataValue()
   {
     return hasExplicitlySpecifiedDefaultDataValue() ?
-      explicitlySpecifiedDefaultDataValue :
-      defaultReferenceDirectives.getDefaultDataValue();
+      this.explicitlySpecifiedDefaultDataValue :
+      this.defaultReferenceDirectives.getDefaultDataValue();
   }
 
   public boolean hasExplicitlySpecifiedDefaultID()
   {
-    return hasExplicitlySpecifiedDefaultRDFID;
+    return this.hasExplicitlySpecifiedDefaultRDFID;
   }
 
   public void setHasExplicitlySpecifiedDefaultID(String id)
@@ -201,13 +202,13 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public String getActualDefaultRDFID()
   {
     return hasExplicitlySpecifiedDefaultID() ?
-      explicitlySpecifiedDefaultRDFID :
-      defaultReferenceDirectives.getDefaultRDFID();
+      this.explicitlySpecifiedDefaultRDFID :
+      this.defaultReferenceDirectives.getDefaultRDFID();
   }
 
   public boolean hasExplicitlySpecifiedDefaultLabel()
   {
-    return hasExplicitlySpecifiedDefaultRDFSLabel;
+    return this.hasExplicitlySpecifiedDefaultRDFSLabel;
   }
 
   public void setHasExplicitlySpecifiedDefaultLabel(String label)
@@ -220,13 +221,13 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public String getActualDefaultRDFSLabel()
   {
     return hasExplicitlySpecifiedDefaultLabel() ?
-      explicitlySpecifiedDefaultRDFSLabel :
-      defaultReferenceDirectives.getDefaultRDFSLabel();
+      this.explicitlySpecifiedDefaultRDFSLabel :
+      this.defaultReferenceDirectives.getDefaultRDFSLabel();
   }
 
   public boolean hasExplicitlySpecifiedShiftDirective()
   {
-    return hasExplicitlySpecifiedShiftDirective;
+    return this.hasExplicitlySpecifiedShiftDirective;
   }
 
   public void setHasExplicitlySpecifiedShiftDirective(int shiftDirective)
@@ -239,13 +240,13 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public int getActualShiftDirective()
   {
     return hasExplicitlySpecifiedShiftDirective() ?
-      explicitlySpecifiedShiftDirective :
-      defaultReferenceDirectives.getDefaultShiftDirective();
+      this.explicitlySpecifiedShiftDirective :
+      this.defaultReferenceDirectives.getDefaultShiftDirective();
   }
 
   public boolean hasExplicitlySpecifiedLanguage()
   {
-    return hasExplicitlySpecifiedLanguage;
+    return this.hasExplicitlySpecifiedLanguage;
   }
 
   public void setHasExplicitlySpecifiedLanguage(String language)
@@ -258,13 +259,13 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public String getActualLanguage()
   {
     return hasExplicitlySpecifiedLanguage() ?
-      explicitlySpecifiedLanguage :
-      defaultReferenceDirectives.getDefaultLanguage();
+      this.explicitlySpecifiedLanguage :
+      this.defaultReferenceDirectives.getDefaultLanguage();
   }
 
   public boolean hasExplicitlySpecifiedPrefix()
   {
-    return hasExplicitlySpecifiedPrefix;
+    return this.hasExplicitlySpecifiedPrefix;
   }
 
   public void setHasExplicitlySpecifiedPrefix(String prefix)
@@ -276,12 +277,13 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
   public String getActualPrefix()
   {
-    return hasExplicitlySpecifiedPrefix() ? explicitlySpecifiedPrefix : defaultReferenceDirectives.getDefaultPrefix();
+    return hasExplicitlySpecifiedPrefix() ?
+      this.explicitlySpecifiedPrefix : this.defaultReferenceDirectives.getDefaultPrefix();
   }
 
   public boolean hasExplicitlySpecifiedNamespace()
   {
-    return hasExplicitlySpecifiedNamespace;
+    return this.hasExplicitlySpecifiedNamespace;
   }
 
   public void setHasExplicitlySpecifiedNamespace(String namespace)
@@ -294,18 +296,18 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public String getActualNamespace()
   {
     return hasExplicitlySpecifiedNamespace() ?
-      explicitlySpecifiedNamespace :
-      defaultReferenceDirectives.getDefaultNamespace();
+      this.explicitlySpecifiedNamespace :
+      this.defaultReferenceDirectives.getDefaultNamespace();
   }
 
   public boolean hasExplicitlySpecifiedIfExistsDirective()
   {
-    return hasExplicitlySpecifiedIfExistsDirective;
+    return this.hasExplicitlySpecifiedIfExistsDirective;
   }
 
   public void setHasExplicitlySpecifiedIfExistsDirective(int ifExistsDirective)
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedIfExistsDirective = true;
     this.explicitlySpecifiedIfExistsDirective = ifExistsDirective;
   }
@@ -313,8 +315,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public int getActualIfExistsDirective()
   {
     return hasExplicitlySpecifiedIfExistsDirective() ?
-      explicitlySpecifiedIfExistsDirective :
-      defaultReferenceDirectives.getDefaultIfExistsDirective();
+      this.explicitlySpecifiedIfExistsDirective :
+      this.defaultReferenceDirectives.getDefaultIfExistsDirective();
   }
 
   public boolean actualIfExistsDirectiveIsSkip()
@@ -334,12 +336,12 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
   public boolean hasExplicitlySpecifiedIfNotExistsDirective()
   {
-    return hasExplicitlySpecifiedIfNotExistsDirective;
+    return this.hasExplicitlySpecifiedIfNotExistsDirective;
   }
 
   public void setHasExplicitlySpecifiedIfNotExistsDirective(int ifNotExistsDirective)
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedIfNotExistsDirective = true;
     this.explicitlySpecifiedIfNotExistsDirective = ifNotExistsDirective;
   }
@@ -347,8 +349,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public int getActualIfNotExistsDirective()
   {
     return hasExplicitlySpecifiedIfNotExistsDirective() ?
-      explicitlySpecifiedIfNotExistsDirective :
-      defaultReferenceDirectives.getDefaultIfNotExistsDirective();
+      this.explicitlySpecifiedIfNotExistsDirective :
+      this.defaultReferenceDirectives.getDefaultIfNotExistsDirective();
   }
 
   public boolean actualIfNotExistsDirectiveIsSkip()
@@ -368,12 +370,12 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
   public boolean hasExplicitlySpecifiedEmptyLocationDirective()
   {
-    return hasExplicitlySpecifiedEmptyLocationDirective;
+    return this.hasExplicitlySpecifiedEmptyLocationDirective;
   }
 
   public void setHasExplicitlySpecifiedEmptyLocationDirective(int emptyLocationDirective)
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedEmptyLocationDirective = true;
     this.explicitlySpecifiedEmptyLocationDirective = emptyLocationDirective;
   }
@@ -381,18 +383,18 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public int getActualEmptyLocationDirective()
   {
     return hasExplicitlySpecifiedEmptyLocationDirective() ?
-      explicitlySpecifiedEmptyLocationDirective :
-      defaultReferenceDirectives.getDefaultEmptyLocationDirective();
+      this.explicitlySpecifiedEmptyLocationDirective :
+      this.defaultReferenceDirectives.getDefaultEmptyLocationDirective();
   }
 
   public boolean hasExplicitlySpecifiedEmptyDataValueDirective()
   {
-    return hasExplicitlySpecifiedEmptyDataValueDirective;
+    return this.hasExplicitlySpecifiedEmptyDataValueDirective;
   }
 
   public void setHasExplicitlySpecifiedEmptyDataValueDirective(int emptyDataValueDirective)
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedEmptyDataValueDirective = true;
     this.explicitlySpecifiedEmptyDataValueDirective = emptyDataValueDirective;
   }
@@ -400,18 +402,18 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public int getActualEmptyDataValueDirective()
   {
     return hasExplicitlySpecifiedEmptyDataValueDirective() ?
-      explicitlySpecifiedEmptyDataValueDirective :
-      defaultReferenceDirectives.getDefaultEmptyDataValueDirective();
+      this.explicitlySpecifiedEmptyDataValueDirective :
+      this.defaultReferenceDirectives.getDefaultEmptyDataValueDirective();
   }
 
   public boolean hasExplicitlySpecifiedEmptyRDFIDDirective()
   {
-    return hasExplicitlySpecifiedEmptyRDFIDDirective;
+    return this.hasExplicitlySpecifiedEmptyRDFIDDirective;
   }
 
   public void setHasExplicitlySpecifiedEmptyRDFIDDirective(int emptyRDFIDDirective)
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedEmptyRDFIDDirective = true;
     this.explicitlySpecifiedEmptyRDFIDDirective = emptyRDFIDDirective;
   }
@@ -419,8 +421,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public int getActualEmptyRDFIDDirective()
   {
     return hasExplicitlySpecifiedEmptyRDFIDDirective() ?
-      explicitlySpecifiedEmptyRDFIDDirective :
-      defaultReferenceDirectives.getDefaultEmptyRDFIDDirective();
+      this.explicitlySpecifiedEmptyRDFIDDirective :
+      this.defaultReferenceDirectives.getDefaultEmptyRDFIDDirective();
   }
 
   public boolean actualEmptyRDFIDDirectiveIsSkipIfEmpty()
@@ -430,12 +432,12 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
   public boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective()
   {
-    return hasExplicitlySpecifiedEmptyRDFSLabelDirective;
+    return this.hasExplicitlySpecifiedEmptyRDFSLabelDirective;
   }
 
   public void setHasExplicitlySpecifiedEmptyRDFSLabelDirective(int emptyRDFSLabelDirective)
   {
-    hasExplicitlySpecifiedOptions = true;
+    this.hasExplicitlySpecifiedOptions = true;
     this.hasExplicitlySpecifiedEmptyRDFSLabelDirective = true;
     this.explicitlySpecifiedEmptyRDFSLabelDirective = emptyRDFSLabelDirective;
   }
@@ -443,8 +445,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   public int getActualEmptyRDFSLabelDirective()
   {
     return hasExplicitlySpecifiedEmptyRDFSLabelDirective() ?
-      explicitlySpecifiedEmptyRDFSLabelDirective :
-      defaultReferenceDirectives.getDefaultEmptyRDFSLabelDirective();
+      this.explicitlySpecifiedEmptyRDFSLabelDirective :
+      this.defaultReferenceDirectives.getDefaultEmptyRDFSLabelDirective();
   }
 
   public boolean actualEmptyRDFSLabelDirectiveIsSkipIfEmpty()
@@ -454,7 +456,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
   public boolean hasExplicitlySpecifiedTypes()
   {
-    return hasExplicitlySpecifiedTypes;
+    return this.hasExplicitlySpecifiedTypes;
   }
 
   public void setHasExplicitlySpecifiedTypes()
@@ -465,7 +467,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
   public SpreadsheetLocation getShiftedLocation()
   {
-    return shiftedLocation;
+    return this.shiftedLocation;
   }
 
   public void setShiftedLocation(SpreadsheetLocation shiftedLocation)

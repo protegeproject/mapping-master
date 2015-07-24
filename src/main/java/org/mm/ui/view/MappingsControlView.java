@@ -30,7 +30,7 @@ public class MappingsControlView extends JPanel implements MMView
 		createComponents();
 
 		statusWindowAppend("MappingMaster V0.95\n\n");
-		statusWindowAppend("See http://protege.cim3.net/cgi-bin/wiki.pl?MappingMaster for documentation.\n");
+		statusWindowAppend("See https://github.com/protegeproject/mapping-master/wiki for documentation.\n");
 		statusWindowAppend("Use the Expressions tab to define mappings using MappingMaster's DSL.\n");
 		statusWindowAppend("Click the Map button to perform mappings.\n");
 	}
@@ -39,13 +39,13 @@ public class MappingsControlView extends JPanel implements MMView
 	public void update()
 	{
 		if (getApplicationModel().hasMappingFile()) {
-			fileNameTextField.setText(getApplicationModel().getMappingFileName());
-			saveButton.setEnabled(true);
-			saveAsButton.setEnabled(true);
+			this.fileNameTextField.setText(getApplicationModel().getMappingFileName());
+			this.saveButton.setEnabled(true);
+			this.saveAsButton.setEnabled(true);
 		} else {
-			fileNameTextField.setText("");
-			saveButton.setEnabled(false);
-			saveAsButton.setEnabled(true);
+			this.fileNameTextField.setText("");
+			this.saveButton.setEnabled(false);
+			this.saveAsButton.setEnabled(true);
 		}
 
 		validate();
@@ -53,12 +53,12 @@ public class MappingsControlView extends JPanel implements MMView
 
 	public void clearStatusWindow()
 	{
-		statusWindow.setText("");
+		this.statusWindow.setText("");
 	}
 
 	public void statusWindowAppend(String text)
 	{
-		statusWindow.append(text);
+		this.statusWindow.append(text);
 	}
 
 	// TODO: need to make option stuff more generic. ReferenceRendererOptionsManager should return list of options
@@ -79,7 +79,7 @@ public class MappingsControlView extends JPanel implements MMView
 
 		mapExpressionsButton = new JButton("Map");
 		mapExpressionsButton.setPreferredSize(new Dimension(125, 25));
-		mapExpressionsButton.addActionListener(new MapExpressionsAction(application));
+		mapExpressionsButton.addActionListener(new MapExpressionsAction(this.application));
 
 		mappingsButtonPanel = new JPanel(new GridLayout(3, 1));
 		mappingsButtonPanel.add(new JPanel(), 0);
@@ -93,60 +93,55 @@ public class MappingsControlView extends JPanel implements MMView
 
 		nameEncodingLabel = new JLabel("Default Name Encoding");
 		optionsPanel.add(nameEncodingLabel);
-		nameEncodingComboBox = new JComboBox();
-		for (String nameEncoding : getOptionsManager().getNameEncodings())
-			nameEncodingComboBox.addItem(nameEncoding);
-		nameEncodingComboBox.setSelectedItem(getOptionsManager().getDefaultNameEncoding());
-		nameEncodingComboBox.addActionListener(
-			new ConfigurationActionListener(getOptionsManager().getDefaultValueEncodingOptionName()));
-		optionsPanel.add(nameEncodingComboBox);
+		this.nameEncodingComboBox = new JComboBox();
+		getOptionsManager().getNameEncodings().forEach(this.nameEncodingComboBox::addItem);
+		this.nameEncodingComboBox.setSelectedItem(getOptionsManager().getDefaultNameEncoding());
+		this.nameEncodingComboBox
+			.addActionListener(new ConfigurationActionListener(getOptionsManager().getDefaultValueEncodingOptionName()));
+		optionsPanel.add(this.nameEncodingComboBox);
 
 		referenceTypeLabel = new JLabel("Default Entity Type");
 		optionsPanel.add(referenceTypeLabel);
-		referenceTypeComboBox = new JComboBox();
-		for (String referenceType : getOptionsManager().getReferenceValueTypes())
-			referenceTypeComboBox.addItem(referenceType);
-		referenceTypeComboBox.setSelectedItem(getOptionsManager().getDefaultReferenceType());
-		referenceTypeComboBox.addActionListener(
-			new ConfigurationActionListener(getOptionsManager().getDefaultReferenceTypeOptionName()));
-		optionsPanel.add(referenceTypeComboBox);
+		this.referenceTypeComboBox = new JComboBox();
+		getOptionsManager().getReferenceValueTypes().forEach(this.referenceTypeComboBox::addItem);
+		this.referenceTypeComboBox.setSelectedItem(getOptionsManager().getDefaultReferenceType());
+		this.referenceTypeComboBox
+			.addActionListener(new ConfigurationActionListener(getOptionsManager().getDefaultReferenceTypeOptionName()));
+		optionsPanel.add(this.referenceTypeComboBox);
 
 		propertyTypeLabel = new JLabel("Default Property Type");
 		optionsPanel.add(propertyTypeLabel);
-		propertyTypeComboBox = new JComboBox();
-		for (String propertyType : getOptionsManager().getPropertyTypes())
-			propertyTypeComboBox.addItem(propertyType);
-		propertyTypeComboBox.setSelectedItem(getOptionsManager().getDefaultPropertyType());
-		propertyTypeComboBox.addActionListener(new ConfigurationActionListener(getOptionsManager()
-				.getDefaultPropertyTypeOptionName()));
-		optionsPanel.add(propertyTypeComboBox);
+		this.propertyTypeComboBox = new JComboBox();
+		getOptionsManager().getPropertyTypes().forEach(this.propertyTypeComboBox::addItem);
+		this.propertyTypeComboBox.setSelectedItem(getOptionsManager().getDefaultPropertyType());
+		this.propertyTypeComboBox
+			.addActionListener(new ConfigurationActionListener(getOptionsManager().getDefaultPropertyTypeOptionName()));
+		optionsPanel.add(this.propertyTypeComboBox);
 
 		propertyValueTypeLabel = new JLabel("Default Property Value Type");
 		optionsPanel.add(propertyValueTypeLabel);
-		propertyValueTypeComboBox = new JComboBox();
-		for (String propertyValueType : getOptionsManager().getPropertyValueTypes())
-			propertyValueTypeComboBox.addItem(propertyValueType);
-		propertyValueTypeComboBox.setSelectedItem(getOptionsManager().getDefaultPropertyValueType());
-		propertyValueTypeComboBox.addActionListener(new ConfigurationActionListener(getOptionsManager()
-				.getDefaultPropertyValueTypeOptionName()));
-		optionsPanel.add(propertyValueTypeComboBox);
+		this.propertyValueTypeComboBox = new JComboBox();
+		getOptionsManager().getPropertyValueTypes().forEach(this.propertyValueTypeComboBox::addItem);
+		this.propertyValueTypeComboBox.setSelectedItem(getOptionsManager().getDefaultPropertyValueType());
+		this.propertyValueTypeComboBox
+			.addActionListener(new ConfigurationActionListener(getOptionsManager().getDefaultPropertyValueTypeOptionName()));
+		optionsPanel.add(this.propertyValueTypeComboBox);
 
 		dataPropertyValueTypeLabel = new JLabel("Default Data Property Value Type");
 		optionsPanel.add(dataPropertyValueTypeLabel);
-		dataPropertyValueTypeComboBox = new JComboBox();
-		for (String dataPropertyValueType : getOptionsManager().getDataPropertyValueTypes())
-			dataPropertyValueTypeComboBox.addItem(dataPropertyValueType);
-		dataPropertyValueTypeComboBox.setSelectedItem(getOptionsManager().getDefaultDataPropertyValueType());
-		dataPropertyValueTypeComboBox.addActionListener(new ConfigurationActionListener(getOptionsManager()
-				.getDefaultDataPropertyValueTypeOptionName()));
-		optionsPanel.add(dataPropertyValueTypeComboBox);
+		this.dataPropertyValueTypeComboBox = new JComboBox();
+		getOptionsManager().getDataPropertyValueTypes().forEach(this.dataPropertyValueTypeComboBox::addItem);
+		this.dataPropertyValueTypeComboBox.setSelectedItem(getOptionsManager().getDefaultDataPropertyValueType());
+		this.dataPropertyValueTypeComboBox.addActionListener(
+			new ConfigurationActionListener(getOptionsManager().getDefaultDataPropertyValueTypeOptionName()));
+		optionsPanel.add(this.dataPropertyValueTypeComboBox);
 
-		statusWindow = new JTextArea();
-		statusWindow.setBorder(BorderFactory.createEtchedBorder());
-		statusWindow.setBackground(Color.WHITE);
-		statusWindow.setLineWrap(true);
-		statusWindow.setEditable(false);
-		scrollPane = new JScrollPane(statusWindow);
+		this.statusWindow = new JTextArea();
+		this.statusWindow.setBorder(BorderFactory.createEtchedBorder());
+		this.statusWindow.setBackground(Color.WHITE);
+		this.statusWindow.setLineWrap(true);
+		this.statusWindow.setEditable(false);
+		scrollPane = new JScrollPane(this.statusWindow);
 
 		add(scrollPane, BorderLayout.CENTER);
 
@@ -154,35 +149,35 @@ public class MappingsControlView extends JPanel implements MMView
 		footerPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Mapping Ontology"));
 		add(footerPanel, BorderLayout.SOUTH);
 
-		fileNameTextField = createTextField("");
-		fileNameTextField.setEnabled(true);
-		footerPanel.add(fileNameTextField, BorderLayout.CENTER);
+		this.fileNameTextField = createTextField("");
+		this.fileNameTextField.setEnabled(true);
+		footerPanel.add(this.fileNameTextField, BorderLayout.CENTER);
 
 		fileButtonPanel = new JPanel(new GridLayout(1, 4));
 		footerPanel.add(fileButtonPanel, BorderLayout.EAST);
 
 		openButton = new JButton("Open");
-		openButton.addActionListener(new OpenMappingsAction(application));
+		openButton.addActionListener(new OpenMappingsAction(this.application));
 		fileButtonPanel.add(openButton);
 
-		saveButton = new JButton("Save");
-		saveButton.addActionListener(new SaveMappingsAction(application));
-		saveButton.setEnabled(false);
-		fileButtonPanel.add(saveButton);
+		this.saveButton = new JButton("Save");
+		this.saveButton.addActionListener(new SaveMappingsAction(this.application));
+		this.saveButton.setEnabled(false);
+		fileButtonPanel.add(this.saveButton);
 
-		saveAsButton = new JButton("Save As...");
-		saveAsButton.addActionListener(new SaveAsMappingsAction(application));
-		saveAsButton.setEnabled(true);
-		fileButtonPanel.add(saveAsButton, BorderLayout.CENTER);
+		this.saveAsButton = new JButton("Save As...");
+		this.saveAsButton.addActionListener(new SaveAsMappingsAction(this.application));
+		this.saveAsButton.setEnabled(true);
+		fileButtonPanel.add(this.saveAsButton, BorderLayout.CENTER);
 
 		closeButton = new JButton("Close");
-		closeButton.addActionListener(new CloseMappingsAction(application));
+		closeButton.addActionListener(new CloseMappingsAction(this.application));
 		fileButtonPanel.add(closeButton);
 	}
 
 	private MMApplicationModel getApplicationModel()
 	{
-		return application.getApplicationModel();
+		return this.application.getApplicationModel();
 	}
 
 	private ReferenceRendererOptionsManager getOptionsManager()
@@ -205,7 +200,7 @@ public class MappingsControlView extends JPanel implements MMView
 			JComboBox cb = (JComboBox)e.getSource();
 			String selectedItem = (String)cb.getSelectedItem();
 			// cb.setSelectedItem(selectedItem);
-			getOptionsManager().setMappingConfigurationOption(optionName, selectedItem);
+			getOptionsManager().setMappingConfigurationOption(this.optionName, selectedItem);
 		}
 
 	}

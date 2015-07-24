@@ -74,18 +74,18 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
       if (referenceType.isUntyped())
         throw new RendererException("untyped reference " + referenceNode);
 
-      if (resolvedReferenceValue.equals("")
-        && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
+      if (resolvedReferenceValue.isEmpty() && referenceNode.getActualEmptyLocationDirective()
+        == MM_SKIP_IF_EMPTY_LOCATION)
         return Optional.empty();
 
       if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
         String literalReferenceValue = processLiteralReferenceValue(location, resolvedReferenceValue, referenceNode);
 
-        if (literalReferenceValue.length() == 0
-          && referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE)
+        if (literalReferenceValue.isEmpty() && referenceNode.getActualEmptyDataValueDirective()
+          == MM_SKIP_IF_EMPTY_DATA_VALUE)
           return Optional.empty();
 
-        OWLLiteral literal = literalRenderer.createOWLLiteral(literalReferenceValue, referenceType);
+        OWLLiteral literal = this.literalRenderer.createOWLLiteral(literalReferenceValue, referenceType);
 
         return Optional.of(new OWLAPIReferenceRendering(literal, referenceType));
       } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
@@ -100,7 +100,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
         return Optional.of(new OWLAPIReferenceRendering(owlEntity, axioms, referenceType));
       } else
         throw new RendererException(
-          "internal error: unknown reference type " + referenceType + " for reference " + referenceNode.toString());
+          "internal error: unknown reference type " + referenceType + " for reference " + referenceNode);
     }
   }
 
@@ -194,7 +194,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
                 "expecting object property for type in reference " + referenceNode + " for " + entity);
 
             OWLObjectProperty property = definingType.get().asOWLObjectProperty();
-            OWLSubObjectPropertyOfAxiom axiom = owlDataFactory
+            OWLSubObjectPropertyOfAxiom axiom = this.owlDataFactory
               .getOWLSubObjectPropertyOfAxiom(property, entity.asOWLObjectProperty());
             axioms.add(axiom);
           } else if (referenceType.isOWLDataProperty()) {
@@ -204,7 +204,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
 
             OWLDataProperty property = definingType.get().asOWLDataProperty();
 
-            OWLSubDataPropertyOfAxiom axiom = owlDataFactory
+            OWLSubDataPropertyOfAxiom axiom = this.owlDataFactory
               .getOWLSubDataPropertyOfAxiom(property, entity.asOWLDataProperty());
             axioms.add(axiom);
           } else
@@ -218,13 +218,14 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
   private Optional<OWLEntity> renderType(TypeNode typeNode) throws RendererException
   {
     if (typeNode.isOWLClassNode()) {
-      Optional<OWLClassRendering> classRendering = entityRenderer.renderOWLClass((OWLClassNode)typeNode);
+      Optional<OWLClassRendering> classRendering = this.entityRenderer.renderOWLClass((OWLClassNode)typeNode);
       if (classRendering.isPresent()) {
         return Optional.of(classRendering.get().getOWLClass());
       } else
         return Optional.empty();
     } else if (typeNode.isOWLPropertyNode()) {
-      Optional<OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty((OWLPropertyNode)typeNode);
+      Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer
+        .renderOWLProperty((OWLPropertyNode)typeNode);
       if (propertyRendering.isPresent()) {
         return Optional.of(propertyRendering.get().getOWLProperty());
       } else

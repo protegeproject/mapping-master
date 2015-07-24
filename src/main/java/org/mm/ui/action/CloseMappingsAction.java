@@ -15,7 +15,7 @@ public class CloseMappingsAction implements ActionListener
 
   public CloseMappingsAction(MMApplication application) { this.application = application; }
 
-  public void actionPerformed(ActionEvent e) { closeMappings(application); }
+  public void actionPerformed(ActionEvent e) { closeMappings(this.application); }
 
   public void closeMappings(MMApplication application)
   {
@@ -41,7 +41,7 @@ public class CloseMappingsAction implements ActionListener
     applicationModel.clearModifiedStatus();
   }
 
-  private MMApplicationView getApplicationView() { return application.getApplicationView(); }
+  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
 
   private MMApplicationDialogManager getApplicationDialogManager()
   {

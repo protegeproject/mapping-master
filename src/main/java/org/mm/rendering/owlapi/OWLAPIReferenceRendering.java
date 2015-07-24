@@ -41,9 +41,9 @@ public class OWLAPIReferenceRendering extends OWLAPIRendering implements Referen
     this.referenceType = referenceType;
   }
 
-  public Optional<OWLEntity> getOWLEntity() { return entity; }
+  public Optional<OWLEntity> getOWLEntity() { return this.entity; }
 
-  public Optional<OWLLiteral> getOWLLiteral() { return literal; }
+  public Optional<OWLLiteral> getOWLLiteral() { return this.literal; }
 
   @Override public ReferenceType getReferenceType() { return this.referenceType; }
 

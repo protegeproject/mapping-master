@@ -17,7 +17,7 @@ public class OWLClassExpressionNode implements MMNode
 	private OWLObjectOneOfNode objectOneOfNode;
 	private OWLUnionClassNode unionClassNode;
 	private OWLRestrictionNode restrictionNode;
-	private boolean isNegated;
+	private final boolean isNegated;
 
 	public OWLClassExpressionNode(ASTOWLClassExpression node) throws ParseException
 	{
@@ -35,7 +35,7 @@ public class OWLClassExpressionNode implements MMNode
 			else if (ParserUtil.hasName(child, "OWLClass"))
 				this.classNode = new OWLClassNode((ASTOWLClass)child);
 			else
-				throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
+				throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
 		}
 	}
 
@@ -56,54 +56,54 @@ public class OWLClassExpressionNode implements MMNode
 
 	public OWLRestrictionNode getOWLRestrictionNode()
 	{
-		return restrictionNode;
+		return this.restrictionNode;
 	}
 
 	public OWLClassNode getOWLClassNode()
 	{
-		return classNode;
+		return this.classNode;
 	}
 
 	public boolean getIsNegated()
 	{
-		return isNegated;
+		return this.isNegated;
 	}
 
 	public boolean hasOWLObjectOneOfNode()
 	{
-		return objectOneOfNode != null;
+		return this.objectOneOfNode != null;
 	}
 
 	public boolean hasOWLUnionClassNode()
 	{
-		return unionClassNode != null;
+		return this.unionClassNode != null;
 	}
 
 	public boolean hasOWLRestrictionNode()
 	{
-		return restrictionNode != null;
+		return this.restrictionNode != null;
 	}
 
 	public boolean hasOWLClassNode()
 	{
-		return classNode != null;
+		return this.classNode != null;
 	}
 
 	public String toString()
 	{
 		String representation = "";
 
-		if (isNegated)
+		if (this.isNegated)
 			representation += "NOT ";
 
-		if (objectOneOfNode != null)
-			representation += objectOneOfNode.toString();
-		else if (unionClassNode != null)
-			representation += unionClassNode.toString();
-		else if (restrictionNode != null)
-			representation += restrictionNode.toString();
-		else if (classNode != null)
-			representation += classNode.toString();
+		if (this.objectOneOfNode != null)
+			representation += this.objectOneOfNode.toString();
+		else if (this.unionClassNode != null)
+			representation += this.unionClassNode.toString();
+		else if (this.restrictionNode != null)
+			representation += this.restrictionNode.toString();
+		else if (this.classNode != null)
+			representation += this.classNode.toString();
 
 		return representation;
 	}

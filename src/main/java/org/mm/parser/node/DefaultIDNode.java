@@ -8,14 +8,14 @@ import org.mm.parser.ParserUtil;
 
 public class DefaultIDNode implements MMNode, MappingMasterParserConstants
 {
-  private String defaultID;
+  private final String defaultID;
   
   public DefaultIDNode(ASTDefaultID node) throws ParseException
   { 
     this.defaultID = node.defaultID;
   } 
 
-  public String getDefaultRDFID() { return defaultID; }
+  public String getDefaultRDFID() { return this.defaultID; }
 
   @Override public String getNodeName()
   {
@@ -24,7 +24,7 @@ public class DefaultIDNode implements MMNode, MappingMasterParserConstants
 
   public String toString()
   { 
-    String representation = ParserUtil.getTokenName(MM_DEFAULT_ID) + "=\"" + defaultID + "\"";
+    String representation = ParserUtil.getTokenName(MM_DEFAULT_ID) + "=\"" + this.defaultID + "\"";
 
     return representation;
   } 
@@ -32,16 +32,16 @@ public class DefaultIDNode implements MMNode, MappingMasterParserConstants
   public boolean equals(Object obj)
   {
     if (this == obj) return true;
-    if ((obj == null) || (obj.getClass() != this.getClass())) return false;
+    if (obj == null || obj.getClass() != this.getClass()) return false;
     DefaultIDNode dv = (DefaultIDNode)obj;
-    return defaultID != null && dv.defaultID != null && defaultID.equals(dv.defaultID);
+    return this.defaultID != null && dv.defaultID != null && this.defaultID.equals(dv.defaultID);
   } 
 
   public int hashCode()
   {
     int hash = 14;
 
-    hash = hash + (null == defaultID ? 0 : defaultID.hashCode());
+    hash = hash + (null == this.defaultID ? 0 : this.defaultID.hashCode());
 
     return hash;
   }

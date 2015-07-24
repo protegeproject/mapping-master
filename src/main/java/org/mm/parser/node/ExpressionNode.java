@@ -19,32 +19,32 @@ public class ExpressionNode implements MMNode
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "MMDirective")) {
-        mmDirectiveNode = new MMDirectiveNode((ASTMMDirective)child);
+        this.mmDirectiveNode = new MMDirectiveNode((ASTMMDirective)child);
       } else if (ParserUtil.hasName(child, "MMExpression")) {
-        mmExpressionNode = new MMExpressionNode((ASTMMExpression)child);
+        this.mmExpressionNode = new MMExpressionNode((ASTMMExpression)child);
       } else
-        throw new InternalParseException("invalid child node " + child.toString() + " to Expression");
+        throw new InternalParseException("invalid child node " + child + " to Expression");
     }
   }
 
   public MMDirectiveNode getMMDirectiveNode()
   {
-    return mmDirectiveNode;
+    return this.mmDirectiveNode;
   }
 
   public MMExpressionNode getMMExpressionNode()
   {
-    return mmExpressionNode;
+    return this.mmExpressionNode;
   }
 
   public boolean hasMMDirective()
   {
-    return mmDirectiveNode != null;
+    return this.mmDirectiveNode != null;
   }
 
   public boolean hasMMExpression()
   {
-    return mmExpressionNode != null;
+    return this.mmExpressionNode != null;
   }
 
   @Override public String getNodeName()
@@ -55,9 +55,9 @@ public class ExpressionNode implements MMNode
   public String toString()
   {
     if (hasMMDirective())
-      return mmDirectiveNode.toString();
+      return this.mmDirectiveNode.toString();
     else if (hasMMExpression())
-      return mmExpressionNode.toString();
+      return this.mmExpressionNode.toString();
     else
       return "";
   }

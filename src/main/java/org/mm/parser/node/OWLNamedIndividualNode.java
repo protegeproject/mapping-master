@@ -24,7 +24,7 @@ public class OWLNamedIndividualNode implements MMNode
       else if (ParserUtil.hasName(child, "Reference"))
         this.referenceNode = new ReferenceNode((ASTReference)child);
       else
-        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
     }
   }
 
@@ -35,7 +35,7 @@ public class OWLNamedIndividualNode implements MMNode
 
   public ReferenceNode getReferenceNode()
   {
-    return referenceNode;
+    return this.referenceNode;
   }
 
   public NameNode getNameNode()
@@ -50,7 +50,7 @@ public class OWLNamedIndividualNode implements MMNode
 
   public boolean hasReferenceNode()
   {
-    return referenceNode != null;
+    return this.referenceNode != null;
   }
 
   public String toString()

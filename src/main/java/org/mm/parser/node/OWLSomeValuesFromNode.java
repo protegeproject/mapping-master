@@ -19,32 +19,32 @@ public class OWLSomeValuesFromNode implements MMNode
 			Node child = node.jjtGetChild(i);
 
 			if (ParserUtil.hasName(child, "OWLDataSomeValuesFrom"))
-				dataSomeValuesFromNode = new OWLDataSomeValuesFromNode((ASTOWLDataSomeValuesFrom)child);
+				this.dataSomeValuesFromNode = new OWLDataSomeValuesFromNode((ASTOWLDataSomeValuesFrom)child);
 			else if (ParserUtil.hasName(child, "OWLObjectSomeValuesFrom"))
-				objectSomeValuesFromNode = new OWLObjectSomeValuesFromNode((ASTOWLObjectSomeValuesFrom)child);
+				this.objectSomeValuesFromNode = new OWLObjectSomeValuesFromNode((ASTOWLObjectSomeValuesFrom)child);
 			else
-				throw new InternalParseException("invalid child node " + child.toString() + " for OWLSomeValuesFrom");
+				throw new InternalParseException("invalid child node " + child + " for OWLSomeValuesFrom");
 		} 
 	}
 
 	public OWLDataSomeValuesFromNode getOWLDataSomeValuesFromNode()
 	{
-		return dataSomeValuesFromNode;
+		return this.dataSomeValuesFromNode;
 	}
 	
 	public OWLObjectSomeValuesFromNode getOWLObjectSomeValuesFromNode()
 	{
-		return objectSomeValuesFromNode;
+		return this.objectSomeValuesFromNode;
 	}
 
 	public boolean hasOWLDataSomeValuesFromNode()
 	{
-		return dataSomeValuesFromNode != null;
+		return this.dataSomeValuesFromNode != null;
 	}
 	
 	public boolean hasOWLObjectSomeValuesFrom()
 	{
-		return objectSomeValuesFromNode != null;
+		return this.objectSomeValuesFromNode != null;
 	}
 
 	@Override public String getNodeName()
@@ -56,10 +56,10 @@ public class OWLSomeValuesFromNode implements MMNode
 	{
 		String representation = "";
 
-		if (dataSomeValuesFromNode != null)
-			representation += dataSomeValuesFromNode.toString();
-		else if (objectSomeValuesFromNode != null)
-			representation += objectSomeValuesFromNode.toString();
+		if (this.dataSomeValuesFromNode != null)
+			representation += this.dataSomeValuesFromNode.toString();
+		else if (this.objectSomeValuesFromNode != null)
+			representation += this.objectSomeValuesFromNode.toString();
 
 		return representation;
 	}

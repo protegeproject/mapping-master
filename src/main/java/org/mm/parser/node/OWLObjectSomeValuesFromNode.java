@@ -17,32 +17,32 @@ public class OWLObjectSomeValuesFromNode implements MMNode
   {
     Node child = node.jjtGetChild(0);
     if (ParserUtil.hasName(child, "OWLClassExpression"))
-      classExpressionNode = new OWLClassExpressionNode((ASTOWLClassExpression)child);
+      this.classExpressionNode = new OWLClassExpressionNode((ASTOWLClassExpression)child);
     else if (ParserUtil.hasName(child, "OWLClass"))
-      classNode = new OWLClassNode((ASTOWLClass)child);
+      this.classNode = new OWLClassNode((ASTOWLClass)child);
     else
       throw new InternalParseException(
-        getNodeName() + " node expecting OWLCLass or OWLClassExpression child, got " + child.toString());
+        getNodeName() + " node expecting OWLCLass or OWLClassExpression child, got " + child);
   }
 
   public boolean hasOWLClassExpressionNode()
   {
-    return classExpressionNode != null;
+    return this.classExpressionNode != null;
   }
 
   public boolean hasOWLClassNode()
   {
-    return classNode != null;
+    return this.classNode != null;
   }
 
   public OWLClassExpressionNode getOWLClassExpressionNode()
   {
-    return classExpressionNode;
+    return this.classExpressionNode;
   }
 
   public OWLClassNode getOWLClassNode()
   {
-    return classNode;
+    return this.classNode;
   }
 
   @Override public String getNodeName()
@@ -55,9 +55,9 @@ public class OWLObjectSomeValuesFromNode implements MMNode
     String representation = "SOME ";
 
     if (hasOWLClassExpressionNode())
-      representation += classExpressionNode.toString();
+      representation += this.classExpressionNode.toString();
     else if (hasOWLClassNode())
-      representation += classNode.toString();
+      representation += this.classNode.toString();
 
     return representation;
   }

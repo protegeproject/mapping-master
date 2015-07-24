@@ -1,17 +1,17 @@
 package org.mm.parser;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class ParserUtil implements MappingMasterParserConstants
 {
-  private static Set<String> nodeNames;
+  private final static Set<String> nodeNames;
 
   static {
-    nodeNames = new HashSet<String>();
+    nodeNames = new HashSet<>();
 
-    for (int i = 0; i < MappingMasterParserTreeConstants.jjtNodeName.length; i++)
-      nodeNames.add(MappingMasterParserTreeConstants.jjtNodeName[i]);
+    Collections.addAll(nodeNames, MappingMasterParserTreeConstants.jjtNodeName);
   }
 
   public static boolean hasName(Node node, String name) throws ParseException

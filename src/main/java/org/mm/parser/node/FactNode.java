@@ -18,22 +18,22 @@ public class FactNode implements MMNode
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
       if (ParserUtil.hasName(child, "OWLProperty"))
-        propertyNode = new OWLPropertyNode((ASTOWLProperty)child);
+        this.propertyNode = new OWLPropertyNode((ASTOWLProperty)child);
       else if (ParserUtil.hasName(child, "OWLPropertyAssertionObject"))
-        propertyAssertionObjectNode = new OWLPropertyAssertionObjectNode((ASTOWLPropertyAssertionObject)child);
+        this.propertyAssertionObjectNode = new OWLPropertyAssertionObjectNode((ASTOWLPropertyAssertionObject)child);
       else
-        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
     }
   }
 
   public OWLPropertyNode getOWLPropertyNode()
   {
-    return propertyNode;
+    return this.propertyNode;
   }
 
   public OWLPropertyAssertionObjectNode getOWLPropertyAssertionObjectNode()
   {
-    return propertyAssertionObjectNode;
+    return this.propertyAssertionObjectNode;
   }
 
   @Override public String getNodeName()
@@ -43,6 +43,6 @@ public class FactNode implements MMNode
 
   public String toString()
   {
-    return propertyNode.toString() + " " + propertyAssertionObjectNode.toString();
+    return this.propertyNode + " " + this.propertyAssertionObjectNode;
   }
 }

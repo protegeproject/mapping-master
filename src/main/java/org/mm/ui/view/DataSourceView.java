@@ -49,7 +49,7 @@ public class DataSourceView extends JPanel implements MMView
 
     this.fileNameTextField = createTextField("");
     this.fileNameTextField.setEnabled(true);
-    footerPanel.add(fileNameTextField, BorderLayout.CENTER);
+    footerPanel.add(this.fileNameTextField, BorderLayout.CENTER);
 
     buttonPanel = new JPanel(new BorderLayout());
     footerPanel.add(buttonPanel, BorderLayout.EAST);
@@ -77,32 +77,32 @@ public class DataSourceView extends JPanel implements MMView
 
   public void clearModel()
   {
-    application = null;
+    this.application = null;
 
     update();
   }
 
   public void update()
   {
-    sheetViewMaps.clear();
-    tabbedPane.removeAll();
+    this.sheetViewMaps.clear();
+    this.tabbedPane.removeAll();
 
-    if (application != null && getDataSourceModel().hasDataSource()) {
+    if (this.application != null && getDataSourceModel().hasDataSource()) {
       int i = 0;
       for (Sheet sheet : getDataSourceModel().getDataSource().getSheets()) {
         SheetView sheetView = new SheetView(sheet);
         String sheetName = sheet.getName();
-        tabbedPane.addTab(sheetName, null, sheetView, "Sheet '" + sheetName + "'");
-        tabbedPane.setForegroundAt(i, (sheet.getSettings().isHidden() ? Color.GRAY : Color.BLACK));
-        sheetViewMaps.put(sheetName, sheetView);
+        this.tabbedPane.addTab(sheetName, null, sheetView, "Sheet '" + sheetName + "'");
+        this.tabbedPane.setForegroundAt(i, sheet.getSettings().isHidden() ? Color.GRAY : Color.BLACK);
+        this.sheetViewMaps.put(sheetName, sheetView);
         i++;
       }
     }
 
     if (getDataSourceModel().hasFileName())
-      fileNameTextField.setText(getDataSourceModel().getFileName());
+      this.fileNameTextField.setText(getDataSourceModel().getFileName());
     else
-      fileNameTextField.setText("");
+      this.fileNameTextField.setText("");
 
     validate();
   }
@@ -124,7 +124,7 @@ public class DataSourceView extends JPanel implements MMView
           getApplicationModel().dataSourceUpdated();
         } catch (MappingMasterException | IOException | BiffException ex) {
           getApplicationDialogManager()
-            .showErrorMessageDialog(tabbedPane, "error opening file '" + fileName + "': " + ex.getMessage());
+            .showErrorMessageDialog(DataSourceView.this.tabbedPane, "error opening file '" + fileName + "': " + ex.getMessage());
         }
       }
     }
@@ -135,7 +135,7 @@ public class DataSourceView extends JPanel implements MMView
     public void actionPerformed(ActionEvent e)
     {
       if (getDataSourceModel().hasDataSource() && getApplicationDialogManager()
-        .showConfirmDialog(tabbedPane, "Close Data Source", "Do you really want to close the data source?")) {
+        .showConfirmDialog(DataSourceView.this.tabbedPane, "Close Data Source", "Do you really want to close the data source?")) {
         getDataSourceModel().clearDataSource();
         getDataSourceModel().clearFileName();
       }
@@ -149,11 +149,11 @@ public class DataSourceView extends JPanel implements MMView
     return textField;
   }
 
-  private MMApplicationModel getApplicationModel() { return application.getApplicationModel(); }
+  private MMApplicationModel getApplicationModel() { return this.application.getApplicationModel(); }
 
-  private DataSourceModel getDataSourceModel() { return application.getApplicationModel().getDataSourceModel(); }
+  private DataSourceModel getDataSourceModel() { return this.application.getApplicationModel().getDataSourceModel(); }
 
-  private MMApplicationView getApplicationView() { return application.getApplicationView(); }
+  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
 
   private MMApplicationDialogManager getApplicationDialogManager()
   {

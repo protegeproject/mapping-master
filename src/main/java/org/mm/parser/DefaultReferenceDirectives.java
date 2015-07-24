@@ -5,25 +5,26 @@ import org.mm.core.ReferenceType;
 
 public class DefaultReferenceDirectives
 {
-	private ReferenceType defaultReferenceType;
+	private final ReferenceType defaultReferenceType;
 
-	private int defaultValueEncoding;
+	private final int defaultValueEncoding;
 
-	private String defaultLocationValue = null;
-	private String defaultDataValue = null;
-	private String defaultRDFID = null;
-	private String defaultRDFSLabel = null;
-	private String defaultLanguage = null;
-	private String defaultPrefix = null;
-	private String defaultNamespace = null;
+	private final String defaultLocationValue;
+	private final String defaultDataValue;
+	private final String defaultRDFID;
+	private final String defaultRDFSLabel;
+	private final String defaultLanguage;
+	private final String defaultPrefix;
+	private final String defaultNamespace;
+
+	private final int defaultEmptyLocationDirective;
+	private final int defaultEmptyDataValueDirective;
+	private final int defaultEmptyRDFIDDirective;
+	private final int defaultEmptyRDFSLabelDirective;
+	private final int defaultIfExistsDirective;
+	private final int defaultIfNotExistsDirective;
 
 	private int defaultShiftDirective;
-	private int defaultEmptyLocationDirective;
-	private int defaultEmptyDataValueDirective;
-	private int defaultEmptyRDFIDDirective;
-	private int defaultEmptyRDFSLabelDirective;
-	private int defaultIfExistsDirective;
-	private int defaultIfNotExistsDirective;
 
 	public DefaultReferenceDirectives(int defaultReferenceType, int defaultValueEncoding, String defaultLocationValue, String defaultDataValue, String defaultRDFID,
 			String defaultRDFSLabel, String defaultLanguage, String defaultPrefix, String defaultNamespace, int defaultShiftDirective,
@@ -58,81 +59,81 @@ public class DefaultReferenceDirectives
 
 	public ReferenceType getDefaultReferenceType()
 	{
-		return defaultReferenceType;
+		return this.defaultReferenceType;
 	}
 
 	public int getDefaultValueEncoding()
 	{
-		return defaultValueEncoding;
+		return this.defaultValueEncoding;
 	}
 
 	public String getDefaultLocationValue()
 	{
-		return defaultLocationValue;
+		return this.defaultLocationValue;
 	}
 
 	public String getDefaultDataValue()
 	{
-		return defaultDataValue;
+		return this.defaultDataValue;
 	}
 
 	public String getDefaultRDFID()
 	{
-		return defaultRDFID;
+		return this.defaultRDFID;
 	}
 
 	public String getDefaultRDFSLabel()
 	{
-		return defaultRDFSLabel;
+		return this.defaultRDFSLabel;
 	}
 
 	public String getDefaultLanguage()
 	{
-		return defaultLanguage;
+		return this.defaultLanguage;
 	}
 
 	public String getDefaultPrefix()
 	{
-		return defaultPrefix;
+		return this.defaultPrefix;
 	}
 
 	public String getDefaultNamespace()
 	{
-		return defaultNamespace;
+		return this.defaultNamespace;
 	}
 
 	public int getDefaultShiftDirective()
 	{
-		return defaultShiftDirective;
+		return this.defaultShiftDirective;
 	}
 
 	public int getDefaultIfExistsDirective()
 	{
-		return defaultIfExistsDirective;
+		return this.defaultIfExistsDirective;
 	}
 
 	public int getDefaultIfNotExistsDirective()
 	{
-		return defaultIfNotExistsDirective;
+		return this.defaultIfNotExistsDirective;
 	}
 
 	public int getDefaultEmptyLocationDirective()
 	{
-		return defaultEmptyLocationDirective;
+		return this.defaultEmptyLocationDirective;
 	}
 
 	public int getDefaultEmptyDataValueDirective()
 	{
-		return defaultEmptyDataValueDirective;
+		return this.defaultEmptyDataValueDirective;
 	}
 
 	public int getDefaultEmptyRDFIDDirective()
 	{
-		return defaultEmptyRDFIDDirective;
+		return this.defaultEmptyRDFIDDirective;
 	}
 
 	public int getDefaultEmptyRDFSLabelDirective()
 	{
-		return defaultEmptyRDFSLabelDirective;
+		return this.defaultEmptyRDFSLabelDirective;
 	}
 }

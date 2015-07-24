@@ -36,31 +36,32 @@ public class MappingExpression
 
   public void setActive(boolean active) { this.active = active; }
 
-  public boolean isActive() { return active; }
+  public boolean isActive() { return this.active; }
 
-  public String getExpression() { return expression; }
+  public String getExpression() { return this.expression; }
 
-  public String getComment() { return comment; }
+  public String getComment() { return this.comment; }
 
-  public String getSourceSheetName() { return sourceSheetName; }
+  public String getSourceSheetName() { return this.sourceSheetName; }
 
-  public String getStartColumn() { return startColumn; }
+  public String getStartColumn() { return this.startColumn; }
 
-  public String getFinishColumn() { return finishColumn; }
+  public String getFinishColumn() { return this.finishColumn; }
 
-  public String getStartRow() { return startRow; }
+  public String getStartRow() { return this.startRow; }
 
-  public String getFinishRow() { return finishRow; }
+  public String getFinishRow() { return this.finishRow; }
 
-  public boolean hasFinishColumnWildcard() { return finishColumn.equals(FinishRowOrColumnWildcard); }
+  public boolean hasFinishColumnWildcard() { return this.finishColumn.equals(FinishRowOrColumnWildcard); }
 
-  public boolean hasFinishRowWildcard() { return finishRow.equals(FinishRowOrColumnWildcard); }
+  public boolean hasFinishRowWildcard() { return this.finishRow.equals(FinishRowOrColumnWildcard); }
 
   public String toString()
   {
-    return "(expression: " + expression + ", comment: " + comment +
-      ", sourceSheetName: " + sourceSheetName + ", startColumn: " + startColumn + ", finishColumn: " + finishColumn +
-      ", startRow: " + startRow + ", finishRow: " + finishRow + ", active: " + active + ")";
+    return "(expression: " + this.expression + ", comment: " + this.comment +
+      ", sourceSheetName: " + this.sourceSheetName + ", startColumn: " + this.startColumn
+      + ", finishColumn: " + this.finishColumn +
+      ", startRow: " + this.startRow + ", finishRow: " + this.finishRow + ", active: " + this.active + ")";
   }
 
 }

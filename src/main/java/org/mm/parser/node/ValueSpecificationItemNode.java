@@ -10,10 +10,10 @@ import org.mm.parser.ParserUtil;
 
 public class ValueSpecificationItemNode implements MMNode
 {
-  private String stringLiteral;
+  private final String stringLiteral;
+  private final String capturingExpression;
   private ReferenceNode referenceNode;
   private ValueExtractionFunctionNode valueExtractionFunctionNode;
-  private String capturingExpression;
 
   public ValueSpecificationItemNode(ASTValueSpecificationItem node) throws ParseException
   {
@@ -24,11 +24,11 @@ public class ValueSpecificationItemNode implements MMNode
       Node child = node.jjtGetChild(0);
 
       if (ParserUtil.hasName(child, "Reference"))
-        referenceNode = new ReferenceNode((ASTReference)child);
+        this.referenceNode = new ReferenceNode((ASTReference)child);
       else if (ParserUtil.hasName(child, "ValueExtractionFunction"))
-        valueExtractionFunctionNode = new ValueExtractionFunctionNode((ASTValueExtractionFunction)child);
+        this.valueExtractionFunctionNode = new ValueExtractionFunctionNode((ASTValueExtractionFunction)child);
       else
-        throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
     }
   }
 
@@ -39,7 +39,7 @@ public class ValueSpecificationItemNode implements MMNode
 
 	public boolean hasStringLiteral()
   {
-    return stringLiteral != null;
+    return this.stringLiteral != null;
   }
 
   public String getStringLiteral()
@@ -49,32 +49,32 @@ public class ValueSpecificationItemNode implements MMNode
 
   public boolean hasReferenceNode()
   {
-    return referenceNode != null;
+    return this.referenceNode != null;
   }
 
   public ReferenceNode getReferenceNode()
   {
-    return referenceNode;
+    return this.referenceNode;
   }
 
   public boolean hasValueExtractionFunctionNode()
   {
-    return valueExtractionFunctionNode != null;
+    return this.valueExtractionFunctionNode != null;
   }
 
   public ValueExtractionFunctionNode getValueExtractionFunctionNode()
   {
-    return valueExtractionFunctionNode;
+    return this.valueExtractionFunctionNode;
   }
 
   public boolean hasCapturingExpression()
   {
-    return capturingExpression != null;
+    return this.capturingExpression != null;
   }
 
   public String getCapturingExpression()
   {
-    return capturingExpression;
+    return this.capturingExpression;
   }
 
   public String toString()
@@ -84,11 +84,11 @@ public class ValueSpecificationItemNode implements MMNode
     if (hasStringLiteral())
       representation = "\"" + this.stringLiteral + "\"";
     else if (hasReferenceNode())
-      representation = referenceNode.toString();
+      representation = this.referenceNode.toString();
     else if (hasValueExtractionFunctionNode())
-      representation = valueExtractionFunctionNode.toString();
+      representation = this.valueExtractionFunctionNode.toString();
     else if (hasCapturingExpression())
-      representation = "[\"" + capturingExpression + "\"]";
+      representation = "[\"" + this.capturingExpression + "\"]";
 
     return representation;
   }
@@ -97,24 +97,24 @@ public class ValueSpecificationItemNode implements MMNode
   {
     if (this == obj)
       return true;
-    if ((obj == null) || (obj.getClass() != this.getClass()))
+    if (obj == null || obj.getClass() != this.getClass())
       return false;
     ValueSpecificationItemNode vs = (ValueSpecificationItemNode)obj;
-    return (stringLiteral != null && vs.stringLiteral != null && stringLiteral.equals(vs.stringLiteral)) && (
-      referenceNode != null && vs.referenceNode != null && referenceNode.equals(vs.referenceNode)) && (
-      valueExtractionFunctionNode != null && vs.valueExtractionFunctionNode != null && valueExtractionFunctionNode
-        .equals(vs.valueExtractionFunctionNode)) && (capturingExpression != null && vs.capturingExpression != null
-      && capturingExpression.equals(vs.capturingExpression));
+    return this.stringLiteral != null && vs.stringLiteral != null && this.stringLiteral.equals(vs.stringLiteral) &&
+      this.referenceNode != null && vs.referenceNode != null && this.referenceNode.equals(vs.referenceNode) &&
+      this.valueExtractionFunctionNode != null && vs.valueExtractionFunctionNode != null
+      && this.valueExtractionFunctionNode.equals(vs.valueExtractionFunctionNode) && this.capturingExpression != null
+      && vs.capturingExpression != null && this.capturingExpression.equals(vs.capturingExpression);
   }
 
   public int hashCode()
   {
     int hash = 15;
 
-    hash = hash + (null == stringLiteral ? 0 : stringLiteral.hashCode());
-    hash = hash + (null == referenceNode ? 0 : referenceNode.hashCode());
-    hash = hash + (null == valueExtractionFunctionNode ? 0 : valueExtractionFunctionNode.hashCode());
-    hash = hash + (null == capturingExpression ? 0 : capturingExpression.hashCode());
+    hash = hash + (null == this.stringLiteral ? 0 : this.stringLiteral.hashCode());
+    hash = hash + (null == this.referenceNode ? 0 : this.referenceNode.hashCode());
+    hash = hash + (null == this.valueExtractionFunctionNode ? 0 : this.valueExtractionFunctionNode.hashCode());
+    hash = hash + (null == this.capturingExpression ? 0 : this.capturingExpression.hashCode());
 
     return hash;
   }

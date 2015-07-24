@@ -20,32 +20,32 @@ public class ValueExtractionFunctionArgumentNode implements MMNode
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "OWLLiteral"))
-        literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
+        this.literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
       else if (ParserUtil.hasName(child, "Reference"))
-        referenceNode = new ReferenceNode((ASTReference)child);
+        this.referenceNode = new ReferenceNode((ASTReference)child);
       else
-        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
     }
   }
 
   public ReferenceNode getReferenceNode()
   {
-    return referenceNode;
+    return this.referenceNode;
   }
 
   public OWLLiteralNode getOWLLiteralNode()
   {
-    return literalNode;
+    return this.literalNode;
   }
 
   public boolean isOWLLiteralNode()
   {
-    return literalNode != null;
+    return this.literalNode != null;
   }
 
   public boolean isReferenceNode()
   {
-    return referenceNode != null;
+    return this.referenceNode != null;
   }
 
   @Override public String getNodeName()
@@ -56,9 +56,9 @@ public class ValueExtractionFunctionArgumentNode implements MMNode
   public String toString()
   {
     if (isOWLLiteralNode())
-      return literalNode.toString();
+      return this.literalNode.toString();
     else if (isReferenceNode())
-      return referenceNode.toString();
+      return this.referenceNode.toString();
     else
       return "";
   }

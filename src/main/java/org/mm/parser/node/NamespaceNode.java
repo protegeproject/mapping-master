@@ -15,7 +15,7 @@ public class NamespaceNode implements MMNode, MappingMasterParserConstants
     this.namespace = node.namespace;
   }
 
-  public String getNamespace() { return namespace; }
+  public String getNamespace() { return this.namespace; }
 
   @Override public String getNodeName()
   {
@@ -24,6 +24,6 @@ public class NamespaceNode implements MMNode, MappingMasterParserConstants
 
   public String toString()
   { 
-  	return ParserUtil.getTokenName(MM_NAMESPACE) + "=\"" + namespace + "\"";
+  	return ParserUtil.getTokenName(MM_NAMESPACE) + "=\"" + this.namespace + "\"";
   } 
 }

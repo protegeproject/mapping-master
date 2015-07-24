@@ -19,32 +19,32 @@ public class OWLAllValuesFromNode implements MMNode
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLAllDataValuesFrom"))
-        dataAllValuesFromNode = new OWLDataAllValuesFromNode((ASTOWLDataAllValuesFrom)child);
+        this.dataAllValuesFromNode = new OWLDataAllValuesFromNode((ASTOWLDataAllValuesFrom)child);
       else if (ParserUtil.hasName(child, "OWLObjectAllValuesFrom"))
-        objectAllValuesFromNode = new OWLObjectAllValuesFromNode((ASTOWLObjectAllValuesFrom)child);
+        this.objectAllValuesFromNode = new OWLObjectAllValuesFromNode((ASTOWLObjectAllValuesFrom)child);
       else
-        throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
     }
   }
 
   public OWLDataAllValuesFromNode getOWLDataAllValuesFromNode()
   {
-    return dataAllValuesFromNode;
+    return this.dataAllValuesFromNode;
   }
 
   public OWLObjectAllValuesFromNode getObjectOWLAllValuesFromNode()
   {
-    return objectAllValuesFromNode;
+    return this.objectAllValuesFromNode;
   }
 
   public boolean hasOWLDataAllValuesFromNode()
   {
-    return dataAllValuesFromNode != null;
+    return this.dataAllValuesFromNode != null;
   }
 
   public boolean hasOWLObjectAllValuesFromNode()
   {
-    return objectAllValuesFromNode != null;
+    return this.objectAllValuesFromNode != null;
   }
 
   @Override public String getNodeName()
@@ -56,10 +56,10 @@ public class OWLAllValuesFromNode implements MMNode
   {
     String representation = "";
 
-    if (dataAllValuesFromNode != null)
-      representation += dataAllValuesFromNode.toString();
-    else if (objectAllValuesFromNode != null)
-      representation += objectAllValuesFromNode.toString();
+    if (this.dataAllValuesFromNode != null)
+      representation += this.dataAllValuesFromNode.toString();
+    else if (this.objectAllValuesFromNode != null)
+      representation += this.objectAllValuesFromNode.toString();
 
     return representation;
   }

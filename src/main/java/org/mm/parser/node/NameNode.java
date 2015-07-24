@@ -10,18 +10,18 @@ public class NameNode implements MMNode
 
   public NameNode(ASTName node) throws ParseException
   {
-    name = node.name;
-    isQuotedName = node.isQuotedName;
+    this.name = node.name;
+    this.isQuotedName = node.isQuotedName;
   }
 
   public String getName()
   {
-    return name;
+    return this.name;
   }
 
   public boolean isQuoted()
   {
-    return isQuotedName;
+    return this.isQuotedName;
   }
 
   @Override public String getNodeName()
@@ -31,9 +31,9 @@ public class NameNode implements MMNode
 
   public String toString()
   {
-    if (isQuotedName)
-      return "'" + name + "'";
+    if (this.isQuotedName)
+      return "'" + this.name + "'";
     else
-      return name;
+      return this.name;
   }
 }

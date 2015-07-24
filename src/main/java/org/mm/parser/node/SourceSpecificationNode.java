@@ -15,17 +15,17 @@ public class SourceSpecificationNode implements MMNode
     this.literal = node.literal;
   }
 
-  public boolean hasSource() { return source != null; }
+  public boolean hasSource() { return this.source != null; }
 
-  public boolean hasLocation() { return location != null; }
+  public boolean hasLocation() { return this.location != null; }
 
-  public boolean hasLiteral() { return literal != null; }
+  public boolean hasLiteral() { return this.literal != null; }
 
-  public String getSource() { return source; }
+  public String getSource() { return this.source; }
 
-  public String getLocation() { return location; }
+  public String getLocation() { return this.location; }
 
-  public String getLiteral() { return literal; }
+  public String getLiteral() { return this.literal; }
 
   @Override public String getNodeName()
   {
@@ -37,12 +37,12 @@ public class SourceSpecificationNode implements MMNode
     String representation = "@";
 
     if (hasSource())
-      representation += "'" + source + "'!";
+      representation += "'" + this.source + "'!";
 
     if (hasLocation())
-      representation += location;
+      representation += this.location;
     else // literal
-      representation += "\"" + literal + "\"";
+      representation += "\"" + this.literal + "\"";
 
     return representation;
   }

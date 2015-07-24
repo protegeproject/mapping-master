@@ -9,7 +9,7 @@ public class SpreadSheetUtil
 {
   static public void checkColumnSpecification(String columnSpecification) throws MappingMasterException
   {
-    if (columnSpecification.equals(""))
+    if (columnSpecification.isEmpty())
       throw new MappingMasterException("empty column specification");
 
     if (!columnSpecification.equals(MappingExpression.FinishRowOrColumnWildcard)) {
@@ -23,7 +23,7 @@ public class SpreadSheetUtil
 
   static public void checkRowSpecification(String rowSpecification) throws MappingMasterException
   {
-    if (rowSpecification.length() == 0)
+    if (rowSpecification.isEmpty())
       throw new MappingMasterException("empty row specification");
 
     if (!rowSpecification.equals(MappingExpression.FinishRowOrColumnWildcard)) {
@@ -71,7 +71,7 @@ public class SpreadSheetUtil
 
   static public int row2Number(String row) throws MappingMasterException
   {
-    if (row.length() == 0)
+    if (row.isEmpty())
       throw new MappingMasterException("empty row number");
 
     try {
@@ -119,7 +119,7 @@ public class SpreadSheetUtil
     return sheet;
   }
 
-  private static boolean isAlpha(char c) { return (c >= 'A') && (c <= 'Z'); }
+  private static boolean isAlpha(char c) { return c >= 'A' && c <= 'Z'; }
 
-  private static boolean isNumeric(char c) { return (c >= '0') && (c <= '9'); }
+  private static boolean isNumeric(char c) { return c >= '0' && c <= '9'; }
 } 

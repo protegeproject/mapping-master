@@ -6,16 +6,16 @@ import org.mm.parser.ParseException;
 
 public class BooleanLiteralNode implements MMNode
 {
-	boolean value;
+	private final boolean value;
 
 	public BooleanLiteralNode(ASTBooleanLiteral node) throws ParseException
 	{
-		value = node.value;
+		this.value = node.value;
 	}
 
 	public boolean getValue()
 	{
-		return value;
+		return this.value;
 	}
 
 	public String getNodeName()
@@ -25,7 +25,7 @@ public class BooleanLiteralNode implements MMNode
 
 	public String toString()
 	{
-		return "" + value;
+		return "" + this.value;
 	}
 
 } 

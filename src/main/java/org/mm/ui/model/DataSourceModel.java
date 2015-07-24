@@ -21,15 +21,15 @@ public class DataSourceModel implements MMModel
     updateView();
   }
 
-  public boolean hasDataSource() { return dataSource != null; }
+  public boolean hasDataSource() { return this.dataSource != null; }
 
   public void clearDataSource()
   {
-    dataSource = null;
+    this.dataSource = null;
     updateView();
   }
 
-  public SpreadSheetDataSource getDataSource() { return dataSource; }
+  public SpreadSheetDataSource getDataSource() { return this.dataSource; }
 
   public void setFileName(String fileName)
   {
@@ -39,19 +39,19 @@ public class DataSourceModel implements MMModel
 
   public void clearFileName()
   {
-    fileName = null;
+    this.fileName = null;
     updateView();
   }
 
-  public boolean hasFileName() { return fileName != null; }
+  public boolean hasFileName() { return this.fileName != null; }
 
-  public String getFileName() { return fileName; }
+  public String getFileName() { return this.fileName; }
 
-  public List<String> getSubSourceNames() { return dataSource.getSubSourceNames(); }
+  public List<String> getSubSourceNames() { return this.dataSource.getSubSourceNames(); }
 
   private void updateView()
   {
-    if (view != null)
-      view.update();
+    if (this.view != null)
+      this.view.update();
   }
 } 

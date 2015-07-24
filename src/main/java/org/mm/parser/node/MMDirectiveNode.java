@@ -21,44 +21,44 @@ public class MMDirectiveNode implements MMNode
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "MMDefaultValueEncoding")) {
-        defaultValueEncodingNode = new MMDefaultValueEncodingNode((ASTMMDefaultValueEncoding)child);
+        this.defaultValueEncodingNode = new MMDefaultValueEncodingNode((ASTMMDefaultValueEncoding)child);
       } else if (ParserUtil.hasName(child, "MMDefaultReferenceType")) {
-        defaultReferenceTypeNode = new MMDefaultReferenceTypeNode((ASTMMDefaultReferenceType)child);
+        this.defaultReferenceTypeNode = new MMDefaultReferenceTypeNode((ASTMMDefaultReferenceType)child);
       } else if (ParserUtil.hasName(child, "MMDefaultPropertyValueType")) {
-        defaultPropertyValueTypeNode = new MMDefaultPropertyValueTypeNode((ASTMMDefaultPropertyValueType)child);
+        this.defaultPropertyValueTypeNode = new MMDefaultPropertyValueTypeNode((ASTMMDefaultPropertyValueType)child);
       } else
-        throw new InternalParseException("invalid child node " + child.toString() + " to MMExpression");
+        throw new InternalParseException("invalid child node " + child + " to MMExpression");
     }
   }
 
   public MMDefaultValueEncodingNode getDefaultValueEncodingNode()
   {
-    return defaultValueEncodingNode;
+    return this.defaultValueEncodingNode;
   }
 
   public MMDefaultReferenceTypeNode getDefaultReferenceTypeNode()
   {
-    return defaultReferenceTypeNode;
+    return this.defaultReferenceTypeNode;
   }
 
   public MMDefaultPropertyValueTypeNode getDefaultPropertyValueTypeNode()
   {
-    return defaultPropertyValueTypeNode;
+    return this.defaultPropertyValueTypeNode;
   }
 
   public boolean hasDefaultValueEncoding()
   {
-    return defaultValueEncodingNode != null;
+    return this.defaultValueEncodingNode != null;
   }
 
   public boolean hasDefaultReferenceType()
   {
-    return defaultReferenceTypeNode != null;
+    return this.defaultReferenceTypeNode != null;
   }
 
   public boolean hasDefaultPropertyValueType()
   {
-    return defaultPropertyValueTypeNode != null;
+    return this.defaultPropertyValueTypeNode != null;
   }
 
   @Override public String getNodeName()
@@ -71,11 +71,11 @@ public class MMDirectiveNode implements MMNode
     String representation = "";
 
     if (hasDefaultValueEncoding())
-      representation += defaultValueEncodingNode.toString();
+      representation += this.defaultValueEncodingNode.toString();
     if (hasDefaultReferenceType())
-      representation += defaultReferenceTypeNode.toString();
+      representation += this.defaultReferenceTypeNode.toString();
     if (hasDefaultPropertyValueType())
-      representation += defaultPropertyValueTypeNode.toString();
+      representation += this.defaultPropertyValueTypeNode.toString();
 
     return representation;
   }

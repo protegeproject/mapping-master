@@ -6,16 +6,16 @@ import org.mm.parser.ParseException;
 
 public class OWLMaxCardinalityNode implements MMNode
 {
-	private int cardinality;
+	private final int cardinality;
 
 	public OWLMaxCardinalityNode(ASTOWLMaxCardinalityRestriction node) throws ParseException
 	{
-		cardinality = node.cardinality;
+		this.cardinality = node.cardinality;
 	}
 
 	public int getCardinality()
 	{
-		return cardinality;
+		return this.cardinality;
 	}
 
 	@Override public String getNodeName()
@@ -25,6 +25,6 @@ public class OWLMaxCardinalityNode implements MMNode
 
 	public String toString()
 	{
-		return "MAX " + cardinality;
+		return "MAX " + this.cardinality;
 	}
 }

@@ -18,7 +18,7 @@ public class OWLAPILiteralRendering extends OWLAPIRendering implements OWLLitera
 
   @Override public String getRawValue()
   {
-    return literal.getLiteral();
+    return this.literal.getLiteral();
   }
 
   @Override public boolean isString()

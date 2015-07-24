@@ -18,9 +18,9 @@ public class ValueExtractionFunctionNode implements MMNode, MappingMasterParserC
 
   public ValueExtractionFunctionNode(ASTValueExtractionFunction node) throws ParseException
   {
-    functionID = node.functionID;
+    this.functionID = node.functionID;
 
-    argumentNodes = new ArrayList<>();
+    this.argumentNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
@@ -28,20 +28,20 @@ public class ValueExtractionFunctionNode implements MMNode, MappingMasterParserC
       if (ParserUtil.hasName(child, "ValueExtractionFunctionArgument")) {
         ValueExtractionFunctionArgumentNode valueExtractionFunctionArgument = new ValueExtractionFunctionArgumentNode(
           (ASTValueExtractionFunctionArgument)child);
-        argumentNodes.add(valueExtractionFunctionArgument);
+        this.argumentNodes.add(valueExtractionFunctionArgument);
       } else
         throw new InternalParseException(
-          "ValueExtractionFunction node expecting ValueExtractionFunctionArgument child, got " + child.toString());
+          "ValueExtractionFunction node expecting ValueExtractionFunctionArgument child, got " + child);
     }
   }
 
-  public int getFunctionID() { return functionID; }
+  public int getFunctionID() { return this.functionID; }
 
-  public String getFunctionName() { return tokenImage[functionID].substring(1, tokenImage[functionID].length() - 1); }
+  public String getFunctionName() { return tokenImage[this.functionID].substring(1, tokenImage[this.functionID].length() - 1); }
 
-  public boolean hasArguments() { return !argumentNodes.isEmpty(); }
+  public boolean hasArguments() { return !this.argumentNodes.isEmpty(); }
 
-  public List<ValueExtractionFunctionArgumentNode> getArgumentNodes() { return argumentNodes; }
+  public List<ValueExtractionFunctionArgumentNode> getArgumentNodes() { return this.argumentNodes; }
 
   @Override public String getNodeName()
   {
@@ -55,7 +55,7 @@ public class ValueExtractionFunctionNode implements MMNode, MappingMasterParserC
     if (hasArguments()) {
       boolean isFirst = true;
       representation += "(";
-      for (ValueExtractionFunctionArgumentNode argument : argumentNodes) {
+      for (ValueExtractionFunctionArgumentNode argument : this.argumentNodes) {
         if (!isFirst)
           representation += " ";
         representation += argument.toString();
@@ -70,19 +70,19 @@ public class ValueExtractionFunctionNode implements MMNode, MappingMasterParserC
   {
     if (this == obj)
       return true;
-    if ((obj == null) || (obj.getClass() != this.getClass()))
+    if (obj == null || obj.getClass() != this.getClass())
       return false;
     ValueExtractionFunctionNode vef = (ValueExtractionFunctionNode)obj;
-    return (functionID == vef.functionID && (argumentNodes != null && vef.argumentNodes != null && argumentNodes
-      .equals(vef.argumentNodes)));
+    return this.functionID == vef.functionID && this.argumentNodes != null && vef.argumentNodes != null
+      && this.argumentNodes.equals(vef.argumentNodes);
   }
 
   public int hashCode()
   {
     int hash = 25;
 
-    hash = hash + functionID;
-    hash = hash + (null == argumentNodes ? 0 : argumentNodes.hashCode());
+    hash = hash + this.functionID;
+    hash = hash + (null == this.argumentNodes ? 0 : this.argumentNodes.hashCode());
 
     return hash;
   }

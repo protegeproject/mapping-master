@@ -26,43 +26,47 @@ public class SpreadsheetLocation
 
   public int getColumnNumber()
   {
-    return columnNumber;
+    return this.columnNumber;
   }
 
   public String getColumnName()
   {
-    return SpreadSheetUtil.columnNumber2Name(columnNumber);
+    return SpreadSheetUtil.columnNumber2Name(this.columnNumber);
   }
 
   public int getRowNumber()
   {
-    return rowNumber;
+    return this.rowNumber;
   }
 
   public String getCellLocation()
   {
-    return getColumnName() + rowNumber;
+    return getColumnName() + this.rowNumber;
   }
 
-  public boolean equals(Object obj)
+  @Override public boolean equals(Object o)
   {
-    if (this == obj)
+    if (this == o)
       return true;
-    if ((obj == null) || (obj.getClass() != this.getClass()))
+    if (o == null || getClass() != o.getClass())
       return false;
-    SpreadsheetLocation l = (SpreadsheetLocation)obj;
-    return (this.sheetName == l.sheetName && getColumnNumber() == l.getColumnNumber() && getRowNumber() == l
-      .getRowNumber());
+
+    SpreadsheetLocation that = (SpreadsheetLocation)o;
+
+    if (this.columnNumber != that.columnNumber)
+      return false;
+    if (this.rowNumber != that.rowNumber)
+      return false;
+    return !(this.sheetName != null ? !this.sheetName.equals(that.sheetName) : that.sheetName != null);
+
   }
 
-  public int hashCode()
+  @Override public int hashCode()
   {
-    int hash = 12;
-
-    hash = hash + sheetName.hashCode();
-    hash = hash + columnNumber;
-    hash = hash + rowNumber;
-    return hash;
+    int result = this.sheetName != null ? this.sheetName.hashCode() : 0;
+    result = 31 * result + this.columnNumber;
+    result = 31 * result + this.rowNumber;
+    return result;
   }
 
   public String getFullyQualifiedLocation()

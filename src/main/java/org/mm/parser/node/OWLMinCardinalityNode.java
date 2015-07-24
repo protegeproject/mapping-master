@@ -6,16 +6,16 @@ import org.mm.parser.ParseException;
 
 public class OWLMinCardinalityNode implements  MMNode
 {
-	private int cardinality;
+	private final int cardinality;
 
 	OWLMinCardinalityNode(ASTOWLMinCardinalityRestriction node) throws ParseException
 	{
-		cardinality = node.cardinality;
+		this.cardinality = node.cardinality;
 	}
 
 	public int getCardinality()
 	{
-		return cardinality;
+		return this.cardinality;
 	}
 
 	@Override public String getNodeName()
@@ -25,6 +25,6 @@ public class OWLMinCardinalityNode implements  MMNode
 
 	public String toString()
 	{
-		return "MIN " + cardinality;
+		return "MIN " + this.cardinality;
 	}
 }

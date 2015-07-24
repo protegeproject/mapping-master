@@ -8,14 +8,14 @@ import org.mm.parser.ParserUtil;
 
 public class DefaultLocationValueNode implements MMNode, MappingMasterParserConstants
 {
-  private String defaultLocationValue;
+  private final String defaultLocationValue;
   
   public DefaultLocationValueNode(ASTDefaultLocationValue node) throws ParseException
   { 
     this.defaultLocationValue = node.defaultLocationValue;
   }
   
-  public String getDefaultLocationValue() { return defaultLocationValue; }
+  public String getDefaultLocationValue() { return this.defaultLocationValue; }
 
   @Override public String getNodeName()
   {
@@ -24,7 +24,7 @@ public class DefaultLocationValueNode implements MMNode, MappingMasterParserCons
 
   public String toString()
   { 
-    String representation = ParserUtil.getTokenName(MM_DEFAULT_LOCATION_VALUE) + "=\"" + defaultLocationValue + "\"";
+    String representation = ParserUtil.getTokenName(MM_DEFAULT_LOCATION_VALUE) + "=\"" + this.defaultLocationValue + "\"";
 
     return representation;
   } 
@@ -32,16 +32,17 @@ public class DefaultLocationValueNode implements MMNode, MappingMasterParserCons
   public boolean equals(Object obj)
   {
     if (this == obj) return true;
-    if ((obj == null) || (obj.getClass() != this.getClass())) return false;
+    if (obj == null || obj.getClass() != this.getClass()) return false;
     DefaultLocationValueNode dv = (DefaultLocationValueNode)obj;
-    return defaultLocationValue != null && dv.defaultLocationValue != null && defaultLocationValue.equals(dv.defaultLocationValue);
+    return this.defaultLocationValue != null && dv.defaultLocationValue != null && this.defaultLocationValue
+      .equals(dv.defaultLocationValue);
   } 
 
   public int hashCode()
   {
     int hash = 14;
 
-    hash = hash + (null == defaultLocationValue ? 0 : defaultLocationValue.hashCode());
+    hash = hash + (null == this.defaultLocationValue ? 0 : this.defaultLocationValue.hashCode());
 
     return hash;
   }

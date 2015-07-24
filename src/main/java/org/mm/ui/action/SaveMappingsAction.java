@@ -54,7 +54,7 @@ public class SaveMappingsAction implements ActionListener
     return getApplicationView().getApplicationDialogManager();
   }
 
-  private MMApplicationView getApplicationView() { return application.getApplicationView(); }
+  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
 
-  private MMApplicationModel getApplicationModel() { return application.getApplicationModel(); }
+  private MMApplicationModel getApplicationModel() { return this.application.getApplicationModel(); }
 } 

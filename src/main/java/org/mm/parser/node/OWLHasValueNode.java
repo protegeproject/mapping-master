@@ -22,14 +22,14 @@ public class OWLHasValueNode implements MMNode
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "Reference"))
-        referenceNode = new ReferenceNode((ASTReference)child);
+        this.referenceNode = new ReferenceNode((ASTReference)child);
       else if (ParserUtil.hasName(child, "Name"))
-        nameNode = new NameNode((ASTName)child);
+        this.nameNode = new NameNode((ASTName)child);
       else if (ParserUtil.hasName(child, "OWLLiteral"))
-        literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
+        this.literalNode = new OWLLiteralNode((ASTOWLLiteral)child);
       else
         throw new InternalParseException(
-          "unexpected child node " + child.toString() + " for OWLHasValueRestriction node");
+          "unexpected child node " + child + " for OWLHasValueRestriction node");
     }
   }
 
@@ -40,42 +40,42 @@ public class OWLHasValueNode implements MMNode
 
   public ReferenceNode getReferenceNode()
   {
-    return referenceNode;
+    return this.referenceNode;
   }
 
   public NameNode getNameNode()
   {
-    return nameNode;
+    return this.nameNode;
   }
 
   public OWLLiteralNode getOWLLiteralNode()
   {
-    return literalNode;
+    return this.literalNode;
   }
 
   public boolean hasReferenceNode()
   {
-    return referenceNode != null;
+    return this.referenceNode != null;
   }
 
   public boolean hasNameNone()
   {
-    return nameNode != null;
+    return this.nameNode != null;
   }
 
   public boolean hasLiteralNode()
   {
-    return literalNode != null;
+    return this.literalNode != null;
   }
 
   public String toString()
   {
     if (hasReferenceNode())
-      return referenceNode.toString();
+      return this.referenceNode.toString();
     else if (hasNameNone())
-      return nameNode.getName();
+      return this.nameNode.getName();
     else if (hasLiteralNode())
-      return literalNode.toString();
+      return this.literalNode.toString();
     else
       return "";
   }

@@ -7,11 +7,11 @@ import org.mm.parser.ParseException;
 
 public class StringLiteralNode implements StringNode, MappingMasterParserConstants
 {
-	String value;
+	private final String value;
 
 	public StringLiteralNode(ASTStringLiteral node) throws ParseException
 	{
-		value = node.value;
+		this.value = node.value;
 	}
 
 	public String getNodeName()
@@ -21,11 +21,11 @@ public class StringLiteralNode implements StringNode, MappingMasterParserConstan
 
 	public String getValue()
 	{
-		return value;
+		return this.value;
 	}
 
 	public String toString()
 	{
-		return "\"" + value + "\"";
+		return "\"" + this.value + "\"";
 	}
 }

@@ -7,14 +7,14 @@ import org.mm.parser.ParserUtil;
 
 public class PrefixNode implements MMNode, MappingMasterParserConstants
 {
-  String prefix;
+  private final String prefix;
 
   PrefixNode(ASTPrefix node) throws ParseException
   {
-    prefix = node.prefix;
+    this.prefix = node.prefix;
   }
 
-  public String getPrefix() { return prefix; }
+  public String getPrefix() { return this.prefix; }
 
   @Override public String getNodeName()
   {
@@ -23,6 +23,6 @@ public class PrefixNode implements MMNode, MappingMasterParserConstants
 
   public String toString()
   {
-    return ParserUtil.getTokenName(MM_PREFIX) + "=\"" + prefix + "\"";
+    return ParserUtil.getTokenName(MM_PREFIX) + "=\"" + this.prefix + "\"";
   }
 }

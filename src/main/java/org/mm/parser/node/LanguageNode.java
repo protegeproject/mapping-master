@@ -8,11 +8,11 @@ import org.mm.parser.ParserUtil;
 
 public class LanguageNode implements MMNode, MappingMasterParserConstants
 {
-  String language;
+  private final String language;
 
-  public LanguageNode(ASTLanguage node) throws ParseException { language = node.language; }
+  public LanguageNode(ASTLanguage node) throws ParseException { this.language = node.language; }
 
-  public String getLanguage() { return language; }
+  public String getLanguage() { return this.language; }
 
   @Override public String getNodeName()
   {
@@ -23,10 +23,10 @@ public class LanguageNode implements MMNode, MappingMasterParserConstants
   { 
     String s = ParserUtil.getTokenName(XML_LANG);
     
-    if (language == null || language.equals("")) s += "=" + ParserUtil.getTokenName(MM_NULL);
-    else if (language.equals("*")) s += "=*";
-    else if (language.equals("+")) s+= "!=" + ParserUtil.getTokenName(MM_NULL);
-    else s+= "=\"" + language + "\"";
+    if (this.language == null || this.language.isEmpty()) s += "=" + ParserUtil.getTokenName(MM_NULL);
+    else if ("*".equals(this.language)) s += "=*";
+    else if ("+".equals(this.language)) s+= "!=" + ParserUtil.getTokenName(MM_NULL);
+    else s+= "=\"" + this.language + "\"";
     
     return s;
   } 

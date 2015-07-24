@@ -111,15 +111,15 @@ public class TextRenderer extends BaseReferenceRenderer
       if (referenceType.isUntyped())
         throw new RendererException("untyped reference " + referenceNode);
 
-      if (resolvedReferenceValue.equals("")
-        && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
+      if (resolvedReferenceValue.isEmpty() && referenceNode.getActualEmptyLocationDirective()
+        == MM_SKIP_IF_EMPTY_LOCATION)
         return Optional.empty();
 
       if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
         String literalReferenceValue = processLiteralReferenceValue(location, resolvedReferenceValue, referenceNode);
 
-        if (literalReferenceValue.length() == 0
-          && referenceNode.getActualEmptyDataValueDirective() == MM_SKIP_IF_EMPTY_DATA_VALUE)
+        if (literalReferenceValue.isEmpty() && referenceNode.getActualEmptyDataValueDirective()
+          == MM_SKIP_IF_EMPTY_DATA_VALUE)
           return Optional.empty();
 
         return Optional.of(new TextReferenceRendering(literalReferenceValue, referenceType));
@@ -131,7 +131,7 @@ public class TextRenderer extends BaseReferenceRenderer
         return Optional.of(new TextReferenceRendering(rdfsLabel, referenceType));
       } else
         throw new InternalRendererException(
-          "unknown reference type " + referenceType + " for reference " + referenceNode.toString());
+          "unknown reference type " + referenceType + " for reference " + referenceNode);
     }
   }
 
@@ -491,7 +491,7 @@ public class TextRenderer extends BaseReferenceRenderer
   {
     String datatypeName = dataAllValuesFromNode.getDatatypeName();
 
-    if (!datatypeName.equals(""))
+    if (!datatypeName.isEmpty())
       return Optional.of(new TextRendering("ONLY " + datatypeName));
     else
       return Optional.empty();
@@ -502,7 +502,7 @@ public class TextRenderer extends BaseReferenceRenderer
   {
     String datatypeName = dataSomeValuesFromNode.getDatatypeName();
 
-    if (!datatypeName.equals(""))
+    if (!datatypeName.isEmpty())
       return Optional.of(new TextRendering("SOME " + datatypeName));
     else
       return Optional.empty();
@@ -576,7 +576,7 @@ public class TextRenderer extends BaseReferenceRenderer
     }
     return textRepresentation.length() == 0 ?
       Optional.empty() :
-      Optional.of(new TextRendering(" SameAs: " + textRepresentation.toString()));
+      Optional.of(new TextRendering(" SameAs: " + textRepresentation));
   }
 
   @Override public Optional<? extends TextRendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
@@ -597,7 +597,7 @@ public class TextRenderer extends BaseReferenceRenderer
     }
     return textRepresentation.length() == 0 ?
       Optional.empty() :
-      Optional.of(new TextRendering(" DifferentFrom: " + textRepresentation.toString()));
+      Optional.of(new TextRendering(" DifferentFrom: " + textRepresentation));
   }
 
   @Override public Optional<? extends TextRendering> renderOWLPropertyAssertionObject(
@@ -902,10 +902,10 @@ public class TextRenderer extends BaseReferenceRenderer
   {
     String textRepresentation = "" + owlExactCardinalityNode.getCardinality();
 
-    if (textRepresentation.length() != 0)
+    if (!textRepresentation.isEmpty())
       textRepresentation += "EXACTLY " + textRepresentation;
 
-    return textRepresentation.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(textRepresentation));
+    return textRepresentation.isEmpty() ? Optional.empty() : Optional.of(new TextRendering(textRepresentation));
   }
 
   private Optional<? extends TextRendering> renderOWLMaxCardinality(OWLPropertyNode propertyNode,
@@ -913,7 +913,7 @@ public class TextRenderer extends BaseReferenceRenderer
   {
     String textRepresentation = "" + maxCardinalityNode.getCardinality();
 
-    if (textRepresentation.length() != 0)
+    if (!textRepresentation.isEmpty())
       return Optional.of(new TextRendering("MAX " + textRepresentation));
     else
       return Optional.empty();
@@ -924,7 +924,7 @@ public class TextRenderer extends BaseReferenceRenderer
   {
     String textRepresentation = "" + minCardinalityNode.getCardinality();
 
-    if (textRepresentation.length() != 0)
+    if (!textRepresentation.isEmpty())
       return Optional.of(new TextRendering("MIN " + textRepresentation));
     else
       return Optional.empty();
@@ -934,7 +934,7 @@ public class TextRenderer extends BaseReferenceRenderer
   {
     String name = nameNode.isQuoted() ? "'" + nameNode.getName() + "'" : nameNode.getName();
 
-    return name.length() == 0 ? Optional.empty() : Optional.of(new TextRendering(name));
+    return name.isEmpty() ? Optional.empty() : Optional.of(new TextRendering(name));
   }
 
   private Optional<? extends TextRendering> renderType(TypeNode typeNode) throws RendererException
@@ -1056,6 +1056,6 @@ public class TextRenderer extends BaseReferenceRenderer
     }
     return functionArgumentsRepresentation.length() == 0 ?
       Optional.empty() :
-      Optional.of(new TextRendering(valueExtractionFunctionName + functionArgumentsRepresentation.toString()));
+      Optional.of(new TextRendering(valueExtractionFunctionName + functionArgumentsRepresentation));
   }
 }

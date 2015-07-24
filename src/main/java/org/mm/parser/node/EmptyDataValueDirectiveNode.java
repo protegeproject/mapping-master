@@ -8,24 +8,24 @@ import org.mm.parser.ParserUtil;
 
 public class EmptyDataValueDirectiveNode implements MMNode, MappingMasterParserConstants
 {
-  private int emptyDataValueSetting;
+  private final int emptyDataValueSetting;
   
   public EmptyDataValueDirectiveNode(ASTEmptyDataValueSetting node) throws ParseException
   {
-    emptyDataValueSetting = node.emptyDataValueSetting;
+    this.emptyDataValueSetting = node.emptyDataValueSetting;
   }
   
-  public int getEmptyDataValueSetting() { return emptyDataValueSetting; }
+  public int getEmptyDataValueSetting() { return this.emptyDataValueSetting; }
   
-  public boolean isErrorIfEmpty() { return emptyDataValueSetting == MM_ERROR_IF_EMPTY_DATA_VALUE; }
-  public boolean isWarningIfEmpty() { return emptyDataValueSetting == MM_WARNING_IF_EMPTY_DATA_VALUE; }
-  public boolean isSkipIfEmpty() { return emptyDataValueSetting == MM_SKIP_IF_EMPTY_DATA_VALUE; }
-  public boolean isProcessIfEmpty() { return emptyDataValueSetting == MM_PROCESS_IF_EMPTY_DATA_VALUE; }
+  public boolean isErrorIfEmpty() { return this.emptyDataValueSetting == MM_ERROR_IF_EMPTY_DATA_VALUE; }
+  public boolean isWarningIfEmpty() { return this.emptyDataValueSetting == MM_WARNING_IF_EMPTY_DATA_VALUE; }
+  public boolean isSkipIfEmpty() { return this.emptyDataValueSetting == MM_SKIP_IF_EMPTY_DATA_VALUE; }
+  public boolean isProcessIfEmpty() { return this.emptyDataValueSetting == MM_PROCESS_IF_EMPTY_DATA_VALUE; }
 
   @Override public String getNodeName()
   {
     return "EmptyDataValueDirective";
   }
 
-  public String toString() { return ParserUtil.getTokenName(emptyDataValueSetting); }
+  public String toString() { return ParserUtil.getTokenName(this.emptyDataValueSetting); }
 }

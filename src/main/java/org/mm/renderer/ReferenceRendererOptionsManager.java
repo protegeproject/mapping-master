@@ -18,27 +18,27 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
 
   public String getDefaultNameEncoding()
   {
-    return getSettingName(referenceRenderer.getDefaultValueEncoding());
+    return getSettingName(this.referenceRenderer.getDefaultValueEncoding());
   }
 
   public String getDefaultReferenceType()
   {
-    return getSettingName(referenceRenderer.getDefaultReferenceType());
+    return getSettingName(this.referenceRenderer.getDefaultReferenceType());
   }
 
   public String getDefaultPropertyType()
   {
-    return getSettingName(referenceRenderer.getDefaultOWLPropertyType());
+    return getSettingName(this.referenceRenderer.getDefaultOWLPropertyType());
   }
 
   public String getDefaultPropertyValueType()
   {
-    return getSettingName(referenceRenderer.getDefaultOWLPropertyAssertionObjectType());
+    return getSettingName(this.referenceRenderer.getDefaultOWLPropertyAssertionObjectType());
   }
 
   public String getDefaultDataPropertyValueType()
   {
-    return getSettingName(referenceRenderer.getDefaultOWLDataPropertyValueType());
+    return getSettingName(this.referenceRenderer.getDefaultOWLDataPropertyValueType());
   }
 
   public String getDefaultValueEncodingOptionName()
@@ -71,15 +71,15 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
     int optionID = getOptionID(optionName);
 
     if (optionID == MM_DEFAULT_VALUE_ENCODING)
-      return getSettingName(referenceRenderer.getDefaultValueEncoding());
+      return getSettingName(this.referenceRenderer.getDefaultValueEncoding());
     else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
-      return getSettingName(referenceRenderer.getDefaultReferenceType());
+      return getSettingName(this.referenceRenderer.getDefaultReferenceType());
     else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
-      return getSettingName(referenceRenderer.getDefaultOWLPropertyType());
+      return getSettingName(this.referenceRenderer.getDefaultOWLPropertyType());
     else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-      return getSettingName(referenceRenderer.getDefaultOWLPropertyAssertionObjectType());
+      return getSettingName(this.referenceRenderer.getDefaultOWLPropertyAssertionObjectType());
     else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
-      return getSettingName(referenceRenderer.getDefaultOWLDataPropertyValueType());
+      return getSettingName(this.referenceRenderer.getDefaultOWLDataPropertyValueType());
     else
       return "unknown option: " + optionName;
   }
@@ -92,15 +92,15 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
 
     if (settingID != -1) {
       if (optionID == MM_DEFAULT_VALUE_ENCODING)
-        referenceRenderer.setDefaultValueEncoding(settingID);
+        this.referenceRenderer.setDefaultValueEncoding(settingID);
       else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
-        referenceRenderer.setDefaultReferenceType(settingID);
+        this.referenceRenderer.setDefaultReferenceType(settingID);
       else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
-        referenceRenderer.setDefaultOWLPropertyType(settingID);
+        this.referenceRenderer.setDefaultOWLPropertyType(settingID);
       else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-        referenceRenderer.setDefaultOWLPropertyAssertionObjectType(settingID);
+        this.referenceRenderer.setDefaultOWLPropertyAssertionObjectType(settingID);
       else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
-        referenceRenderer.setDefaultOWLDataPropertyValueType(settingID);
+        this.referenceRenderer.setDefaultOWLDataPropertyValueType(settingID);
     }
   }
 
@@ -116,7 +116,7 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
 
   public Set<String> getReferenceValueTypes()
   {
-    Set<String> referenceValueTypes = new HashSet<String>();
+    Set<String> referenceValueTypes = new HashSet<>();
 
     for (int i = 0; i < OWLAPICoreRenderer.ReferenceValueTypes.length; i++) {
       referenceValueTypes.add(ParserUtil.getTokenName(OWLAPICoreRenderer.ReferenceValueTypes[i]));

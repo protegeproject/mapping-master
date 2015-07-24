@@ -20,20 +20,20 @@ public class SheetView extends JPanel implements MMView
 
     setLayout(new BorderLayout());
 
-    this.sheetTable = new JTable(sheetModel);
+    this.sheetTable = new JTable(this.sheetModel);
     setFirstColumnWidth(30);
-    JScrollPane scrollPane = new JScrollPane(sheetTable);
+    JScrollPane scrollPane = new JScrollPane(this.sheetTable);
     JViewport viewport = scrollPane.getViewport();
-    viewport.setBackground(sheetTable.getBackground());
+    viewport.setBackground(this.sheetTable.getBackground());
 
     add(BorderLayout.CENTER, scrollPane);
   }
 
-  public String getSheetName() { return sheet.getName(); }
+  public String getSheetName() { return this.sheet.getName(); }
 
   private void setFirstColumnWidth(int newWidth)
   {
-    TableColumn column1 = sheetTable.getColumnModel().getColumn(0);
+    TableColumn column1 = this.sheetTable.getColumnModel().getColumn(0);
     column1.setPreferredWidth(newWidth);
     column1.setMaxWidth(2 * newWidth);
   }
@@ -42,7 +42,7 @@ public class SheetView extends JPanel implements MMView
 
   public void validate()
   {
-    sheetModel.fireTableDataChanged();
+    this.sheetModel.fireTableDataChanged();
     super.validate();
   }
 }

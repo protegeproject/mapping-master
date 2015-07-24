@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ValueSpecificationNode implements MMNode, MappingMasterParserConstants
 {
-  private List<ValueSpecificationItemNode> valueSpecificationItemNodes = new ArrayList<>();
+  private final List<ValueSpecificationItemNode> valueSpecificationItemNodes = new ArrayList<>();
 
   public ValueSpecificationNode(ASTValueSpecification node) throws ParseException
   {
@@ -23,23 +23,23 @@ public class ValueSpecificationNode implements MMNode, MappingMasterParserConsta
       if (ParserUtil.hasName(child, "ValueSpecificationItem")) {
         ValueSpecificationItemNode valueSpecificationItem = new ValueSpecificationItemNode(
           (ASTValueSpecificationItem)child);
-        valueSpecificationItemNodes.add(valueSpecificationItem);
+        this.valueSpecificationItemNodes.add(valueSpecificationItem);
       } else
-        throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
     }
 
-    if (valueSpecificationItemNodes.isEmpty())
+    if (this.valueSpecificationItemNodes.isEmpty())
       throw new ParseException("ValueSpecification node must have at least one child");
   }
 
   public int getNumberOfValueSpecificationItems()
   {
-    return valueSpecificationItemNodes.size();
+    return this.valueSpecificationItemNodes.size();
   }
 
   public List<ValueSpecificationItemNode> getValueSpecificationItemNodes()
   {
-    return valueSpecificationItemNodes;
+    return this.valueSpecificationItemNodes;
   }
 
   @Override public String getNodeName()
@@ -51,22 +51,22 @@ public class ValueSpecificationNode implements MMNode, MappingMasterParserConsta
   {
     String representation = "";
 
-    if (!valueSpecificationItemNodes.isEmpty()) {
+    if (!this.valueSpecificationItemNodes.isEmpty()) {
       boolean isFirst = true;
 
       representation += "=";
 
-      if (valueSpecificationItemNodes.size() > 1)
+      if (this.valueSpecificationItemNodes.size() > 1)
         representation += "(";
 
-      for (ValueSpecificationItemNode valueSpecificationItem : valueSpecificationItemNodes) {
+      for (ValueSpecificationItemNode valueSpecificationItem : this.valueSpecificationItemNodes) {
         if (!isFirst)
           representation += ", ";
         representation += valueSpecificationItem.toString();
         isFirst = false;
       }
 
-      if (valueSpecificationItemNodes.size() > 1)
+      if (this.valueSpecificationItemNodes.size() > 1)
         representation += ")";
     }
 
@@ -77,18 +77,18 @@ public class ValueSpecificationNode implements MMNode, MappingMasterParserConsta
   {
     if (this == obj)
       return true;
-    if ((obj == null) || (obj.getClass() != this.getClass()))
+    if (obj == null || obj.getClass() != this.getClass())
       return false;
     ValueSpecificationNode ve = (ValueSpecificationNode)obj;
-    return (valueSpecificationItemNodes != null && ve.valueSpecificationItemNodes != null && valueSpecificationItemNodes
-      .equals(ve.valueSpecificationItemNodes));
+    return this.valueSpecificationItemNodes != null && ve.valueSpecificationItemNodes != null
+      && this.valueSpecificationItemNodes.equals(ve.valueSpecificationItemNodes);
   }
 
   public int hashCode()
   {
     int hash = 15;
 
-    hash = hash + (null == valueSpecificationItemNodes ? 0 : valueSpecificationItemNodes.hashCode());
+    hash = hash + (null == this.valueSpecificationItemNodes ? 0 : this.valueSpecificationItemNodes.hashCode());
 
     return hash;
   }

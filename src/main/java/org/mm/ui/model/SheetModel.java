@@ -7,13 +7,13 @@ import javax.swing.table.AbstractTableModel;
 
 public class SheetModel extends AbstractTableModel
 {
-  private Sheet sheet;
+  private final Sheet sheet;
 
   public SheetModel(Sheet sheet) { this.sheet = sheet; }
 
-  public int getRowCount() { return sheet.getRows(); }
+  public int getRowCount() { return this.sheet.getRows(); }
 
-  public int getColumnCount() { return sheet.getColumns() + 1; }
+  public int getColumnCount() { return this.sheet.getColumns() + 1; }
 
   public String getColumnName(int column)
   {
@@ -34,8 +34,8 @@ public class SheetModel extends AbstractTableModel
       if (column == 0)
         return Integer.toString(row + 1);
       else {
-        value = sheet.getCell(column - 1, row).getContents();
-        return (value == null) ? "" : value;
+        value = this.sheet.getCell(column - 1, row).getContents();
+        return value == null ? "" : value;
       }
     } else
       return "";
@@ -43,8 +43,8 @@ public class SheetModel extends AbstractTableModel
 
   private boolean isValidLocation(int row, int column) { return isValidRow(row) && isValidColumn(column); }
 
-  private boolean isValidRow(int row) { return (row >= 0 && row < getRowCount()); }
+  private boolean isValidRow(int row) { return row >= 0 && row < getRowCount(); }
 
-  private boolean isValidColumn(int column) { return (column >= 0 && column < getColumnCount()); }
+  private boolean isValidColumn(int column) { return column >= 0 && column < getColumnCount(); }
 }
 

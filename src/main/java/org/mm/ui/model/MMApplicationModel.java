@@ -30,32 +30,32 @@ public class MMApplicationModel implements MMModel
     this.mappingExpressionsPersistenceLayer = mappingExpressionsPersistenceLayer;
   }
 
-  public DataSourceModel getDataSourceModel() { return dataSourceModel; }
+  public DataSourceModel getDataSourceModel() { return this.dataSourceModel; }
 
-  public MappingsExpressionsModel getMappingExpressionsModel() { return expressionMappingsModel; }
+  public MappingsExpressionsModel getMappingExpressionsModel() { return this.expressionMappingsModel; }
 
-  public CoreRenderer getCoreRenderer() { return coreRenderer; }
+  public CoreRenderer getCoreRenderer() { return this.coreRenderer; }
 
-  public ReferenceRendererOptionsManager getMappingConfigurationOptionsManager() { return optionsManager; }
+  public ReferenceRendererOptionsManager getMappingConfigurationOptionsManager() { return this.optionsManager; }
 
-  public MappingExpressionsPersistenceLayer getMappingExpressionsPersistenceLayer() { return mappingExpressionsPersistenceLayer; }
+  public MappingExpressionsPersistenceLayer getMappingExpressionsPersistenceLayer() { return this.mappingExpressionsPersistenceLayer; }
 
   public void setApplicationView(MMApplicationView view) { this.applicationView = view; }
 
-  public MMApplicationView getApplicationView() { return applicationView; }
+  public MMApplicationView getApplicationView() { return this.applicationView; }
 
   public void setSaveMappingsAction(SaveMappingsAction saveMappingsAction)
   { this.saveMappingsAction = saveMappingsAction; }
 
   public void saveMappings()
   {
-    if (saveMappingsAction != null)
-      saveMappingsAction.saveMappings();
+    if (this.saveMappingsAction != null)
+      this.saveMappingsAction.saveMappings();
   }
 
   public void dataSourceUpdated()
   {
-    coreRenderer.setDataSource(getDataSourceModel().getDataSource());
+    this.coreRenderer.setDataSource(getDataSourceModel().getDataSource());
   }
 
   public void setMappingFileName(String mappingFileName)
@@ -66,26 +66,26 @@ public class MMApplicationModel implements MMModel
 
   public void clearMappingFileName()
   {
-    mappingFileName = null;
+    this.mappingFileName = null;
     getMappingsControlView().update();
   }
 
-  public boolean hasMappingFile() { return mappingFileName != null; }
+  public boolean hasMappingFile() { return this.mappingFileName != null; }
 
-  public String getMappingFileName() { return mappingFileName; }
+  public String getMappingFileName() { return this.mappingFileName; }
 
-  public boolean areMappingsModified() { return expressionMappingsModel.hasBeenModified(); }
+  public boolean areMappingsModified() { return this.expressionMappingsModel.hasBeenModified(); }
 
-  public void clearModifiedStatus() { expressionMappingsModel.clearModifiedStatus(); }
+  public void clearModifiedStatus() { this.expressionMappingsModel.clearModifiedStatus(); }
 
   private void updateView()
   {
-    if (applicationView != null)
-      applicationView.update();
+    if (this.applicationView != null)
+      this.applicationView.update();
   }
 
   private MappingsControlView getMappingsControlView()
   {
-    return applicationView.getMappingsControlView();
+    return this.applicationView.getMappingsControlView();
   }
 }

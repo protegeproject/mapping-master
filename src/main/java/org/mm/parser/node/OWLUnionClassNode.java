@@ -27,13 +27,13 @@ public class OWLUnionClassNode implements MMNode
         this.intersectionClassNodes.add(owlIntersectionClass);
       } else
         throw new InternalParseException(
-          getNodeName() + "node expecting OWLIntersectionClass child, got " + child.toString());
+          getNodeName() + "node expecting OWLIntersectionClass child, got " + child);
     }
   }
 
   public List<OWLIntersectionClassNode> getOWLIntersectionClassNodes()
   {
-    return Collections.unmodifiableList(intersectionClassNodes);
+    return Collections.unmodifiableList(this.intersectionClassNodes);
   }
 
   @Override public String getNodeName()

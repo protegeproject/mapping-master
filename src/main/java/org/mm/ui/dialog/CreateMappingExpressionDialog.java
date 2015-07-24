@@ -18,14 +18,14 @@ import java.util.List;
 
 public class CreateMappingExpressionDialog extends JDialog
 {
-  private MMApplication application;
+  private final MMApplication application;
 
   private JLabel commentLabel, sourceSheetNameLabel, startColumnLabel, finishColumnLabel, startRowLabel, finishRowLabel;
   private JTextField commentTextField, startColumnTextField, finishColumnTextField, startRowTextField, finishRowTextField;
   private JTextArea expressionTextArea;
   private JComboBox subSourceNameComboBox;
 
-  private boolean editMode = false;
+  private boolean editMode;
   private MappingExpression editMappingExpression;
 
   public CreateMappingExpressionDialog(MMApplication application)
@@ -50,8 +50,7 @@ public class CreateMappingExpressionDialog extends JDialog
   public void reset()
   {
     clearEntryFields();
-    for (String subSourceName : getDataSourceModel().getSubSourceNames())
-      subSourceNameComboBox.addItem(subSourceName);
+    getDataSourceModel().getSubSourceNames().forEach(this.subSourceNameComboBox::addItem);
   }
 
   public void setEditMappingExpression(MappingExpression mappingExpression)
@@ -60,44 +59,43 @@ public class CreateMappingExpressionDialog extends JDialog
 
     clearEntryFields();
 
-    commentTextField.setText(mappingExpression.getComment());
-    expressionTextArea.setText(mappingExpression.getExpression());
+    this.commentTextField.setText(mappingExpression.getComment());
+    this.expressionTextArea.setText(mappingExpression.getExpression());
 
     if (getDataSourceModel().hasDataSource()) {
       List<String> subSourceNames = getDataSourceModel().getSubSourceNames();
-      for (String sheetName : subSourceNames)
-        subSourceNameComboBox.addItem(sheetName);
+      subSourceNames.forEach(this.subSourceNameComboBox::addItem);
       if (!subSourceNames.contains(sourceSheetName))
-        subSourceNameComboBox.addItem(sourceSheetName);
+        this.subSourceNameComboBox.addItem(sourceSheetName);
     } else {
-      subSourceNameComboBox.addItem(mappingExpression.getSourceSheetName());
+      this.subSourceNameComboBox.addItem(mappingExpression.getSourceSheetName());
     }
 
-    subSourceNameComboBox.setSelectedItem(sourceSheetName);
+    this.subSourceNameComboBox.setSelectedItem(sourceSheetName);
 
-    startColumnTextField.setText(mappingExpression.getStartColumn());
-    finishColumnTextField.setText(mappingExpression.getFinishColumn());
-    startRowTextField.setText("" + mappingExpression.getStartRow());
-    finishRowTextField.setText("" + mappingExpression.getFinishRow());
+    this.startColumnTextField.setText(mappingExpression.getStartColumn());
+    this.finishColumnTextField.setText(mappingExpression.getFinishColumn());
+    this.startRowTextField.setText("" + mappingExpression.getStartRow());
+    this.finishRowTextField.setText("" + mappingExpression.getFinishRow());
 
-    editMode = true;
-    editMappingExpression = mappingExpression;
+    this.editMode = true;
+    this.editMappingExpression = mappingExpression;
   }
 
   private void clearEntryFields()
   {
-    commentTextField.setText("");
-    commentTextField.setEnabled(true);
-    expressionTextArea.setText("");
-    expressionTextArea.setEnabled(true);
-    subSourceNameComboBox.removeAllItems();
-    startColumnTextField.setText("");
-    finishColumnTextField.setText("");
-    startRowTextField.setText("");
-    finishRowTextField.setText("");
+    this.commentTextField.setText("");
+    this.commentTextField.setEnabled(true);
+    this.expressionTextArea.setText("");
+    this.expressionTextArea.setEnabled(true);
+    this.subSourceNameComboBox.removeAllItems();
+    this.startColumnTextField.setText("");
+    this.finishColumnTextField.setText("");
+    this.startRowTextField.setText("");
+    this.finishRowTextField.setText("");
 
-    editMode = false;
-    editMappingExpression = null;
+    this.editMode = false;
+    this.editMappingExpression = null;
   }
 
   private void createComponents()
@@ -106,26 +104,26 @@ public class CreateMappingExpressionDialog extends JDialog
     JPanel surroundPanel, buttonPanel, textFieldPanel;
     JButton cancelButton, okButton;
 
-    commentLabel = new JLabel("Comment");
-    commentTextField = new JTextField("");
+    this.commentLabel = new JLabel("Comment");
+    this.commentTextField = new JTextField("");
 
-    expressionTextArea = new JTextArea("", 20, 80);
-    expressionTextArea.setBorder(BorderFactory.createLoweredBevelBorder());
+    this.expressionTextArea = new JTextArea("", 20, 80);
+    this.expressionTextArea.setBorder(BorderFactory.createLoweredBevelBorder());
 
-    sourceSheetNameLabel = new JLabel("Sheet name");
-    subSourceNameComboBox = new JComboBox();
+    this.sourceSheetNameLabel = new JLabel("Sheet name");
+    this.subSourceNameComboBox = new JComboBox();
 
-    startColumnLabel = new JLabel("Start column");
-    startColumnTextField = new JTextField("");
+    this.startColumnLabel = new JLabel("Start column");
+    this.startColumnTextField = new JTextField("");
 
-    finishColumnLabel = new JLabel("Finish column");
-    finishColumnTextField = new JTextField("");
+    this.finishColumnLabel = new JLabel("Finish column");
+    this.finishColumnTextField = new JTextField("");
 
-    startRowLabel = new JLabel("Start row");
-    startRowTextField = new JTextField("");
+    this.startRowLabel = new JLabel("Start row");
+    this.startRowTextField = new JTextField("");
 
-    finishRowLabel = new JLabel("Finish row");
-    finishRowTextField = new JTextField("");
+    this.finishRowLabel = new JLabel("Finish row");
+    this.finishRowTextField = new JTextField("");
 
     cancelButton = new JButton("Cancel");
     cancelButton.setPreferredSize(new Dimension(100, 30));
@@ -144,20 +142,20 @@ public class CreateMappingExpressionDialog extends JDialog
     textFieldPanel = new JPanel(new GridLayout(6, 2));
 
     surroundPanel.add(textFieldPanel, BorderLayout.NORTH);
-    surroundPanel.add(expressionTextArea, BorderLayout.CENTER);
+    surroundPanel.add(this.expressionTextArea, BorderLayout.CENTER);
 
-    textFieldPanel.add(commentLabel);
-    textFieldPanel.add(commentTextField);
-    textFieldPanel.add(sourceSheetNameLabel);
-    textFieldPanel.add(subSourceNameComboBox);
-    textFieldPanel.add(startColumnLabel);
-    textFieldPanel.add(startColumnTextField);
-    textFieldPanel.add(finishColumnLabel);
-    textFieldPanel.add(finishColumnTextField);
-    textFieldPanel.add(startRowLabel);
-    textFieldPanel.add(startRowTextField);
-    textFieldPanel.add(finishRowLabel);
-    textFieldPanel.add(finishRowTextField);
+    textFieldPanel.add(this.commentLabel);
+    textFieldPanel.add(this.commentTextField);
+    textFieldPanel.add(this.sourceSheetNameLabel);
+    textFieldPanel.add(this.subSourceNameComboBox);
+    textFieldPanel.add(this.startColumnLabel);
+    textFieldPanel.add(this.startColumnTextField);
+    textFieldPanel.add(this.finishColumnLabel);
+    textFieldPanel.add(this.finishColumnTextField);
+    textFieldPanel.add(this.startRowLabel);
+    textFieldPanel.add(this.startRowTextField);
+    textFieldPanel.add(this.finishRowLabel);
+    textFieldPanel.add(this.finishRowTextField);
 
     buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     buttonPanel.add(cancelButton);
@@ -187,29 +185,29 @@ public class CreateMappingExpressionDialog extends JDialog
       MappingExpression mappingExpression;
       boolean errorOccurred = false;
 
-      comment = commentTextField.getText();
-      expression = expressionTextArea.getText().trim();
-      sourceSheetName = (String)subSourceNameComboBox.getSelectedItem();
+      comment = CreateMappingExpressionDialog.this.commentTextField.getText();
+      expression = CreateMappingExpressionDialog.this.expressionTextArea.getText().trim();
+      sourceSheetName = (String)CreateMappingExpressionDialog.this.subSourceNameComboBox.getSelectedItem();
 
       try {
-        startColumn = startColumnTextField.getText().trim().toUpperCase();
-        finishColumn = finishColumnTextField.getText().trim().toUpperCase();
+        startColumn = CreateMappingExpressionDialog.this.startColumnTextField.getText().trim().toUpperCase();
+        finishColumn = CreateMappingExpressionDialog.this.finishColumnTextField.getText().trim().toUpperCase();
         SpreadSheetUtil.checkColumnSpecification(startColumn);
         SpreadSheetUtil.checkColumnSpecification(finishColumn);
 
-        startRow = startRowTextField.getText().trim();
-        finishRow = finishRowTextField.getText().trim();
+        startRow = CreateMappingExpressionDialog.this.startRowTextField.getText().trim();
+        finishRow = CreateMappingExpressionDialog.this.finishRowTextField.getText().trim();
       } catch (MappingMasterException ex) {
         getApplicationDialogManager().showErrorMessageDialog(ex.getMessage());
         errorOccurred = true;
       }
 
       if (!errorOccurred) {
-        if (editMode) {
-          editMappingExpression
+        if (CreateMappingExpressionDialog.this.editMode) {
+          CreateMappingExpressionDialog.this.editMappingExpression
             .update(comment, expression, sourceSheetName, startColumn, finishColumn, startRow, finishRow);
-          getMappingExpressionsModel().removeMappingExpression(editMappingExpression); // Remove original
-          getMappingExpressionsModel().addMappingExpression(editMappingExpression);
+          getMappingExpressionsModel().removeMappingExpression(CreateMappingExpressionDialog.this.editMappingExpression); // Remove original
+          getMappingExpressionsModel().addMappingExpression(CreateMappingExpressionDialog.this.editMappingExpression);
         } else {
           mappingExpression = new MappingExpression(comment, expression, sourceSheetName, startColumn, finishColumn,
             startRow, finishRow);
@@ -225,12 +223,12 @@ public class CreateMappingExpressionDialog extends JDialog
 
   private MappingsExpressionsModel getMappingExpressionsModel()
   {
-    return application.getApplicationModel().getMappingExpressionsModel();
+    return this.application.getApplicationModel().getMappingExpressionsModel();
   }
 
-  private DataSourceModel getDataSourceModel() { return application.getApplicationModel().getDataSourceModel(); }
+  private DataSourceModel getDataSourceModel() { return this.application.getApplicationModel().getDataSourceModel(); }
 
-  private MMApplicationView getApplicationView() { return application.getApplicationView(); }
+  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
 
   private MMApplicationDialogManager getApplicationDialogManager()
   {

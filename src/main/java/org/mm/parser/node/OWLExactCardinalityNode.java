@@ -6,14 +6,14 @@ import org.mm.parser.ParseException;
 
 public class OWLExactCardinalityNode
 {
-  int cardinality;
+  private final int cardinality;
 
   public OWLExactCardinalityNode(ASTOWLExactCardinalityRestriction node) throws ParseException
   {
-    cardinality = node.cardinality;
+    this.cardinality = node.cardinality;
   } 
 
-  public int getCardinality() { return  cardinality; }
+  public int getCardinality() { return this.cardinality; }
 
-  public String toString() { return "EXACTLY " + cardinality; }
+  public String toString() { return "EXACTLY " + this.cardinality; }
 }

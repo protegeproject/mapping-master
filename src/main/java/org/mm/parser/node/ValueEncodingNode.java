@@ -10,45 +10,45 @@ import org.mm.parser.ParserUtil;
 
 public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
 {
-  private int encodingType;
+  private final int encodingType;
   private ValueSpecificationNode valueSpecificationNode;
 
   public ValueEncodingNode(ASTValueEncoding node) throws ParseException
   {
-    encodingType = node.encodingType;
+    this.encodingType = node.encodingType;
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "ValueSpecification")) {
-        valueSpecificationNode = new ValueSpecificationNode((ASTValueSpecification)child);
+        this.valueSpecificationNode = new ValueSpecificationNode((ASTValueSpecification)child);
       } else
-        throw new InternalParseException("invalid child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
     }
   }
 
-  public ValueEncodingNode(int defaultValueEncoding) { encodingType = defaultValueEncoding; }
+  public ValueEncodingNode(int defaultValueEncoding) { this.encodingType = defaultValueEncoding; }
 
-  public boolean hasValueSpecificationNode() { return valueSpecificationNode != null; }
+  public boolean hasValueSpecificationNode() { return this.valueSpecificationNode != null; }
 
-  public ValueSpecificationNode getValueSpecificationNode() { return valueSpecificationNode; }
+  public ValueSpecificationNode getValueSpecificationNode() { return this.valueSpecificationNode; }
 
-  public int getEncodingType() { return encodingType; }
+  public int getEncodingType() { return this.encodingType; }
 
   public String getEncodingTypeName()
   {
-    return tokenImage[encodingType].substring(1, tokenImage[encodingType].length() - 1);
+    return tokenImage[this.encodingType].substring(1, tokenImage[this.encodingType].length() - 1);
   }
 
-  public boolean useLocationEncoding() { return encodingType == MM_LOCATION; }
+  public boolean useLocationEncoding() { return this.encodingType == MM_LOCATION; }
 
-  public boolean hasLocationWithDuplicatesEncoding() { return encodingType == MM_LOCATION_WITH_DUPLICATES; }
+  public boolean hasLocationWithDuplicatesEncoding() { return this.encodingType == MM_LOCATION_WITH_DUPLICATES; }
 
-  public boolean hasDataValueEncoding() { return encodingType == MM_DATA_VALUE; }
+  public boolean hasDataValueEncoding() { return this.encodingType == MM_DATA_VALUE; }
 
-  public boolean hasRDFIDEncoding() { return encodingType == RDF_ID; }
+  public boolean hasRDFIDEncoding() { return this.encodingType == RDF_ID; }
 
-  public boolean hasRDFSLabelEncoding() { return encodingType == RDFS_LABEL; }
+  public boolean hasRDFSLabelEncoding() { return this.encodingType == RDFS_LABEL; }
 
   @Override public String getNodeName()
   {
@@ -60,7 +60,7 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
     String representation = getEncodingTypeName();
 
     if (hasValueSpecificationNode())
-      representation += valueSpecificationNode.toString();
+      representation += this.valueSpecificationNode.toString();
 
     return representation;
   }
@@ -69,19 +69,19 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
   {
     if (this == obj)
       return true;
-    if ((obj == null) || (obj.getClass() != this.getClass()))
+    if (obj == null || obj.getClass() != this.getClass())
       return false;
     ValueEncodingNode ve = (ValueEncodingNode)obj;
-    return (getEncodingType() == ve.getEncodingType() && (valueSpecificationNode != null && ve.valueSpecificationNode != null
-      && valueSpecificationNode.equals(ve.valueSpecificationNode)));
+    return getEncodingType() == ve.getEncodingType() && this.valueSpecificationNode != null
+      && ve.valueSpecificationNode != null && this.valueSpecificationNode.equals(ve.valueSpecificationNode);
   }
 
   public int hashCode()
   {
     int hash = 15;
 
-    hash = hash + encodingType;
-    hash = hash + (null == valueSpecificationNode ? 0 : valueSpecificationNode.hashCode());
+    hash = hash + this.encodingType;
+    hash = hash + (null == this.valueSpecificationNode ? 0 : this.valueSpecificationNode.hashCode());
 
     return hash;
   }

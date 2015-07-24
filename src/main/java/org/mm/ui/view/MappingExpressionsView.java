@@ -31,7 +31,7 @@ public class MappingExpressionsView extends JPanel implements MMView
     JPanel headingPanel, buttonPanel;
     JButton addButton, editButton, deleteButton;
 
-    JScrollPane scrollPane = new JScrollPane(mappingExpressionsTable);
+    JScrollPane scrollPane = new JScrollPane(this.mappingExpressionsTable);
     JViewport viewport = scrollPane.getViewport();
 
     setLayout(new BorderLayout());
@@ -39,7 +39,7 @@ public class MappingExpressionsView extends JPanel implements MMView
     headingPanel = new JPanel(new BorderLayout());
     add(headingPanel, BorderLayout.NORTH);
 
-    viewport.setBackground(mappingExpressionsTable.getBackground());
+    viewport.setBackground(this.mappingExpressionsTable.getBackground());
 
     buttonPanel = new JPanel(new BorderLayout());
     headingPanel.add(buttonPanel, BorderLayout.EAST);
@@ -63,12 +63,12 @@ public class MappingExpressionsView extends JPanel implements MMView
 
   private void addTableListeners()
   {
-    mappingExpressionsTable.addMouseListener(new MouseAdapter()
+    this.mappingExpressionsTable.addMouseListener(new MouseAdapter()
     {
       public void mouseClicked(MouseEvent e)
       {
         if (e.getClickCount() == 2) {
-          if (e.getSource() == mappingExpressionsTable) {
+          if (e.getSource() == MappingExpressionsView.this.mappingExpressionsTable) {
             editSelectedClassMap();
           }
         }
@@ -78,7 +78,7 @@ public class MappingExpressionsView extends JPanel implements MMView
 
   private void setPreferredColumnWidths()
   {
-    TableColumnModel columnModel = mappingExpressionsTable.getColumnModel();
+    TableColumnModel columnModel = this.mappingExpressionsTable.getColumnModel();
     columnModel.getColumn(0).setPreferredWidth(30);
     columnModel.getColumn(0).setMaxWidth(50);
     columnModel.getColumn(1).setPreferredWidth(150);
@@ -105,7 +105,7 @@ public class MappingExpressionsView extends JPanel implements MMView
   public MappingExpression getSelectedExpression()
   {
     MappingExpression selectedClassMap = null;
-    int selectedRow = mappingExpressionsTable.getSelectedRow();
+    int selectedRow = this.mappingExpressionsTable.getSelectedRow();
 
     if (selectedRow != -1)
       selectedClassMap = (MappingExpression)getMappingExpressionsModel().getMappingExpressions().toArray()[selectedRow];
@@ -153,10 +153,10 @@ public class MappingExpressionsView extends JPanel implements MMView
 
   private MappingsExpressionsModel getMappingExpressionsModel()
   {
-    return application.getApplicationModel().getMappingExpressionsModel();
+    return this.application.getApplicationModel().getMappingExpressionsModel();
   }
 
-  private MMApplicationView getApplicationView() { return application.getApplicationView(); }
+  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
 
   private MMApplicationDialogManager getApplicationDialogManager()
   {

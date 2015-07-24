@@ -59,12 +59,12 @@ import java.util.Set;
 
 public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserConstants
 {
-  public static int NameEncodings[] = { MM_LOCATION, MM_DATA_VALUE, RDF_ID, RDFS_LABEL };
-  public static int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY,
+  public static final int NameEncodings[] = { MM_LOCATION, MM_DATA_VALUE, RDF_ID, RDFS_LABEL };
+  public static final int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY,
     XSD_INT, XSD_STRING, XSD_FLOAT, XSD_DOUBLE, XSD_SHORT, XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DURATION };
-  public static int PropertyTypes[] = { OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY };
-  public static int PropertyValueTypes[] = ReferenceValueTypes;
-  public static int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INT, XSD_FLOAT, XSD_DOUBLE,
+  public static final int PropertyTypes[] = { OWL_OBJECT_PROPERTY, OWL_DATA_PROPERTY };
+  public static final int PropertyValueTypes[] = ReferenceValueTypes;
+  public static final int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INT, XSD_FLOAT, XSD_DOUBLE,
     XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DATE, XSD_DURATION };
 
   private final OWLDataFactory owlDataFactory;
@@ -81,9 +81,10 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
     this.entityRenderer = new OWLAPIEntityRenderer();
     this.literalRenderer = new OWLAPILiteralRenderer(ontology.getOWLOntologyManager().getOWLDataFactory());
-    this.referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource, entityRenderer, literalRenderer);
-    this.classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, entityRenderer, referenceRenderer,
-      literalRenderer);
+    this.referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource, this.entityRenderer,
+      this.literalRenderer);
+    this.classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, this.entityRenderer,
+      this.referenceRenderer, this.literalRenderer);
   }
 
   public Optional<OWLAPIRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
@@ -114,7 +115,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
     // logLine("=====================OWLClassDeclaration================================");
     // logLine("MappingMaster DSL expression: " + classDeclarationNode);
 
-    Optional<OWLClassRendering> declaredClassRendering = entityRenderer
+    Optional<OWLClassRendering> declaredClassRendering = this.entityRenderer
       .renderOWLClass(classDeclarationNode.getOWLClassNode());
 
     if (!declaredClassRendering.isPresent()) {
@@ -123,7 +124,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
       if (classDeclarationNode.hasOWLSubclassOfNodes()) {
         for (OWLSubclassOfNode subclassOfNode : classDeclarationNode.getOWLSubclassOfNodes()) {
           for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
-            Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer
+            Optional<OWLClassExpressionRendering> classExpressionRendering = this.classExpressionRenderer
               .renderOWLClassExpression(classExpressionNode);
             if (!classExpressionRendering.isPresent()) {
               //logLine(
@@ -141,7 +142,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
       if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
         for (OWLEquivalentClassesNode equivalentClassesNode : classDeclarationNode.getOWLEquivalentClassesNodes()) {
           for (OWLClassExpressionNode classExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
-            Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer
+            Optional<OWLClassExpressionRendering> classExpressionRendering = this.classExpressionRenderer
               .renderOWLClassExpression(classExpressionNode);
             if (!classExpressionRendering.isPresent()) {
               //logLine("processReference: skipping equivalent declaration [" + equivalentClassesNode
@@ -149,7 +150,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
             } else {
               OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
               OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-              OWLEquivalentClassesAxiom axiom = owlDataFactory
+              OWLEquivalentClassesAxiom axiom = this.owlDataFactory
                 .getOWLEquivalentClassesAxiom(classExpression, declaredClass);
               axioms.add(axiom);
             }
@@ -159,7 +160,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
       if (classDeclarationNode.hasAnnotationFactNodes()) {
         for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
-          Optional<OWLAnnotationPropertyRendering> propertyRendering = entityRenderer
+          Optional<OWLAnnotationPropertyRendering> propertyRendering = this.entityRenderer
             .renderOWLAnnotationProperty(annotationFactNode.getOWLPropertyNode());
           OWLAnnotationValueNode annotationValueNode = annotationFactNode.getOWLAnnotationValueNode();
           Optional<OWLAnnotationValueRendering> annotationValueRendering = renderOWLAnnotationValue(
@@ -200,7 +201,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
     // logLine("=====================OWLIndividualDeclaration================================");
     // logLine("MappingMaster DSL expression: " + individualDeclarationNode);
 
-    Optional<OWLNamedIndividualRendering> declaredIndividualRendering = entityRenderer
+    Optional<OWLNamedIndividualRendering> declaredIndividualRendering = this.entityRenderer
       .renderOWLNamedIndividual(individualDeclarationNode.getOWLIndividualNode());
     if (!declaredIndividualRendering.isPresent()) {
       // logLine("Skipping OWL individual declaration because of missing individual name");
@@ -231,7 +232,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
       }
 
       if (individualDeclarationNode.hasTypes()) { // We have a Types: clause
-        Set<OWLAxiom> typesAxioms = referenceRenderer
+        Set<OWLAxiom> typesAxioms = this.referenceRenderer
           .processTypesClause(declaredIndividual, individualDeclarationNode.getTypesNode().getTypeNodes());
         axioms.addAll(typesAxioms);
       }
@@ -334,11 +335,11 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
       for (OWLNamedIndividualNode sameAsIndividualNode : individualDeclarationNode.getOWLSameAsNode()
         .getIndividualNodes()) {
-        Optional<OWLNamedIndividualRendering> sameAsIndividualRendering = entityRenderer
+        Optional<OWLNamedIndividualRendering> sameAsIndividualRendering = this.entityRenderer
           .renderOWLNamedIndividual(sameAsIndividualNode);
         if (sameAsIndividualRendering.isPresent()) {
           OWLNamedIndividual individual2 = sameAsIndividualRendering.get().getOWLNamedIndividual();
-          OWLSameIndividualAxiom axiom = owlDataFactory.getOWLSameIndividualAxiom(individual1, individual2);
+          OWLSameIndividualAxiom axiom = this.owlDataFactory.getOWLSameIndividualAxiom(individual1, individual2);
           axioms.add(axiom);
         }
       }
@@ -358,11 +359,12 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
       OWLNamedIndividual individual1 = declaredIndividualRendering.get().getOWLNamedIndividual();
       for (OWLNamedIndividualNode differentFromIndividualNode : individualDeclarationNode.getOWLDifferentFromNode()
         .getNamedIndividualNodes()) {
-        Optional<OWLNamedIndividualRendering> differentFromIndividualsRendering = entityRenderer
+        Optional<OWLNamedIndividualRendering> differentFromIndividualsRendering = this.entityRenderer
           .renderOWLNamedIndividual(differentFromIndividualNode);
         if (differentFromIndividualsRendering.isPresent()) {
           OWLNamedIndividual individual2 = differentFromIndividualsRendering.get().getOWLNamedIndividual();
-          OWLDifferentIndividualsAxiom axiom = owlDataFactory.getOWLDifferentIndividualsAxiom(individual1, individual2);
+          OWLDifferentIndividualsAxiom axiom = this.owlDataFactory
+            .getOWLDifferentIndividualsAxiom(individual1, individual2);
 
           axioms.add(axiom);
         }
@@ -382,7 +384,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
     if (declaredIndividualRendering.isPresent()) {
 
       for (AnnotationFactNode annotationFact : annotationFactNodes) {
-        Optional<OWLPropertyRendering> propertyRendering = entityRenderer
+        Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer
           .renderOWLProperty(annotationFact.getOWLPropertyNode());
 
         if (!propertyRendering.isPresent()) {
@@ -429,7 +431,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
     if (subjectIndividualRendering.isPresent()) {
       OWLIndividual subjectIndividual = subjectIndividualRendering.get().getOWLNamedIndividual();
       for (FactNode factNode : factNodes) {
-        Optional<OWLPropertyRendering> propertyRendering = entityRenderer
+        Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer
           .renderOWLProperty(factNode.getOWLPropertyNode());
 
         if (!propertyRendering.isPresent()) {

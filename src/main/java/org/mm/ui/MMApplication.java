@@ -15,9 +15,9 @@ public class MMApplication
     this.applicationModel = applicationModel;
   }
 
-  public MMApplicationView getApplicationView() { return applicationView; }
+  public MMApplicationView getApplicationView() { return this.applicationView; }
 
-  public MMApplicationModel getApplicationModel() { return applicationModel; }
+  public MMApplicationModel getApplicationModel() { return this.applicationModel; }
 
   public MappingExpressionsPersistenceLayer getMappingExpressionsPersistenceLayer()
   {

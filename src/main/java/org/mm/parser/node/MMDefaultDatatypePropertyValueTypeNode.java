@@ -7,7 +7,7 @@ import org.mm.parser.ParseException;
 
 public class MMDefaultDatatypePropertyValueTypeNode implements MMNode, MappingMasterParserConstants
 {
-	private int defaultType;
+	private final  int defaultType;
 
 	public MMDefaultDatatypePropertyValueTypeNode(ASTMMDefaultDatatypePropertyValueType node) throws ParseException
 	{
@@ -16,12 +16,12 @@ public class MMDefaultDatatypePropertyValueTypeNode implements MMNode, MappingMa
 
 	public int getType()
 	{
-		return defaultType;
+		return this.defaultType;
 	}
 
 	public String getTypeName()
 	{
-		return tokenImage[defaultType].substring(1, tokenImage[defaultType].length() - 1);
+		return tokenImage[this.defaultType].substring(1, tokenImage[this.defaultType].length() - 1);
 	}
 
 	@Override public String getNodeName()

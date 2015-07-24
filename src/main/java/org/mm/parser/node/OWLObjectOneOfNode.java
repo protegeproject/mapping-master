@@ -12,7 +12,7 @@ import java.util.List;
 
 public class OWLObjectOneOfNode implements MMNode
 {
-  private List<OWLNamedIndividualNode> namedIndividualNodes;
+  private final List<OWLNamedIndividualNode> namedIndividualNodes;
 
   public OWLObjectOneOfNode(ASTOWLObjectOneOf node) throws ParseException
   {
@@ -26,13 +26,13 @@ public class OWLObjectOneOfNode implements MMNode
         this.namedIndividualNodes.add(namedIndividualNode);
       } else
         throw new InternalParseException(getNodeName() +
-          " node expecting OWLNamedIndividual child node, got " + child.toString());
+          " node expecting OWLNamedIndividual child node, got " + child);
     }
   }
 
   public List<OWLNamedIndividualNode> getOWLNamedIndividualNodes()
   {
-    return namedIndividualNodes;
+    return this.namedIndividualNodes;
   }
 
   @Override public String getNodeName()
@@ -44,13 +44,13 @@ public class OWLObjectOneOfNode implements MMNode
   {
     String representation = "";
 
-    if (namedIndividualNodes.size() == 1)
-      representation = namedIndividualNodes.get(0).toString();
+    if (this.namedIndividualNodes.size() == 1)
+      representation = this.namedIndividualNodes.get(0).toString();
     else {
       boolean isFirst = true;
 
       representation += "{";
-      for (OWLNamedIndividualNode owlIndividual : namedIndividualNodes) {
+      for (OWLNamedIndividualNode owlIndividual : this.namedIndividualNodes) {
         if (!isFirst)
           representation += " ";
         representation += owlIndividual.toString();

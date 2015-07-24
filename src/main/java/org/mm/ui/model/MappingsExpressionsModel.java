@@ -20,19 +20,19 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
   private static final int NUMBER_OF_COLUMNS = 8;
 
   private MMView view;
-  private boolean isModified = false;
+  private boolean isModified;
 
   private Set<MappingExpression> mappingExpressions;
 
   public MappingsExpressionsModel() { this.mappingExpressions = new HashSet<>(); }
 
-  public Set<MappingExpression> getMappingExpressions() { return mappingExpressions; }
+  public Set<MappingExpression> getMappingExpressions() { return this.mappingExpressions; }
 
   public Set<MappingExpression> getMappingExpressions(boolean isActiveFlag)
   {
     Set<MappingExpression> res = new HashSet<>();
 
-    for (MappingExpression expr : mappingExpressions) {
+    for (MappingExpression expr : this.mappingExpressions) {
       if (expr.isActive() == isActiveFlag) {
         res.add(expr);
       }
@@ -40,11 +40,11 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
     return res;
   }
 
-  public boolean hasMappingExpressions() { return !mappingExpressions.isEmpty(); }
+  public boolean hasMappingExpressions() { return !this.mappingExpressions.isEmpty(); }
 
   public boolean hasMappingExpressions(MappingExpression mappingExpression)
   {
-    return mappingExpressions.contains(mappingExpression);
+    return this.mappingExpressions.contains(mappingExpression);
   }
 
   public void setMappingExpression(Set<MappingExpression> mappingExpressions)
@@ -55,56 +55,56 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
 
   public void addMappingExpression(MappingExpression mappingExpression)
   {
-    if (!mappingExpressions.contains(mappingExpression))
-      mappingExpressions.add(mappingExpression);
+    if (!this.mappingExpressions.contains(mappingExpression))
+      this.mappingExpressions.add(mappingExpression);
 
-    isModified = true;
+    this.isModified = true;
     updateView();
   }
 
   public void removeMappingExpression(MappingExpression mappingExpression)
   {
-    if (mappingExpressions.contains(mappingExpression))
-      mappingExpressions.remove(mappingExpression);
-    isModified = true;
+    if (this.mappingExpressions.contains(mappingExpression))
+      this.mappingExpressions.remove(mappingExpression);
+    this.isModified = true;
     updateView();
   }
 
   public void clearMappingExpressions()
   {
-    mappingExpressions = new HashSet<>();
+    this.mappingExpressions = new HashSet<>();
     updateView();
-    isModified = false;
+    this.isModified = false;
   }
 
   public void setView(MMView view) { this.view = view; }
 
-  public boolean hasBeenModified() { return isModified; }
+  public boolean hasBeenModified() { return this.isModified; }
 
-  public void clearModifiedStatus() { isModified = false; }
+  public void clearModifiedStatus() { this.isModified = false; }
 
-  public int getRowCount() { return mappingExpressions.size(); }
+  public int getRowCount() { return this.mappingExpressions.size(); }
 
   public int getColumnCount() { return NUMBER_OF_COLUMNS; }
 
   @Override public String getColumnName(int column)
   {
     if (column == COMMENT_COLUMN)
-      return new String("Comment");
+      return "Comment";
     else if (column == EXPRESSION_COLUMN)
-      return new String("MM DSL expression");
+      return "MM DSL expression";
     else if (column == SOURCE_SHEET_NAME_COLUMN)
-      return new String("Sheet name");
+      return "Sheet name";
     else if (column == START_COLUMN_COLUMN)
-      return new String("Start column");
+      return "Start column";
     else if (column == FINISH_COLUMN_COLUMN)
-      return new String("Finish column");
+      return "Finish column";
     else if (column == START_ROW_COLUMN)
-      return new String("Start row");
+      return "Start row";
     else if (column == FINISH_ROW_COLUMN)
-      return new String("Finish row");
+      return "Finish row";
     else if (column == ACTIVE_COLUMN)
-      return new String("");
+      return "";
     else
       return null;
   }
@@ -113,25 +113,25 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
   {
     Object result = null;
 
-    if ((row < 0 || row >= getRowCount()) || ((column < 0 || column >= getColumnCount())))
-      result = new String("OUT OF BOUNDS");
+    if (row < 0 || row >= getRowCount() || column < 0 || column >= getColumnCount())
+      result = "OUT OF BOUNDS";
     else {
       if (column == EXPRESSION_COLUMN)
-        result = ((MappingExpression)mappingExpressions.toArray()[row]).getExpression();
+        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getExpression();
       else if (column == COMMENT_COLUMN)
-        result = ((MappingExpression)mappingExpressions.toArray()[row]).getComment();
+        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getComment();
       else if (column == SOURCE_SHEET_NAME_COLUMN)
-        result = ((MappingExpression)mappingExpressions.toArray()[row]).getSourceSheetName();
+        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getSourceSheetName();
       else if (column == START_COLUMN_COLUMN)
-        result = ((MappingExpression)mappingExpressions.toArray()[row]).getStartColumn();
+        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getStartColumn();
       else if (column == FINISH_COLUMN_COLUMN)
-        result = ((MappingExpression)mappingExpressions.toArray()[row]).getFinishColumn();
+        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getFinishColumn();
       else if (column == START_ROW_COLUMN)
-        result = ((MappingExpression)mappingExpressions.toArray()[row]).getStartRow();
+        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getStartRow();
       else if (column == FINISH_ROW_COLUMN)
-        result = ((MappingExpression)mappingExpressions.toArray()[row]).getFinishRow();
+        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getFinishRow();
       else if (column == ACTIVE_COLUMN)
-        result = ((MappingExpression)mappingExpressions.toArray()[row]).isActive();
+        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).isActive();
     }
     return result;
   }
@@ -150,7 +150,7 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
   @Override public void setValueAt(Object aValue, int rowIndex, int columnIndex)
   {
     if (columnIndex == ACTIVE_COLUMN) {
-      ((MappingExpression)mappingExpressions.toArray()[rowIndex]).setActive((Boolean)aValue);
+      ((MappingExpression)this.mappingExpressions.toArray()[rowIndex]).setActive((Boolean)aValue);
     } else {
       super.setValueAt(aValue, rowIndex, columnIndex);
     }
@@ -158,7 +158,7 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
 
   private void updateView()
   {
-    if (view != null)
-      view.update();
+    if (this.view != null)
+      this.view.update();
   }
 } 

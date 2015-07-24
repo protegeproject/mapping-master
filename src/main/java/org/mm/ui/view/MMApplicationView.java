@@ -22,53 +22,53 @@ public class MMApplicationView extends JSplitPane implements MMView
 
     this.applicationDialogManager = applicationDialogManager;
 
-    application = new MMApplication(this, applicationModel);
+    this.application = new MMApplication(this, applicationModel);
 
-    applicationModel.setSaveMappingsAction(new SaveMappingsAction(application));
+    applicationModel.setSaveMappingsAction(new SaveMappingsAction(this.application));
 
-    this.applicationDialogManager.initialize(application);
+    this.applicationDialogManager.initialize(this.application);
 
     setOrientation(JSplitPane.VERTICAL_SPLIT);
 
     setResizeWeight(0.5);
 
-    dataSourceView = new DataSourceView(application);
-    setTopComponent(dataSourceView);
+    this.dataSourceView = new DataSourceView(this.application);
+    setTopComponent(this.dataSourceView);
 
-    mappingsPane = new JTabbedPane();
-    setBottomComponent(mappingsPane);
+    this.mappingsPane = new JTabbedPane();
+    setBottomComponent(this.mappingsPane);
 
-    mappingsControlView = new MappingsControlView(application);
-    mappingsPane.addTab("Mappings Control", null, mappingsControlView, "Mappings Control Tab");
+    this.mappingsControlView = new MappingsControlView(this.application);
+    this.mappingsPane.addTab("Mappings Control", null, this.mappingsControlView, "Mappings Control Tab");
 
-    mappingsExpressionsView = new MappingExpressionsView(application);
-    mappingsPane.addTab("Expressions", null, mappingsExpressionsView, "Expressions Tab");
+    this.mappingsExpressionsView = new MappingExpressionsView(this.application);
+    this.mappingsPane.addTab("Expressions", null, this.mappingsExpressionsView, "Expressions Tab");
   }
 
   @Override public void update()
   {
-    dataSourceView.update();
-    mappingsControlView.update();
-    mappingsExpressionsView.update();
+    this.dataSourceView.update();
+    this.mappingsControlView.update();
+    this.mappingsExpressionsView.update();
   }
 
   public MMApplication getApplication()
   {
-    return application;
+    return this.application;
   }
 
   public DataSourceView getDataSourceView()
   {
-    return dataSourceView;
+    return this.dataSourceView;
   }
 
   public MappingsControlView getMappingsControlView()
   {
-    return mappingsControlView;
+    return this.mappingsControlView;
   }
 
   public MMApplicationDialogManager getApplicationDialogManager()
   {
-    return applicationDialogManager;
+    return this.applicationDialogManager;
   }
 }

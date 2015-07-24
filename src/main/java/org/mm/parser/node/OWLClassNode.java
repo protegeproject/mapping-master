@@ -25,7 +25,7 @@ public class OWLClassNode implements TypeNode
         this.referenceNode = new ReferenceNode((ASTReference)child);
       else
         throw new InternalParseException(
-          "unexpected child node " + child.toString() + " for " + getNodeName() + " node");
+          "unexpected child node " + child + " for " + getNodeName() + " node");
     }
   }
 
@@ -34,13 +34,13 @@ public class OWLClassNode implements TypeNode
     return "OWLClass";
   }
 
-  public ReferenceNode getReferenceNode() { return referenceNode; }
+  public ReferenceNode getReferenceNode() { return this.referenceNode; }
 
-  public NameNode getNameNode() { return nameNode; }
+  public NameNode getNameNode() { return this.nameNode; }
 
-  public boolean hasNameNode() { return nameNode != null; }
+  public boolean hasNameNode() { return this.nameNode != null; }
 
-  public boolean hasReferenceNode() { return referenceNode != null; }
+  public boolean hasReferenceNode() { return this.referenceNode != null; }
 
   public String toString()
   {

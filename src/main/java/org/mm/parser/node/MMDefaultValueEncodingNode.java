@@ -7,21 +7,21 @@ import org.mm.parser.ParseException;
 
 public class MMDefaultValueEncodingNode implements MMNode, MappingMasterParserConstants
 {
-	private int encodingType;
+	private final int encodingType;
 
 	public MMDefaultValueEncodingNode(ASTMMDefaultValueEncoding node) throws ParseException
 	{
-		encodingType = node.encodingType;
+		this.encodingType = node.encodingType;
 	}
 
 	public int getEncodingType()
 	{
-		return encodingType;
+		return this.encodingType;
 	}
 
 	public String getEncodingTypeName()
 	{
-		return tokenImage[encodingType].substring(1, tokenImage[encodingType].length() - 1);
+		return tokenImage[this.encodingType].substring(1, tokenImage[this.encodingType].length() - 1);
 	}
 
 	@Override public String getNodeName()

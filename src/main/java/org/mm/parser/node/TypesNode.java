@@ -24,19 +24,19 @@ public class TypesNode implements MMNode
 
       if (ParserUtil.hasName(child, "OWLClass")) {
         OWLClassNode classNode = new OWLClassNode((ASTOWLClass)child);
-        typeNodes.add(classNode);
+        this.typeNodes.add(classNode);
       } else if (ParserUtil.hasName(child, "Reference")) {
         ReferenceNode referenceNode = new ReferenceNode((ASTReference)child);
-        typeNodes.add(referenceNode);
+        this.typeNodes.add(referenceNode);
       } else
         throw new InternalParseException(
-          "Types node expecting OWLClassExpression child, got " + child.toString());
+          "Types node expecting OWLClassExpression child, got " + child);
     }
   }
 
   public List<TypeNode> getTypeNodes()
   {
-    return typeNodes;
+    return this.typeNodes;
   }
 
   public String getNodeName()
@@ -49,7 +49,7 @@ public class TypesNode implements MMNode
     String representation = "";
     boolean isFirst = true;
 
-    for (TypeNode typeNode : typeNodes) {
+    for (TypeNode typeNode : this.typeNodes) {
       if (!isFirst)
         representation += ", ";
       representation += typeNode.toString();
@@ -63,16 +63,16 @@ public class TypesNode implements MMNode
   {
     if (this == obj)
       return true;
-    if ((obj == null) || (obj.getClass() != this.getClass()))
+    if (obj == null || obj.getClass() != this.getClass())
       return false;
     TypesNode dt = (TypesNode)obj;
-    return (typeNodes != null && dt.typeNodes != null && typeNodes.equals(dt.typeNodes));
+    return this.typeNodes != null && dt.typeNodes != null && this.typeNodes.equals(dt.typeNodes);
   }
 
   public int hashCode()
   {
     int hash = 25;
-    hash = hash + (null == typeNodes ? 0 : typeNodes.hashCode());
+    hash = hash + (null == this.typeNodes ? 0 : this.typeNodes.hashCode());
     return hash;
   }
 }

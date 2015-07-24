@@ -25,9 +25,9 @@ public class OpenMappingsAction implements ActionListener
 
   public void openMappings()
   {
-    MappingsExpressionsModel mappingExpressionsModel = application.getApplicationModel().getMappingExpressionsModel();
-    MMApplicationView applicationView = application.getApplicationView();
-    MMApplicationModel applicationModel = application.getApplicationModel();
+    MappingsExpressionsModel mappingExpressionsModel = this.application.getApplicationModel().getMappingExpressionsModel();
+    MMApplicationView applicationView = this.application.getApplicationView();
+    MMApplicationModel applicationModel = this.application.getApplicationModel();
     MappingsControlView mappingsControlView = applicationView.getMappingsControlView();
 
     JFileChooser fileChooser = getApplicationDialogManager().createFileChooser("Open Mapping Ontology", "owl");
@@ -40,7 +40,7 @@ public class OpenMappingsAction implements ActionListener
       mappingsControlView.statusWindowAppend("Opening mappings file '" + fileName + "'...\n");
 
       try {
-        mappingExpressions = application.getMappingExpressionsPersistenceLayer().getMappingExpressions(fileName);
+        mappingExpressions = this.application.getMappingExpressionsPersistenceLayer().getMappingExpressions(fileName);
 
         mappingsControlView.statusWindowAppend("Mapping file successfully opened.\n");
       } catch (MappingMasterException ex) {
@@ -60,7 +60,7 @@ public class OpenMappingsAction implements ActionListener
     }
   }
 
-  private MMApplicationView getApplicationView() { return application.getApplicationView(); }
+  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
 
   private MMApplicationDialogManager getApplicationDialogManager()
   {

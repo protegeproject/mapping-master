@@ -18,17 +18,17 @@ public class AnnotationFactNode implements MMNode
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
 			if (ParserUtil.hasName(child, "OWLProperty"))
-				owlPropertyNode = new OWLPropertyNode((ASTOWLProperty)child);
+				this.owlPropertyNode = new OWLPropertyNode((ASTOWLProperty)child);
 			else if (ParserUtil.hasName(child, "OWLAnnotationValue"))
-				owlAnnotationValueNode = new OWLAnnotationValueNode((ASTOWLAnnotationValue)child);
+				this.owlAnnotationValueNode = new OWLAnnotationValueNode((ASTOWLAnnotationValue)child);
 			else
-				throw new InternalParseException("unexpected child node " + child.toString() + " for " + getNodeName());
+				throw new InternalParseException("unexpected child node " + child + " for " + getNodeName());
 		}
 	}
 
 	public OWLPropertyNode getOWLPropertyNode()
 	{
-		return owlPropertyNode;
+		return this.owlPropertyNode;
 	}
 
 	public OWLAnnotationValueNode getOWLAnnotationValueNode()
@@ -43,6 +43,6 @@ public class AnnotationFactNode implements MMNode
 
 	public String toString()
 	{
-		return owlPropertyNode.toString() + " " + owlAnnotationValueNode.toString();
+		return this.owlPropertyNode + " " + this.owlAnnotationValueNode;
 	}
 }

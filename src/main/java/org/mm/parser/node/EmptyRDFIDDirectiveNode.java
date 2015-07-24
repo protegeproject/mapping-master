@@ -8,24 +8,24 @@ import org.mm.parser.ParserUtil;
 
 public class EmptyRDFIDDirectiveNode implements MMNode, MappingMasterParserConstants
 {
-  private int emptyRDFIDSetting;
+  private final int emptyRDFIDSetting;
   
   public EmptyRDFIDDirectiveNode(ASTEmptyRDFIDSetting node) throws ParseException
   {
-  	emptyRDFIDSetting = node.emptyRDFIDSetting;
+    this.emptyRDFIDSetting = node.emptyRDFIDSetting;
   }
   
-  public int getEmptyRDFIDSetting() { return emptyRDFIDSetting; }
+  public int getEmptyRDFIDSetting() { return this.emptyRDFIDSetting; }
   
-  public boolean isErrorIfEmpty() { return emptyRDFIDSetting == MM_ERROR_IF_EMPTY_ID; }
-  public boolean isWarningIfEmpty() { return emptyRDFIDSetting == MM_WARNING_IF_EMPTY_ID; }
-  public boolean isSkipIfEmpty() { return emptyRDFIDSetting == MM_SKIP_IF_EMPTY_ID; }
-  public boolean isProcessIfEmpty() { return emptyRDFIDSetting == MM_PROCESS_IF_EMPTY_ID; }
+  public boolean isErrorIfEmpty() { return this.emptyRDFIDSetting == MM_ERROR_IF_EMPTY_ID; }
+  public boolean isWarningIfEmpty() { return this.emptyRDFIDSetting == MM_WARNING_IF_EMPTY_ID; }
+  public boolean isSkipIfEmpty() { return this.emptyRDFIDSetting == MM_SKIP_IF_EMPTY_ID; }
+  public boolean isProcessIfEmpty() { return this.emptyRDFIDSetting == MM_PROCESS_IF_EMPTY_ID; }
 
   @Override public String getNodeName()
   {
     return "EmptyRDFIDDirective";
   }
 
-  public String toString() { return ParserUtil.getTokenName(emptyRDFIDSetting); }
+  public String toString() { return ParserUtil.getTokenName(this.emptyRDFIDSetting); }
 }

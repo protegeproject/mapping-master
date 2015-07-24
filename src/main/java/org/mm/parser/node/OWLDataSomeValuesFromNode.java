@@ -7,14 +7,14 @@ import org.mm.parser.ParseException;
 
 public class OWLDataSomeValuesFromNode implements MMNode, MappingMasterParserConstants
 {
-  private int datatype;
+  private final int datatype;
 
   public OWLDataSomeValuesFromNode(ASTOWLDataSomeValuesFrom node) throws ParseException
   {
-    datatype = node.datatype;
+    this.datatype = node.datatype;
   }
 
-  public String getDatatypeName() { return tokenImage[datatype].substring(1, tokenImage[datatype].length() - 1); }
+  public String getDatatypeName() { return tokenImage[this.datatype].substring(1, tokenImage[this.datatype].length() - 1); }
 
   @Override public String getNodeName()
   {

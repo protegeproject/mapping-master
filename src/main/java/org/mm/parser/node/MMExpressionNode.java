@@ -19,32 +19,32 @@ public class MMExpressionNode implements MMNode
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLClassDeclaration")) {
-        owlClassDeclarationNode = new OWLClassDeclarationNode((ASTOWLClassDeclaration)child);
+        this.owlClassDeclarationNode = new OWLClassDeclarationNode((ASTOWLClassDeclaration)child);
       } else if (ParserUtil.hasName(child, "OWLIndividualDeclaration")) {
-        owlIndividualDeclarationNode = new OWLIndividualDeclarationNode((ASTOWLIndividualDeclaration)child);
+        this.owlIndividualDeclarationNode = new OWLIndividualDeclarationNode((ASTOWLIndividualDeclaration)child);
       } else
-        throw new InternalParseException("invalid child node " + child.toString() + " to OWLExpression");
+        throw new InternalParseException("invalid child node " + child + " to OWLExpression");
     }
   }
 
   public OWLClassDeclarationNode getOWLClassDeclarationNode()
   {
-    return owlClassDeclarationNode;
+    return this.owlClassDeclarationNode;
   }
 
   public OWLIndividualDeclarationNode getOWLIndividualDeclarationNode()
   {
-    return owlIndividualDeclarationNode;
+    return this.owlIndividualDeclarationNode;
   }
 
   public boolean hasOWLClassDeclaration()
   {
-    return owlClassDeclarationNode != null;
+    return this.owlClassDeclarationNode != null;
   }
 
   public boolean hasOWLIndividualDeclaration()
   {
-    return owlIndividualDeclarationNode != null;
+    return this.owlIndividualDeclarationNode != null;
   }
 
   public String getNodeName()
@@ -55,9 +55,9 @@ public class MMExpressionNode implements MMNode
   public String toString()
   {
     if (hasOWLClassDeclaration())
-      return owlClassDeclarationNode.toString();
+      return this.owlClassDeclarationNode.toString();
     else if (hasOWLIndividualDeclaration())
-      return owlIndividualDeclarationNode.toString();
+      return this.owlIndividualDeclarationNode.toString();
     else
       return "";
   }

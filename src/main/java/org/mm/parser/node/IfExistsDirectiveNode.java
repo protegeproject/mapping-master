@@ -7,24 +7,24 @@ import org.mm.parser.ParserUtil;
 
 public class IfExistsDirectiveNode implements MMNode, MappingMasterParserConstants
 {
-  private int ifExistsSetting;
+  private final int ifExistsSetting;
 
   public IfExistsDirectiveNode(ASTIfExistsDirective node) throws ParseException
   {
     this.ifExistsSetting = node.ifExistsSetting;
   }
 
-  public int getIfExistsSetting() { return ifExistsSetting; }
+  public int getIfExistsSetting() { return this.ifExistsSetting; }
 
-  public String getIfExistsSettingName() { return ParserUtil.getTokenName(ifExistsSetting); }
+  public String getIfExistsSettingName() { return ParserUtil.getTokenName(this.ifExistsSetting); }
 
-  public boolean isResolveIfExists() { return ifExistsSetting == MM_RESOLVE_IF_EXISTS; }
+  public boolean isResolveIfExists() { return this.ifExistsSetting == MM_RESOLVE_IF_EXISTS; }
 
-  public boolean isWarningIfExists() { return ifExistsSetting == MM_WARNING_IF_EXISTS; }
+  public boolean isWarningIfExists() { return this.ifExistsSetting == MM_WARNING_IF_EXISTS; }
 
-  public boolean isErrorIfExists() { return ifExistsSetting == MM_ERROR_IF_EXISTS; }
+  public boolean isErrorIfExists() { return this.ifExistsSetting == MM_ERROR_IF_EXISTS; }
 
-  public boolean isSkipIfExists() { return ifExistsSetting == MM_SKIP_IF_EXISTS; }
+  public boolean isSkipIfExists() { return this.ifExistsSetting == MM_SKIP_IF_EXISTS; }
 
   @Override public String getNodeName()
   {

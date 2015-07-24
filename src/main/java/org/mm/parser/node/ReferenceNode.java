@@ -61,148 +61,150 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "SourceSpecification")) {
-        sourceSpecificationNode = new SourceSpecificationNode((ASTSourceSpecification)child);
+        this.sourceSpecificationNode = new SourceSpecificationNode((ASTSourceSpecification)child);
       } else if (ParserUtil.hasName(child, "ReferenceType")) {
-        referenceTypeNode = new ReferenceTypeNode((ASTReferenceType)child);
+        this.referenceTypeNode = new ReferenceTypeNode((ASTReferenceType)child);
       } else if (ParserUtil.hasName(child, "Prefix")) {
-        if (prefixNode != null)
+        if (this.prefixNode != null)
           throw new RendererException("only one prefix directive can be specified for a Reference");
-        prefixNode = new PrefixNode((ASTPrefix)child);
+        this.prefixNode = new PrefixNode((ASTPrefix)child);
       } else if (ParserUtil.hasName(child, "Language")) {
-        if (languageNode != null)
+        if (this.languageNode != null)
           throw new RendererException("only one language directive can be specified for a Reference");
-        languageNode = new LanguageNode((ASTLanguage)child);
+        this.languageNode = new LanguageNode((ASTLanguage)child);
       } else if (ParserUtil.hasName(child, "Namespace")) {
-        if (namespaceNode != null)
+        if (this.namespaceNode != null)
           throw new RendererException("only one namespace directive can be specified for a Reference");
-        namespaceNode = new NamespaceNode((ASTNamespace)child);
+        this.namespaceNode = new NamespaceNode((ASTNamespace)child);
       } else if (ParserUtil.hasName(child, "ValueEncoding")) {
-        valueEncodingsNodes.add(new ValueEncodingNode((ASTValueEncoding)child));
+        this.valueEncodingsNodes.add(new ValueEncodingNode((ASTValueEncoding)child));
       } else if (ParserUtil.hasName(child, "DefaultLocationValue")) {
-        if (defaultLocationValueNode != null)
+        if (this.defaultLocationValueNode != null)
           throw new RendererException("only one default location value directive can be specified for a Reference");
-        defaultLocationValueNode = new DefaultLocationValueNode((ASTDefaultLocationValue)child);
+        this.defaultLocationValueNode = new DefaultLocationValueNode((ASTDefaultLocationValue)child);
       } else if (ParserUtil.hasName(child, "DefaultDataValue")) {
-        if (defaultDataValueNode != null)
+        if (this.defaultDataValueNode != null)
           throw new RendererException("only one default data value directive can be specified for a Reference");
-        defaultDataValueNode = new DefaultDataValueNode((ASTDefaultDataValue)child);
+        this.defaultDataValueNode = new DefaultDataValueNode((ASTDefaultDataValue)child);
       } else if (ParserUtil.hasName(child, "DefaultID")) {
-        if (defaultRDFIDNode != null)
+        if (this.defaultRDFIDNode != null)
           throw new RendererException("only one default ID directive can be specified for a Reference");
-        defaultRDFIDNode = new DefaultIDNode((ASTDefaultID)child);
+        this.defaultRDFIDNode = new DefaultIDNode((ASTDefaultID)child);
       } else if (ParserUtil.hasName(child, "DefaultLabel")) {
-        if (defaultRDFSLabelNode != null)
+        if (this.defaultRDFSLabelNode != null)
           throw new RendererException("only one default label directive can be specified for a Reference");
-        defaultRDFSLabelNode = new DefaultLabelNode((ASTDefaultLabel)child);
+        this.defaultRDFSLabelNode = new DefaultLabelNode((ASTDefaultLabel)child);
       } else if (ParserUtil.hasName(child, "EmptyLocationSetting")) {
-        if (emptyLocationDirectiveNode != null)
+        if (this.emptyLocationDirectiveNode != null)
           throw new RendererException("only one empty location directive can be specified for a Reference");
-        emptyLocationDirectiveNode = new EmptyLocationDirectiveNode((ASTEmptyLocationSetting)child);
+        this.emptyLocationDirectiveNode = new EmptyLocationDirectiveNode((ASTEmptyLocationSetting)child);
       } else if (ParserUtil.hasName(child, "IfExistsDirective")) {
-        if (ifExistsDirectiveNode != null)
+        if (this.ifExistsDirectiveNode != null)
           throw new RendererException("only one if exists directive can be specified for a Reference");
-        ifExistsDirectiveNode = new IfExistsDirectiveNode((ASTIfExistsDirective)child);
+        this.ifExistsDirectiveNode = new IfExistsDirectiveNode((ASTIfExistsDirective)child);
       } else if (ParserUtil.hasName(child, "IfNotExistsDirective")) {
-        if (ifNotExistsDirectiveNode != null)
+        if (this.ifNotExistsDirectiveNode != null)
           throw new RendererException("only one if not exists directive can be specified for a Reference");
-        ifNotExistsDirectiveNode = new IfNotExistsDirectiveNode((ASTIfNotExistsDirective)child);
+        this.ifNotExistsDirectiveNode = new IfNotExistsDirectiveNode((ASTIfNotExistsDirective)child);
       } else if (ParserUtil.hasName(child, "EmptyDataValueSetting")) {
-        if (emptyDataValueDirectiveNode != null)
+        if (this.emptyDataValueDirectiveNode != null)
           throw new RendererException("only one empty data value directive can be specified for a Reference");
-        emptyDataValueDirectiveNode = new EmptyDataValueDirectiveNode((ASTEmptyDataValueSetting)child);
+        this.emptyDataValueDirectiveNode = new EmptyDataValueDirectiveNode((ASTEmptyDataValueSetting)child);
       } else if (ParserUtil.hasName(child, "EmptyRDFIDSetting")) {
-        if (emptyRDFIDDirectiveNode != null)
+        if (this.emptyRDFIDDirectiveNode != null)
           throw new RendererException("only one empty rdf:ID directive can be specified for a Reference");
-        emptyRDFIDDirectiveNode = new EmptyRDFIDDirectiveNode((ASTEmptyRDFIDSetting)child);
+        this.emptyRDFIDDirectiveNode = new EmptyRDFIDDirectiveNode((ASTEmptyRDFIDSetting)child);
       } else if (ParserUtil.hasName(child, "EmptyRDFSLabelSetting")) {
-        if (emptyRDFSLabelDirectiveNode != null)
+        if (this.emptyRDFSLabelDirectiveNode != null)
           throw new RendererException("only one empty rdfs:Label directive can be specified for a Reference");
-        emptyRDFSLabelDirectiveNode = new EmptyRDFSLabelDirectiveNode((ASTEmptyRDFSLabelSetting)child);
+        this.emptyRDFSLabelDirectiveNode = new EmptyRDFSLabelDirectiveNode((ASTEmptyRDFSLabelSetting)child);
       } else if (ParserUtil.hasName(child, "ShiftSetting")) {
-        if (shiftDirectiveNode != null)
+        if (this.shiftDirectiveNode != null)
           throw new RendererException("only one shift setting directive can be specified for a Reference");
-        shiftDirectiveNode = new ShiftDirectiveNode((ASTShiftSetting)child);
+        this.shiftDirectiveNode = new ShiftDirectiveNode((ASTShiftSetting)child);
       } else if (ParserUtil.hasName(child, "ValueExtractionFunction")) {
-        if (valueExtractionFunctionNode != null)
+        if (this.valueExtractionFunctionNode != null)
           throw new RendererException("only one value extraction directive can be specified for a Reference");
-        valueExtractionFunctionNode = new ValueExtractionFunctionNode((ASTValueExtractionFunction)child);
+        this.valueExtractionFunctionNode = new ValueExtractionFunctionNode((ASTValueExtractionFunction)child);
       } else if (ParserUtil.hasName(child, "Types")) {
-        typesNode = new TypesNode((ASTTypes)child);
+        this.typesNode = new TypesNode((ASTTypes)child);
       } else
-        throw new InternalParseException("invalid child node " + child.toString() + " for ReferenceNode");
+        throw new InternalParseException("invalid child node " + child + " for ReferenceNode");
     }
 
     this.referenceDirectives = new ReferenceDirectives(node.defaultReferenceDirectives);
 
-    if (sourceSpecificationNode == null)
+    if (this.sourceSpecificationNode == null)
       throw new RendererException("missing source specification in reference " + toString());
 
-    if (referenceTypeNode == null) { // No entity type specified by the user - use default type
+    if (this.referenceTypeNode == null) { // No entity type specified by the user - use default type
       this.referenceTypeNode = new ReferenceTypeNode(node.defaultReferenceDirectives.getDefaultReferenceType());
     } else
-      this.referenceDirectives.setExplicitlySpecifiedReferenceType(referenceTypeNode.getReferenceType());
+      this.referenceDirectives.setExplicitlySpecifiedReferenceType(this.referenceTypeNode.getReferenceType());
 
-    if (valueEncodingsNodes.isEmpty()) {
-      valueEncodingsNodes.add(new ValueEncodingNode(node.defaultReferenceDirectives.getDefaultValueEncoding()));
+    if (this.valueEncodingsNodes.isEmpty()) {
+      this.valueEncodingsNodes.add(new ValueEncodingNode(node.defaultReferenceDirectives.getDefaultValueEncoding()));
     } else {
-      referenceDirectives.setHasExplicitlySpecifiedValueEncodings();
+      this.referenceDirectives.setHasExplicitlySpecifiedValueEncodings();
       for (ValueEncodingNode valueEncoding : getValueEncodingNodes()) {
         if (valueEncoding.useLocationEncoding())
-          referenceDirectives.setUsesLocationEncoding();
+          this.referenceDirectives.setUsesLocationEncoding();
         if (valueEncoding.hasLocationWithDuplicatesEncoding())
-          referenceDirectives.setUsesLocationWithDuplicatesEncoding();
+          this.referenceDirectives.setUsesLocationWithDuplicatesEncoding();
       }
     }
 
-    if (defaultLocationValueNode != null)
-      referenceDirectives
-        .setExplicitlySpecifiedDefaultLocationValue(defaultLocationValueNode.getDefaultLocationValue());
+    if (this.defaultLocationValueNode != null)
+      this.referenceDirectives
+        .setExplicitlySpecifiedDefaultLocationValue(this.defaultLocationValueNode.getDefaultLocationValue());
 
-    if (defaultDataValueNode != null)
-      referenceDirectives.setExplicitlySpecifiedDefaultDataValue(defaultDataValueNode.getDefaultDataValue());
+    if (this.defaultDataValueNode != null)
+      this.referenceDirectives.setExplicitlySpecifiedDefaultDataValue(this.defaultDataValueNode.getDefaultDataValue());
 
-    if (defaultRDFIDNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedDefaultID(defaultRDFIDNode.getDefaultRDFID());
+    if (this.defaultRDFIDNode != null)
+      this.referenceDirectives.setHasExplicitlySpecifiedDefaultID(this.defaultRDFIDNode.getDefaultRDFID());
 
-    if (defaultRDFSLabelNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedDefaultLabel(defaultRDFSLabelNode.getDefaultRDFSLabel());
+    if (this.defaultRDFSLabelNode != null)
+      this.referenceDirectives.setHasExplicitlySpecifiedDefaultLabel(this.defaultRDFSLabelNode.getDefaultRDFSLabel());
 
-    if (languageNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedLanguage(languageNode.getLanguage());
+    if (this.languageNode != null)
+      this.referenceDirectives.setHasExplicitlySpecifiedLanguage(this.languageNode.getLanguage());
 
-    if (prefixNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedPrefix(prefixNode.getPrefix());
+    if (this.prefixNode != null)
+      this.referenceDirectives.setHasExplicitlySpecifiedPrefix(this.prefixNode.getPrefix());
 
-    if (namespaceNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedNamespace(namespaceNode.getNamespace());
+    if (this.namespaceNode != null)
+      this.referenceDirectives.setHasExplicitlySpecifiedNamespace(this.namespaceNode.getNamespace());
 
-    if (emptyLocationDirectiveNode != null)
-      referenceDirectives
-        .setHasExplicitlySpecifiedEmptyLocationDirective(emptyLocationDirectiveNode.getEmptyLocationSetting());
+    if (this.emptyLocationDirectiveNode != null)
+      this.referenceDirectives
+        .setHasExplicitlySpecifiedEmptyLocationDirective(this.emptyLocationDirectiveNode.getEmptyLocationSetting());
 
-    if (emptyDataValueDirectiveNode != null)
-      referenceDirectives
-        .setHasExplicitlySpecifiedEmptyDataValueDirective(emptyDataValueDirectiveNode.getEmptyDataValueSetting());
+    if (this.emptyDataValueDirectiveNode != null)
+      this.referenceDirectives
+        .setHasExplicitlySpecifiedEmptyDataValueDirective(this.emptyDataValueDirectiveNode.getEmptyDataValueSetting());
 
-    if (emptyRDFIDDirectiveNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedEmptyRDFIDDirective(emptyRDFIDDirectiveNode.getEmptyRDFIDSetting());
+    if (this.emptyRDFIDDirectiveNode != null)
+      this.referenceDirectives
+        .setHasExplicitlySpecifiedEmptyRDFIDDirective(this.emptyRDFIDDirectiveNode.getEmptyRDFIDSetting());
 
-    if (emptyRDFSLabelDirectiveNode != null)
-      referenceDirectives
-        .setHasExplicitlySpecifiedEmptyRDFSLabelDirective(emptyRDFSLabelDirectiveNode.getEmptyRDFSLabelSetting());
+    if (this.emptyRDFSLabelDirectiveNode != null)
+      this.referenceDirectives
+        .setHasExplicitlySpecifiedEmptyRDFSLabelDirective(this.emptyRDFSLabelDirectiveNode.getEmptyRDFSLabelSetting());
 
-    if (shiftDirectiveNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedShiftDirective(shiftDirectiveNode.getShiftSetting());
+    if (this.shiftDirectiveNode != null)
+      this.referenceDirectives.setHasExplicitlySpecifiedShiftDirective(this.shiftDirectiveNode.getShiftSetting());
 
-    if (ifExistsDirectiveNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedIfExistsDirective(ifExistsDirectiveNode.getIfExistsSetting());
+    if (this.ifExistsDirectiveNode != null)
+      this.referenceDirectives
+        .setHasExplicitlySpecifiedIfExistsDirective(this.ifExistsDirectiveNode.getIfExistsSetting());
 
-    if (ifNotExistsDirectiveNode != null)
-      referenceDirectives
-        .setHasExplicitlySpecifiedIfNotExistsDirective(ifNotExistsDirectiveNode.getIfNotExistsSetting());
+    if (this.ifNotExistsDirectiveNode != null)
+      this.referenceDirectives
+        .setHasExplicitlySpecifiedIfNotExistsDirective(this.ifNotExistsDirectiveNode.getIfNotExistsSetting());
 
-    if (typesNode != null)
-      referenceDirectives.setHasExplicitlySpecifiedTypes();
+    if (this.typesNode != null)
+      this.referenceDirectives.setHasExplicitlySpecifiedTypes();
 
     checkValueEncodings();
     checkInvalidExplicitDirectives();
@@ -215,247 +217,247 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 
   public ReferenceDirectives getReferenceDirectives()
   {
-    return referenceDirectives;
+    return this.referenceDirectives;
   }
 
   public SourceSpecificationNode getSourceSpecificationNode()
   {
-    return sourceSpecificationNode;
+    return this.sourceSpecificationNode;
   }
 
   public void updateReferenceType(int type)
   {
-    referenceTypeNode = new ReferenceTypeNode(type);
+    this.referenceTypeNode = new ReferenceTypeNode(type);
   }
 
   public ReferenceTypeNode getReferenceTypeNode()
   {
-    return referenceTypeNode;
+    return this.referenceTypeNode;
   }
 
   public List<ValueEncodingNode> getValueEncodingNodes()
   {
-    return valueEncodingsNodes;
+    return this.valueEncodingsNodes;
   }
 
   public TypesNode getTypesNode()
   {
-    return typesNode;
+    return this.typesNode;
   }
 
   public DefaultDataValueNode getDefaultDataValueNode()
   {
-    return defaultDataValueNode;
+    return this.defaultDataValueNode;
   }
 
   public DefaultIDNode getDefaultRDFIDNode()
   {
-    return defaultRDFIDNode;
+    return this.defaultRDFIDNode;
   }
 
   public DefaultLabelNode getDefaultRDFSLabelNode()
   {
-    return defaultRDFSLabelNode;
+    return this.defaultRDFSLabelNode;
   }
 
   public ShiftDirectiveNode getShiftDirectiveNode()
   {
-    return shiftDirectiveNode;
+    return this.shiftDirectiveNode;
   }
 
   public IfExistsDirectiveNode getIfExistsDirectiveNode()
   {
-    return ifExistsDirectiveNode;
+    return this.ifExistsDirectiveNode;
   }
 
   public IfNotExistsDirectiveNode getIfNotExistsDirectiveNode()
   {
-    return ifNotExistsDirectiveNode;
+    return this.ifNotExistsDirectiveNode;
   }
 
   public EmptyDataValueDirectiveNode getEmptyDataValueDirectiveNode()
   {
-    return emptyDataValueDirectiveNode;
+    return this.emptyDataValueDirectiveNode;
   }
 
   public EmptyLocationDirectiveNode getEmptyLocationDirectiveNode()
   {
-    return emptyLocationDirectiveNode;
+    return this.emptyLocationDirectiveNode;
   }
 
   public EmptyRDFIDDirectiveNode getEmptyRDFIDDirectiveNode()
   {
-    return emptyRDFIDDirectiveNode;
+    return this.emptyRDFIDDirectiveNode;
   }
 
   public EmptyRDFSLabelDirectiveNode getEmptyRDFSLabelDirectiveNode()
   {
-    return emptyRDFSLabelDirectiveNode;
+    return this.emptyRDFSLabelDirectiveNode;
   }
 
   public PrefixNode getPrefixNode()
   {
-    return prefixNode;
+    return this.prefixNode;
   }
 
   public LanguageNode getLanguageNode()
   {
-    return languageNode;
+    return this.languageNode;
   }
 
   public NamespaceNode getNamespaceNode()
   {
-    return namespaceNode;
+    return this.namespaceNode;
   }
 
   public boolean hasExplicitlySpecifiedReferenceType()
   {
-    return referenceDirectives.hasExplicitlySpecifiedReferenceType();
+    return this.referenceDirectives.hasExplicitlySpecifiedReferenceType();
   }
 
   public boolean hasExplicitlySpecifiedPrefix()
   {
-    return referenceDirectives.hasExplicitlySpecifiedPrefix();
+    return this.referenceDirectives.hasExplicitlySpecifiedPrefix();
   }
 
   public boolean hasExplicitlySpecifiedNamespace()
   {
-    return referenceDirectives.hasExplicitlySpecifiedNamespace();
+    return this.referenceDirectives.hasExplicitlySpecifiedNamespace();
   }
 
   public boolean hasExplicitlySpecifiedLanguage()
   {
-    return referenceDirectives.hasExplicitlySpecifiedLanguage();
+    return this.referenceDirectives.hasExplicitlySpecifiedLanguage();
   }
 
   public boolean hasExplicitlySpecifiedValueEncodings()
   {
-    return referenceDirectives.hasExplicitlySpecifiedValueEncodings();
+    return this.referenceDirectives.hasExplicitlySpecifiedValueEncodings();
   }
 
   public boolean hasExplicitlySpecifiedDefaultLocationValue()
   {
-    return referenceDirectives.hasExplicitlySpecifiedDefaultLocationValue();
+    return this.referenceDirectives.hasExplicitlySpecifiedDefaultLocationValue();
   }
 
   public boolean hasExplicitlySpecifiedDefaultDataValue()
   {
-    return referenceDirectives.hasExplicitlySpecifiedDefaultDataValue();
+    return this.referenceDirectives.hasExplicitlySpecifiedDefaultDataValue();
   }
 
   public boolean hasExplicitlySpecifiedDefaultRDFID()
   {
-    return referenceDirectives.hasExplicitlySpecifiedDefaultID();
+    return this.referenceDirectives.hasExplicitlySpecifiedDefaultID();
   }
 
   public boolean hasExplicitlySpecifiedDefaultRDFSLabel()
   {
-    return referenceDirectives.hasExplicitlySpecifiedDefaultLabel();
+    return this.referenceDirectives.hasExplicitlySpecifiedDefaultLabel();
   }
 
   public boolean hasExplicitlySpecifiedEmptyDataValueDirective()
   {
-    return referenceDirectives.hasExplicitlySpecifiedEmptyDataValueDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedEmptyDataValueDirective();
   }
 
   public boolean hasExplicitlySpecifiedEmptyLocationDirective()
   {
-    return referenceDirectives.hasExplicitlySpecifiedEmptyLocationDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedEmptyLocationDirective();
   }
 
   public boolean hasExplicitlySpecifiedEmptyRDFIDDirective()
   {
-    return referenceDirectives.hasExplicitlySpecifiedEmptyRDFIDDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedEmptyRDFIDDirective();
   }
 
   public boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective()
   {
-    return referenceDirectives.hasExplicitlySpecifiedEmptyRDFSLabelDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedEmptyRDFSLabelDirective();
   }
 
   public boolean hasExplicitlySpecifiedShiftDirective()
   {
-    return referenceDirectives.hasExplicitlySpecifiedShiftDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedShiftDirective();
   }
 
   public boolean hasExplicitlySpecifiedTypes()
   {
-    return referenceDirectives.hasExplicitlySpecifiedTypes();
+    return this.referenceDirectives.hasExplicitlySpecifiedTypes();
   }
 
   public boolean hasExplicitlySpecifiedIfExistsDirective()
   {
-    return referenceDirectives.hasExplicitlySpecifiedIfExistsDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedIfExistsDirective();
   }
 
   public boolean hasExplicitlySpecifiedIfNotExistsDirective()
   {
-    return referenceDirectives.hasExplicitlySpecifiedIfNotExistsDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedIfNotExistsDirective();
   }
 
   public String getActualLanguage()
   {
-    return referenceDirectives.getActualLanguage();
+    return this.referenceDirectives.getActualLanguage();
   }
 
   public int getActualEmptyLocationDirective()
   {
-    return referenceDirectives.getActualEmptyLocationDirective();
+    return this.referenceDirectives.getActualEmptyLocationDirective();
   }
 
   public int getActualEmptyDataValueDirective()
   {
-    return referenceDirectives.getActualEmptyDataValueDirective();
+    return this.referenceDirectives.getActualEmptyDataValueDirective();
   }
 
   public int getActualEmptyRDFSLabelDirective()
   {
-    return referenceDirectives.getActualEmptyRDFSLabelDirective();
+    return this.referenceDirectives.getActualEmptyRDFSLabelDirective();
   }
 
   public int getActualShiftDirective()
   {
-    return referenceDirectives.getActualShiftDirective();
+    return this.referenceDirectives.getActualShiftDirective();
   }
 
   public String getActualDefaultLocationValue()
   {
-    return referenceDirectives.getActualDefaultLocationValue();
+    return this.referenceDirectives.getActualDefaultLocationValue();
   }
 
   public String getActualDefaultDataValue()
   {
-    return referenceDirectives.getActualDefaultDataValue();
+    return this.referenceDirectives.getActualDefaultDataValue();
   }
 
   public String getActualDefaultRDFID()
   {
-    return referenceDirectives.getActualDefaultRDFID();
+    return this.referenceDirectives.getActualDefaultRDFID();
   }
 
   public String getActualDefaultRDFSLabel()
   {
-    return referenceDirectives.getActualDefaultRDFSLabel();
+    return this.referenceDirectives.getActualDefaultRDFSLabel();
   }
 
   public DefaultLocationValueNode getDefaultLocationValueNode()
   {
-    return defaultLocationValueNode;
+    return this.defaultLocationValueNode;
   }
 
   public boolean hasValueExtractionFunction()
   {
-    return valueExtractionFunctionNode != null;
+    return this.valueExtractionFunctionNode != null;
   }
 
   public ValueExtractionFunctionNode getValueExtractionFunctionNode()
   {
-    return valueExtractionFunctionNode;
+    return this.valueExtractionFunctionNode;
   }
 
   public boolean hasShiftedLocation()
   {
-    return referenceDirectives.getShiftedLocation() != null;
+    return this.referenceDirectives.getShiftedLocation() != null;
   }
 
   public void setShiftedLocation(SpreadsheetLocation location)
@@ -465,7 +467,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 
   public SpreadsheetLocation getShiftedLocation()
   {
-    return referenceDirectives.getShiftedLocation();
+    return this.referenceDirectives.getShiftedLocation();
   }
 
   public void setDefaultShiftSetting(int defaultShiftSetting)
@@ -483,7 +485,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     if (hasExplicitlySpecifiedValueEncodings()) {
       return hasExplicitlySpecifiedRDFSLabelValueEncoding();
     } else
-      return referenceDirectives.isDefaultRDFSLabelValueEncoding();
+      return this.referenceDirectives.isDefaultRDFSLabelValueEncoding();
   }
 
   public boolean hasRDFIDValueEncoding()
@@ -491,7 +493,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     if (hasExplicitlySpecifiedValueEncodings()) {
       return hasExplicitlySpecifiedRDFIDValueEncoding();
     } else
-      return referenceDirectives.isDefaultRDFIDValueEncoding();
+      return this.referenceDirectives.isDefaultRDFIDValueEncoding();
   }
 
   public boolean hasLiteralValueEncoding()
@@ -501,7 +503,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     else if (hasExplicitlySpecifiedValueEncodings())
       return hasExplicitlySpecifiedLiteralValueEncoding();
     else
-      return referenceDirectives.isDefaultDataValueEncoding();
+      return this.referenceDirectives.isDefaultDataValueEncoding();
   }
 
   public boolean hasExplicitlySpecifiedRDFSLabelValueEncoding()
@@ -581,7 +583,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       representation += "(";
 
     if (hasExplicitlySpecifiedReferenceType()) {
-      representation += referenceTypeNode;
+      representation += this.referenceTypeNode;
       atLeastOneOptionProcessed = true;
     }
 
@@ -590,14 +592,14 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
         representation += " ";
       else
         atLeastOneOptionProcessed = true;
-      representation += valueExtractionFunctionNode;
+      representation += this.valueExtractionFunctionNode;
     }
 
     if (hasExplicitlySpecifiedValueEncodings()) {
       boolean isFirst = true;
       if (atLeastOneOptionProcessed)
         representation += " ";
-      for (ValueEncodingNode valueEncoding : valueEncodingsNodes) {
+      for (ValueEncodingNode valueEncoding : this.valueEncodingsNodes) {
         if (!isFirst)
           representation += " ";
         representation += valueEncoding;
@@ -609,98 +611,98 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     if (hasExplicitlySpecifiedDefaultLocationValue()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += defaultLocationValueNode;
+      representation += this.defaultLocationValueNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedDefaultDataValue()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += defaultDataValueNode;
+      representation += this.defaultDataValueNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedDefaultRDFID()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += defaultRDFIDNode;
+      representation += this.defaultRDFIDNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedDefaultRDFSLabel()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += defaultRDFSLabelNode;
+      representation += this.defaultRDFSLabelNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedLanguage()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += languageNode;
+      representation += this.languageNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedPrefix()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += prefixNode;
+      representation += this.prefixNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedNamespace()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += namespaceNode;
+      representation += this.namespaceNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedEmptyLocationDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += emptyLocationDirectiveNode;
+      representation += this.emptyLocationDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedEmptyDataValueDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += emptyDataValueDirectiveNode;
+      representation += this.emptyDataValueDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedEmptyRDFIDDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += emptyRDFIDDirectiveNode;
+      representation += this.emptyRDFIDDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedEmptyRDFSLabelDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += emptyRDFSLabelDirectiveNode;
+      representation += this.emptyRDFSLabelDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedIfExistsDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += ifExistsDirectiveNode;
+      representation += this.ifExistsDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedIfNotExistsDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += ifNotExistsDirectiveNode;
+      representation += this.ifNotExistsDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
     if (hasExplicitlySpecifiedShiftDirective()) {
       if (atLeastOneOptionProcessed)
         representation += " ";
-      representation += shiftDirectiveNode;
+      representation += this.shiftDirectiveNode;
       atLeastOneOptionProcessed = true;
     }
 
@@ -721,10 +723,10 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
   {
     boolean location = false, dataValue = false, locationWithDuplicates = false, rdfID = false, rdfsLabel = false;
 
-    if (valueEncodingsNodes.isEmpty())
+    if (this.valueEncodingsNodes.isEmpty())
       throw new RendererException("empty value encoding in reference");
 
-    for (ValueEncodingNode valueEncoding : valueEncodingsNodes) {
+    for (ValueEncodingNode valueEncoding : this.valueEncodingsNodes) {
 
       if (valueEncoding.hasDataValueEncoding())
         dataValue = true;
@@ -757,26 +759,27 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 
   private void checkInvalidExplicitDirectives() throws ParseException
   {
-    if (referenceDirectives.hasExplicitlySpecifiedLanguage() && referenceTypeNode.getReferenceType().isOWLLiteral())
+    if (this.referenceDirectives.hasExplicitlySpecifiedLanguage() && this.referenceTypeNode.getReferenceType().isOWLLiteral())
       throw new ParseException(
         "use of language specification in reference " + toString() + " invalid because it is an OWL data value");
 
-    if (referenceDirectives.hasExplicitlySpecifiedPrefix() && referenceTypeNode.getReferenceType().isOWLLiteral())
+    if (this.referenceDirectives.hasExplicitlySpecifiedPrefix() && this.referenceTypeNode.getReferenceType().isOWLLiteral())
       throw new ParseException("use of prefix in reference " + toString() + " invalid because it is an OWL data value");
 
-    if (referenceDirectives.hasExplicitlySpecifiedNamespace() && referenceTypeNode.getReferenceType().isOWLLiteral())
+    if (this.referenceDirectives.hasExplicitlySpecifiedNamespace() && this.referenceTypeNode.getReferenceType().isOWLLiteral())
       throw new ParseException(
         "use of namespace in reference " + toString() + " invalid because it is an OWL data value");
 
-    if (referenceDirectives.hasExplicitlySpecifiedEmptyDataValueDirective() && !referenceTypeNode.getReferenceType()
+    if (this.referenceDirectives.hasExplicitlySpecifiedEmptyDataValueDirective() && !this.referenceTypeNode
+      .getReferenceType()
       .isOWLLiteral())
       throw new ParseException(
         "use of empty data value setting in reference " + toString() + " invalid because it is not an OWL data value");
 
-    if (referenceDirectives.hasExplicitlySpecifiedReferenceType() && referenceTypeNode.getReferenceType().isOWLLiteral()
+    if (this.referenceDirectives.hasExplicitlySpecifiedReferenceType() && this.referenceTypeNode.getReferenceType().isOWLLiteral()
       && hasExplicitlySpecifiedTypes())
       throw new ParseException(
-        "entity type " + referenceTypeNode.getReferenceType().getTypeName() + " in reference " + toString()
+        "entity type " + this.referenceTypeNode.getReferenceType().getTypeName() + " in reference " + toString()
           + " should not have defining types because it is an OWL data value");
   }
 }

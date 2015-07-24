@@ -19,91 +19,91 @@ import java.util.List;
 public class OWLIndividualDeclarationNode implements MMNode
 {
 	private OWLNamedIndividualNode namedIndividualNode;
-	private List<FactNode> factNodes;
-	private List<AnnotationFactNode> annotationNodes;
+	private final List<FactNode> factNodes;
+	private final List<AnnotationFactNode> annotationNodes;
 	private TypesNode typesNode ;
 	private OWLSameAsNode sameAsNode;
 	private OWLDifferentFromNode differentFromNode;
 
 	public OWLIndividualDeclarationNode(ASTOWLIndividualDeclaration node) throws ParseException
 	{
-		factNodes = new ArrayList<>();
-		annotationNodes = new ArrayList<>();
+		this.factNodes = new ArrayList<>();
+		this.annotationNodes = new ArrayList<>();
 
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
 			if (ParserUtil.hasName(child, "OWLNamedIndividual"))
-				namedIndividualNode = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
+				this.namedIndividualNode = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
 			else if (ParserUtil.hasName(child, "Fact")) {
 				FactNode fact = new FactNode((ASTFact)child);
-				factNodes.add(fact);
+				this.factNodes.add(fact);
 			} else if (ParserUtil.hasName(child, "AnnotationFact")) {
 				AnnotationFactNode fact = new AnnotationFactNode((ASTAnnotationFact)child);
-				annotationNodes.add(fact);
+				this.annotationNodes.add(fact);
 			} else if (ParserUtil.hasName(child, "Types")) {
-				typesNode = new TypesNode((ASTTypes)child);
+				this.typesNode = new TypesNode((ASTTypes)child);
 			} else if (ParserUtil.hasName(child, "OWLSameAs")) {
-				sameAsNode = new OWLSameAsNode((ASTOWLSameAs)child);
+				this.sameAsNode = new OWLSameAsNode((ASTOWLSameAs)child);
 			} else if (ParserUtil.hasName(child, "OWLDifferentFrom")) {
-				differentFromNode = new OWLDifferentFromNode((ASTOWLDifferentFrom)child);
+				this.differentFromNode = new OWLDifferentFromNode((ASTOWLDifferentFrom)child);
 			} else
-				throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
+				throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
 		}
 	}
 
 	public boolean hasFacts()
 	{
-		return !factNodes.isEmpty();
+		return !this.factNodes.isEmpty();
 	}
 
 	public boolean hasAnnotations()
 	{
-		return !annotationNodes.isEmpty();
+		return !this.annotationNodes.isEmpty();
 	}
 
 	public boolean hasTypes()
 	{
-		return typesNode != null;
+		return this.typesNode != null;
 	}
 
 	public boolean hasSameAs()
 	{
-		return sameAsNode != null;
+		return this.sameAsNode != null;
 	}
 
 	public boolean hasDifferentFrom()
 	{
-		return differentFromNode != null;
+		return this.differentFromNode != null;
 	}
 
 	public OWLNamedIndividualNode getOWLIndividualNode()
 	{
-		return namedIndividualNode;
+		return this.namedIndividualNode;
 	}
 
 	public List<FactNode> getFactNodes()
 	{
-		return factNodes;
+		return this.factNodes;
 	}
 
 	public List<AnnotationFactNode> getAnnotationNodes()
 	{
-		return annotationNodes;
+		return this.annotationNodes;
 	}
 
 	public TypesNode getTypesNode()
 	{
-		return typesNode;
+		return this.typesNode;
 	}
 
 	public OWLSameAsNode getOWLSameAsNode()
 	{
-		return sameAsNode;
+		return this.sameAsNode;
 	}
 
 	public OWLDifferentFromNode getOWLDifferentFromNode()
 	{
-		return differentFromNode;
+		return this.differentFromNode;
 	}
 
 	@Override public String getNodeName()
@@ -113,12 +113,12 @@ public class OWLIndividualDeclarationNode implements MMNode
 
 	public String toString()
 	{
-		String representation = "Individual: " + namedIndividualNode.toString();
+		String representation = "Individual: " + this.namedIndividualNode;
 		boolean isFirst = true;
 
 		if (hasFacts()) {
 			representation += " Facts: ";
-			for (FactNode fact : factNodes) {
+			for (FactNode fact : this.factNodes) {
 				if (!isFirst)
 					representation += ", ";
 				representation += fact.toString();
@@ -128,13 +128,13 @@ public class OWLIndividualDeclarationNode implements MMNode
 
 		if (hasTypes()) {
 			representation += " Types: ";
-			representation += typesNode.toString();
+			representation += this.typesNode.toString();
 		}
 
 		isFirst = true;
 		if (hasAnnotations()) {
 			representation += " Annotations: ";
-			for (AnnotationFactNode annotationFact : annotationNodes) {
+			for (AnnotationFactNode annotationFact : this.annotationNodes) {
 				if (!isFirst)
 					representation += ", ";
 				representation += annotationFact.toString();
@@ -143,9 +143,9 @@ public class OWLIndividualDeclarationNode implements MMNode
 		}
 
 		if (hasSameAs())
-			representation += sameAsNode.toString();
+			representation += this.sameAsNode.toString();
 		if (hasDifferentFrom())
-			representation += differentFromNode.toString();
+			representation += this.differentFromNode.toString();
 
 		return representation;
 	}

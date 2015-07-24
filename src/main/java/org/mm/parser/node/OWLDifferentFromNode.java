@@ -12,27 +12,27 @@ import java.util.List;
 
 public class OWLDifferentFromNode implements MMNode
 {
-  private List<OWLNamedIndividualNode> namedIndividualNodes;
+  private final List<OWLNamedIndividualNode> namedIndividualNodes;
 
   public OWLDifferentFromNode(ASTOWLDifferentFrom node) throws ParseException
   {
-    namedIndividualNodes = new ArrayList<>();
+    this.namedIndividualNodes = new ArrayList<>();
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "OWLNamedIndividual")) {
         OWLNamedIndividualNode owlIndividual = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
-        namedIndividualNodes.add(owlIndividual);
+        this.namedIndividualNodes.add(owlIndividual);
       } else
         throw new InternalParseException(
-          "OWLDifferentFrom node expecting OWLNamedIndividual child, got " + child.toString());
+          "OWLDifferentFrom node expecting OWLNamedIndividual child, got " + child);
     }
   }
 
   public List<OWLNamedIndividualNode> getNamedIndividualNodes()
   {
-    return namedIndividualNodes;
+    return this.namedIndividualNodes;
   }
 
   @Override public String getNodeName()
@@ -44,12 +44,12 @@ public class OWLDifferentFromNode implements MMNode
   {
     String representation = " DifferentFrom: ";
 
-    if (namedIndividualNodes.size() == 1)
-      representation += namedIndividualNodes.get(0).toString();
+    if (this.namedIndividualNodes.size() == 1)
+      representation += this.namedIndividualNodes.get(0).toString();
     else {
       boolean isFirst = true;
 
-      for (OWLNamedIndividualNode owlIndividual : namedIndividualNodes) {
+      for (OWLNamedIndividualNode owlIndividual : this.namedIndividualNodes) {
         if (!isFirst)
           representation += ", ";
         representation += owlIndividual.toString();

@@ -17,61 +17,61 @@ import java.util.List;
 public class OWLClassDeclarationNode implements MMNode
 {
 	private OWLClassNode classNode;
-	private List<OWLEquivalentClassesNode> equivalentClassesNodes = new ArrayList<>();
-	private List<OWLSubclassOfNode> subclassOfNodes = new ArrayList<>();
-	private List<AnnotationFactNode> annotationFactNodes = new ArrayList<>();
+	private final List<OWLEquivalentClassesNode> equivalentClassesNodes = new ArrayList<>();
+	private final List<OWLSubclassOfNode> subclassOfNodes = new ArrayList<>();
+	private final List<AnnotationFactNode> annotationFactNodes = new ArrayList<>();
 
 	OWLClassDeclarationNode(ASTOWLClassDeclaration node) throws ParseException
 	{
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
 			if (ParserUtil.hasName(child, "OWLClass")) {
-				classNode = new OWLClassNode((ASTOWLClass)child);
+				this.classNode = new OWLClassNode((ASTOWLClass)child);
 			} else if (ParserUtil.hasName(child, "OWLEquivalentClasses")) {
-				equivalentClassesNodes.add(new OWLEquivalentClassesNode((ASTOWLEquivalentClasses)child));
+				this.equivalentClassesNodes.add(new OWLEquivalentClassesNode((ASTOWLEquivalentClasses)child));
 			} else if (ParserUtil.hasName(child, "OWLSubclassOf")) {
-				subclassOfNodes.add(new OWLSubclassOfNode((ASTOWLSubclassOf)child));
+				this.subclassOfNodes.add(new OWLSubclassOfNode((ASTOWLSubclassOf)child));
 			} else if (ParserUtil.hasName(child, "AnnotationFact")) {
 				AnnotationFactNode fact = new AnnotationFactNode((ASTAnnotationFact)child);
-				annotationFactNodes.add(fact);
+				this.annotationFactNodes.add(fact);
 			} else
-				throw new InternalParseException("unknown child " + child.toString() + " to node " + getNodeName());
+				throw new InternalParseException("unknown child " + child + " to node " + getNodeName());
 		}
 	}
 
 	public OWLClassNode getOWLClassNode()
 	{
-		return classNode;
+		return this.classNode;
 	}
 
 	public List<OWLEquivalentClassesNode> getOWLEquivalentClassesNodes()
 	{
-		return equivalentClassesNodes;
+		return this.equivalentClassesNodes;
 	}
 
 	public List<OWLSubclassOfNode> getOWLSubclassOfNodes()
 	{
-		return subclassOfNodes;
+		return this.subclassOfNodes;
 	}
 
 	public List<AnnotationFactNode> getAnnotationFactNodes()
 	{
-		return annotationFactNodes;
+		return this.annotationFactNodes;
 	}
 
 	public boolean hasOWLEquivalentClassesNode()
 	{
-		return !equivalentClassesNodes.isEmpty();
+		return !this.equivalentClassesNodes.isEmpty();
 	}
 
 	public boolean hasOWLSubclassOfNodes()
 	{
-		return !subclassOfNodes.isEmpty();
+		return !this.subclassOfNodes.isEmpty();
 	}
 
 	public boolean hasAnnotationFactNodes()
 	{
-		return !annotationFactNodes.isEmpty();
+		return !this.annotationFactNodes.isEmpty();
 	}
 
 	@Override public String getNodeName()
@@ -81,19 +81,19 @@ public class OWLClassDeclarationNode implements MMNode
 
 	public String toString()
 	{
-		String representation = "Class: " + classNode.toString();
+		String representation = "Class: " + this.classNode;
 		boolean isFirst = true;
 
 		if (hasOWLSubclassOfNodes()) {
 			representation += " SubclassOf: ";
-			for (OWLSubclassOfNode subclassOf : subclassOfNodes) {
+			for (OWLSubclassOfNode subclassOf : this.subclassOfNodes) {
 				representation += subclassOf.toString();
 			}
 		}
 
 		if (hasOWLEquivalentClassesNode()) {
 			representation += " EquivalentTo: ";
-			for (OWLEquivalentClassesNode equivalentTo : equivalentClassesNodes) {
+			for (OWLEquivalentClassesNode equivalentTo : this.equivalentClassesNodes) {
 				representation += equivalentTo.toString();
 			}
 		}
@@ -101,7 +101,7 @@ public class OWLClassDeclarationNode implements MMNode
 		isFirst = true;
 		if (hasAnnotationFactNodes()) {
 			representation += " Annotations: ";
-			for (AnnotationFactNode fact : annotationFactNodes) {
+			for (AnnotationFactNode fact : this.annotationFactNodes) {
 				if (!isFirst)
 					representation += ", ";
 				representation += fact.toString();

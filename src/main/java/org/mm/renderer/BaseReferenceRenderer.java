@@ -132,7 +132,7 @@ public abstract class BaseReferenceRenderer
 
   protected boolean hasDefaultNamespace()
   {
-    return this.defaultNamespace.length() != 0;
+    return !this.defaultNamespace.isEmpty();
   }
 
   protected String resolveReferenceValue(SpreadsheetLocation location, ReferenceNode referenceNode)
@@ -145,18 +145,17 @@ public abstract class BaseReferenceRenderer
       // Reference is a literal, e.g., @"Person", @"http://a.com#Person"
       referenceValue = sourceSpecificationNode.getLiteral();
     } else { // Reference to data source location
-      String rawLocationValue = dataSource.getLocationValue(location, referenceNode); // Deals with shifting
+      String rawLocationValue = this.dataSource.getLocationValue(location, referenceNode); // Deals with shifting
 
-      if ((rawLocationValue == null || rawLocationValue.equals("")))
+      if (rawLocationValue == null || rawLocationValue.isEmpty())
         referenceValue = referenceNode.getActualDefaultLocationValue();
       else
         referenceValue = rawLocationValue;
 
-      if (referenceValue.equals("") && referenceNode.getActualEmptyLocationDirective() == MM_ERROR_IF_EMPTY_LOCATION)
+      if (referenceValue.isEmpty() && referenceNode.getActualEmptyLocationDirective() == MM_ERROR_IF_EMPTY_LOCATION)
         throw new RendererException("empty location " + location + " in reference " + referenceNode);
 
-      if (referenceValue.equals("")
-        && referenceNode.getActualEmptyLocationDirective() == MM_WARNING_IF_EMPTY_LOCATION) {
+      if (referenceValue.isEmpty() && referenceNode.getActualEmptyLocationDirective() == MM_WARNING_IF_EMPTY_LOCATION) {
       }
     }
     return referenceValue;
@@ -181,15 +180,15 @@ public abstract class BaseReferenceRenderer
     } else
       processedLocationValue = "";
 
-    if (processedLocationValue.equals("") && !referenceNode.getActualDefaultDataValue().equals(""))
+    if (processedLocationValue.isEmpty() && !referenceNode.getActualDefaultDataValue().isEmpty())
       processedLocationValue = referenceNode.getActualDefaultDataValue();
 
-    if (processedLocationValue.equals("")
-      && referenceNode.getActualEmptyDataValueDirective() == MM_ERROR_IF_EMPTY_DATA_VALUE)
+    if (processedLocationValue.isEmpty() && referenceNode.getActualEmptyDataValueDirective()
+      == MM_ERROR_IF_EMPTY_DATA_VALUE)
       throw new RendererException("empty data value in reference " + referenceNode + " at location " + location);
 
-    if (processedLocationValue.equals("")
-      && referenceNode.getActualEmptyDataValueDirective() == MM_WARNING_IF_EMPTY_DATA_VALUE) {
+    if (processedLocationValue.isEmpty() && referenceNode.getActualEmptyDataValueDirective()
+      == MM_WARNING_IF_EMPTY_DATA_VALUE) {
       //logLine(
       //  "processReference: WARNING: empty data value in reference " + referenceNode + " at location " + location);
     }
@@ -214,13 +213,13 @@ public abstract class BaseReferenceRenderer
     } else
       rdfIDValue = "";
 
-    if (rdfIDValue.length() == 0 && !referenceNode.getActualDefaultRDFID().equals(""))
+    if (rdfIDValue.isEmpty() && !referenceNode.getActualDefaultRDFID().isEmpty())
       rdfIDValue = referenceNode.getActualDefaultRDFID();
 
-    if (rdfIDValue.length() == 0 && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_ID)
+    if (rdfIDValue.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_ID)
       throw new RendererException("empty RDF ID in reference " + referenceNode);
 
-    if (rdfIDValue.length() == 0 && referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_ID) {
+    if (rdfIDValue.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_ID) {
       //logLine("processReference: WARNING: empty RDF ID in reference");
     }
 
@@ -244,13 +243,13 @@ public abstract class BaseReferenceRenderer
     } else
       rdfsLabelText = "";
 
-    if (rdfsLabelText.equals("") && !referenceNode.getActualDefaultRDFSLabel().equals(""))
+    if (rdfsLabelText.isEmpty() && !referenceNode.getActualDefaultRDFSLabel().isEmpty())
       rdfsLabelText = referenceNode.getActualDefaultRDFSLabel();
 
-    if (rdfsLabelText.equals("") && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_LABEL)
+    if (rdfsLabelText.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_LABEL)
       throw new RendererException("empty RDFS label in reference " + referenceNode);
 
-    if (rdfsLabelText.equals("") && referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_LABEL) {
+    if (rdfsLabelText.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_LABEL) {
       // logLine("processReference: WARNING: empty RDFS label in reference");
     }
     return rdfsLabelText;
@@ -445,7 +444,7 @@ public abstract class BaseReferenceRenderer
       String result = "";
       if (matchFound) {
         for (int groupIndex = 1; groupIndex <= m.groupCount(); groupIndex++)
-          result += (m.group(groupIndex));
+          result += m.group(groupIndex);
       }
       return result;
     } catch (PatternSyntaxException e) {
@@ -458,7 +457,7 @@ public abstract class BaseReferenceRenderer
     int i, len = source.length();
     StringBuilder dest = new StringBuilder(len);
 
-    for (i = (len - 1); i >= 0; i--)
+    for (i = len - 1; i >= 0; i--)
       dest.append(source.charAt(i));
 
     return dest.toString();

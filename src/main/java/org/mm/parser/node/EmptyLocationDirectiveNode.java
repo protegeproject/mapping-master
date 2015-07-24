@@ -8,24 +8,24 @@ import org.mm.parser.ParserUtil;
 
 public class EmptyLocationDirectiveNode implements MMNode, MappingMasterParserConstants
 {
-  private int emptyLocationSetting;
+  private final int emptyLocationSetting;
   
   public EmptyLocationDirectiveNode(ASTEmptyLocationSetting node) throws ParseException
   {
-  	emptyLocationSetting = node.emptyLocationSetting;
+    this.emptyLocationSetting = node.emptyLocationSetting;
   }
   
-  public int getEmptyLocationSetting() { return emptyLocationSetting; }
+  public int getEmptyLocationSetting() { return this.emptyLocationSetting; }
   
-  public boolean isErrorIfEmpty() { return emptyLocationSetting == MM_ERROR_IF_EMPTY_LOCATION; }
-  public boolean isWarningIfEmpty() { return emptyLocationSetting == MM_WARNING_IF_EMPTY_LOCATION; }
-  public boolean isSkipIfEmpty() { return emptyLocationSetting == MM_SKIP_IF_EMPTY_LOCATION; }
-  public boolean isProcessIfEmpty() { return emptyLocationSetting == MM_PROCESS_IF_EMPTY_LOCATION; }
+  public boolean isErrorIfEmpty() { return this.emptyLocationSetting == MM_ERROR_IF_EMPTY_LOCATION; }
+  public boolean isWarningIfEmpty() { return this.emptyLocationSetting == MM_WARNING_IF_EMPTY_LOCATION; }
+  public boolean isSkipIfEmpty() { return this.emptyLocationSetting == MM_SKIP_IF_EMPTY_LOCATION; }
+  public boolean isProcessIfEmpty() { return this.emptyLocationSetting == MM_PROCESS_IF_EMPTY_LOCATION; }
 
   @Override public String getNodeName()
   {
     return "EmptyLocationDirective";
   }
 
-  public String toString() { return ParserUtil.getTokenName(emptyLocationSetting); }
+  public String toString() { return ParserUtil.getTokenName(this.emptyLocationSetting); }
 }

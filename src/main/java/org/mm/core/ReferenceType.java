@@ -13,47 +13,47 @@ public class ReferenceType implements MappingMasterParserConstants
 
   public String getTypeName()
   {
-    return tokenImage[type].substring(1, tokenImage[type].length() - 1);
+    return tokenImage[this.type].substring(1, tokenImage[this.type].length() - 1);
   }
 
   public int getType()
   {
-    return type;
+    return this.type;
   }
 
   public boolean isUntyped()
   {
-    return type == MM_UNTYPED;
+    return this.type == MM_UNTYPED;
   }
 
   public boolean isOWLClass()
   {
-    return type == OWL_CLASS;
+    return this.type == OWL_CLASS;
   }
 
   public boolean isOWLNamedIndividual()
   {
-    return type == OWL_NAMED_INDIVIDUAL;
+    return this.type == OWL_NAMED_INDIVIDUAL;
   }
 
   public boolean isOWLObjectProperty()
   {
-    return type == OWL_OBJECT_PROPERTY;
+    return this.type == OWL_OBJECT_PROPERTY;
   }
 
   public boolean isOWLDataProperty()
   {
-    return type == OWL_DATA_PROPERTY;
+    return this.type == OWL_DATA_PROPERTY;
   }
 
   public boolean isOWLAnnotationProperty()
   {
-    return type == OWL_ANNOTATION_PROPERTY;
+    return this.type == OWL_ANNOTATION_PROPERTY;
   }
 
   public boolean isOWLDatatype()
   {
-    return type == OWL_DATATYPE;
+    return this.type == OWL_DATATYPE;
   }
 
   public boolean isOWLEntity()
@@ -70,62 +70,62 @@ public class ReferenceType implements MappingMasterParserConstants
 
   public boolean isXSDString()
   {
-    return type == XSD_STRING;
+    return this.type == XSD_STRING;
   }
 
   public boolean isXSDByte()
   {
-    return type == XSD_BYTE;
+    return this.type == XSD_BYTE;
   }
 
   public boolean isXSDShort()
   {
-    return type == XSD_SHORT;
+    return this.type == XSD_SHORT;
   }
 
   public boolean isXSDInt()
   {
-    return type == XSD_INT;
+    return this.type == XSD_INT;
   }
 
   public boolean isXSDLong()
   {
-    return type == XSD_FLOAT;
+    return this.type == XSD_FLOAT;
   }
 
   public boolean isXSDFloat()
   {
-    return type == XSD_FLOAT;
+    return this.type == XSD_FLOAT;
   }
 
   public boolean isXSDDouble()
   {
-    return type == XSD_DOUBLE;
+    return this.type == XSD_DOUBLE;
   }
 
   public boolean isXSDBoolean()
   {
-    return type == XSD_BOOLEAN;
+    return this.type == XSD_BOOLEAN;
   }
 
   public boolean isXSDTime()
   {
-    return type == XSD_TIME;
+    return this.type == XSD_TIME;
   }
 
   public boolean isXSDDateTime()
   {
-    return type == XSD_DATETIME;
+    return this.type == XSD_DATETIME;
   }
 
   public boolean isXSDDate()
   {
-    return type == XSD_DATE;
+    return this.type == XSD_DATE;
   }
 
   public boolean isXSDDuration()
   {
-    return type == XSD_DURATION;
+    return this.type == XSD_DURATION;
   }
 
   public boolean isQuotedOWLDataValue()
@@ -142,17 +142,17 @@ public class ReferenceType implements MappingMasterParserConstants
   {
     if (this == obj)
       return true;
-    if ((obj == null) || (obj.getClass() != this.getClass()))
+    if (obj == null || obj.getClass() != this.getClass())
       return false;
     ReferenceType et = (ReferenceType)obj;
-    return (type == et.type);
+    return this.type == et.type;
   }
 
   public int hashCode()
   {
     int hash = 15;
 
-    hash = hash + type;
+    hash = hash + this.type;
 
     return hash;
   }

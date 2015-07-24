@@ -6,16 +6,16 @@ import org.mm.parser.ParseException;
 
 public class FloatLiteralNode implements MMNode
 {
-	float value;
+	private final float value;
 
 	public FloatLiteralNode(ASTFloatLiteral node) throws ParseException
 	{
-		value = node.value;
+		this.value = node.value;
 	}
 
 	public float getValue()
 	{
-		return value;
+		return this.value;
 	}
 
 	public String getNodeName()
@@ -25,7 +25,7 @@ public class FloatLiteralNode implements MMNode
 
 	public String toString()
 	{
-		return "" + value;
+		return "" + this.value;
 	}
 
 }

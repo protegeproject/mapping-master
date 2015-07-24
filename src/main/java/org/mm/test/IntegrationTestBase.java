@@ -24,6 +24,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -138,9 +139,7 @@ public class IntegrationTestBase
   protected Set<Label> createCells(Label... cells)
   {
     Set<Label> cellSet = new HashSet<>();
-    for (Label cell : cells) {
-      cellSet.add(cell);
-    }
+    Collections.addAll(cellSet, cells);
     return cellSet;
   }
 }

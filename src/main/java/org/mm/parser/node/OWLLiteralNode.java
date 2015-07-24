@@ -24,15 +24,15 @@ public class OWLLiteralNode implements  MMNode
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "IntegerLiteral"))
-        integerLiteralNode = new IntegerLiteralNode((ASTIntegerLiteral)child);
+        this.integerLiteralNode = new IntegerLiteralNode((ASTIntegerLiteral)child);
       else if (ParserUtil.hasName(child, "FloatLiteral"))
-        floatLiteralNode = new FloatLiteralNode((ASTFloatLiteral)child);
+        this.floatLiteralNode = new FloatLiteralNode((ASTFloatLiteral)child);
       else if (ParserUtil.hasName(child, "StringLiteral"))
-        stringLiteralNode = new StringLiteralNode((ASTStringLiteral)child);
+        this.stringLiteralNode = new StringLiteralNode((ASTStringLiteral)child);
       else if (ParserUtil.hasName(child, "BooleanLiteral"))
-        booleanLiteralNode = new BooleanLiteralNode((ASTBooleanLiteral)child);
+        this.booleanLiteralNode = new BooleanLiteralNode((ASTBooleanLiteral)child);
       else
-        throw new InternalParseException("unexpected child node " + child.toString() + " for node " + getNodeName());
+        throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
     }
   }
 
@@ -43,37 +43,37 @@ public class OWLLiteralNode implements  MMNode
 
   public boolean isFloat()
   {
-    return floatLiteralNode != null;
+    return this.floatLiteralNode != null;
   }
 
   public boolean isString()
   {
-    return stringLiteralNode != null;
+    return this.stringLiteralNode != null;
   }
 
   public boolean isBoolean()
   {
-    return booleanLiteralNode != null;
+    return this.booleanLiteralNode != null;
   }
 
   public IntegerLiteralNode getIntLiteralNode()
   {
-    return integerLiteralNode;
+    return this.integerLiteralNode;
   }
 
   public FloatLiteralNode getFloatLiteralNode()
   {
-    return floatLiteralNode;
+    return this.floatLiteralNode;
   }
 
   public StringLiteralNode getStringLiteralNode()
   {
-    return stringLiteralNode;
+    return this.stringLiteralNode;
   }
 
   public BooleanLiteralNode getBooleanLiteralNode()
   {
-    return booleanLiteralNode;
+    return this.booleanLiteralNode;
   }
 
   @Override public String getNodeName()
@@ -84,13 +84,13 @@ public class OWLLiteralNode implements  MMNode
   public String toString()
   {
     if (isInteger())
-      return integerLiteralNode.toString();
+      return this.integerLiteralNode.toString();
     else if (isFloat())
-      return floatLiteralNode.toString();
+      return this.floatLiteralNode.toString();
     else if (isString())
-      return stringLiteralNode.toString();
+      return this.stringLiteralNode.toString();
     else if (isBoolean())
-      return booleanLiteralNode.toString();
+      return this.booleanLiteralNode.toString();
     else
       return "";
   }

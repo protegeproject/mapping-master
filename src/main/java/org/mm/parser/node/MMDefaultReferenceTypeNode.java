@@ -22,13 +22,13 @@ public class MMDefaultReferenceTypeNode implements MMNode
         this.referenceTypeNode = new ReferenceTypeNode((ASTReferenceType)child);
       else
         throw new InternalParseException(
-          "MMDefaultReferenceType node expecting ReferenceType child, got " + child.toString());
+          "MMDefaultReferenceType node expecting ReferenceType child, got " + child);
     }
   }
 
   public ReferenceType getReferenceType()
   {
-    return referenceTypeNode.getReferenceType();
+    return this.referenceTypeNode.getReferenceType();
   }
 
   @Override public String getNodeName()
@@ -38,6 +38,6 @@ public class MMDefaultReferenceTypeNode implements MMNode
 
   public String toString()
   {
-    return "MM:DefaultReferenceType " + referenceTypeNode.toString();
+    return "MM:DefaultReferenceType " + this.referenceTypeNode;
   }
 }

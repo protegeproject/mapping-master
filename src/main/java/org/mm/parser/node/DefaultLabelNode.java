@@ -8,14 +8,14 @@ import org.mm.parser.ParserUtil;
 
 public class DefaultLabelNode implements MMNode, MappingMasterParserConstants
 {
-  private String defaultLabel;
+  private final String defaultLabel;
   
   public DefaultLabelNode(ASTDefaultLabel node) throws ParseException
   { 
     this.defaultLabel = node.defaultLabel;
   } 
 
-  public String getDefaultRDFSLabel() { return defaultLabel; }
+  public String getDefaultRDFSLabel() { return this.defaultLabel; }
 
   @Override public String getNodeName()
   {
@@ -24,7 +24,7 @@ public class DefaultLabelNode implements MMNode, MappingMasterParserConstants
 
   public String toString()
   { 
-    String representation = ParserUtil.getTokenName(MM_DEFAULT_LABEL) + "=\"" + defaultLabel + "\"";
+    String representation = ParserUtil.getTokenName(MM_DEFAULT_LABEL) + "=\"" + this.defaultLabel + "\"";
 
     return representation;
   } 
@@ -32,16 +32,16 @@ public class DefaultLabelNode implements MMNode, MappingMasterParserConstants
   public boolean equals(Object obj)
   {
     if (this == obj) return true;
-    if ((obj == null) || (obj.getClass() != this.getClass())) return false;
+    if (obj == null || obj.getClass() != this.getClass()) return false;
     DefaultLabelNode dv = (DefaultLabelNode)obj;
-    return defaultLabel != null && dv.defaultLabel != null && defaultLabel.equals(dv.defaultLabel);
+    return this.defaultLabel != null && dv.defaultLabel != null && this.defaultLabel.equals(dv.defaultLabel);
   } 
 
   public int hashCode()
   {
     int hash = 14;
 
-    hash = hash + (null == defaultLabel ? 0 : defaultLabel.hashCode());
+    hash = hash + (null == this.defaultLabel ? 0 : this.defaultLabel.hashCode());
 
     return hash;
   }
