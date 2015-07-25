@@ -460,7 +460,7 @@ void mm_default_prefix() #MMDefaultPrefix:
   String prefix;
 }
 {
-  <MM_DEFAULT_LANGUAGE> prefix = string()
+  <MM_DEFAULT_PREFIX> prefix = string()
 
   {
     defaultPrefix = prefix;
