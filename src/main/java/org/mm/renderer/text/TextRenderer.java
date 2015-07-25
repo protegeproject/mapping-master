@@ -128,6 +128,12 @@ public class TextRenderer extends BaseReferenceRenderer
 				String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
 				String rdfsLabel = getReferenceRDFSLabel(resolvedReferenceValue, referenceNode);
 
+				if (rdfID.isEmpty() && referenceNode.getActualEmptyRDFIDDirective() == MM_SKIP_IF_EMPTY_ID)
+					return Optional.empty();
+
+				if (rdfsLabel.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_SKIP_IF_EMPTY_LABEL)
+					return Optional.empty();
+
 				return Optional.of(new TextReferenceRendering(rdfsLabel, referenceType));
 			} else
 				throw new InternalRendererException(
@@ -219,7 +225,6 @@ public class TextRenderer extends BaseReferenceRenderer
 		textRepresentation.append(individualRendering.get().getTextRendering());
 
 		if (individualDeclarationNode.hasFacts()) {
-			textRepresentation.append(" Facts: ");
 
 			for (FactNode factNode : individualDeclarationNode.getFactNodes()) {
 				Optional<? extends TextRendering> factRendering = renderFact(factNode);
@@ -227,8 +232,11 @@ public class TextRenderer extends BaseReferenceRenderer
 				if (!factRendering.isPresent())
 					continue;
 
-				if (!isFirst)
+				if (isFirst)
+					textRepresentation.append(" Facts: ");
+				else
 					textRepresentation.append(", ");
+
 				textRepresentation.append(factRendering.get().getTextRendering());
 				isFirst = false;
 			}
@@ -243,7 +251,6 @@ public class TextRenderer extends BaseReferenceRenderer
 
 		isFirst = true;
 		if (individualDeclarationNode.hasAnnotations()) {
-			textRepresentation.append(" Annotations:");
 
 			for (AnnotationFactNode factNode : individualDeclarationNode.getAnnotationNodes()) {
 				Optional<? extends TextRendering> factRendering = renderAnnotationFact(factNode);
@@ -251,7 +258,9 @@ public class TextRenderer extends BaseReferenceRenderer
 				if (!factRendering.isPresent())
 					continue;
 
-				if (!isFirst)
+				if (isFirst)
+					textRepresentation.append(" Annotations:");
+				else
 					textRepresentation.append(", ");
 				textRepresentation.append(factRendering.get().getTextRendering());
 				isFirst = false;
@@ -609,7 +618,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
 			Optional<? extends TextReferenceRendering> referenceRendering = renderReference(referenceNode);
 			if (referenceRendering.isPresent()) {
-        if (referenceType.isQuotedOWLLiteral())
+				if (referenceType.isQuotedOWLLiteral())
 					return Optional.of(new TextRendering("\"" + referenceRendering.get().getRawValue() + "\""));
 				else
 					return Optional.of(new TextRendering(referenceRendering.get().getRawValue()));
