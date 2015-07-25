@@ -130,7 +130,7 @@ public class ReferenceType implements MappingMasterParserConstants
 
   public boolean isQuotedOWLLiteral()
   {
-    return isXSDString() || isXSDTime() || isXSDDate() || isXSDDateTime() || isXSDDuration();
+    return !(isXSDBoolean() || isXSDByte() || isXSDShort() || isXSDInt() || isXSDFloat() || isXSDDouble());
   }
 
   public String toString()
