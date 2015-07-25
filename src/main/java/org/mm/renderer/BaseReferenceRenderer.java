@@ -213,7 +213,7 @@ public abstract class BaseReferenceRenderer
 		if (rdfIDValue.isEmpty() && !referenceNode.getActualDefaultRDFID().isEmpty())
 			rdfIDValue = referenceNode.getActualDefaultRDFID();
 
-		if (rdfIDValue.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_ID)
+		if (rdfIDValue.isEmpty() && referenceNode.getActualEmptyRDFIDDirective() == MM_ERROR_IF_EMPTY_ID)
 			throw new RendererException("empty RDF ID in reference " + referenceNode);
 
 		if (rdfIDValue.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_ID) {

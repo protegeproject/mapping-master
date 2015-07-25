@@ -415,6 +415,11 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return this.referenceDirectives.getActualEmptyRDFSLabelDirective();
   }
 
+  public int getActualEmptyRDFIDDirective()
+  {
+    return this.referenceDirectives.getActualEmptyRDFIDDirective();
+  }
+
   public int getActualShiftDirective()
   {
     return this.referenceDirectives.getActualShiftDirective();
