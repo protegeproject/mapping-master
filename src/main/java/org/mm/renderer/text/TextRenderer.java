@@ -94,6 +94,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			throw new InternalRendererException("unknown child for node " + mmExpressionNode.getNodeName());
 	}
 
+	// TODO Refactor - too long
 	@Override public Optional<TextReferenceRendering> renderReference(ReferenceNode referenceNode)
 			throws RendererException
 	{
@@ -115,12 +116,24 @@ public class TextRenderer extends BaseReferenceRenderer
 					&& referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
 				return Optional.empty();
 
+			if (resolvedReferenceValue.isEmpty()
+					&& referenceNode.getActualEmptyLocationDirective() == MM_WARNING_IF_EMPTY_LOCATION) {
+				// TODO Warn in log files
+				return Optional.empty();
+			}
+
 			if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
 				String literalReferenceValue = processOWLLiteralReferenceValue(location, resolvedReferenceValue, referenceNode);
 
 				if (literalReferenceValue.isEmpty()
 						&& referenceNode.getActualEmptyLiteralDirective() == MM_SKIP_IF_EMPTY_LITERAL)
 					return Optional.empty();
+
+				if (literalReferenceValue.isEmpty()
+						&& referenceNode.getActualEmptyLiteralDirective() == MM_WARNING_IF_EMPTY_LITERAL) {
+					// TODO Warn in log file
+					return Optional.empty();
+				}
 
 				return Optional.of(new TextReferenceRendering(literalReferenceValue, referenceType));
 			} else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
@@ -133,6 +146,16 @@ public class TextRenderer extends BaseReferenceRenderer
 
 				if (rdfsLabel.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_SKIP_IF_EMPTY_LABEL)
 					return Optional.empty();
+
+				if (rdfID.isEmpty() && referenceNode.getActualEmptyRDFIDDirective() == MM_WARNING_IF_EMPTY_ID) {
+					// TODO Warn in log file
+					return Optional.empty();
+				}
+
+				if (rdfsLabel.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_LABEL) {
+					// TODO Warn in log file
+					return Optional.empty();
+				}
 
 				return Optional.of(new TextReferenceRendering(rdfsLabel, referenceType));
 			} else

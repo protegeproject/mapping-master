@@ -188,11 +188,6 @@ public abstract class BaseReferenceRenderer
 				&& referenceNode.getActualEmptyLiteralDirective() == MM_ERROR_IF_EMPTY_LITERAL)
 			throw new RendererException("empty literal in reference " + referenceNode + " at location " + location);
 
-		if (processedReferenceValue.isEmpty()
-				&& referenceNode.getActualEmptyLiteralDirective() == MM_WARNING_IF_EMPTY_LITERAL) {
-			//logLine(
-			//  "processReference: WARNING: empty literal in reference " + referenceNode + " at location " + location);
-		}
 		return processedReferenceValue;
 	}
 
@@ -215,10 +210,6 @@ public abstract class BaseReferenceRenderer
 
 		if (rdfIDValue.isEmpty() && referenceNode.getActualEmptyRDFIDDirective() == MM_ERROR_IF_EMPTY_ID)
 			throw new RendererException("empty RDF ID in reference " + referenceNode);
-
-		if (rdfIDValue.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_ID) {
-			//logLine("processReference: WARNING: empty RDF ID in reference");
-		}
 
 		return rdfIDValue;
 	}
@@ -244,9 +235,6 @@ public abstract class BaseReferenceRenderer
 		if (rdfsLabelText.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_LABEL)
 			throw new RendererException("empty RDFS label in reference " + referenceNode);
 
-		if (rdfsLabelText.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_LABEL) {
-			// logLine("processReference: WARNING: empty RDFS label in reference");
-		}
 		return rdfsLabelText;
 	}
 

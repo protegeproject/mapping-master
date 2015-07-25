@@ -253,7 +253,7 @@ TOKEN: { <MM_SKIP_IF_EMPTY_ID: "mm:SkipIfEmptyID"> }
 
 TOKEN: { <MM_PROCESS_IF_EMPTY_LABEL: "mm:ProcessIfEmptyLabel"> }
 TOKEN: { <MM_ERROR_IF_EMPTY_LABEL: "mm:ErrorIfEmptyLabel"> }
-TOKEN: { <MM_WARNING_IF_EMPTY_LABEL: "mm:WarningIfEmptyLable"> }
+TOKEN: { <MM_WARNING_IF_EMPTY_LABEL: "mm:WarningIfEmptyLabel"> }
 TOKEN: { <MM_SKIP_IF_EMPTY_LABEL: "mm:SkipIfEmptyLabel"> }
 
 TOKEN: { <MM_RESOLVE_IF_EXISTS: "mm:ResolveIfExists"> }
