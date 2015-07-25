@@ -6,13 +6,11 @@ import org.mm.rendering.OWLLiteralRendering;
 public class TextLiteralRendering extends TextRendering implements OWLLiteralRendering
 {
   private final OWLLiteralType literalType;
-  private final String rawValue;
 
   public TextLiteralRendering(String rawValue, OWLLiteralType literalType)
   {
     super(rawValue);
     this.literalType = literalType;
-    this.rawValue = rawValue;
   }
 
   public TextLiteralRendering(String value)
@@ -37,7 +35,7 @@ public class TextLiteralRendering extends TextRendering implements OWLLiteralRen
 
   @Override public String getRawValue()
   {
-    return this.rawValue;
+    return getTextRendering();
   }
 
   @Override public OWLLiteralType getOWLLiteralType() { return this.literalType; }
