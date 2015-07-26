@@ -970,7 +970,7 @@ void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : 
    "@" source_specification()
        ( LOOKAHEAD(2) 
          "(" ( reference_type() )? 
-             ( directive(defaultValueEncoding) )*
+             ( reference_directive(defaultValueEncoding) )*
              ( types(defaultReferenceType) )? 
          ")"
        )?
@@ -986,7 +986,7 @@ void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : 
   }
 }
 
-void directive(int defaultValueEncoding) : {}
+void reference_directive(int defaultValueEncoding) : {}
 {
   (  namespace()  
    | prefix() 
