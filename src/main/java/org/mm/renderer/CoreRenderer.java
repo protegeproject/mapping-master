@@ -26,7 +26,7 @@ public interface CoreRenderer
   Optional<? extends Rendering> renderOWLClassDeclaration(OWLClassDeclarationNode owlClassDeclarationNode)
     throws RendererException;
 
-  Optional<? extends Rendering> renderOWLSubclassOf(OWLClassNode declaredClassNode, OWLSubclassOfNode subclassOfNode)
+  Optional<? extends Rendering> renderOWLSubClassOf(OWLClassNode declaredClassNode, OWLSubclassOfNode subclassOfNode)
     throws RendererException;
 
   Optional<? extends Rendering> renderOWLIndividualDeclaration(

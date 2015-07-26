@@ -179,31 +179,28 @@ public class TextRenderer extends BaseReferenceRenderer
 		boolean isFirst = true;
 
 		if (classDeclarationNode.hasOWLSubclassOfNodes()) {
-			textRepresentation.append(" SubclassOf: ");
-			for (OWLSubclassOfNode subclassOf : classDeclarationNode.getOWLSubclassOfNodes()) {
-				Optional<? extends TextRendering> subclassOfRendering = renderOWLSubclassOf(
-						classDeclarationNode.getOWLClassNode(), subclassOf);
-				if (!subclassOfRendering.isPresent())
+			for (OWLSubclassOfNode subClassOfNode : classDeclarationNode.getOWLSubclassOfNodes()) {
+				Optional<? extends TextRendering> subClassOfRendering = renderOWLSubClassOf(
+						classDeclarationNode.getOWLClassNode(), subClassOfNode);
+				if (!subClassOfRendering.isPresent())
 					continue;
 
-				if (!isFirst)
-					textRepresentation.append(", ");
-
-				textRepresentation.append(subclassOfRendering.get().getTextRendering());
+				textRepresentation.append(subClassOfRendering.get().getTextRendering());
 				isFirst = false;
 			}
 		}
 
 		isFirst = true;
 		if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
-			textRepresentation.append(" EquivalentTo: ");
 			for (OWLEquivalentClassesNode equivalentTo : classDeclarationNode.getOWLEquivalentClassesNodes()) {
 				Optional<? extends TextRendering> equivalentToRendering = renderOWLEquivalentClasses(
 						classDeclarationNode.getOWLClassNode(), equivalentTo);
 				if (!equivalentToRendering.isPresent())
 					continue;
 
-				if (!isFirst)
+				if (isFirst)
+					textRepresentation.append(" EquivalentTo: ");
+				else
 					textRepresentation.append(", ");
 
 				textRepresentation.append(equivalentToRendering.get().getTextRendering());
@@ -213,14 +210,15 @@ public class TextRenderer extends BaseReferenceRenderer
 
 		isFirst = true;
 		if (classDeclarationNode.hasAnnotationFactNodes()) {
-			textRepresentation.append(" Annotations: ");
 			for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
 				Optional<? extends TextRendering> factRendering = renderAnnotationFact(annotationFactNode);
 
 				if (factRendering.isPresent())
 					continue;
 
-				if (!isFirst)
+				if (isFirst)
+					textRepresentation.append(" Annotations: ");
+				else
 					textRepresentation.append(", ");
 				textRepresentation.append(factRendering.get().getTextRendering());
 				isFirst = false;
@@ -337,7 +335,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			if (classExpressionNode.getIsNegated())
 				textRepresentation.append("NOT " + textRepresentation);
 
-		return textRepresentation.length() != 0 ?
+		return textRepresentation.length() == 0 ?
 				Optional.empty() :
 				Optional.of(new TextRendering(textRepresentation.toString()));
 	}
@@ -380,7 +378,6 @@ public class TextRenderer extends BaseReferenceRenderer
 	{
 		StringBuilder textRepresentation = new StringBuilder();
 
-		textRepresentation.append(" EquivalentTo: ");
 
 		if (equivalentClassesNode.getClassExpressionNodes().size() == 1) {
 			Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
@@ -396,7 +393,9 @@ public class TextRenderer extends BaseReferenceRenderer
 				Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(owlClassExpressionNode);
 				if (!classExpressionRendering.isPresent())
 					continue; // Any empty class expression will generate an empty rendering
-				if (!isFirst)
+				if (isFirst)
+					textRepresentation.append(" EquivalentTo: ");
+				else
 					textRepresentation.append(", ");
 				textRepresentation.append(classExpressionRendering.get().getTextRendering());
 				isFirst = false;
@@ -559,14 +558,14 @@ public class TextRenderer extends BaseReferenceRenderer
 			return Optional.empty();
 	}
 
-	@Override public Optional<? extends TextRendering> renderOWLSubclassOf(OWLClassNode declaredClassNode,
-			OWLSubclassOfNode subclassOfNode) throws RendererException
+	@Override public Optional<? extends TextRendering> renderOWLSubClassOf(OWLClassNode declaredClassNode,
+			OWLSubclassOfNode subClassOfNode) throws RendererException
 	{
 		StringBuilder subClassesRepresentation = new StringBuilder();
 
-		if (subclassOfNode.getClassExpressionNodes().size() == 1) {
+		if (subClassOfNode.getClassExpressionNodes().size() == 1) {
 			Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
-					subclassOfNode.getClassExpressionNodes().get(0));
+					subClassOfNode.getClassExpressionNodes().get(0));
 			if (!classExpressionRendering.isPresent())
 				return Optional.empty();
 			else
@@ -574,7 +573,7 @@ public class TextRenderer extends BaseReferenceRenderer
 		} else {
 			boolean isFirst = true;
 
-			for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
+			for (OWLClassExpressionNode classExpressionNode : subClassOfNode.getClassExpressionNodes()) {
 				Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(classExpressionNode);
 				if (!classExpressionRendering.isPresent())
 					continue; // Any empty class expression will generate an empty rendering

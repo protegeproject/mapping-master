@@ -245,8 +245,8 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
       return Optional.empty();
   }
 
-  @Override public Optional<OWLAPIRendering> renderOWLSubclassOf(OWLClassNode declaredClassNode,
-    OWLSubclassOfNode subclassOfNode) throws RendererException
+  @Override public Optional<OWLAPIRendering> renderOWLSubClassOf(OWLClassNode declaredClassNode,
+      OWLSubclassOfNode subclassOfNode) throws RendererException
   {
     Optional<OWLClassRendering> declaredClassRendering = this.entityRenderer.renderOWLClass(declaredClassNode);
 
