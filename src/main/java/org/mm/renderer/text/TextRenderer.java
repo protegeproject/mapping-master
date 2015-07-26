@@ -57,6 +57,7 @@ import org.mm.rendering.text.TextRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 // TODO Refactor - too long. Look at the OWLAPI renderer for example of decomposition.
@@ -637,9 +638,9 @@ public class TextRenderer extends BaseReferenceRenderer
 			Optional<? extends TextReferenceRendering> referenceRendering = renderReference(referenceNode);
 			if (referenceRendering.isPresent()) {
 				if (referenceType.isQuotedOWLLiteral())
-					return Optional.of(new TextRendering("\"" + referenceRendering.get().getRawValue() + "\""));
+					return Optional.of(new TextRendering(addQuotes(referenceRendering.get().getRawValue())));
 				else
-					return Optional.of(new TextRendering(referenceRendering.get().getRawValue()));
+					return referenceRendering;
 			} else
 				return Optional.empty();
 		} else if (propertyAssertionObjectNode.isName())
@@ -724,9 +725,9 @@ public class TextRenderer extends BaseReferenceRenderer
 			Optional<? extends TextReferenceRendering> referenceRendering = renderReference(referenceNode);
 			if (referenceRendering.isPresent()) {
 				if (referenceType.isQuotedOWLLiteral())
-					return Optional.of(new TextRendering("\"" + referenceRendering.get().getRawValue() + "\""));
+					return Optional.of(new TextRendering(addQuotes(referenceRendering.get().getRawValue())));
 				else
-					return Optional.of(new TextRendering(referenceRendering.get().getRawValue()));
+					return referenceRendering;
 			} else
 				return Optional.empty();
 		} else if (annotationValueNode.isName())
@@ -736,9 +737,9 @@ public class TextRenderer extends BaseReferenceRenderer
 					annotationValueNode.getOWLLiteralNode());
 			if (literalRendering.isPresent()) {
 				if (literalRendering.get().getOWLLiteralType().isQuotedOWLLiteral())
-					return Optional.of(new TextRendering("\"" + literalRendering.get().getRawValue() + "\""));
+					return Optional.of(new TextRendering(addQuotes(literalRendering.get().getRawValue())));
 				else
-					return Optional.empty();
+					return literalRendering;
 			} else
 				return Optional.empty();
 		} else
@@ -958,13 +959,29 @@ public class TextRenderer extends BaseReferenceRenderer
 	{
 		Optional<? extends TextRendering> valueRendering;
 
-		if (hasValueNode.hasReferenceNode())
-			valueRendering = renderReference(hasValueNode.getReferenceNode());
-		else if (hasValueNode.hasNameNone())
+		if (hasValueNode.hasReferenceNode()) {
+			ReferenceNode referenceNode = hasValueNode.getReferenceNode();
+			ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+			Optional<? extends TextReferenceRendering> referenceRendering = renderReference(referenceNode);
+			if (referenceRendering.isPresent()) {
+				if (referenceType.isQuotedOWLLiteral())
+					return Optional.of(new TextRendering(addQuotes(referenceRendering.get().getRawValue())));
+				else
+					return Optional.of(new TextRendering(referenceRendering.get().getRawValue()));
+			} else
+				return Optional.empty();
+		} else if (hasValueNode.hasNameNone())
 			valueRendering = renderName(hasValueNode.getNameNode());
-		else if (hasValueNode.hasLiteralNode())
-			valueRendering = renderOWLLiteral(hasValueNode.getOWLLiteralNode());
-		else
+		else if (hasValueNode.hasLiteralNode()) {
+			Optional<? extends TextLiteralRendering> literalRendering = renderOWLLiteral(hasValueNode.getOWLLiteralNode());
+			if (literalRendering.isPresent()) {
+				if (literalRendering.get().getOWLLiteralType().isQuotedOWLLiteral())
+					valueRendering = Optional.of(new TextLiteralRendering(addQuotes(literalRendering.get().getTextRendering())));
+				else
+					valueRendering = literalRendering;
+			} else
+				return Optional.empty();
+		} else
 			throw new InternalRendererException("unknown child for node " + hasValueNode.getNodeName());
 
 		if (valueRendering.isPresent()) {
@@ -1096,7 +1113,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			ValueSpecificationItemNode valueSpecificationItemNode) throws RendererException
 	{
 		if (valueSpecificationItemNode.hasStringLiteral())
-			return Optional.of(new TextRendering("\"" + valueSpecificationItemNode.getStringLiteral() + "\""));
+			return Optional.of(new TextRendering(addQuotes(valueSpecificationItemNode.getStringLiteral())));
 		else if (valueSpecificationItemNode.hasReferenceNode())
 			return renderReference(valueSpecificationItemNode.getReferenceNode());
 		else if (valueSpecificationItemNode.hasValueExtractionFunctionNode())
@@ -1134,4 +1151,6 @@ public class TextRenderer extends BaseReferenceRenderer
 				Optional.empty() :
 				Optional.of(new TextRendering(valueExtractionFunctionName + functionArgumentsRepresentation));
 	}
+
+	private String addQuotes(String s) { return "\"" + s + "\""; }
 }
