@@ -725,7 +725,7 @@ void owl_class_expression() #OWLClassExpression :
 
 void owl_object_one_of() #OWLObjectOneOf : {}
 {
-  "{" ( owl_named_individual(defaultIndividualValueEncoding) )+ "}"
+  "{" owl_named_individual(defaultIndividualValueEncoding) ( "," owl_named_individual(defaultIndividualValueEncoding) )* "}"
 }
 
 void owl_class(int defaultValueEncoding) #OWLClass : {}
@@ -881,6 +881,8 @@ void owl_data_all_values_from() #OWLDataAllValuesFrom :
   }
 }
 
+// TODO owl_object_all_values_from should also be here. Without it the current grammar requires
+// parenthesis around the {}-enclosed list of indiviudals in an object all values from expression.
 void owl_object_all_values_from() #OWLObjectAllValuesFrom : {}
 {
   <ONLY> (owl_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )

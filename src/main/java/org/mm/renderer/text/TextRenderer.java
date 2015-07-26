@@ -329,9 +329,8 @@ public class TextRenderer extends BaseReferenceRenderer
 		} else
 			throw new RendererException("unexpected child for node " + classExpressionNode.getNodeName());
 
-		if (textRepresentation.length() == 0)
-			if (classExpressionNode.getIsNegated())
-				textRepresentation.append("NOT " + textRepresentation);
+		if (textRepresentation.length() != 0 && classExpressionNode.getIsNegated())
+			textRepresentation.insert(0, "NOT ");
 
 		return textRepresentation.length() == 0 ?
 				Optional.empty() :
@@ -487,7 +486,8 @@ public class TextRenderer extends BaseReferenceRenderer
 
 		if (propertyRendering.isPresent() && restrictionRendering.isPresent())
 			return Optional.of(new TextRendering(
-					"(" + propertyRendering.get().getTextRendering() + " " + restrictionRendering.get().getTextRendering() + ")"));
+					"(" + propertyRendering.get().getTextRendering() + " " + restrictionRendering.get().getTextRendering()
+							+ ")"));
 		else
 			return Optional.empty();
 	}
@@ -674,10 +674,12 @@ public class TextRenderer extends BaseReferenceRenderer
 		} else {
 			boolean isFirst = true;
 
-			textRepresentation.append("{");
 			for (OWLNamedIndividualNode owlNamedIndividualNode : objectOneOfNode.getOWLNamedIndividualNodes()) {
-				if (!isFirst)
-					textRepresentation.append(" ");
+				if (isFirst)
+					textRepresentation.append("({"); // TODO These parenthesis should not be required. See comment in grammar.
+				else
+					textRepresentation.append(", ");
+
 				Optional<? extends TextRendering> individualRendering = renderOWLNamedIndividual(owlNamedIndividualNode);
 
 				if (!individualRendering.isPresent())
@@ -687,9 +689,10 @@ public class TextRenderer extends BaseReferenceRenderer
 					isFirst = false;
 				}
 			}
-			textRepresentation.append("}");
+			if (textRepresentation.length() != 0)
+				textRepresentation.append("})"); // TODO These parenthesis should not be required. See comment in grammar.
 		}
-		return textRepresentation.length() != 0 ?
+		return textRepresentation.length() == 0 ?
 				Optional.empty() :
 				Optional.of(new TextRendering(textRepresentation.toString()));
 	}
