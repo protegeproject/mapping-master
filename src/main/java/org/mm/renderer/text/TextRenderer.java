@@ -278,7 +278,7 @@ public class TextRenderer extends BaseReferenceRenderer
 					continue;
 
 				if (isFirst)
-					textRepresentation.append(" Annotations:");
+					textRepresentation.append(" Annotations: ");
 				else
 					textRepresentation.append(", ");
 				textRepresentation.append(factRendering.get().getTextRendering());
@@ -637,9 +637,17 @@ public class TextRenderer extends BaseReferenceRenderer
 				return Optional.empty();
 		} else if (propertyAssertionObjectNode.isName())
 			return renderName(propertyAssertionObjectNode.getNameNode());
-		else if (propertyAssertionObjectNode.isLiteral())
-			return renderOWLLiteral(propertyAssertionObjectNode.getOWLLiteralNode());
-		else
+		else if (propertyAssertionObjectNode.isLiteral()) {
+			Optional<? extends TextLiteralRendering> literalRendering = renderOWLLiteral(
+					propertyAssertionObjectNode.getOWLLiteralNode());
+			if (literalRendering.isPresent()) {
+				if (literalRendering.get().getOWLLiteralType().isQuotedOWLLiteral())
+					return Optional.of(new TextRendering(addQuotes(literalRendering.get().getRawValue())));
+				else
+					return literalRendering;
+			} else
+				return Optional.empty();
+		} else
 			throw new InternalRendererException("unknown child for node " + propertyAssertionObjectNode.getNodeName());
 	}
 
