@@ -193,17 +193,12 @@ public class TextRenderer extends BaseReferenceRenderer
 
 		isFirst = true;
 		if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
-			for (OWLEquivalentClassesNode equivalentTo : classDeclarationNode.getOWLEquivalentClassesNodes()) {
+			for (OWLEquivalentClassesNode equivalentToNode : classDeclarationNode.getOWLEquivalentClassesNodes()) {
 				Optional<? extends TextRendering> equivalentToRendering = renderOWLEquivalentClasses(
-						classDeclarationNode.getOWLClassNode(), equivalentTo);
+						classDeclarationNode.getOWLClassNode(), equivalentToNode);
 
 				if (!equivalentToRendering.isPresent())
 					continue;
-
-				if (isFirst)
-					textRepresentation.append(" EquivalentTo: ");
-				else
-					textRepresentation.append(", ");
 
 				textRepresentation.append(equivalentToRendering.get().getTextRendering());
 				isFirst = false;
@@ -384,9 +379,9 @@ public class TextRenderer extends BaseReferenceRenderer
 			Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
 					equivalentClassesNode.getClassExpressionNodes().get(0));
 			if (!classExpressionRendering.isPresent())
-				return classExpressionRendering;
+				return Optional.empty();
 			else
-				textRepresentation.append(classExpressionRendering.get().getTextRendering());
+				textRepresentation.append(" EquivalentTo: " + classExpressionRendering.get().getTextRendering());
 		} else {
 			boolean isFirst = true;
 
