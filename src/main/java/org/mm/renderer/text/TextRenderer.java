@@ -182,6 +182,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			for (OWLSubclassOfNode subClassOfNode : classDeclarationNode.getOWLSubclassOfNodes()) {
 				Optional<? extends TextRendering> subClassOfRendering = renderOWLSubClassOf(
 						classDeclarationNode.getOWLClassNode(), subClassOfNode);
+
 				if (!subClassOfRendering.isPresent())
 					continue;
 
@@ -195,6 +196,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			for (OWLEquivalentClassesNode equivalentTo : classDeclarationNode.getOWLEquivalentClassesNodes()) {
 				Optional<? extends TextRendering> equivalentToRendering = renderOWLEquivalentClasses(
 						classDeclarationNode.getOWLClassNode(), equivalentTo);
+
 				if (!equivalentToRendering.isPresent())
 					continue;
 
@@ -211,16 +213,16 @@ public class TextRenderer extends BaseReferenceRenderer
 		isFirst = true;
 		if (classDeclarationNode.hasAnnotationFactNodes()) {
 			for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
-				Optional<? extends TextRendering> factRendering = renderAnnotationFact(annotationFactNode);
+				Optional<? extends TextRendering> annotationFactRendering = renderAnnotationFact(annotationFactNode);
 
-				if (factRendering.isPresent())
+				if (!annotationFactRendering.isPresent())
 					continue;
 
 				if (isFirst)
 					textRepresentation.append(" Annotations: ");
 				else
 					textRepresentation.append(", ");
-				textRepresentation.append(factRendering.get().getTextRendering());
+				textRepresentation.append(annotationFactRendering.get().getTextRendering());
 				isFirst = false;
 			}
 		}
@@ -377,7 +379,6 @@ public class TextRenderer extends BaseReferenceRenderer
 			OWLEquivalentClassesNode equivalentClassesNode) throws RendererException
 	{
 		StringBuilder textRepresentation = new StringBuilder();
-
 
 		if (equivalentClassesNode.getClassExpressionNodes().size() == 1) {
 			Optional<? extends TextRendering> classExpressionRendering = renderOWLClassExpression(
@@ -722,7 +723,31 @@ public class TextRenderer extends BaseReferenceRenderer
 	@Override public Optional<? extends TextRendering> renderOWLAnnotationValue(
 			OWLAnnotationValueNode annotationValueNode) throws RendererException
 	{
-		return Optional.empty(); // TODO Implement
+		if (annotationValueNode.isReference()) {
+			ReferenceNode referenceNode = annotationValueNode.getReferenceNode();
+			ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+			Optional<? extends TextReferenceRendering> referenceRendering = renderReference(referenceNode);
+			if (referenceRendering.isPresent()) {
+				if (referenceType.isQuotedOWLLiteral())
+					return Optional.of(new TextRendering("\"" + referenceRendering.get().getRawValue() + "\""));
+				else
+					return Optional.of(new TextRendering(referenceRendering.get().getRawValue()));
+			} else
+				return Optional.empty();
+		} else if (annotationValueNode.isName())
+			return renderName(annotationValueNode.getNameNode());
+		else if (annotationValueNode.isLiteral()) {
+			Optional<? extends TextLiteralRendering> literalRendering = renderOWLLiteral(
+					annotationValueNode.getOWLLiteralNode());
+			if (literalRendering.isPresent()) {
+				if (literalRendering.get().getOWLLiteralType().isQuotedOWLLiteral())
+					return Optional.of(new TextRendering("\"" + literalRendering.get().getRawValue() + "\""));
+				else
+					return Optional.empty();
+			} else
+				return Optional.empty();
+		} else
+			throw new InternalRendererException("unknown child for node " + annotationValueNode.getNodeName());
 	}
 
 	@Override public Optional<? extends TextRendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
