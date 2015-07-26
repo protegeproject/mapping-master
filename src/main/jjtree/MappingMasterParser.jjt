@@ -1,4 +1,4 @@
-a
+
 options {
   LOOKAHEAD = 1;
   IGNORE_CASE = true;
