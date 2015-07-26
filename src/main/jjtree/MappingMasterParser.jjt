@@ -1,4 +1,4 @@
-
+a
 options {
   LOOKAHEAD = 1;
   IGNORE_CASE = true;
@@ -699,16 +699,6 @@ void boolean_literal() #BooleanLiteral :
   }
 }
 
-void owl_union_class() #OWLUnionClass : {}
-{
-  owl_intersection_class() ( LOOKAHEAD(2) <OR> owl_intersection_class() )*
-} 
-
-void owl_intersection_class() #OWLIntersectionClass : {}
-{
-  owl_class_expression() ( LOOKAHEAD(2) <AND> owl_class_expression() )*
-} 
-
 void owl_class_expression() #OWLClassExpression :
 {
   boolean isNegated = false;
@@ -722,6 +712,16 @@ void owl_class_expression() #OWLClassExpression :
 
   { jjtThis.isNegated = isNegated; }
 }
+
+void owl_union_class() #OWLUnionClass : {}
+{
+  owl_intersection_class() ( LOOKAHEAD(2) <OR> owl_intersection_class() )*
+} 
+
+void owl_intersection_class() #OWLIntersectionClass : {}
+{
+  owl_class_expression() ( LOOKAHEAD(2) <AND> owl_class_expression() )*
+} 
 
 void owl_object_one_of() #OWLObjectOneOf : {}
 {
