@@ -938,25 +938,39 @@ public class TextRenderer extends BaseReferenceRenderer
 	private Optional<? extends TextRendering> renderOWLSomeValuesFrom(OWLPropertyNode propertyNode,
 			OWLSomeValuesFromNode someValuesFromNode) throws RendererException
 	{
+		Optional<? extends TextRendering> valueRendering;
+
 		if (someValuesFromNode.hasOWLDataSomeValuesFromNode())
-			return renderOWLDataSomeValuesFrom(propertyNode, someValuesFromNode.getOWLDataSomeValuesFromNode());
+			valueRendering = renderOWLDataSomeValuesFrom(propertyNode, someValuesFromNode.getOWLDataSomeValuesFromNode());
 		else if (someValuesFromNode.hasOWLObjectSomeValuesFrom())
-			return renderOWLObjectSomeValuesFrom(propertyNode, someValuesFromNode.getOWLObjectSomeValuesFromNode());
+			valueRendering = renderOWLObjectSomeValuesFrom(propertyNode, someValuesFromNode.getOWLObjectSomeValuesFromNode());
 		else
 			throw new InternalRendererException("unknown child for node " + someValuesFromNode.getNodeName());
+
+		if (valueRendering.isPresent()) {
+			return Optional.of(new TextRendering("SOME " + valueRendering.get().getTextRendering()));
+		} else
+			return Optional.empty();
 	}
 
 	private Optional<? extends TextRendering> renderOWLHasValue(OWLPropertyNode propertyNode,
 			OWLHasValueNode hasValueNode) throws RendererException
 	{
+		Optional<? extends TextRendering> valueRendering;
+
 		if (hasValueNode.hasReferenceNode())
-			return renderReference(hasValueNode.getReferenceNode());
+			valueRendering = renderReference(hasValueNode.getReferenceNode());
 		else if (hasValueNode.hasNameNone())
-			return renderName(hasValueNode.getNameNode());
+			valueRendering = renderName(hasValueNode.getNameNode());
 		else if (hasValueNode.hasLiteralNode())
-			return renderOWLLiteral(hasValueNode.getOWLLiteralNode());
+			valueRendering = renderOWLLiteral(hasValueNode.getOWLLiteralNode());
 		else
 			throw new InternalRendererException("unknown child for node " + hasValueNode.getNodeName());
+
+		if (valueRendering.isPresent()) {
+			return Optional.of(new TextRendering("VALUE " + valueRendering.get().getTextRendering()));
+		} else
+			return Optional.empty();
 	}
 
 	private Optional<? extends TextRendering> renderOWLExactCardinality(OWLPropertyNode propertyNode,
