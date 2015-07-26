@@ -945,7 +945,7 @@ public class TextRenderer extends BaseReferenceRenderer
 		String textRepresentation = "" + owlExactCardinalityNode.getCardinality();
 
 		if (!textRepresentation.isEmpty())
-			textRepresentation += "EXACTLY " + textRepresentation;
+			textRepresentation = "EXACTLY " + textRepresentation;
 
 		return textRepresentation.isEmpty() ? Optional.empty() : Optional.of(new TextRendering(textRepresentation));
 	}
@@ -956,9 +956,9 @@ public class TextRenderer extends BaseReferenceRenderer
 		String textRepresentation = "" + maxCardinalityNode.getCardinality();
 
 		if (!textRepresentation.isEmpty())
-			return Optional.of(new TextRendering("MAX " + textRepresentation));
-		else
-			return Optional.empty();
+			textRepresentation = "MAX " + textRepresentation;
+
+		return textRepresentation.isEmpty() ? Optional.empty() : Optional.of(new TextRendering(textRepresentation));
 	}
 
 	private Optional<? extends TextRendering> renderOWLMinCardinality(OWLPropertyNode propertyNode,
@@ -967,9 +967,9 @@ public class TextRenderer extends BaseReferenceRenderer
 		String textRepresentation = "" + minCardinalityNode.getCardinality();
 
 		if (!textRepresentation.isEmpty())
-			return Optional.of(new TextRendering("MIN " + textRepresentation));
-		else
-			return Optional.empty();
+			textRepresentation = "MIN " + textRepresentation;
+
+		return textRepresentation.isEmpty() ? Optional.empty() : Optional.of(new TextRendering(textRepresentation));
 	}
 
 	private Optional<? extends TextRendering> renderName(NameNode nameNode) throws RendererException
