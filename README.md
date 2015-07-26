@@ -1,5 +1,5 @@
-SWRLAPI
-=======
+Mapping Master
+==============
 
 MappingMaster is an open source library that can be used to transform the content of spreadsheets to OWL ontologies. 
 
