@@ -6,6 +6,8 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ASTExpression;
 import org.mm.parser.MappingMasterParser;
@@ -33,8 +35,11 @@ import java.util.Set;
 public class IntegrationTestBase
 {
 	protected static final String SHEET1 = "Sheet1";
-	protected static final Set<Label> emptyCellSet = Collections.emptySet();
-	protected final SpreadsheetLocation defaultCurrentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
+	protected static final String DEFAULT_SHEET = SHEET1;
+	protected static final Set<Label> EMPTY_CELL_SET = Collections.emptySet();
+	protected static final SpreadsheetLocation DEFAULT_CURRENT_LOCATION = new SpreadsheetLocation(SHEET1, 1, 1);
+
+	@Rule public final ExpectedException thrown = ExpectedException.none();
 
 	/**
 	 * Create a single sheet workbook. Not clear how to create an in-memory-only {@link Workbook} in JXL so
@@ -100,6 +105,12 @@ public class IntegrationTestBase
 		return expressionNode.getMMExpressionNode();
 	}
 
+	protected Optional<? extends TextRendering> createTextRendering(String expression)
+			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	{
+		return createTextRendering(SHEET1, this.EMPTY_CELL_SET, expression);
+	}
+
 	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells,
 			SpreadsheetLocation currentLocation, String expression)
 			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
@@ -114,10 +125,16 @@ public class IntegrationTestBase
 		return renderer.renderMMExpression(mmExpressionNode);
 	}
 
+	protected Optional<? extends TextRendering> createTextRendering(String sheetName, String expression)
+			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	{
+		return createTextRendering(sheetName, EMPTY_CELL_SET, expression);
+	}
+
 	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells, String expression)
 			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
 	{
-		return createTextRendering(sheetName, cells, this.defaultCurrentLocation, expression);
+		return createTextRendering(sheetName, cells, this.DEFAULT_CURRENT_LOCATION, expression);
 	}
 
 	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
