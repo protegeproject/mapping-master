@@ -55,6 +55,11 @@ public class OWLPropertyNode implements TypeNode
 
   @Override public boolean isOWLClassNode() { return false; }
 
+  @Override public boolean isOWLClassExpressionNode()
+  {
+    return false;
+  }
+
   @Override public boolean isOWLPropertyNode() { return false; }
 
   @Override public boolean isReferenceNode() { return false; }

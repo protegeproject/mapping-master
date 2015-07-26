@@ -749,8 +749,8 @@ void types(int referenceType) #Types :
   int defaultType = ParserUtil.getDefaultType(referenceType);
 } 
 {
-  ( LOOKAHEAD(2) owl_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) )
-    ( "," ( LOOKAHEAD(2) owl_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) ) )?
+  ( LOOKAHEAD(2) owl_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) | "(" owl_class_expression() ")" )
+    ( "," ( LOOKAHEAD(2) owl_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) | "(" owl_class_expression() ")" ) )?
 }
 
 void value_specification_item() #ValueSpecificationItem : 

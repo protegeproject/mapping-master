@@ -11,7 +11,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLClassExpressionNode implements MMNode
+public class OWLClassExpressionNode implements TypeNode, MMNode
 {
 	private OWLClassNode classNode;
 	private OWLObjectOneOfNode objectOneOfNode;
@@ -21,6 +21,7 @@ public class OWLClassExpressionNode implements MMNode
 
 	public OWLClassExpressionNode(ASTOWLClassExpression node) throws ParseException
 	{
+		super();
 		this.isNegated = node.isNegated;
 
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
@@ -106,5 +107,25 @@ public class OWLClassExpressionNode implements MMNode
 			representation += this.classNode.toString();
 
 		return representation;
+	}
+
+	@Override public boolean isOWLClassExpressionNode()
+	{
+		return true;
+	}
+
+	@Override public boolean isOWLClassNode()
+	{
+		return false;
+	}
+
+	@Override public boolean isOWLPropertyNode()
+	{
+		return false;
+	}
+
+	@Override public boolean isReferenceNode()
+	{
+		return false;
 	}
 }

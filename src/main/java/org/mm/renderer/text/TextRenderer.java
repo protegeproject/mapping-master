@@ -1031,8 +1031,10 @@ public class TextRenderer extends BaseReferenceRenderer
 			return renderReference((ReferenceNode)typeNode);
 		else if (typeNode instanceof OWLClassExpressionNode)
 			return renderOWLClassExpression((OWLClassExpressionNode)typeNode);
+		else if (typeNode instanceof OWLClassNode)
+			return renderOWLClass((OWLClassNode)typeNode);
 		else
-			throw new RendererException("do not know how to render type node " + typeNode.getNodeName());
+			throw new InternalRendererException("do not know how to render type node " + typeNode.getNodeName());
 	}
 
 	private Optional<? extends TextRendering> renderValueEncoding(ValueEncodingNode valueEncodingNode)
