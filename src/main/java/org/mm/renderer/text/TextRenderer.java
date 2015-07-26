@@ -487,8 +487,7 @@ public class TextRenderer extends BaseReferenceRenderer
 
 		if (propertyRendering.isPresent() && restrictionRendering.isPresent())
 			return Optional.of(new TextRendering(
-					"(" + propertyRendering.get().getTextRendering() + " " + restrictionRendering.get().getTextRendering()
-							+ ")"));
+					"(" + propertyRendering.get().getTextRendering() + " " + restrictionRendering.get().getTextRendering() + ")"));
 		else
 			return Optional.empty();
 	}
@@ -526,31 +525,24 @@ public class TextRenderer extends BaseReferenceRenderer
 			return Optional.empty();
 	}
 
+	@Override public Optional<? extends TextRendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
+			OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException
+	{
+		if (objectSomeValuesFromNode.hasOWLClassNode())
+			return renderOWLClass(objectSomeValuesFromNode.getOWLClassNode());
+		else if (objectSomeValuesFromNode.hasOWLClassExpressionNode())
+			return renderOWLClassExpression(objectSomeValuesFromNode.getOWLClassExpressionNode());
+		else
+			throw new InternalRendererException("unknown child for node " + objectSomeValuesFromNode.getNodeName());
+	}
+
 	@Override public Optional<? extends TextRendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
 			OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException
 	{
 		String datatypeName = dataSomeValuesFromNode.getDatatypeName();
 
 		if (!datatypeName.isEmpty())
-			return Optional.of(new TextRendering("SOME " + datatypeName));
-		else
-			return Optional.empty();
-	}
-
-	@Override public Optional<? extends TextRendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
-			OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException
-	{
-		Optional<? extends TextRendering> classRendering;
-
-		if (objectSomeValuesFromNode.hasOWLClassNode())
-			classRendering = renderOWLClass(objectSomeValuesFromNode.getOWLClassNode());
-		else if (objectSomeValuesFromNode.hasOWLClassExpressionNode())
-			classRendering = renderOWLClassExpression(objectSomeValuesFromNode.getOWLClassExpressionNode());
-		else
-			throw new InternalRendererException("unknown child for node " + objectSomeValuesFromNode.getNodeName());
-
-		if (classRendering.isPresent())
-			return Optional.of(new TextRendering("SOME " + classRendering.get().getTextRendering()));
+			return Optional.of(new TextRendering(datatypeName));
 		else
 			return Optional.empty();
 	}
