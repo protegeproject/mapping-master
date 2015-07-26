@@ -32,114 +32,123 @@ import java.util.Set;
 
 public class IntegrationTestBase
 {
-  /**
-   * Create a single sheet workbook. Not clear how to create an in-memory-only {@link Workbook} in JXL so
-   * we create a {@link WritableWorkbook} (which is not a subclass of {@link Workbook}) save it to a temporary file and
-   * then create a {@link Workbook} from it.
-   */
-  protected Workbook createWorkbook(String sheetName, Set<Label> cells)
-    throws IOException, WriteException, BiffException
-  {
-    File file = File.createTempFile("temp", "xlsx");
-    WritableWorkbook writableWorkbook = Workbook.createWorkbook(file);
-    WritableSheet sheet = writableWorkbook.createSheet(sheetName, 0);
+	protected static final String SHEET1 = "Sheet1";
+	protected static final Set<Label> emptyCellSet = Collections.emptySet();
+	protected final SpreadsheetLocation defaultCurrentLocation = new SpreadsheetLocation(SHEET1, 1, 1);
 
-    for (Label cell : cells)
-      sheet.addCell(cell);
+	/**
+	 * Create a single sheet workbook. Not clear how to create an in-memory-only {@link Workbook} in JXL so
+	 * we create a {@link WritableWorkbook} (which is not a subclass of {@link Workbook}) save it to a temporary file and
+	 * then create a {@link Workbook} from it.
+	 */
+	protected Workbook createWorkbook(String sheetName, Set<Label> cells)
+			throws IOException, WriteException, BiffException
+	{
+		File file = File.createTempFile("temp", "xlsx");
+		WritableWorkbook writableWorkbook = Workbook.createWorkbook(file);
+		WritableSheet sheet = writableWorkbook.createSheet(sheetName, 0);
 
-    writableWorkbook.write();
-    writableWorkbook.close();
+		for (Label cell : cells)
+			sheet.addCell(cell);
 
-    return Workbook.getWorkbook(file);
-  }
+		writableWorkbook.write();
+		writableWorkbook.close();
 
-  /**
-   * @param data Map of sheet name to cells
-   * @return A workbook
-   * @throws IOException
-   * @throws WriteException
-   * @throws BiffException
-   */
-  protected Workbook createWorkbook(Map<String, Set<Label>> data) throws IOException, WriteException, BiffException
-  {
-    File file = File.createTempFile("temp", "xlsx");
-    WritableWorkbook writableWorkbook = Workbook.createWorkbook(file);
+		return Workbook.getWorkbook(file);
+	}
 
-    int sheetIndex = 0;
-    for (String sheetName : data.keySet()) {
-      Set<Label> cells = data.get(sheetName);
-      WritableSheet sheet = writableWorkbook.createSheet(sheetName, sheetIndex++);
+	/**
+	 * @param data Map of sheet name to cells
+	 * @return A workbook
+	 * @throws IOException
+	 * @throws WriteException
+	 * @throws BiffException
+	 */
+	protected Workbook createWorkbook(Map<String, Set<Label>> data) throws IOException, WriteException, BiffException
+	{
+		File file = File.createTempFile("temp", "xlsx");
+		WritableWorkbook writableWorkbook = Workbook.createWorkbook(file);
 
-      for (Label cell : cells)
-        sheet.addCell(cell);
-    }
+		int sheetIndex = 0;
+		for (String sheetName : data.keySet()) {
+			Set<Label> cells = data.get(sheetName);
+			WritableSheet sheet = writableWorkbook.createSheet(sheetName, sheetIndex++);
 
-    writableWorkbook.write();
-    writableWorkbook.close();
+			for (Label cell : cells)
+				sheet.addCell(cell);
+		}
 
-    return Workbook.getWorkbook(file);
-  }
+		writableWorkbook.write();
+		writableWorkbook.close();
 
-  protected SpreadSheetDataSource createSpreadsheetDataSource(String sheetName, Set<Label> cells)
-    throws BiffException, IOException, WriteException, MappingMasterException
-  {
-    Workbook workbook = createWorkbook(sheetName, cells);
-    return new SpreadSheetDataSource(workbook);
-  }
+		return Workbook.getWorkbook(file);
+	}
 
-  protected MMExpressionNode parseExpression(String expression) throws ParseException
-  {
-    MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expression.getBytes()));
-    SimpleNode simpleNode = parser.expression();
-    ExpressionNode expressionNode = new ExpressionNode((ASTExpression)simpleNode);
+	protected SpreadSheetDataSource createSpreadsheetDataSource(String sheetName, Set<Label> cells)
+			throws BiffException, IOException, WriteException, MappingMasterException
+	{
+		Workbook workbook = createWorkbook(sheetName, cells);
+		return new SpreadSheetDataSource(workbook);
+	}
 
-    return expressionNode.getMMExpressionNode();
-  }
+	protected MMExpressionNode parseExpression(String expression) throws ParseException
+	{
+		MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expression.getBytes()));
+		SimpleNode simpleNode = parser.expression();
+		ExpressionNode expressionNode = new ExpressionNode((ASTExpression)simpleNode);
 
-  protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells,
-    SpreadsheetLocation currentLocation, String expression)
-    throws WriteException, BiffException, MappingMasterException, IOException, ParseException
-  {
-    SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
+		return expressionNode.getMMExpressionNode();
+	}
 
-    dataSource.setCurrentLocation(currentLocation);
+	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells,
+			SpreadsheetLocation currentLocation, String expression)
+			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	{
+		SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
 
-    TextRenderer renderer = new TextRenderer(dataSource);
-    MMExpressionNode mmExpressionNode = parseExpression(expression);
+		dataSource.setCurrentLocation(currentLocation);
 
-    return renderer.renderMMExpression(mmExpressionNode);
-  }
+		TextRenderer renderer = new TextRenderer(dataSource);
+		MMExpressionNode mmExpressionNode = parseExpression(expression);
 
-  protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
-    Set<Label> cells, SpreadsheetLocation currentLocation, String expression)
-    throws WriteException, BiffException, MappingMasterException, IOException, ParseException
-  {
-    SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
+		return renderer.renderMMExpression(mmExpressionNode);
+	}
 
-    dataSource.setCurrentLocation(currentLocation);
+	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells, String expression)
+			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	{
+		return createTextRendering(sheetName, cells, this.defaultCurrentLocation, expression);
+	}
 
-    OWLAPICoreRenderer renderer = new OWLAPICoreRenderer(ontology, dataSource);
-    MMExpressionNode mmExpressionNode = parseExpression(expression);
+	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
+			Set<Label> cells, SpreadsheetLocation currentLocation, String expression)
+			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	{
+		SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
 
-    return renderer.renderMMExpression(mmExpressionNode);
-  }
+		dataSource.setCurrentLocation(currentLocation);
 
-  /**
-   *
-   * @param content Content of the cell
-   * @param columnNumber 1-based column number
-   * @param rowNumber 1-based row number
-   * @return A cell
-   */
-  protected Label createCell(String content, int columnNumber, int rowNumber)
-  {
-    return new Label(columnNumber - 1, rowNumber -1, content); // JXL is 0-based
-  }
+		OWLAPICoreRenderer renderer = new OWLAPICoreRenderer(ontology, dataSource);
+		MMExpressionNode mmExpressionNode = parseExpression(expression);
 
-  protected Set<Label> createCells(Label... cells)
-  {
-    Set<Label> cellSet = new HashSet<>();
-    Collections.addAll(cellSet, cells);
-    return cellSet;
-  }
+		return renderer.renderMMExpression(mmExpressionNode);
+	}
+
+	/**
+	 * @param content      Content of the cell
+	 * @param columnNumber 1-based column number
+	 * @param rowNumber    1-based row number
+	 * @return A cell
+	 */
+	protected Label createCell(String content, int columnNumber, int rowNumber)
+	{
+		return new Label(columnNumber - 1, rowNumber - 1, content); // JXL is 0-based
+	}
+
+	protected Set<Label> createCells(Label... cells)
+	{
+		Set<Label> cellSet = new HashSet<>();
+		Collections.addAll(cellSet, cells);
+		return cellSet;
+	}
 }
