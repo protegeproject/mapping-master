@@ -32,8 +32,8 @@ public abstract class BaseReferenceRenderer
 	public int defaultEmptyLocationDirective = MM_PROCESS_IF_EMPTY_LOCATION;
 	public int defaultEmptyRDFIDDirective = MM_PROCESS_IF_EMPTY_ID;
 	public int defaultEmptyRDFSLabelDirective = MM_PROCESS_IF_EMPTY_LABEL;
-	public int defaultIfExistsDirective = MM_RESOLVE_IF_EXISTS;
-	public int defaultIfNotExistsDirective = MM_CREATE_IF_NOT_EXISTS;
+	public int defaultIfOWLEntityExistsDirective = MM_RESOLVE_IF_OWL_ENTITY_EXISTS;
+	public int defaultIfOWLEntityDoesNotExistDirective = MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST;
 
 	// Configuration options
 	public int defaultValueEncoding = RDFS_LABEL;

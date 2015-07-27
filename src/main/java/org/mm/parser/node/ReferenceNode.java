@@ -48,8 +48,8 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
   private EmptyLiteralDirectiveNode emptyLiteralDirectiveNode;
   private EmptyRDFIDDirectiveNode emptyRDFIDDirectiveNode;
   private EmptyRDFSLabelDirectiveNode emptyRDFSLabelDirectiveNode;
-  private IfExistsDirectiveNode ifExistsDirectiveNode;
-  private IfNotExistsDirectiveNode ifNotExistsDirectiveNode;
+  private IfOWLEntityExistsDirectiveNode ifExistsDirectiveNode;
+  private IfOWLEntityDoesNotExistDirectiveNode ifNotExistsDirectiveNode;
   private ValueExtractionFunctionNode valueExtractionFunctionNode;
   private ShiftDirectiveNode shiftDirectiveNode;
   private final ReferenceDirectives referenceDirectives;
@@ -101,11 +101,11 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       } else if (ParserUtil.hasName(child, "IfExistsDirective")) {
         if (this.ifExistsDirectiveNode != null)
           throw new RendererException("only one if exists directive can be specified for a Reference");
-        this.ifExistsDirectiveNode = new IfExistsDirectiveNode((ASTIfExistsDirective)child);
+        this.ifExistsDirectiveNode = new IfOWLEntityExistsDirectiveNode((ASTIfExistsDirective)child);
       } else if (ParserUtil.hasName(child, "IfNotExistsDirective")) {
         if (this.ifNotExistsDirectiveNode != null)
           throw new RendererException("only one if not exists directive can be specified for a Reference");
-        this.ifNotExistsDirectiveNode = new IfNotExistsDirectiveNode((ASTIfNotExistsDirective)child);
+        this.ifNotExistsDirectiveNode = new IfOWLEntityDoesNotExistDirectiveNode((ASTIfNotExistsDirective)child);
       } else if (ParserUtil.hasName(child, "EmptyLiteralSetting")) {
         if (this.emptyLiteralDirectiveNode != null)
           throw new RendererException("only one empty literal directive can be specified for a Reference");
@@ -197,11 +197,12 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 
     if (this.ifExistsDirectiveNode != null)
       this.referenceDirectives
-        .setHasExplicitlySpecifiedIfExistsDirective(this.ifExistsDirectiveNode.getIfExistsSetting());
+        .setHasExplicitlySpecifiedIfExistsDirective(this.ifExistsDirectiveNode.getIfOWLEntityExistsSetting());
 
     if (this.ifNotExistsDirectiveNode != null)
       this.referenceDirectives
-        .setHasExplicitlySpecifiedIfNotExistsDirective(this.ifNotExistsDirectiveNode.getIfNotExistsSetting());
+        .setHasExplicitlySpecifiedIfOWLEntitiDoesNotExistDirective(
+            this.ifNotExistsDirectiveNode.getIfOWLEntityDoesNotExistSetting());
 
     if (this.typesNode != null)
       this.referenceDirectives.setHasExplicitlySpecifiedTypes();
@@ -265,12 +266,12 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
     return this.shiftDirectiveNode;
   }
 
-  public IfExistsDirectiveNode getIfExistsDirectiveNode()
+  public IfOWLEntityExistsDirectiveNode getIfExistsDirectiveNode()
   {
     return this.ifExistsDirectiveNode;
   }
 
-  public IfNotExistsDirectiveNode getIfNotExistsDirectiveNode()
+  public IfOWLEntityDoesNotExistDirectiveNode getIfNotExistsDirectiveNode()
   {
     return this.ifNotExistsDirectiveNode;
   }
@@ -392,7 +393,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
 
   public boolean hasExplicitlySpecifiedIfNotExistsDirective()
   {
-    return this.referenceDirectives.hasExplicitlySpecifiedIfNotExistsDirective();
+    return this.referenceDirectives.hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective();
   }
 
   public String getActualLanguage()

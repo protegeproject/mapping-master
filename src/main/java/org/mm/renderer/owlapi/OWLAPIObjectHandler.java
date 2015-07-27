@@ -297,17 +297,17 @@ class OWLAPIObjectHandler
         throwExistingOWLEntityWithLabelException(labelText, language);
       else if (referenceDirectives.actualIfExistsDirectiveIsWarning())
         warnExistingOWLEntityWithRDFSLabel(labelText, language);
-      else if (referenceDirectives.actualIfExistsDirectiveIsSkip()) {
+      else if (referenceDirectives.actualIfOWLEntityExistsDirectiveIsSkip()) {
         System.err.println("--processReference: skipping because OWL entity with this label already exists");
         return false;
       }
       // If setting is MM_RESOLVE_IF_EXISTS we resolve it.
     } else { // No existing entity
-      if (referenceDirectives.actualIfNotExistsDirectiveIsError())
+      if (referenceDirectives.actualIfOWLEntityDoesNotExistDirectiveIsError())
         throwNoExistingOWLEntityWithRDFSLabelException(labelText, language);
-      else if (referenceDirectives.actualIfNotExistsDirectiveIsWarning())
+      else if (referenceDirectives.actualIfOWLEntityDoesNotExistDirectiveIsWarning())
         warnNoExistingOWLEntityWithRDFSLabel(labelText, language);
-      else if (referenceDirectives.actualIfNotExistsDirectiveIsSkip()) {
+      else if (referenceDirectives.actualIfOWLEntityDoesNotExistDirectiveIsSkip()) {
         System.err.println("--processReference: skipping because OWL entity with this label does not exist");
         return false;
       }
@@ -325,16 +325,16 @@ class OWLAPIObjectHandler
         throwExistingOWLEntityWithRDFIDException(namespace, rdfID);
       else if (referenceDirectives.actualIfExistsDirectiveIsWarning())
         warnExistingOWLEntityWithRDFID(namespace, rdfID);
-      else if (referenceDirectives.actualIfExistsDirectiveIsSkip()) {
+      else if (referenceDirectives.actualIfOWLEntityExistsDirectiveIsSkip()) {
         return false;
       }
       // If setting is MM_RESOLVE_IF_EXISTS we resolve it.
     } else { // No existing entity
-      if (referenceDirectives.actualIfNotExistsDirectiveIsError())
+      if (referenceDirectives.actualIfOWLEntityDoesNotExistDirectiveIsError())
         throwNoExistingOWLEntityWithRDFIDException(namespace, rdfID);
-      else if (referenceDirectives.actualIfNotExistsDirectiveIsWarning())
+      else if (referenceDirectives.actualIfOWLEntityDoesNotExistDirectiveIsWarning())
         warnNoExistingOWLEntityWithRDFID(namespace, rdfID);
-      else if (referenceDirectives.actualIfNotExistsDirectiveIsSkip())
+      else if (referenceDirectives.actualIfOWLEntityDoesNotExistDirectiveIsSkip())
         return false;
       // If setting is MM_CREATE_IF_NOT_EXISTS we create it.
     }

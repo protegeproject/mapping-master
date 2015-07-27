@@ -45,8 +45,8 @@ public class MappingMasterParser
   public int defaultEmptyLiteralSetting = MM_PROCESS_IF_EMPTY_LITERAL;
   public int defaultEmptyRDFIDSetting = MM_PROCESS_IF_EMPTY_ID;
   public int defaultEmptyRDFSLabelSetting = MM_PROCESS_IF_EMPTY_LABEL;
-  public int defaultIfExistsSetting = MM_RESOLVE_IF_EXISTS;
-  public int defaultIfNotExistsSetting = MM_CREATE_IF_NOT_EXISTS;
+  public int defaultIfOWLEntityExistsSetting = MM_RESOLVE_IF_OWL_ENTITY_EXISTS;
+  public int defaultIfOWLEntityDoesNotExistSetting = MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST;
 
 } 
 
@@ -194,8 +194,8 @@ TOKEN: { <MM_DEFAULT_EMPTY_LITERAL: "mm:DefaultEmptyLiteral"> }
 TOKEN: { <MM_DEFAULT_EMPTY_LOCATION: "mm:DefaultEmptyLocation"> }
 TOKEN: { <MM_DEFAULT_EMPTY_RDF_ID: "mm:DefaultEmptyID"> }
 TOKEN: { <MM_DEFAULT_EMPTY_RDFS_LABEL: "mm:DefaultEmptyLabel"> }
-TOKEN: { <MM_DEFAULT_IF_EXISTS: "mm:DefaultIfExists"> }
-TOKEN: { <MM_DEFAULT_IF_NOT_EXISTS: "mm:DefaultIfNotExists"> }
+TOKEN: { <MM_DEFAULT_IF_OWL_ENTITY_EXISTS: "mm:DefaultIfOWLEntityExists"> }
+TOKEN: { <MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:DefaultIfOWLEntityDoesNotExist"> }
 
 TOKEN: { <MM_UNTYPED: "mm:Untyped"> }
 TOKEN: { <MM_PREFIX: "mm:Prefix"> }
@@ -256,15 +256,14 @@ TOKEN: { <MM_ERROR_IF_EMPTY_LABEL: "mm:ErrorIfEmptyLabel"> }
 TOKEN: { <MM_WARNING_IF_EMPTY_LABEL: "mm:WarningIfEmptyLabel"> }
 TOKEN: { <MM_SKIP_IF_EMPTY_LABEL: "mm:SkipIfEmptyLabel"> }
 
-TOKEN: { <MM_RESOLVE_IF_EXISTS: "mm:ResolveIfExists"> }
-TOKEN: { <MM_SKIP_IF_EXISTS: "mm:SkipIfExists"> }
-TOKEN: { <MM_WARNING_IF_EXISTS: "mm:WarningIfExists"> }
-TOKEN: { <MM_ERROR_IF_EXISTS: "mm:ErrorIfExists"> }
-
-TOKEN: { <MM_CREATE_IF_NOT_EXISTS: "mm:CreateIfNotExists"> }
-TOKEN: { <MM_SKIP_IF_NOT_EXISTS: "mm:SkipIfNotExists"> }
-TOKEN: { <MM_WARNING_IF_NOT_EXISTS: "mm:WarningIfNotExists"> }
-TOKEN: { <MM_ERROR_IF_NOT_EXISTS: "mm:ErrorIfNotExists"> }
+TOKEN: { <MM_RESOLVE_IF_OWL_ENTITY_EXISTS: "mm:ResolveIfOWLEntityExists"> }
+TOKEN: { <MM_SKIP_IF_OWL_ENTITY_EXISTS: "mm:SkipIfOWLEntityExists"> }
+TOKEN: { <MM_WARNING_IF_OWL_ENTITY_EXISTS: "mm:WarningIfOWLEntityExists"> }
+TOKEN: { <MM_ERROR_IF_OWL_ENTITY_EXISTS: "mm:ErrorIfOWLEntityDoesExist"> }
+TOKEN: { <MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:CreateIfOWLEntityDoesNotExist"> }
+TOKEN: { <MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:SkipIfOWLEntityDoesNotExist"> }
+TOKEN: { <MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:WarningIfOWLEntityDoesNotExist"> }
+TOKEN: { <MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:ErrorIfNotOWLEntityDoesExist"> }
 
 TOKEN:
 {
@@ -383,11 +382,11 @@ void mm_default_if_exists_setting() #MMDefaultIfExistsSetting:
   int ifExistsSetting;
 }
 {
-  <MM_DEFAULT_IF_EXISTS> ifExistsSetting = if_exists_directive()
+  <MM_DEFAULT_IF_OWL_ENTITY_EXISTS> ifExistsSetting = if_exists_directive()
 
   {
     jjtThis.ifExistsSetting = ifExistsSetting;
-    defaultIfExistsSetting = ifExistsSetting;
+    defaultIfOWLEntityExistsSetting = ifExistsSetting;
   }
 }
 
@@ -396,11 +395,11 @@ void mm_default_if_not_exists_setting() #MMDefaultIfNotExistsSetting:
   int ifNotExistsSetting;
 }
 {
-  <MM_DEFAULT_IF_NOT_EXISTS> ifNotExistsSetting = if_not_exists_directive()
+  <MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST> ifNotExistsSetting = if_not_exists_directive()
 
   {
     jjtThis.ifNotExistsSetting = ifNotExistsSetting;
-    defaultIfNotExistsSetting = ifNotExistsSetting;
+    defaultIfOWLEntityDoesNotExistSetting = ifNotExistsSetting;
   }
 }
 
@@ -983,7 +982,7 @@ void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : 
                         defaultShiftSetting, 
                         defaultEmptyLocationSetting, defaultEmptyLiteralSetting, defaultEmptyRDFIDSetting,
 			defaultEmptyRDFSLabelSetting,
-                        defaultIfExistsSetting, defaultIfNotExistsSetting);
+                        defaultIfOWLEntityExistsSetting, defaultIfOWLEntityDoesNotExistSetting);
 
   }
 }
@@ -1080,10 +1079,10 @@ int if_exists_directive() #IfExistsDirective :
 }
 {
   (
-     t = <MM_RESOLVE_IF_EXISTS> { ifExistsSetting = t.kind; }
-   | t = <MM_SKIP_IF_EXISTS> { ifExistsSetting = t.kind; }
-   | t = <MM_WARNING_IF_EXISTS> { ifExistsSetting = t.kind; }
-   | t = <MM_ERROR_IF_EXISTS> { ifExistsSetting = t.kind; }
+     t = <MM_RESOLVE_IF_OWL_ENTITY_EXISTS> { ifExistsSetting = t.kind; }
+   | t = <MM_SKIP_IF_OWL_ENTITY_EXISTS> { ifExistsSetting = t.kind; }
+   | t = <MM_WARNING_IF_OWL_ENTITY_EXISTS> { ifExistsSetting = t.kind; }
+   | t = <MM_ERROR_IF_OWL_ENTITY_EXISTS> { ifExistsSetting = t.kind; }
   )
 
   {
@@ -1099,10 +1098,10 @@ int if_not_exists_directive() #IfNotExistsDirective :
 }
 {
   (
-     t = <MM_CREATE_IF_NOT_EXISTS> { ifNotExistsSetting = t.kind; }
-   | t = <MM_SKIP_IF_NOT_EXISTS> { ifNotExistsSetting = t.kind; }
-   | t = <MM_WARNING_IF_NOT_EXISTS> { ifNotExistsSetting = t.kind; }
-   | t = <MM_ERROR_IF_NOT_EXISTS> { ifNotExistsSetting = t.kind; }
+     t = <MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST> { ifNotExistsSetting = t.kind; }
+   | t = <MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST> { ifNotExistsSetting = t.kind; }
+   | t = <MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST> { ifNotExistsSetting = t.kind; }
+   | t = <MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST> { ifNotExistsSetting = t.kind; }
   )
 
   {

@@ -19,7 +19,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   private boolean hasExplicitlySpecifiedPrefix;
   private boolean hasExplicitlySpecifiedNamespace;
   private boolean hasExplicitlySpecifiedIfExistsDirective;
-  private boolean hasExplicitlySpecifiedIfNotExistsDirective;
+  private boolean hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective;
   private boolean hasExplicitlySpecifiedEmptyLocationDirective;
   private boolean hasExplicitlySpecifiedEmptyLiteralDirective;
   private boolean hasExplicitlySpecifiedEmptyRDFIDDirective;
@@ -34,7 +34,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants
   private String explicitlySpecifiedPrefix;
   private String explicitlySpecifiedNamespace;
   private int explicitlySpecifiedIfExistsDirective = -1;
-  private int explicitlySpecifiedIfNotExistsDirective = -1;
+  private int explicitlySpecifiedIfOWLEntityDoesNotExistDirective = -1;
   private int explicitlySpecifiedEmptyLocationDirective = -1;
   private int explicitlySpecifiedEmptyLiteralDirective = -1;
   private int explicitlySpecifiedEmptyRDFIDDirective = -1;
@@ -312,60 +312,60 @@ public class ReferenceDirectives implements MappingMasterParserConstants
     this.explicitlySpecifiedIfExistsDirective = ifExistsDirective;
   }
 
-  public int getActualIfExistsDirective()
+  public int getActualIfOWLEntityExistsDirective()
   {
     return hasExplicitlySpecifiedIfExistsDirective() ?
       this.explicitlySpecifiedIfExistsDirective :
       this.defaultReferenceDirectives.getDefaultIfExistsDirective();
   }
 
-  public boolean actualIfExistsDirectiveIsSkip()
+  public boolean actualIfOWLEntityExistsDirectiveIsSkip()
   {
-    return getActualIfExistsDirective() == MM_SKIP_IF_EXISTS;
+    return getActualIfOWLEntityExistsDirective() == MM_SKIP_IF_OWL_ENTITY_EXISTS;
   }
 
   public boolean actualIfExistsDirectiveIsWarning()
   {
-    return getActualIfExistsDirective() == MM_WARNING_IF_EXISTS;
+    return getActualIfOWLEntityExistsDirective() == MM_WARNING_IF_OWL_ENTITY_EXISTS;
   }
 
   public boolean actualIfExistsDirectiveIsError()
   {
-    return getActualIfExistsDirective() == MM_ERROR_IF_EXISTS;
+    return getActualIfOWLEntityExistsDirective() == MM_ERROR_IF_OWL_ENTITY_EXISTS;
   }
 
-  public boolean hasExplicitlySpecifiedIfNotExistsDirective()
+  public boolean hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective()
   {
-    return this.hasExplicitlySpecifiedIfNotExistsDirective;
+    return this.hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective;
   }
 
-  public void setHasExplicitlySpecifiedIfNotExistsDirective(int ifNotExistsDirective)
+  public void setHasExplicitlySpecifiedIfOWLEntitiDoesNotExistDirective(int ifOWLEntityDoesNotExistDirective)
   {
     this.hasExplicitlySpecifiedOptions = true;
-    this.hasExplicitlySpecifiedIfNotExistsDirective = true;
-    this.explicitlySpecifiedIfNotExistsDirective = ifNotExistsDirective;
+    this.hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective = true;
+    this.explicitlySpecifiedIfOWLEntityDoesNotExistDirective = ifOWLEntityDoesNotExistDirective;
   }
 
-  public int getActualIfNotExistsDirective()
+  public int getActualIfOWLEntityDoesNotExistDirective()
   {
-    return hasExplicitlySpecifiedIfNotExistsDirective() ?
-      this.explicitlySpecifiedIfNotExistsDirective :
+    return hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective() ?
+      this.explicitlySpecifiedIfOWLEntityDoesNotExistDirective :
       this.defaultReferenceDirectives.getDefaultIfNotExistsDirective();
   }
 
-  public boolean actualIfNotExistsDirectiveIsSkip()
+  public boolean actualIfOWLEntityDoesNotExistDirectiveIsSkip()
   {
-    return getActualIfNotExistsDirective() == MM_SKIP_IF_NOT_EXISTS;
+    return getActualIfOWLEntityDoesNotExistDirective() == MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST;
   }
 
-  public boolean actualIfNotExistsDirectiveIsWarning()
+  public boolean actualIfOWLEntityDoesNotExistDirectiveIsWarning()
   {
-    return getActualIfNotExistsDirective() == MM_WARNING_IF_NOT_EXISTS;
+    return getActualIfOWLEntityDoesNotExistDirective() == MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST;
   }
 
-  public boolean actualIfNotExistsDirectiveIsError()
+  public boolean actualIfOWLEntityDoesNotExistDirectiveIsError()
   {
-    return getActualIfNotExistsDirective() == MM_ERROR_IF_NOT_EXISTS;
+    return getActualIfOWLEntityDoesNotExistDirective() == MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST;
   }
 
   public boolean hasExplicitlySpecifiedEmptyLocationDirective()
