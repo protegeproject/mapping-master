@@ -24,89 +24,88 @@ import java.util.Optional;
 
 public class OWLAPIEntityRenderer implements OWLEntityRenderer
 {
-  @Override public Optional<OWLClassRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
-  {
-    if (classNode.hasNameNode()) {
-      OWLClass cls = null; // TODO Implement
-      return Optional.of(new OWLClassRendering(cls));
+	@Override public Optional<OWLClassRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
+	{
+		if (classNode.hasNameNode()) {
+			OWLClass cls = null; // TODO Implement
+			throw new InternalRendererException("not implemented");
+			// return Optional.of(new OWLClassRendering(cls));
+		} else if (classNode.hasReferenceNode()) {
+			OWLClass cls = null; // TODO Implement
+			throw new InternalRendererException("not implemented");
+			// return Optional.of(new OWLClassRendering(cls));
+		} else
+			throw new InternalRendererException("unknown child for node " + classNode.getNodeName());
+	}
 
-    } else if (classNode.hasReferenceNode()) {
-      OWLClass cls = null; // TODO Implement
-      return Optional.of(new OWLClassRendering(cls));
+	@Override public Optional<OWLNamedIndividualRendering> renderOWLNamedIndividual(
+			OWLNamedIndividualNode namedIndividualNode) throws RendererException
+	{
+		if (namedIndividualNode.hasNameNode()) {
+			OWLNamedIndividual individual = null; // TODO Implement
+			throw new InternalRendererException("not implemented");
+			// return Optional.of(new OWLNamedIndividualRendering(individual));
 
-    } else
-      throw new InternalRendererException("unknown child for node " + classNode.getNodeName());
-  }
+		} else if (namedIndividualNode.hasReferenceNode()) {
+			OWLNamedIndividual individual = null; // TODO Implement
+			throw new InternalRendererException("not implemented");
+			// return Optional.of(new OWLNamedIndividualRendering(individual));
+		} else
+			throw new InternalRendererException("unknown child for node " + namedIndividualNode.getNodeName());
+	}
 
-  @Override public Optional<OWLNamedIndividualRendering> renderOWLNamedIndividual(
-    OWLNamedIndividualNode namedIndividualNode) throws RendererException
-  {
-    if (namedIndividualNode.hasNameNode()) {
-      OWLNamedIndividual individual = null; // TODO Implement
+	@Override public Optional<OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
+			throws RendererException
+	{
+		OWLObjectProperty property = null; // TODO Implement
+		throw new InternalRendererException("not implemented");
+		// return Optional.of(new OWLObjectPropertyRendering(property));
+	}
 
-      return Optional.of(new OWLNamedIndividualRendering(individual));
+	@Override public Optional<OWLObjectPropertyRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode)
+			throws RendererException
+	{
+		OWLObjectProperty objectProperty = null; // TODO Implement
 
-    } else if (namedIndividualNode.hasReferenceNode()) {
-      OWLNamedIndividual individual = null; // TODO Implement
+		if (propertyNode.hasNameNode()) {
+			throw new InternalRendererException("not implemented");
+			//      return Optional.of(new OWLObjectPropertyRendering(objectProperty));
+		} else if (propertyNode.hasReferenceNode()) {
+			throw new InternalRendererException("not implemented");
+			//      return Optional.of(new OWLObjectPropertyRendering(objectProperty));
+		} else
+			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+	}
 
-      return Optional.of(new OWLNamedIndividualRendering(individual));
-    } else
-      throw new InternalRendererException("unknown child for node " + namedIndividualNode.getNodeName());
-  }
+	@Override public Optional<OWLDataPropertyRendering> renderOWLDataProperty(OWLPropertyNode propertyNode)
+			throws RendererException
+	{
+		OWLDataProperty dataProperty = null; // TODO Implement
 
-  @Override public Optional<OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
-    throws RendererException
-  {
-    OWLObjectProperty property = null; // TODO Implement
+		if (propertyNode.hasNameNode()) {
+			throw new InternalRendererException("not implemented");
+			// return Optional.of(new OWLDataPropertyRendering(dataProperty));
 
-    return Optional.of(new OWLObjectPropertyRendering(property));
-  }
+		} else if (propertyNode.hasReferenceNode()) {
 
-  @Override public Optional<OWLObjectPropertyRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode)
-    throws RendererException
-  {
-    OWLObjectProperty objectProperty = null; // TODO Implement
+			throw new InternalRendererException("not implemented");
+			// return Optional.of(new OWLDataPropertyRendering(dataProperty));
+		} else
+			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+	}
 
-    if (propertyNode.hasNameNode()) {
+	@Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
+			throws RendererException
+	{
+		OWLAnnotationProperty annotationProperty = null; // TODO Implement
 
-      return Optional.of(new OWLObjectPropertyRendering(objectProperty));
-
-    } else if (propertyNode.hasReferenceNode()) {
-
-      return Optional.of(new OWLObjectPropertyRendering(objectProperty));
-    } else
-      throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
-  }
-
-  @Override public Optional<OWLDataPropertyRendering> renderOWLDataProperty(OWLPropertyNode propertyNode)
-    throws RendererException
-  {
-    OWLDataProperty dataProperty = null; // TODO Implement
-
-    if (propertyNode.hasNameNode()) {
-
-      return Optional.of(new OWLDataPropertyRendering(dataProperty));
-
-    } else if (propertyNode.hasReferenceNode()) {
-
-      return Optional.of(new OWLDataPropertyRendering(dataProperty));
-    } else
-      throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
-  }
-
-  @Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
-    throws RendererException
-  {
-    OWLAnnotationProperty annotationProperty = null; // TODO Implement
-
-    if (propertyNode.hasNameNode()) {
-
-      return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
-
-    } else if (propertyNode.hasReferenceNode()) {
-
-      return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
-    } else
-      throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
-  }
+		if (propertyNode.hasNameNode()) {
+			throw new InternalRendererException("not implemented");
+			// return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
+		} else if (propertyNode.hasReferenceNode()) {
+			throw new InternalRendererException("not implemented");
+			// return Optional.of(new OWLAnnotationPropertyRendering(annotationProperty));
+		} else
+			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+	}
 }
