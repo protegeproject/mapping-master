@@ -372,7 +372,7 @@ public abstract class BaseReferenceRenderer
 				processedReferenceValue = processCapturingExpression(arguments.get(0), arguments.get(1));
 			} else
 				throw new RendererException(
-						"function " + functionName + " expecting two or three arguments, got " + arguments.size());
+						"function " + functionName + " expecting one or two arguments, got " + arguments.size());
 			break;
 		case MM_PREPEND:
 			if (arguments.size() == 1) {
@@ -381,7 +381,7 @@ public abstract class BaseReferenceRenderer
 				processedReferenceValue = arguments.get(0) + arguments.get(1);
 			} else
 				throw new RendererException(
-						"function " + functionName + " expecting two or three arguments, got " + arguments.size());
+						"function " + functionName + " expecting one or two arguments, got " + arguments.size());
 			break;
 		case MM_APPEND:
 			if (arguments.size() == 1) {
@@ -390,7 +390,7 @@ public abstract class BaseReferenceRenderer
 				processedReferenceValue = arguments.get(0) + arguments.get(1);
 			} else
 				throw new RendererException(
-						"function " + functionName + " expecting two or three arguments, got " + arguments.size());
+						"function " + functionName + " expecting one or two arguments, got " + arguments.size());
 			break;
 		case MM_REPLACE:
 			if (arguments.size() == 2) {
