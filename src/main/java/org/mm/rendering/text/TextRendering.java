@@ -4,20 +4,20 @@ import org.mm.rendering.Rendering;
 
 public class TextRendering implements Rendering
 {
-	private final String textRepresentation;
+	private final String rendering;
 
-	public TextRendering(String textRepresentation)
+	public TextRendering(String rendering)
 	{
-		this.textRepresentation = textRepresentation;
+		this.rendering = rendering;
 	}
 
-	public String getTextRendering()
+	public String getRendering()
 	{
-		return this.textRepresentation;
+		return this.rendering;
 	}
 
 	@Override public String toString()
 	{
-		return getTextRendering();
+		return getRendering();
 	}
 }

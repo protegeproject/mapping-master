@@ -57,7 +57,6 @@ import org.mm.rendering.text.TextRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 // TODO Refactor - too long. Look at the OWLAPI renderer for example of decomposition.
@@ -175,7 +174,7 @@ public class TextRenderer extends BaseReferenceRenderer
 		if (!declaredClassRendering.isPresent())
 			return Optional.empty();
 
-		String declaredClassName = declaredClassRendering.get().getTextRendering();
+		String declaredClassName = declaredClassRendering.get().getRendering();
 		StringBuilder textRepresentation = new StringBuilder("Class: " + declaredClassName);
 		boolean isFirst = true;
 
@@ -187,7 +186,7 @@ public class TextRenderer extends BaseReferenceRenderer
 				if (!subClassOfRendering.isPresent())
 					continue;
 
-				textRepresentation.append(subClassOfRendering.get().getTextRendering());
+				textRepresentation.append(subClassOfRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -201,7 +200,7 @@ public class TextRenderer extends BaseReferenceRenderer
 				if (!equivalentToRendering.isPresent())
 					continue;
 
-				textRepresentation.append(equivalentToRendering.get().getTextRendering());
+				textRepresentation.append(equivalentToRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -218,7 +217,7 @@ public class TextRenderer extends BaseReferenceRenderer
 					textRepresentation.append(" Annotations: ");
 				else
 					textRepresentation.append(", ");
-				textRepresentation.append(annotationFactRendering.get().getTextRendering());
+				textRepresentation.append(annotationFactRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -241,7 +240,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			return Optional.empty();
 
 		textRepresentation.append("Individual: ");
-		textRepresentation.append(individualRendering.get().getTextRendering());
+		textRepresentation.append(individualRendering.get().getRendering());
 
 		if (individualDeclarationNode.hasFacts()) {
 
@@ -256,7 +255,7 @@ public class TextRenderer extends BaseReferenceRenderer
 				else
 					textRepresentation.append(", ");
 
-				textRepresentation.append(factRendering.get().getTextRendering());
+				textRepresentation.append(factRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -265,7 +264,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			Optional<? extends TextRendering> typesRendering = renderTypes(individualDeclarationNode.getTypesNode());
 
 			if (typesRendering.isPresent())
-				textRepresentation.append(" Types: " + typesRendering.get().getTextRendering());
+				textRepresentation.append(" Types: " + typesRendering.get().getRendering());
 		}
 
 		isFirst = true;
@@ -281,7 +280,7 @@ public class TextRenderer extends BaseReferenceRenderer
 					textRepresentation.append(" Annotations: ");
 				else
 					textRepresentation.append(", ");
-				textRepresentation.append(factRendering.get().getTextRendering());
+				textRepresentation.append(factRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -289,14 +288,14 @@ public class TextRenderer extends BaseReferenceRenderer
 		if (individualDeclarationNode.hasSameAs()) {
 			Optional<? extends TextRendering> sameAsRendering = renderOWLSameAs(individualDeclarationNode.getOWLSameAsNode());
 			if (sameAsRendering.isPresent())
-				textRepresentation.append(sameAsRendering.get().getTextRendering());
+				textRepresentation.append(sameAsRendering.get().getRendering());
 		}
 
 		if (individualDeclarationNode.hasDifferentFrom()) {
 			Optional<? extends TextRendering> differentFromRendering = renderOWLDifferentFrom(
 					individualDeclarationNode.getOWLDifferentFromNode());
 			if (differentFromRendering.isPresent())
-				textRepresentation.append(differentFromRendering.get().getTextRendering());
+				textRepresentation.append(differentFromRendering.get().getRendering());
 		}
 
 		return Optional.of(new TextRendering(textRepresentation.toString()));
@@ -311,21 +310,21 @@ public class TextRenderer extends BaseReferenceRenderer
 			Optional<? extends TextRendering> objectOneOfRendering = renderOWLObjectOneOf(
 					classExpressionNode.getOWLObjectOneOfNode());
 			if (objectOneOfRendering.isPresent())
-				textRepresentation.append(objectOneOfRendering.get().getTextRendering());
+				textRepresentation.append(objectOneOfRendering.get().getRendering());
 		} else if (classExpressionNode.hasOWLUnionClassNode()) {
 			Optional<? extends TextRendering> unionClassRendering = renderOWLUnionClass(
 					classExpressionNode.getOWLUnionClassNode());
 			if (unionClassRendering.isPresent())
-				textRepresentation.append(unionClassRendering.get().getTextRendering());
+				textRepresentation.append(unionClassRendering.get().getRendering());
 		} else if (classExpressionNode.hasOWLRestrictionNode()) {
 			Optional<? extends TextRendering> restrictionRendering = renderOWLRestriction(
 					classExpressionNode.getOWLRestrictionNode());
 			if (restrictionRendering.isPresent())
-				textRepresentation.append(restrictionRendering.get().getTextRendering());
+				textRepresentation.append(restrictionRendering.get().getRendering());
 		} else if (classExpressionNode.hasOWLClassNode()) {
 			Optional<? extends TextRendering> classRendering = renderOWLClass(classExpressionNode.getOWLClassNode());
 			if (classRendering.isPresent())
-				textRepresentation.append(classRendering.get().getTextRendering());
+				textRepresentation.append(classRendering.get().getRendering());
 		} else
 			throw new RendererException("unexpected child for node " + classExpressionNode.getNodeName());
 
@@ -357,7 +356,7 @@ public class TextRenderer extends BaseReferenceRenderer
 						textRepresentation.append("(");
 					else
 						textRepresentation.append(" AND ");
-					textRepresentation.append(classesExpressionRendering.get().getTextRendering());
+					textRepresentation.append(classesExpressionRendering.get().getRendering());
 					isFirst = false;
 				}
 			}
@@ -381,7 +380,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			if (!classExpressionRendering.isPresent())
 				return Optional.empty();
 			else
-				textRepresentation.append(" EquivalentTo: " + classExpressionRendering.get().getTextRendering());
+				textRepresentation.append(" EquivalentTo: " + classExpressionRendering.get().getRendering());
 		} else {
 			boolean isFirst = true;
 
@@ -393,7 +392,7 @@ public class TextRenderer extends BaseReferenceRenderer
 					textRepresentation.append(" EquivalentTo: ");
 				else
 					textRepresentation.append(", ");
-				textRepresentation.append(classExpressionRendering.get().getTextRendering());
+				textRepresentation.append(classExpressionRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -422,7 +421,7 @@ public class TextRenderer extends BaseReferenceRenderer
 						textRepresentation.append("(");
 					else
 						textRepresentation.append(" OR ");
-					textRepresentation.append(intersectionRendering.get().getTextRendering());
+					textRepresentation.append(intersectionRendering.get().getRendering());
 					isFirst = false;
 				}
 			}
@@ -486,7 +485,7 @@ public class TextRenderer extends BaseReferenceRenderer
 
 		if (propertyRendering.isPresent() && restrictionRendering.isPresent())
 			return Optional.of(new TextRendering(
-					"(" + propertyRendering.get().getTextRendering() + " " + restrictionRendering.get().getTextRendering()
+					"(" + propertyRendering.get().getRendering() + " " + restrictionRendering.get().getRendering()
 							+ ")"));
 		else
 			return Optional.empty();
@@ -558,7 +557,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			if (!classExpressionRendering.isPresent())
 				return Optional.empty();
 			else
-				subClassesRepresentation.append(classExpressionRendering.get().getTextRendering());
+				subClassesRepresentation.append(classExpressionRendering.get().getRendering());
 		} else {
 			boolean isFirst = true;
 
@@ -568,7 +567,7 @@ public class TextRenderer extends BaseReferenceRenderer
 					continue; // Any empty class expression will generate an empty rendering
 				if (!isFirst)
 					subClassesRepresentation.append(", ");
-				subClassesRepresentation.append(classExpressionRendering.get().getTextRendering());
+				subClassesRepresentation.append(classExpressionRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -591,7 +590,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			if (namedIndividualRendering.isPresent()) {
 				if (!isFirst)
 					textRepresentation.append(", ");
-				textRepresentation.append(namedIndividualRendering.get().getTextRendering());
+				textRepresentation.append(namedIndividualRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -612,7 +611,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			if (individualRendering.isPresent()) {
 				if (!isFirst)
 					textRepresentation.append(", ");
-				textRepresentation.append(individualRendering.get().getTextRendering());
+				textRepresentation.append(individualRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -660,7 +659,7 @@ public class TextRenderer extends BaseReferenceRenderer
 
 		if (propertyRendering.isPresent() && annotationValueRendering.isPresent()) {
 			String textRepresentation =
-					propertyRendering.get().getTextRendering() + " " + annotationValueRendering.get().getTextRendering();
+					propertyRendering.get().getRendering() + " " + annotationValueRendering.get().getRendering();
 			return Optional.of(new TextRendering(textRepresentation));
 		} else
 			return Optional.empty();
@@ -678,7 +677,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			if (!individualRendering.isPresent())
 				return Optional.empty();
 			else
-				textRepresentation.append(individualRendering.get().getTextRendering());
+				textRepresentation.append(individualRendering.get().getRendering());
 		} else {
 			boolean isFirst = true;
 
@@ -693,7 +692,7 @@ public class TextRenderer extends BaseReferenceRenderer
 				if (!individualRendering.isPresent())
 					return Optional.empty();
 				else {
-					textRepresentation.append(individualRendering.get().getTextRendering());
+					textRepresentation.append(individualRendering.get().getRendering());
 					isFirst = false;
 				}
 			}
@@ -713,7 +712,7 @@ public class TextRenderer extends BaseReferenceRenderer
 
 		if (propertyRendering.isPresent() && propertyValueRendering.isPresent()) {
 			String textRepresentation =
-					propertyRendering.get().getTextRendering() + " " + propertyValueRendering.get().getTextRendering();
+					propertyRendering.get().getRendering() + " " + propertyValueRendering.get().getRendering();
 			return Optional.of(new TextRendering(textRepresentation));
 		} else
 			return Optional.empty();
@@ -798,7 +797,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			throw new InternalRendererException("unknown child for node " + objectAllValuesFromNode.getNodeName());
 
 		if (classRendering.isPresent())
-			return Optional.of(new TextRendering("ONLY " + classRendering.get().getTextRendering()));
+			return Optional.of(new TextRendering("ONLY " + classRendering.get().getRendering()));
 		else
 			return Optional.empty();
 	}
@@ -952,7 +951,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			throw new InternalRendererException("unknown child for node " + someValuesFromNode.getNodeName());
 
 		if (valueRendering.isPresent()) {
-			return Optional.of(new TextRendering("SOME " + valueRendering.get().getTextRendering()));
+			return Optional.of(new TextRendering("SOME " + valueRendering.get().getRendering()));
 		} else
 			return Optional.empty();
 	}
@@ -979,7 +978,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			Optional<? extends TextLiteralRendering> literalRendering = renderOWLLiteral(hasValueNode.getOWLLiteralNode());
 			if (literalRendering.isPresent()) {
 				if (literalRendering.get().getOWLLiteralType().isQuotedOWLLiteral())
-					valueRendering = Optional.of(new TextLiteralRendering(addQuotes(literalRendering.get().getTextRendering())));
+					valueRendering = Optional.of(new TextLiteralRendering(addQuotes(literalRendering.get().getRendering())));
 				else
 					valueRendering = literalRendering;
 			} else
@@ -988,7 +987,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			throw new InternalRendererException("unknown child for node " + hasValueNode.getNodeName());
 
 		if (valueRendering.isPresent()) {
-			return Optional.of(new TextRendering("VALUE " + valueRendering.get().getTextRendering()));
+			return Optional.of(new TextRendering("VALUE " + valueRendering.get().getRendering()));
 		} else
 			return Optional.empty();
 	}
@@ -1056,7 +1055,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			Optional<? extends TextRendering> valueSpecificationRendering = renderValueSpecification(
 					valueEncodingNode.getValueSpecificationNode());
 			if (valueSpecificationRendering.isPresent())
-				textRepresentation.append(valueSpecificationRendering.get().getTextRendering());
+				textRepresentation.append(valueSpecificationRendering.get().getRendering());
 		}
 		return textRepresentation.length() == 0 ?
 				Optional.empty() :
@@ -1073,7 +1072,7 @@ public class TextRenderer extends BaseReferenceRenderer
 			if (typeRendering.isPresent()) {
 				if (!isFirst)
 					textRepresentation.append(", ");
-				textRepresentation.append(typeRendering.get().getTextRendering());
+				textRepresentation.append(typeRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -1101,7 +1100,7 @@ public class TextRenderer extends BaseReferenceRenderer
 					textRepresentation.append("=");
 				else
 					textRepresentation.append(", ");
-				textRepresentation.append(valueSpecificationItemRendering.get().getTextRendering());
+				textRepresentation.append(valueSpecificationItemRendering.get().getRendering());
 				isFirst = false;
 			}
 		}
@@ -1146,7 +1145,7 @@ public class TextRenderer extends BaseReferenceRenderer
 				if (valueExtractionFunctionArgumentRendering.isPresent()) {
 					if (!isFirst)
 						functionArgumentsRepresentation.append(" ");
-					functionArgumentsRepresentation.append(valueExtractionFunctionArgumentRendering.get().getTextRendering());
+					functionArgumentsRepresentation.append(valueExtractionFunctionArgumentRendering.get().getRendering());
 					isFirst = false;
 				}
 			}

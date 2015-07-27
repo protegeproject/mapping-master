@@ -35,7 +35,7 @@ public class TextLiteralRendering extends TextRendering implements OWLLiteralRen
 
   @Override public String getRawValue()
   {
-    return getTextRendering();
+    return getRendering();
   }
 
   @Override public OWLLiteralType getOWLLiteralType() { return this.literalType; }
