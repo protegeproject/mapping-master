@@ -1,11 +1,11 @@
 package org.mm.ui.action;
 
-import org.mm.exceptions.MappingMasterException;
-import org.mm.ui.model.MMApplicationModel;
-import org.mm.ui.model.MappingsExpressionsModel;
 import org.mm.core.MappingExpression;
+import org.mm.exceptions.MappingMasterException;
 import org.mm.ui.MMApplication;
 import org.mm.ui.dialog.MMApplicationDialogManager;
+import org.mm.ui.model.MMApplicationModel;
+import org.mm.ui.model.MappingsExpressionsModel;
 import org.mm.ui.view.MMApplicationView;
 import org.mm.ui.view.MappingsControlView;
 

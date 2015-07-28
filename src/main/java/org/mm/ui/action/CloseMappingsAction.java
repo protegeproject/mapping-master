@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 
 public class CloseMappingsAction implements ActionListener
 {
+  private static final String CLOSE_MAPPINGS_TITLE = "Close Mappings";
+  private static final String CLOSE_MAPPINGS_MESSAGE = "Close Mappings";
+
   private final MMApplication application;
 
   public CloseMappingsAction(MMApplication application) { this.application = application; }
@@ -24,8 +27,7 @@ public class CloseMappingsAction implements ActionListener
     MMApplicationModel applicationModel = application.getApplicationModel();
 
     if (mappingExpressionsModel.hasMappingExpressions() && applicationModel.areMappingsModified() &&
-      getApplicationDialogManager()
-        .showConfirmDialog(applicationView, "Close Mappings", "Do you really want to close the mappings?")) {
+      getApplicationDialogManager().showConfirmDialog(applicationView, CLOSE_MAPPINGS_TITLE, CLOSE_MAPPINGS_MESSAGE)) {
       close(application);
     } else
       close(application);

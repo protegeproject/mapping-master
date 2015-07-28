@@ -7,8 +7,17 @@ import org.mm.ui.model.MMApplicationModel;
 
 import javax.swing.*;
 
+/**
+ * This is the main Mapping Master user interface. It contains a view of a spreadsheet and a control area to edit and
+ * execute Mapping Master expressions.
+ */
 public class MMApplicationView extends JSplitPane implements MMView
 {
+  private static final String MAPPINGS_CONTROL_VIEW_TITLE = "MappingsControl";
+  private static final String MAPPINGS_CONTROL_VIEW_DESCRIPTION = "MappingsControl";
+  private static final String EXPRESSIONS_VIEW_TITLE = "Expressions";
+  private static final String EXPRESSIONS_VIEW_DESCRIPTION = "Expressions Tab";
+
   private final MMApplication application;
   private final MMApplicationDialogManager applicationDialogManager;
   private final DataSourceView dataSourceView;
@@ -18,13 +27,9 @@ public class MMApplicationView extends JSplitPane implements MMView
 
   public MMApplicationView(MMApplicationModel applicationModel, MMApplicationDialogManager applicationDialogManager)
   {
-    applicationModel.setApplicationView(this);
-
     this.applicationDialogManager = applicationDialogManager;
 
     this.application = new MMApplication(this, applicationModel);
-
-    applicationModel.setSaveMappingsAction(new SaveMappingsAction(this.application));
 
     this.applicationDialogManager.initialize(this.application);
 
@@ -39,10 +44,14 @@ public class MMApplicationView extends JSplitPane implements MMView
     setBottomComponent(this.mappingsPane);
 
     this.mappingsControlView = new MappingsControlView(this.application);
-    this.mappingsPane.addTab("Mappings Control", null, this.mappingsControlView, "Mappings Control Tab");
+    this.mappingsPane
+      .addTab(MAPPINGS_CONTROL_VIEW_TITLE, null, this.mappingsControlView, MAPPINGS_CONTROL_VIEW_DESCRIPTION);
 
     this.mappingsExpressionsView = new MappingExpressionsView(this.application);
-    this.mappingsPane.addTab("Expressions", null, this.mappingsExpressionsView, "Expressions Tab");
+    this.mappingsPane.addTab(EXPRESSIONS_VIEW_TITLE, null, this.mappingsExpressionsView, EXPRESSIONS_VIEW_DESCRIPTION);
+
+    applicationModel.setApplicationView(this);
+    applicationModel.setSaveMappingsAction(new SaveMappingsAction(this.application));
   }
 
   @Override public void update()

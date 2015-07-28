@@ -25,7 +25,8 @@ public class SaveAsMappingsAction implements ActionListener
 
   public void saveMappings()
   {
-    MappingsExpressionsModel mappingExpressionsModel = this.application.getApplicationModel().getMappingExpressionsModel();
+    MappingsExpressionsModel mappingExpressionsModel = this.application.getApplicationModel()
+      .getMappingExpressionsModel();
     MMApplicationView applicationView = this.application.getApplicationView();
     MMApplicationModel applicationModel = this.application.getApplicationModel();
     MappingsControlView mappingsControlView = applicationView.getMappingsControlView();

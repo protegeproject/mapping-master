@@ -76,6 +76,7 @@ public class MappingExpressionsView extends JPanel implements MMView
     });
   }
 
+  // TODO Calculate these dimensions dynamically based on the size of the view.
   private void setPreferredColumnWidths()
   {
     TableColumnModel columnModel = this.mappingExpressionsTable.getColumnModel();
@@ -99,6 +100,7 @@ public class MappingExpressionsView extends JPanel implements MMView
     validate();
   }
 
+  // TODO Use Optional to get rid of null.
   /**
    * Returns the selected expression if one is selected; null is returned otherwise.
    */

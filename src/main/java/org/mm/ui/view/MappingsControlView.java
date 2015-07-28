@@ -29,7 +29,7 @@ public class MappingsControlView extends JPanel implements MMView
 
 		createComponents();
 
-		statusWindowAppend("MappingMaster V0.95\n\n");
+		statusWindowAppend("MappingMaster V1.0.0\n\n");
 		statusWindowAppend("See https://github.com/protegeproject/mapping-master/wiki for documentation.\n");
 		statusWindowAppend("Use the Expressions tab to define mappings using MappingMaster's DSL.\n");
 		statusWindowAppend("Click the Map button to perform mappings.\n");
@@ -61,7 +61,7 @@ public class MappingsControlView extends JPanel implements MMView
 		this.statusWindow.append(text);
 	}
 
-	// TODO Need to make option stuff more generic. ReferenceRendererOptionsManager should return list of options.
+	// TODO Need to make options stuff more generic. ReferenceRendererOptionsManager should return list of options.
 	private void createComponents()
 	{
 		JPanel headingPanel, mappingsButtonPanel, optionsPanel, fileButtonPanel, footerPanel;

@@ -6,6 +6,9 @@ import org.mm.core.MappingExpression;
 import javax.swing.*;
 import java.awt.*;
 
+// TODO No implementation in this project (previous implementation was Protege 3-specific).
+// See https://github.com/protegeproject/swrlapi/blob/master/src/main/java/org/swrlapi/factory/DefaultSWRLAPIDialogManager.java
+// for a potential implementation.
 public interface MMApplicationDialogManager
 {
   void initialize(MMApplication application);

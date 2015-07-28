@@ -16,6 +16,7 @@ public class MMApplicationModel implements MMModel
   private final ReferenceRendererOptionsManager optionsManager;
   private final MappingExpressionsPersistenceLayer mappingExpressionsPersistenceLayer;
 
+  // TODO Use Optional to get rid of null.
   private MMApplicationView applicationView;
   private String mappingFileName;
   private SaveMappingsAction saveMappingsAction;
@@ -25,12 +26,16 @@ public class MMApplicationModel implements MMModel
   {
     this.dataSourceModel = new DataSourceModel(dataSource);
     this.expressionMappingsModel = new MappingsExpressionsModel();
+    this.mappingExpressionsPersistenceLayer = mappingExpressionsPersistenceLayer;
     this.coreRenderer = coreRenderer;
     this.optionsManager = new ReferenceRendererOptionsManager(coreRenderer.getReferenceRenderer());
-    this.mappingExpressionsPersistenceLayer = mappingExpressionsPersistenceLayer;
   }
 
   public DataSourceModel getDataSourceModel() { return this.dataSourceModel; }
+
+  public void setApplicationView(MMApplicationView view) { this.applicationView = view; }
+
+  public MMApplicationView getApplicationView() { return this.applicationView; }
 
   public MappingsExpressionsModel getMappingExpressionsModel() { return this.expressionMappingsModel; }
 
@@ -38,24 +43,20 @@ public class MMApplicationModel implements MMModel
 
   public ReferenceRendererOptionsManager getMappingConfigurationOptionsManager() { return this.optionsManager; }
 
-  public MappingExpressionsPersistenceLayer getMappingExpressionsPersistenceLayer() { return this.mappingExpressionsPersistenceLayer; }
-
-  public void setApplicationView(MMApplicationView view) { this.applicationView = view; }
-
-  public MMApplicationView getApplicationView() { return this.applicationView; }
+  public MappingExpressionsPersistenceLayer getMappingExpressionsPersistenceLayer()
+  {
+    return this.mappingExpressionsPersistenceLayer;
+  }
 
   public void setSaveMappingsAction(SaveMappingsAction saveMappingsAction)
-  { this.saveMappingsAction = saveMappingsAction; }
+  {
+    this.saveMappingsAction = saveMappingsAction;
+  }
 
   public void saveMappings()
   {
     if (this.saveMappingsAction != null)
       this.saveMappingsAction.saveMappings();
-  }
-
-  public void dataSourceUpdated()
-  {
-    this.coreRenderer.setDataSource(getDataSourceModel().getDataSource());
   }
 
   public void setMappingFileName(String mappingFileName)
@@ -68,6 +69,11 @@ public class MMApplicationModel implements MMModel
   {
     this.mappingFileName = null;
     getMappingsControlView().update();
+  }
+
+  public void dataSourceUpdated()
+  {
+    this.coreRenderer.setDataSource(getDataSourceModel().getDataSource());
   }
 
   public boolean hasMappingFile() { return this.mappingFileName != null; }

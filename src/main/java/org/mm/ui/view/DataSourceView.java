@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DataSourceView extends JPanel implements MMView
 {
-  private MMApplication application;
+  private MMApplication application; // Use Optional to get rid of null.
 
   private final Map<String, SheetView> sheetViewMaps;
   private final JTextField fileNameTextField;

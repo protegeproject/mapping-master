@@ -7,6 +7,9 @@ import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * TODO This is not very principles.
+ */
 public class ReferenceRendererOptionsManager implements MappingMasterParserConstants
 {
   private final ReferenceRenderer referenceRenderer;

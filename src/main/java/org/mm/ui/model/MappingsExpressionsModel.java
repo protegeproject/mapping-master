@@ -19,25 +19,27 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
   private static final int FINISH_ROW_COLUMN = 7;
   private static final int NUMBER_OF_COLUMNS = 8;
 
-  private MMView view;
+  private MMView view; // TODO Use Optional to get rid of null
   private boolean isModified;
 
   private Set<MappingExpression> mappingExpressions;
 
   public MappingsExpressionsModel() { this.mappingExpressions = new HashSet<>(); }
 
+  public void setView(MMView view) { this.view = view; }
+
   public Set<MappingExpression> getMappingExpressions() { return this.mappingExpressions; }
 
   public Set<MappingExpression> getMappingExpressions(boolean isActiveFlag)
   {
-    Set<MappingExpression> res = new HashSet<>();
+    Set<MappingExpression> expressions = new HashSet<>();
 
-    for (MappingExpression expr : this.mappingExpressions) {
-      if (expr.isActive() == isActiveFlag) {
-        res.add(expr);
+    for (MappingExpression expression : this.mappingExpressions) {
+      if (expression.isActive() == isActiveFlag) {
+        expressions.add(expression);
       }
     }
-    return res;
+    return expressions;
   }
 
   public boolean hasMappingExpressions() { return !this.mappingExpressions.isEmpty(); }
@@ -77,8 +79,6 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
     this.isModified = false;
   }
 
-  public void setView(MMView view) { this.view = view; }
-
   public boolean hasBeenModified() { return this.isModified; }
 
   public void clearModifiedStatus() { this.isModified = false; }
@@ -111,29 +111,28 @@ public class MappingsExpressionsModel extends AbstractTableModel implements MMMo
 
   public Object getValueAt(int row, int column)
   {
-    Object result = null;
-
     if (row < 0 || row >= getRowCount() || column < 0 || column >= getColumnCount())
-      result = "OUT OF BOUNDS";
+      return "OUT OF BOUNDS";
     else {
       if (column == EXPRESSION_COLUMN)
-        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getExpression();
+        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getExpression();
       else if (column == COMMENT_COLUMN)
-        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getComment();
+        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getComment();
       else if (column == SOURCE_SHEET_NAME_COLUMN)
-        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getSourceSheetName();
+        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getSourceSheetName();
       else if (column == START_COLUMN_COLUMN)
-        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getStartColumn();
+        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getStartColumn();
       else if (column == FINISH_COLUMN_COLUMN)
-        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getFinishColumn();
+        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getFinishColumn();
       else if (column == START_ROW_COLUMN)
-        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getStartRow();
+        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getStartRow();
       else if (column == FINISH_ROW_COLUMN)
-        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).getFinishRow();
+        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getFinishRow();
       else if (column == ACTIVE_COLUMN)
-        result = ((MappingExpression)this.mappingExpressions.toArray()[row]).isActive();
+        return ((MappingExpression)this.mappingExpressions.toArray()[row]).isActive();
+      else
+        return null;
     }
-    return result;
   }
 
   @Override public boolean isCellEditable(int rowIndex, int columnIndex) { return columnIndex == ACTIVE_COLUMN; }

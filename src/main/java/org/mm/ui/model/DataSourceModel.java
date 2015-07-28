@@ -5,6 +5,7 @@ import org.mm.ui.view.MMView;
 
 import java.util.List;
 
+// TODO Use Optional to get rid of nulls.
 public class DataSourceModel implements MMModel
 {
   private SpreadSheetDataSource dataSource;

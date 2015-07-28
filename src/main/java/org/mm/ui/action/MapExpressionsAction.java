@@ -85,10 +85,10 @@ public class MapExpressionsAction implements ActionListener
         return new SpreadsheetLocation(currentLocation.getSheetName(), currentLocation.getColumnNumber() + 1,
           startLocation.getRowNumber());
       } else {
-        throw new RendererException("internalError: incrementLocation called redundantly");
+        throw new RendererException("incrementLocation called redundantly");
       }
     } else
-      throw new RendererException("internalError: incrementLocation called redundantly");
+      throw new RendererException("incrementLocation called redundantly");
   }
 
   private MappingsExpressionsModel getMappingExpressionsModel()

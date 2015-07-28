@@ -6,8 +6,8 @@ import org.mm.ui.MMApplication;
 import org.mm.ui.dialog.MMApplicationDialogManager;
 import org.mm.ui.model.MMApplicationModel;
 import org.mm.ui.model.MappingsExpressionsModel;
-import org.mm.ui.view.MappingsControlView;
 import org.mm.ui.view.MMApplicationView;
+import org.mm.ui.view.MappingsControlView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -25,7 +25,8 @@ public class OpenMappingsAction implements ActionListener
 
   public void openMappings()
   {
-    MappingsExpressionsModel mappingExpressionsModel = this.application.getApplicationModel().getMappingExpressionsModel();
+    MappingsExpressionsModel mappingExpressionsModel = this.application.getApplicationModel()
+      .getMappingExpressionsModel();
     MMApplicationView applicationView = this.application.getApplicationView();
     MMApplicationModel applicationModel = this.application.getApplicationModel();
     MappingsControlView mappingsControlView = applicationView.getMappingsControlView();
