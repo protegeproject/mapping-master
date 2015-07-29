@@ -1021,6 +1021,7 @@ int reference_type() #ReferenceType :
    | t = <OWL_NAMED_INDIVIDUAL> { referenceType = t.kind; }
    | t = <OWL_OBJECT_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_DATA_PROPERTY> { referenceType = t.kind; }
+   | t = <OWL_ANNOTATION_PROPERTY> { referenceType = t.kind; }
    | referenceType = datatype()
   ) 
 
