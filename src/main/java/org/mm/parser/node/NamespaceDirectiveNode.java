@@ -6,11 +6,11 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class NamespaceNode implements MMNode, MappingMasterParserConstants
+public class NamespaceDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private final String namespace;
 
-  NamespaceNode(ASTNamespace node) throws ParseException
+  NamespaceDirectiveNode(ASTNamespace node) throws ParseException
   {
     this.namespace = node.namespace;
   }
@@ -19,7 +19,7 @@ public class NamespaceNode implements MMNode, MappingMasterParserConstants
 
   @Override public String getNodeName()
   {
-    return "Namespace";
+    return "NamespaceDirective";
   }
 
   public String toString()

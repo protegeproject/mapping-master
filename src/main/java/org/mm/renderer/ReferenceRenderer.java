@@ -8,27 +8,47 @@ import java.util.Optional;
 
 public interface ReferenceRenderer
 {
-	Optional<? extends ReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException;
+  Optional<? extends ReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException;
 
-	void setDataSource(SpreadSheetDataSource dataSource);
+  void setDataSource(SpreadSheetDataSource dataSource);
 
-	int getDefaultValueEncoding();
+  int getDefaultValueEncoding();
 
-	int getDefaultReferenceType();
+  int getDefaultReferenceType();
 
-	int getDefaultOWLPropertyType();
+  int getDefaultOWLPropertyType();
 
-	int getDefaultOWLPropertyAssertionObjectType();
+  int getDefaultOWLPropertyValueType();
 
-	int getDefaultOWLDataPropertyValueType();
+  int getDefaultOWLDataPropertyValueType();
 
-	void setDefaultValueEncoding(int defaultValueEncoding);
+  int getDefaultEmptyLocationDirective();
 
-	void setDefaultReferenceType( int defaultReferenceType);
+  int getDefaultEmptyRDFIDDirective();
 
-	void setDefaultOWLPropertyType(int defaultOWLPropertyType);
+  int getDefaultEmptyRDFSLabelDirective();
 
-	void setDefaultOWLPropertyAssertionObjectType(int defaultOWLPropertyAssertionObjectType);
+  int getDefaultIfOWLEntityExistsDirective();
 
-	void setDefaultOWLDataPropertyValueType(int defaultOWLDataPropertyValueType);
+  int getDefaultIfOWLEntityDoesNotExistDirective();
+
+  void setDefaultValueEncoding(int defaultValueEncoding);
+
+  void setDefaultReferenceType(int defaultReferenceType);
+
+  void setDefaultOWLPropertyType(int defaultOWLPropertyType);
+
+  void setDefaultOWLPropertyValueType(int defaultOWLPropertyAssertionObjectType);
+
+  void setDefaultOWLDataPropertyValueType(int defaultOWLDataPropertyValueType);
+
+  void setDefaultEmptyLocationDirective(int defaultEmptyLocationDirective);
+
+  void setDefaultEmptyRDFIDDirective(int defaultEmptyRDFIDDirective);
+
+  void setDefaultEmptyRDFSLabelDirective(int defaultEmptyRDFSLabelDirective);
+
+  void setDefaultIfOWLEntityExistsDirective(int defaultIfOWLEntityExistsDirective);
+
+  void setDefaultIfOWNEntityDoesNotExistDirective(int defaultIfOWLEntityDoesNotExistDirective);
 }

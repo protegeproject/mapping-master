@@ -8,14 +8,14 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
+public class ValueEncodingDirectiveNode implements MMNode, MappingMasterParserConstants
 {
-  private final int encodingType;
+  private final int valueEncodingType;
   private ValueSpecificationNode valueSpecificationNode;
 
-  public ValueEncodingNode(ASTValueEncoding node) throws ParseException
+  public ValueEncodingDirectiveNode(ASTValueEncoding node) throws ParseException
   {
-    this.encodingType = node.encodingType;
+    this.valueEncodingType = node.encodingType;
 
     for (int i = 0; i < node.jjtGetNumChildren(); i++) {
       Node child = node.jjtGetChild(i);
@@ -27,37 +27,37 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
     }
   }
 
-  public ValueEncodingNode(int defaultValueEncoding) { this.encodingType = defaultValueEncoding; }
+  @Override public String getNodeName()
+  {
+    return "ValueEncodingDirective";
+  }
+
+  public ValueEncodingDirectiveNode(int defaultValueEncoding) { this.valueEncodingType = defaultValueEncoding; }
 
   public boolean hasValueSpecificationNode() { return this.valueSpecificationNode != null; }
 
   public ValueSpecificationNode getValueSpecificationNode() { return this.valueSpecificationNode; }
 
-  public int getEncodingType() { return this.encodingType; }
+  public int getValueEncodingType() { return this.valueEncodingType; }
 
-  public String getEncodingTypeName()
+  public String getValueEncodingTypeName()
   {
-    return tokenImage[this.encodingType].substring(1, tokenImage[this.encodingType].length() - 1);
+    return tokenImage[this.valueEncodingType].substring(1, tokenImage[this.valueEncodingType].length() - 1);
   }
 
-  public boolean useLocationEncoding() { return this.encodingType == MM_LOCATION; }
+  public boolean useLocationEncoding() { return this.valueEncodingType == MM_LOCATION; }
 
-  public boolean hasLocationWithDuplicatesEncoding() { return this.encodingType == MM_LOCATION_WITH_DUPLICATES; }
+  public boolean hasLocationWithDuplicatesEncoding() { return this.valueEncodingType == MM_LOCATION_WITH_DUPLICATES; }
 
-  public boolean hasLiteralEncoding() { return this.encodingType == MM_LITERAL; }
+  public boolean hasLiteralEncoding() { return this.valueEncodingType == MM_LITERAL; }
 
-  public boolean hasRDFIDEncoding() { return this.encodingType == RDF_ID; }
+  public boolean hasRDFIDEncoding() { return this.valueEncodingType == RDF_ID; }
 
-  public boolean hasRDFSLabelEncoding() { return this.encodingType == RDFS_LABEL; }
-
-  @Override public String getNodeName()
-  {
-    return "ValueEncoding";
-  }
+  public boolean hasRDFSLabelEncoding() { return this.valueEncodingType == RDFS_LABEL; }
 
   public String toString()
   {
-    String representation = getEncodingTypeName();
+    String representation = getValueEncodingTypeName();
 
     if (hasValueSpecificationNode())
       representation += this.valueSpecificationNode.toString();
@@ -71,8 +71,8 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
       return true;
     if (obj == null || obj.getClass() != this.getClass())
       return false;
-    ValueEncodingNode ve = (ValueEncodingNode)obj;
-    return getEncodingType() == ve.getEncodingType() && this.valueSpecificationNode != null
+    ValueEncodingDirectiveNode ve = (ValueEncodingDirectiveNode)obj;
+    return getValueEncodingType() == ve.getValueEncodingType() && this.valueSpecificationNode != null
       && ve.valueSpecificationNode != null && this.valueSpecificationNode.equals(ve.valueSpecificationNode);
   }
 
@@ -80,7 +80,7 @@ public class ValueEncodingNode implements MMNode, MappingMasterParserConstants
   {
     int hash = 15;
 
-    hash = hash + this.encodingType;
+    hash = hash + this.valueEncodingType;
     hash = hash + (null == this.valueSpecificationNode ? 0 : this.valueSpecificationNode.hashCode());
 
     return hash;

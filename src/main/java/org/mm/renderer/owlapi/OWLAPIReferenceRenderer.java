@@ -143,13 +143,13 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
   {
     // A reference will not have both a prefix and a namespace specified
     if (referenceNode.hasExplicitlySpecifiedPrefix()) {
-      String prefix = referenceNode.getPrefixNode().getPrefix();
+      String prefix = referenceNode.getPrefixDirectiveNode().getPrefix();
       String namespace = this.owlObjectHandler.getNamespaceForPrefix(prefix);
       if (namespace == null)
         throw new RendererException("unknown prefix " + prefix + " specified in reference " + referenceNode);
       return namespace;
     } else if (referenceNode.hasExplicitlySpecifiedNamespace()) {
-      return referenceNode.getNamespaceNode().getNamespace();
+      return referenceNode.getNamespaceDirectiveNode().getNamespace();
     } else {
       if (!hasDefaultNamespace())
         throw new RendererException(

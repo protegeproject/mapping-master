@@ -6,11 +6,11 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultLiteralNode implements MMNode, MappingMasterParserConstants
+public class DefaultLiteralDirectiveNode implements MMNode, MappingMasterParserConstants
 {
 	private final String defaultLiteral;
 
-	public DefaultLiteralNode(ASTDefaultLiteral node) throws ParseException
+	public DefaultLiteralDirectiveNode(ASTDefaultLiteral node) throws ParseException
 	{
 		this.defaultLiteral = node.defaultLiteral;
 	}
@@ -36,7 +36,7 @@ public class DefaultLiteralNode implements MMNode, MappingMasterParserConstants
 			return true;
 		if (obj == null || obj.getClass() != this.getClass())
 			return false;
-		DefaultLiteralNode dv = (DefaultLiteralNode)obj;
+		DefaultLiteralDirectiveNode dv = (DefaultLiteralDirectiveNode)obj;
 		return this.defaultLiteral != null && dv.defaultLiteral != null && this.defaultLiteral
 			.equals(dv.defaultLiteral);
 	}

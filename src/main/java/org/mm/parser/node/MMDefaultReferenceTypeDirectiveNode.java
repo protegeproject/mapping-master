@@ -8,21 +8,21 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class MMDefaultReferenceTypeNode implements MMNode
+public class MMDefaultReferenceTypeDirectiveNode implements MMNode
 {
   private ReferenceTypeNode referenceTypeNode;
 
-  public MMDefaultReferenceTypeNode(ASTMMDefaultReferenceType node) throws ParseException
+  public MMDefaultReferenceTypeDirectiveNode(ASTMMDefaultReferenceType node) throws ParseException
   {
     if (node.jjtGetNumChildren() != 1)
-      throw new InternalParseException("expecting one ReferenceType child of MMDefaultReferenceType node");
+      throw new InternalParseException("expecting one ReferenceType child of node " + getNodeName());
     else {
       Node child = node.jjtGetChild(0);
       if (ParserUtil.hasName(child, "ReferenceType"))
         this.referenceTypeNode = new ReferenceTypeNode((ASTReferenceType)child);
       else
         throw new InternalParseException(
-          "MMDefaultReferenceType node expecting ReferenceType child, got " + child);
+          "expecting ReferenceType child, got " + child + " for node " + getNodeName());
     }
   }
 
@@ -33,7 +33,7 @@ public class MMDefaultReferenceTypeNode implements MMNode
 
   @Override public String getNodeName()
   {
-    return "MMDefaultReferenceTypeNode";
+    return "MMDefaultReferenceTypeDirective";
   }
 
   public String toString()

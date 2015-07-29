@@ -6,17 +6,17 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class LanguageNode implements MMNode, MappingMasterParserConstants
+public class LanguageDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private final String language;
 
-  public LanguageNode(ASTLanguage node) throws ParseException { this.language = node.language; }
+  public LanguageDirectiveNode(ASTLanguage node) throws ParseException { this.language = node.language; }
 
   public String getLanguage() { return this.language; }
 
   @Override public String getNodeName()
   {
-    return "Language";
+    return "LanguageDirective";
   }
 
   public String toString()

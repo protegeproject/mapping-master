@@ -5,11 +5,11 @@ import org.mm.parser.ASTPrefix;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
 
-public class PrefixNode implements MMNode, MappingMasterParserConstants
+public class PrefixDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private final String prefix;
 
-  PrefixNode(ASTPrefix node) throws ParseException
+  PrefixDirectiveNode(ASTPrefix node) throws ParseException
   {
     this.prefix = node.prefix;
   }
@@ -18,7 +18,7 @@ public class PrefixNode implements MMNode, MappingMasterParserConstants
 
   @Override public String getNodeName()
   {
-    return "Prefix";
+    return "PrefixDirective";
   }
 
   public String toString()

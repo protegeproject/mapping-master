@@ -6,11 +6,11 @@ import org.mm.parser.ASTDefaultLabel;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
 
-public class DefaultLabelNode implements MMNode, MappingMasterParserConstants
+public class DefaultLabelDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private final String defaultLabel;
   
-  public DefaultLabelNode(ASTDefaultLabel node) throws ParseException
+  public DefaultLabelDirectiveNode(ASTDefaultLabel node) throws ParseException
   { 
     this.defaultLabel = node.defaultLabel;
   } 
@@ -19,7 +19,7 @@ public class DefaultLabelNode implements MMNode, MappingMasterParserConstants
 
   @Override public String getNodeName()
   {
-    return "DefaultLabel";
+    return "DefaultLabelDirective";
   }
 
   public String toString()
@@ -33,7 +33,7 @@ public class DefaultLabelNode implements MMNode, MappingMasterParserConstants
   {
     if (this == obj) return true;
     if (obj == null || obj.getClass() != this.getClass()) return false;
-    DefaultLabelNode dv = (DefaultLabelNode)obj;
+    DefaultLabelDirectiveNode dv = (DefaultLabelDirectiveNode)obj;
     return this.defaultLabel != null && dv.defaultLabel != null && this.defaultLabel.equals(dv.defaultLabel);
   } 
 

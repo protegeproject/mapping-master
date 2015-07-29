@@ -6,11 +6,11 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultIDNode implements MMNode, MappingMasterParserConstants
+public class DefaultIDDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private final String defaultID;
   
-  public DefaultIDNode(ASTDefaultID node) throws ParseException
+  public DefaultIDDirectiveNode(ASTDefaultID node) throws ParseException
   { 
     this.defaultID = node.defaultID;
   } 
@@ -19,7 +19,7 @@ public class DefaultIDNode implements MMNode, MappingMasterParserConstants
 
   @Override public String getNodeName()
   {
-    return "DefaultID";
+    return "DefaultIDDirective";
   }
 
   public String toString()
@@ -33,7 +33,7 @@ public class DefaultIDNode implements MMNode, MappingMasterParserConstants
   {
     if (this == obj) return true;
     if (obj == null || obj.getClass() != this.getClass()) return false;
-    DefaultIDNode dv = (DefaultIDNode)obj;
+    DefaultIDDirectiveNode dv = (DefaultIDDirectiveNode)obj;
     return this.defaultID != null && dv.defaultID != null && this.defaultID.equals(dv.defaultID);
   } 
 

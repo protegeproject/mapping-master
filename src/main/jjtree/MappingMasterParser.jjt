@@ -298,16 +298,18 @@ SimpleNode expression() #Expression : {}
 
 void mm_directive() #MMDirective : {}
 {
-  (  mm_default_value_encoding()
-   | mm_default_reference_type()
-   | mm_default_property_value_type()
-   | mm_default_shift_setting()
-   | mm_default_empty_location_setting()
-   | mm_default_empty_literal_setting()
-   | mm_default_empty_rdf_id_setting()
-   | mm_default_empty_rdfs_label_setting()
-   | mm_default_if_exists_setting()
-   | mm_default_if_not_exists_setting()
+  (  mm_default_value_encoding_directive()
+   | mm_default_reference_type_directive()
+   | mm_default_property_type_directive()
+   | mm_default_property_value_type_directive()
+   | mm_default_data_property_value_type_directive()
+   | mm_default_shift_directive()
+   | mm_default_empty_location_directive()
+   | mm_default_empty_literal_directive()
+   | mm_default_empty_rdf_id_directive()
+   | mm_default_empty_rdfs_label_directive()
+   | mm_default_if_exists_directive()
+   | mm_default_if_not_exists_directive()
   ) 
 }
 
@@ -321,7 +323,7 @@ void mm_expression() #MMExpression : {}
   // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
 
-void mm_default_value_encoding() #MMDefaultValueEncoding: 
+void mm_default_value_encoding_directive() #MMDefaultValueEncoding: 
 {
   int encodingType;
 }
@@ -338,12 +340,12 @@ void mm_default_value_encoding() #MMDefaultValueEncoding:
   }
 }
 
-void mm_default_shift_setting() #MMDefaultShiftSetting: 
+void mm_default_shift_directive() #MMDefaultShiftSetting: 
 {
   int shiftSetting;
 }
 {
-  <MM_DEFAULT_SHIFT> shiftSetting = shift_setting()
+  <MM_DEFAULT_SHIFT> shiftSetting = shift_directive()
 
   {
     jjtThis.shiftSetting = shiftSetting;
@@ -351,12 +353,12 @@ void mm_default_shift_setting() #MMDefaultShiftSetting:
   }
 }
 
-void mm_default_empty_location_setting() #MMDefaultEmptyLocationSetting: 
+void mm_default_empty_location_directive() #MMDefaultEmptyLocationSetting: 
 {
   int emptyLocationSetting;
 }
 {
-  <MM_DEFAULT_EMPTY_LOCATION> emptyLocationSetting = empty_location_setting()
+  <MM_DEFAULT_EMPTY_LOCATION> emptyLocationSetting = empty_location_directive()
 
   {
     jjtThis.emptyLocationSetting = emptyLocationSetting;
@@ -364,12 +366,12 @@ void mm_default_empty_location_setting() #MMDefaultEmptyLocationSetting:
   }
 }
 
-void mm_default_empty_literal_setting() #MMDefaultEmptyLiteralSetting: 
+void mm_default_empty_literal_directive() #MMDefaultEmptyLiteralSetting: 
 {
   int emptyLiteralSetting;
 }
 {
-  <MM_DEFAULT_EMPTY_LITERAL> emptyLiteralSetting = empty_literal_setting()
+  <MM_DEFAULT_EMPTY_LITERAL> emptyLiteralSetting = empty_literal_directive()
 
   {
     jjtThis.emptyLiteralSetting = emptyLiteralSetting;
@@ -377,7 +379,7 @@ void mm_default_empty_literal_setting() #MMDefaultEmptyLiteralSetting:
   }
 }
 
-void mm_default_if_exists_setting() #MMDefaultIfExistsSetting: 
+void mm_default_if_exists_directive() #MMDefaultIfExistsSetting: 
 {
   int ifExistsSetting;
 }
@@ -390,7 +392,7 @@ void mm_default_if_exists_setting() #MMDefaultIfExistsSetting:
   }
 }
 
-void mm_default_if_not_exists_setting() #MMDefaultIfNotExistsSetting: 
+void mm_default_if_not_exists_directive() #MMDefaultIfNotExistsSetting: 
 {
   int ifNotExistsSetting;
 }
@@ -403,12 +405,12 @@ void mm_default_if_not_exists_setting() #MMDefaultIfNotExistsSetting:
   }
 }
 
-void mm_default_empty_rdf_id_setting() #MMDefaultEmptyRDFIDSetting: 
+void mm_default_empty_rdf_id_directive() #MMDefaultEmptyRDFIDSetting: 
 {
   int emptyRDFIDSetting;
 }
 {
-  <MM_DEFAULT_EMPTY_RDF_ID> emptyRDFIDSetting = empty_rdf_id_setting()
+  <MM_DEFAULT_EMPTY_RDF_ID> emptyRDFIDSetting = empty_rdf_id_directive()
 
   {
     jjtThis.emptyRDFIDSetting = emptyRDFIDSetting;
@@ -416,12 +418,12 @@ void mm_default_empty_rdf_id_setting() #MMDefaultEmptyRDFIDSetting:
   }
 }
 
-void mm_default_empty_rdfs_label_setting() #MMDefaultEmptyRDFSLabelSetting: 
+void mm_default_empty_rdfs_label_directive() #MMDefaultEmptyRDFSLabelSetting: 
 {
   int emptyRDFSLabelSetting;
 }
 {
-  <MM_DEFAULT_EMPTY_RDFS_LABEL> emptyRDFSLabelSetting = empty_rdfs_label_setting()
+  <MM_DEFAULT_EMPTY_RDFS_LABEL> emptyRDFSLabelSetting = empty_rdfs_label_directive()
 
   {
     jjtThis.emptyRDFSLabelSetting = emptyRDFSLabelSetting;
@@ -430,7 +432,7 @@ void mm_default_empty_rdfs_label_setting() #MMDefaultEmptyRDFSLabelSetting:
 }
 
 
-void mm_default_reference_type() #MMDefaultReferenceType: 
+void mm_default_reference_type_directive() #MMDefaultReferenceType: 
 {
   int referenceType;
 }
@@ -478,7 +480,7 @@ void mm_default_namespace() #MMDefaultNamespace:
   }
 }
 
-void mm_default_property_value_type() #MMDefaultPropertyValueType: 
+void mm_default_property_value_type_directive() #MMDefaultPropertyValueType: 
 {
   int defaultType;
 }
@@ -490,7 +492,7 @@ void mm_default_property_value_type() #MMDefaultPropertyValueType:
  }
 }
 
-void mm_default_datatype_property_value_type() #MMDefaultDatatypePropertyValueType: 
+void mm_default_data_property_value_type_directive() #MMDefaultDatatypePropertyValueType: 
 {
   int defaultType;
 }
@@ -502,7 +504,7 @@ void mm_default_datatype_property_value_type() #MMDefaultDatatypePropertyValueTy
  }
 }
 
-void mm_default_annotation_property_value_type() #MMDefaultAnnotationPropertyValueType: 
+void mm_default_annotation_property_value_type_directive() #MMDefaultAnnotationPropertyValueType: 
 {
   int defaultReferenceType;
 }
@@ -514,7 +516,7 @@ void mm_default_annotation_property_value_type() #MMDefaultAnnotationPropertyVal
  }
 }
 
-void mm_default_property_type() #MMDefaultPropertyType: 
+void mm_default_property_type_directive() #MMDefaultPropertyType: 
 {
   Token t;
 }
@@ -989,20 +991,20 @@ void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : 
 
 void reference_directive(int defaultValueEncoding) : {}
 {
-  (  namespace()  
-   | prefix() 
-   | language()
+  (  namespace_directive()  
+   | prefix_directive() 
+   | language_directive()
    | value_extraction_function() 
-   | value_encoding(defaultValueEncoding) 
-   | default_location_value() 
-   | default_literal() 
-   | default_label() 
-   | default_id() 
-   | empty_literal_setting()
-   | empty_location_setting()
-   | empty_rdf_id_setting() 
-   | empty_rdfs_label_setting() 
-   | shift_setting() 
+   | value_encoding_directive(defaultValueEncoding) 
+   | default_location_value_directive() 
+   | default_literal_directive() 
+   | default_label_directive() 
+   | default_id_directive() 
+   | empty_literal_directive()
+   | empty_location_directive()
+   | empty_rdf_id_directive() 
+   | empty_rdfs_label_directive() 
+   | shift_directive() 
    | if_exists_directive()
    | if_not_exists_directive()
   ) 
@@ -1031,7 +1033,7 @@ int reference_type() #ReferenceType :
   }
 }
 
-int value_encoding(int defaultValueEncoding) #ValueEncoding : 
+int value_encoding_directive(int defaultValueEncoding) #ValueEncoding : 
 {
   int encodingType = defaultValueEncoding;
 }
@@ -1054,7 +1056,7 @@ int value_encoding(int defaultValueEncoding) #ValueEncoding :
   }
 }
 
-int empty_location_setting() #EmptyLocationSetting :
+int empty_location_directive() #EmptyLocationSetting :
 {
   Token t;
   int emptyLocationSetting;
@@ -1111,7 +1113,7 @@ int if_not_exists_directive() #IfNotExistsDirective :
   }
 }
 
-int empty_literal_setting() #EmptyLiteralSetting :
+int empty_literal_directive() #EmptyLiteralSetting :
 {
   Token t;
   int emptyLiteralSetting;
@@ -1130,7 +1132,7 @@ int empty_literal_setting() #EmptyLiteralSetting :
   }
 }
 
-int empty_rdfs_label_setting() #EmptyRDFSLabelSetting :
+int empty_rdfs_label_directive() #EmptyRDFSLabelSetting :
 {
   Token t;
   int emptyRDFSLabelSetting;
@@ -1149,7 +1151,7 @@ int empty_rdfs_label_setting() #EmptyRDFSLabelSetting :
   }
 }
 
-int empty_rdf_id_setting() #EmptyRDFIDSetting :
+int empty_rdf_id_directive() #EmptyRDFIDSetting :
 {
   Token t;
   int emptyRDFIDSetting;
@@ -1168,7 +1170,7 @@ int empty_rdf_id_setting() #EmptyRDFIDSetting :
   }
 }
 
-int shift_setting() #ShiftSetting :
+int shift_directive() #ShiftSetting :
 {
   Token t;
   int shiftSetting;
@@ -1188,7 +1190,7 @@ int shift_setting() #ShiftSetting :
   }
 }
 
-void default_literal() #DefaultLiteral :
+void default_literal_directive() #DefaultLiteral :
 {
   String defaultLiteral;
 }
@@ -1200,7 +1202,7 @@ void default_literal() #DefaultLiteral :
   }
 }
 
-void default_location_value() #DefaultLocationValue :
+void default_location_value_directive() #DefaultLocationValue :
 {
   String defaultLocationValue;
 }
@@ -1212,7 +1214,7 @@ void default_location_value() #DefaultLocationValue :
   }
 }
 
-void default_id() #DefaultID :
+void default_id_directive() #DefaultID :
 {
   String defaulrRDFID;
 }
@@ -1224,7 +1226,7 @@ void default_id() #DefaultID :
   }
 }
 
-void default_label() #DefaultLabel :
+void default_label_directive() #DefaultLabel :
 {
   String defaultLabel;
 }
@@ -1236,7 +1238,7 @@ void default_label() #DefaultLabel :
   }
 }
 
-void prefix() #Prefix :
+void prefix_directive() #Prefix :
 {
   String prefix;
 }
@@ -1247,7 +1249,7 @@ void prefix() #Prefix :
   }
 }
 
-void language() #Language :
+void language_directive() #Language :
 {
   String language;
 }
@@ -1264,7 +1266,7 @@ void language() #Language :
   }
 }
 
-void namespace() #Namespace :
+void namespace_directive() #Namespace :
 {
   String namespace;
 }

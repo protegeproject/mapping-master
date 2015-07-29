@@ -36,7 +36,7 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
 
   public String getDefaultPropertyValueType()
   {
-    return getSettingName(this.referenceRenderer.getDefaultOWLPropertyAssertionObjectType());
+    return getSettingName(this.referenceRenderer.getDefaultOWLPropertyValueType());
   }
 
   public String getDefaultDataPropertyValueType()
@@ -80,9 +80,19 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
     else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
       return getSettingName(this.referenceRenderer.getDefaultOWLPropertyType());
     else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-      return getSettingName(this.referenceRenderer.getDefaultOWLPropertyAssertionObjectType());
+      return getSettingName(this.referenceRenderer.getDefaultOWLPropertyValueType());
     else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
       return getSettingName(this.referenceRenderer.getDefaultOWLDataPropertyValueType());
+    else if (optionID == MM_DEFAULT_EMPTY_LOCATION)
+      return getSettingName(this.referenceRenderer.getDefaultEmptyLocationDirective());
+    else if (optionID == MM_DEFAULT_EMPTY_RDF_ID)
+      return getSettingName(this.referenceRenderer.getDefaultEmptyRDFIDDirective());
+    else if (optionID == MM_DEFAULT_EMPTY_RDFS_LABEL)
+      return getSettingName(this.referenceRenderer.getDefaultEmptyRDFSLabelDirective());
+    else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_EXISTS)
+      return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityExistsDirective());
+    else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST)
+      return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityDoesNotExistDirective());
     else
       return "unknown option: " + optionName;
   }
@@ -101,9 +111,19 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
       else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
         this.referenceRenderer.setDefaultOWLPropertyType(settingID);
       else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-        this.referenceRenderer.setDefaultOWLPropertyAssertionObjectType(settingID);
+        this.referenceRenderer.setDefaultOWLPropertyValueType(settingID);
       else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
         this.referenceRenderer.setDefaultOWLDataPropertyValueType(settingID);
+      else if (optionID == MM_DEFAULT_EMPTY_LOCATION)
+        this.referenceRenderer.setDefaultEmptyLocationDirective(settingID);
+      else if (optionID == MM_DEFAULT_EMPTY_RDF_ID)
+        this.referenceRenderer.setDefaultEmptyRDFIDDirective(settingID);
+      else if (optionID == MM_DEFAULT_EMPTY_RDFS_LABEL)
+        this.referenceRenderer.setDefaultEmptyRDFSLabelDirective(settingID);
+      else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_EXISTS)
+        this.referenceRenderer.setDefaultIfOWLEntityExistsDirective(settingID);
+      else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST)
+        this.referenceRenderer.setDefaultIfOWNEntityDoesNotExistDirective(settingID);
     }
   }
 

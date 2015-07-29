@@ -11,8 +11,8 @@ import org.mm.parser.ParserUtil;
 
 public class MMDirectiveNode implements MMNode
 {
-  private MMDefaultValueEncodingNode defaultValueEncodingNode;
-  private MMDefaultReferenceTypeNode defaultReferenceTypeNode;
+  private MMDefaultValueEncodingDirectiveNode defaultValueEncodingNode;
+  private MMDefaultReferenceTypeDirectiveNode defaultReferenceTypeNode;
   private MMDefaultPropertyValueTypeNode defaultPropertyValueTypeNode;
 
   public MMDirectiveNode(ASTMMDirective node) throws ParseException
@@ -21,9 +21,9 @@ public class MMDirectiveNode implements MMNode
       Node child = node.jjtGetChild(i);
 
       if (ParserUtil.hasName(child, "MMDefaultValueEncoding")) {
-        this.defaultValueEncodingNode = new MMDefaultValueEncodingNode((ASTMMDefaultValueEncoding)child);
+        this.defaultValueEncodingNode = new MMDefaultValueEncodingDirectiveNode((ASTMMDefaultValueEncoding)child);
       } else if (ParserUtil.hasName(child, "MMDefaultReferenceType")) {
-        this.defaultReferenceTypeNode = new MMDefaultReferenceTypeNode((ASTMMDefaultReferenceType)child);
+        this.defaultReferenceTypeNode = new MMDefaultReferenceTypeDirectiveNode((ASTMMDefaultReferenceType)child);
       } else if (ParserUtil.hasName(child, "MMDefaultPropertyValueType")) {
         this.defaultPropertyValueTypeNode = new MMDefaultPropertyValueTypeNode((ASTMMDefaultPropertyValueType)child);
       } else
@@ -31,12 +31,12 @@ public class MMDirectiveNode implements MMNode
     }
   }
 
-  public MMDefaultValueEncodingNode getDefaultValueEncodingNode()
+  public MMDefaultValueEncodingDirectiveNode getDefaultValueEncodingNode()
   {
     return this.defaultValueEncodingNode;
   }
 
-  public MMDefaultReferenceTypeNode getDefaultReferenceTypeNode()
+  public MMDefaultReferenceTypeDirectiveNode getDefaultReferenceTypeNode()
   {
     return this.defaultReferenceTypeNode;
   }

@@ -38,7 +38,7 @@ import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.parser.node.TypesNode;
-import org.mm.parser.node.ValueEncodingNode;
+import org.mm.parser.node.ValueEncodingDirectiveNode;
 import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
@@ -875,9 +875,9 @@ public class TextRenderer extends BaseReferenceRenderer
 		return this.defaultOWLPropertyType;
 	}
 
-	@Override public int getDefaultOWLPropertyAssertionObjectType()
+	@Override public int getDefaultOWLPropertyValueType()
 	{
-		return this.defaultOWLPropertyAssertionObjectType;
+		return this.defaultOWLPropertyValueType;
 	}
 
 	@Override public int getDefaultOWLDataPropertyValueType()
@@ -900,9 +900,9 @@ public class TextRenderer extends BaseReferenceRenderer
 		this.defaultOWLDataPropertyValueType = defaultOWLPropertyType;
 	}
 
-	@Override public void setDefaultOWLPropertyAssertionObjectType(int defaultOWLPropertyAssertionObjectType)
+	@Override public void setDefaultOWLPropertyValueType(int defaultOWLPropertyAssertionObjectType)
 	{
-		this.defaultOWLPropertyAssertionObjectType = defaultOWLPropertyAssertionObjectType;
+		this.defaultOWLPropertyValueType = defaultOWLPropertyAssertionObjectType;
 	}
 
 	@Override public void setDefaultOWLDataPropertyValueType(int defaultOWLDataPropertyValueType)
@@ -1044,16 +1044,16 @@ public class TextRenderer extends BaseReferenceRenderer
 			throw new InternalRendererException("do not know how to render type node " + typeNode.getNodeName());
 	}
 
-	private Optional<? extends TextRendering> renderValueEncoding(ValueEncodingNode valueEncodingNode)
+	private Optional<? extends TextRendering> renderValueEncoding(ValueEncodingDirectiveNode valueEncodingDirectiveNode)
 			throws RendererException
 	{
 		StringBuilder textRepresentation = new StringBuilder();
 
-		textRepresentation.append(valueEncodingNode.getEncodingTypeName());
+		textRepresentation.append(valueEncodingDirectiveNode.getValueEncodingTypeName());
 
-		if (valueEncodingNode.hasValueSpecificationNode()) {
+		if (valueEncodingDirectiveNode.hasValueSpecificationNode()) {
 			Optional<? extends TextRendering> valueSpecificationRendering = renderValueSpecification(
-					valueEncodingNode.getValueSpecificationNode());
+					valueEncodingDirectiveNode.getValueSpecificationNode());
 			if (valueSpecificationRendering.isPresent())
 				textRepresentation.append(valueSpecificationRendering.get().getRendering());
 		}

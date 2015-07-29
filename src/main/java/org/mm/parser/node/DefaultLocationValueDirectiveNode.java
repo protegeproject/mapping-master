@@ -6,11 +6,11 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultLocationValueNode implements MMNode, MappingMasterParserConstants
+public class DefaultLocationValueDirectiveNode implements MMNode, MappingMasterParserConstants
 {
   private final String defaultLocationValue;
   
-  public DefaultLocationValueNode(ASTDefaultLocationValue node) throws ParseException
+  public DefaultLocationValueDirectiveNode(ASTDefaultLocationValue node) throws ParseException
   { 
     this.defaultLocationValue = node.defaultLocationValue;
   }
@@ -19,7 +19,7 @@ public class DefaultLocationValueNode implements MMNode, MappingMasterParserCons
 
   @Override public String getNodeName()
   {
-    return "DefaultLocationValue";
+    return "DefaultLocationValueDirective";
   }
 
   public String toString()
@@ -33,7 +33,7 @@ public class DefaultLocationValueNode implements MMNode, MappingMasterParserCons
   {
     if (this == obj) return true;
     if (obj == null || obj.getClass() != this.getClass()) return false;
-    DefaultLocationValueNode dv = (DefaultLocationValueNode)obj;
+    DefaultLocationValueDirectiveNode dv = (DefaultLocationValueDirectiveNode)obj;
     return this.defaultLocationValue != null && dv.defaultLocationValue != null && this.defaultLocationValue
       .equals(dv.defaultLocationValue);
   } 
