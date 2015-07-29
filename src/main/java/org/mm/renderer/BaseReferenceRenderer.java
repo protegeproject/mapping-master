@@ -32,11 +32,11 @@ public abstract class BaseReferenceRenderer
   public int defaultOWLPropertyType = OWL_OBJECT_PROPERTY;
   public int defaultOWLPropertyValueType = XSD_STRING;
   public int defaultOWLDataPropertyValueType = XSD_STRING;
-  public int defaultEmptyLocationDirective = MM_PROCESS_IF_EMPTY_LOCATION;
-  public int defaultEmptyRDFIDDirective = MM_PROCESS_IF_EMPTY_ID;
-  public int defaultEmptyRDFSLabelDirective = MM_PROCESS_IF_EMPTY_LABEL;
-  public int defaultIfOWLEntityExistsDirective = MM_RESOLVE_IF_OWL_ENTITY_EXISTS;
-  public int defaultIfOWLEntityDoesNotExistDirective = MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST;
+  public int defaultEmptyLocation = MM_PROCESS_IF_EMPTY_LOCATION;
+  public int defaultEmptyRDFID = MM_PROCESS_IF_EMPTY_ID;
+  public int defaultEmptyRDFSLabel = MM_PROCESS_IF_EMPTY_LABEL;
+  public int defaultIfOWLEntityExists = MM_RESOLVE_IF_OWL_ENTITY_EXISTS;
+  public int defaultIfOWLEntityDoesNotExist = MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST;
 
   private String defaultNamespace = "";
   private String defaultLanguage = "";
@@ -78,15 +78,15 @@ public abstract class BaseReferenceRenderer
     return this.defaultOWLDataPropertyValueType;
   }
 
-  @Override public int getDefaultEmptyLocationDirective() { return this.defaultEmptyLocationDirective; }
+  @Override public int getDefaultEmptyLocation() { return this.defaultEmptyLocation; }
 
-  @Override public int getDefaultEmptyRDFIDDirective() { return this.defaultEmptyRDFIDDirective; }
+  @Override public int getDefaultEmptyRDFID() { return this.defaultEmptyRDFID; }
 
-  @Override public int getDefaultEmptyRDFSLabelDirective() { return this.defaultEmptyRDFSLabelDirective; }
+  @Override public int getDefaultEmptyRDFSLabel() { return this.defaultEmptyRDFSLabel; }
 
-  @Override public int getDefaultIfOWLEntityExistsDirective() { return this.defaultIfOWLEntityExistsDirective; }
+  @Override public int getDefaultIfOWLEntityExists() { return this.defaultIfOWLEntityExists; }
 
-  @Override public int getDefaultIfOWLEntityDoesNotExistDirective() { return this.defaultIfOWLEntityDoesNotExistDirective; }
+  @Override public int getDefaultIfOWLEntityDoesNotExist() { return this.defaultIfOWLEntityDoesNotExist; }
 
   @Override public void setDefaultValueEncoding(int defaultValueEncoding)
   {
@@ -113,29 +113,29 @@ public abstract class BaseReferenceRenderer
     this.defaultOWLDataPropertyValueType = defaultOWLDataPropertyValueType;
   }
 
-  @Override public void setDefaultEmptyLocationDirective(int defaultEmptyLocationDirective)
+  @Override public void setDefaultEmptyLocation(int defaultEmptyLocation)
   {
-    this.defaultEmptyLocationDirective = defaultEmptyLocationDirective;
+    this.defaultEmptyLocation = defaultEmptyLocation;
   }
 
-  @Override public void setDefaultEmptyRDFIDDirective(int defaultEmptyRDFIDDirective)
+  @Override public void setDefaultEmptyRDFID(int defaultEmptyRDFID)
   {
-    this.defaultEmptyRDFIDDirective = defaultEmptyRDFIDDirective;
+    this.defaultEmptyRDFID = defaultEmptyRDFID;
   }
 
-  @Override public void setDefaultEmptyRDFSLabelDirective(int defaultEmptyRDFSLabelDirective)
+  @Override public void setDefaultEmptyRDFSLabel(int defaultEmptyRDFSLabel)
   {
-    this.defaultEmptyRDFSLabelDirective = defaultEmptyRDFSLabelDirective;
+    this.defaultEmptyRDFSLabel = defaultEmptyRDFSLabel;
   }
 
-  @Override public void setDefaultIfOWLEntityExistsDirective(int defaultIfOWLEntityExistsDirective)
+  @Override public void setDefaultIfOWLEntityExists(int defaultIfOWLEntityExists)
   {
-    this.defaultIfOWLEntityExistsDirective = defaultIfOWLEntityExistsDirective;
+    this.defaultIfOWLEntityExists = defaultIfOWLEntityExists;
   }
 
   @Override public void setDefaultIfOWNEntityDoesNotExistDirective(int defaultIfOWLEntityDoesNotExistDirective)
   {
-    this.defaultIfOWLEntityDoesNotExistDirective = defaultIfOWLEntityDoesNotExistDirective;
+    this.defaultIfOWLEntityDoesNotExist = defaultIfOWLEntityDoesNotExistDirective;
   }
 
   protected SpreadsheetLocation resolveLocation(SourceSpecificationNode sourceSpecificationNode)

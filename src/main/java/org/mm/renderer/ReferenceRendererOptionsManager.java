@@ -7,9 +7,8 @@ import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * TODO This is not very principles.
- */
+// TODO This is not very principled. We just hardcode all options. We should return a set of
+// possible options with valid values for each.
 public class ReferenceRendererOptionsManager implements MappingMasterParserConstants
 {
   private final ReferenceRenderer referenceRenderer;
@@ -19,7 +18,7 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
     this.referenceRenderer = referenceRenderer;
   }
 
-  public String getDefaultNameEncoding()
+  public String getDefaultValueEncoding()
   {
     return getSettingName(this.referenceRenderer.getDefaultValueEncoding());
   }
@@ -42,6 +41,31 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
   public String getDefaultDataPropertyValueType()
   {
     return getSettingName(this.referenceRenderer.getDefaultOWLDataPropertyValueType());
+  }
+
+  public String getDefaultEmptyLocation()
+  {
+    return getSettingName(this.referenceRenderer.getDefaultEmptyLocation());
+  }
+
+  public String getDefaultEmptyRDFSLabel()
+  {
+    return getSettingName(this.referenceRenderer.getDefaultEmptyRDFSLabel());
+  }
+
+  public String getDefaultEmptyRDFID()
+  {
+    return getSettingName(this.referenceRenderer.getDefaultEmptyRDFID());
+  }
+
+  public String getDefaultIfOWLEntityExists()
+  {
+    return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityExists());
+  }
+
+  public String getDefaultIfOWLEntityDoesNotExist()
+  {
+    return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityDoesNotExist());
   }
 
   public String getDefaultValueEncodingOptionName()
@@ -69,6 +93,31 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
     return getOptionName(MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE);
   }
 
+  public String getDefaultEmptyLocationOptionName()
+  {
+    return getOptionName(MM_DEFAULT_EMPTY_LOCATION);
+  }
+
+  public String getDefaultEmptyRDFSLabelOptionName()
+  {
+    return getOptionName(MM_DEFAULT_EMPTY_RDFS_LABEL);
+  }
+
+  public String getDefaultEmptyRDFIDOptionName()
+  {
+    return getOptionName(MM_DEFAULT_EMPTY_RDF_ID);
+  }
+
+  public String getDefaultIfOWLEntityExistsOptionName()
+  {
+    return getOptionName(MM_DEFAULT_IF_OWL_ENTITY_EXISTS);
+  }
+
+  public String getDefaultIfOWLEntityDoesNotExistOptionName()
+  {
+    return getOptionName(MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST);
+  }
+
   public String getMappingConfigurationOption(String optionName)
   {
     int optionID = getOptionID(optionName);
@@ -84,15 +133,15 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
     else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
       return getSettingName(this.referenceRenderer.getDefaultOWLDataPropertyValueType());
     else if (optionID == MM_DEFAULT_EMPTY_LOCATION)
-      return getSettingName(this.referenceRenderer.getDefaultEmptyLocationDirective());
+      return getSettingName(this.referenceRenderer.getDefaultEmptyLocation());
     else if (optionID == MM_DEFAULT_EMPTY_RDF_ID)
-      return getSettingName(this.referenceRenderer.getDefaultEmptyRDFIDDirective());
+      return getSettingName(this.referenceRenderer.getDefaultEmptyRDFID());
     else if (optionID == MM_DEFAULT_EMPTY_RDFS_LABEL)
-      return getSettingName(this.referenceRenderer.getDefaultEmptyRDFSLabelDirective());
+      return getSettingName(this.referenceRenderer.getDefaultEmptyRDFSLabel());
     else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_EXISTS)
-      return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityExistsDirective());
+      return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityExists());
     else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST)
-      return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityDoesNotExistDirective());
+      return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityDoesNotExist());
     else
       return "unknown option: " + optionName;
   }
@@ -115,13 +164,13 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
       else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
         this.referenceRenderer.setDefaultOWLDataPropertyValueType(settingID);
       else if (optionID == MM_DEFAULT_EMPTY_LOCATION)
-        this.referenceRenderer.setDefaultEmptyLocationDirective(settingID);
+        this.referenceRenderer.setDefaultEmptyLocation(settingID);
       else if (optionID == MM_DEFAULT_EMPTY_RDF_ID)
-        this.referenceRenderer.setDefaultEmptyRDFIDDirective(settingID);
+        this.referenceRenderer.setDefaultEmptyRDFID(settingID);
       else if (optionID == MM_DEFAULT_EMPTY_RDFS_LABEL)
-        this.referenceRenderer.setDefaultEmptyRDFSLabelDirective(settingID);
+        this.referenceRenderer.setDefaultEmptyRDFSLabel(settingID);
       else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_EXISTS)
-        this.referenceRenderer.setDefaultIfOWLEntityExistsDirective(settingID);
+        this.referenceRenderer.setDefaultIfOWLEntityExists(settingID);
       else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST)
         this.referenceRenderer.setDefaultIfOWNEntityDoesNotExistDirective(settingID);
     }

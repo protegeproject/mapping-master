@@ -22,15 +22,15 @@ public interface ReferenceRenderer
 
   int getDefaultOWLDataPropertyValueType();
 
-  int getDefaultEmptyLocationDirective();
+  int getDefaultEmptyLocation();
 
-  int getDefaultEmptyRDFIDDirective();
+  int getDefaultEmptyRDFID();
 
-  int getDefaultEmptyRDFSLabelDirective();
+  int getDefaultEmptyRDFSLabel();
 
-  int getDefaultIfOWLEntityExistsDirective();
+  int getDefaultIfOWLEntityExists();
 
-  int getDefaultIfOWLEntityDoesNotExistDirective();
+  int getDefaultIfOWLEntityDoesNotExist();
 
   void setDefaultValueEncoding(int defaultValueEncoding);
 
@@ -42,13 +42,13 @@ public interface ReferenceRenderer
 
   void setDefaultOWLDataPropertyValueType(int defaultOWLDataPropertyValueType);
 
-  void setDefaultEmptyLocationDirective(int defaultEmptyLocationDirective);
+  void setDefaultEmptyLocation(int defaultEmptyLocationDirective);
 
-  void setDefaultEmptyRDFIDDirective(int defaultEmptyRDFIDDirective);
+  void setDefaultEmptyRDFID(int defaultEmptyRDFIDDirective);
 
-  void setDefaultEmptyRDFSLabelDirective(int defaultEmptyRDFSLabelDirective);
+  void setDefaultEmptyRDFSLabel(int defaultEmptyRDFSLabelDirective);
 
-  void setDefaultIfOWLEntityExistsDirective(int defaultIfOWLEntityExistsDirective);
+  void setDefaultIfOWLEntityExists(int defaultIfOWLEntityExistsDirective);
 
   void setDefaultIfOWNEntityDoesNotExistDirective(int defaultIfOWLEntityDoesNotExistDirective);
 }

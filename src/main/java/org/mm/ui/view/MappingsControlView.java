@@ -95,7 +95,7 @@ public class MappingsControlView extends JPanel implements MMView
 		optionsPanel.add(nameEncodingLabel);
 		this.nameEncodingComboBox = new JComboBox();
 		getOptionsManager().getNameEncodings().forEach(this.nameEncodingComboBox::addItem);
-		this.nameEncodingComboBox.setSelectedItem(getOptionsManager().getDefaultNameEncoding());
+		this.nameEncodingComboBox.setSelectedItem(getOptionsManager().getDefaultValueEncoding());
 		this.nameEncodingComboBox
 			.addActionListener(new ConfigurationActionListener(getOptionsManager().getDefaultValueEncodingOptionName()));
 		optionsPanel.add(this.nameEncodingComboBox);
