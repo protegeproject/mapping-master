@@ -1,6 +1,5 @@
 package org.mm.renderer;
 
-import org.mm.core.ReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
@@ -11,7 +10,6 @@ import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
 import org.mm.rendering.OWLLiteralRendering;
 import org.mm.rendering.ReferenceRendering;
-import org.mm.rendering.Rendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 
@@ -165,7 +163,6 @@ public abstract class BaseReferenceRenderer
 	protected String processOWLLiteralReferenceValue(SpreadsheetLocation location, String rawLocationValue,
 			ReferenceNode referenceNode) throws RendererException
 	{
-		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
 		String sourceValue = rawLocationValue.replace("\"", "\\\"");
 		String processedReferenceValue;
 
