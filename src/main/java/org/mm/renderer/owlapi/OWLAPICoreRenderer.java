@@ -1,5 +1,10 @@
 package org.mm.renderer.owlapi;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.ExpressionNode;
@@ -39,6 +44,7 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -51,11 +57,6 @@ import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserConstants
 {
@@ -80,7 +81,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		this.owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
 		this.owlObjectHandler = new OWLAPIObjectHandler(ontology);
 
-		this.entityRenderer = new OWLAPIEntityRenderer();
+		this.entityRenderer = new OWLAPIEntityRenderer(ontology, dataSource);
 		this.literalRenderer = new OWLAPILiteralRenderer(ontology.getOWLOntologyManager().getOWLDataFactory());
 		this.referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource, this.entityRenderer,
 				this.literalRenderer);
@@ -116,82 +117,78 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		// logLine("=====================OWLClassDeclaration================================");
 		// logLine("MappingMaster DSL expression: " + classDeclarationNode);
 
-		Optional<OWLClassRendering> declaredClassRendering = this.entityRenderer
-				.renderOWLClass(classDeclarationNode.getOWLClassNode());
-
+		Optional<OWLClassRendering> declaredClassRendering = this.entityRenderer.renderOWLClass(classDeclarationNode.getOWLClassNode());
 		if (!declaredClassRendering.isPresent()) {
 			//rendering.logLine("processReference: skipping OWL class declaration because of missing class");
-		} else {
-			if (classDeclarationNode.hasOWLSubclassOfNodes()) {
-				for (OWLSubclassOfNode subclassOfNode : classDeclarationNode.getOWLSubclassOfNodes()) {
-					for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
-						Optional<OWLClassExpressionRendering> classExpressionRendering = this.classExpressionRenderer
-								.renderOWLClassExpression(classExpressionNode);
-						if (!classExpressionRendering.isPresent()) {
-							//logLine(
-							//  "processReference: skipping subclass declaration [" + subclassOfNode + "] because of missing class");
-						} else {
-							OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
-							OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-							OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(classExpression, declaredClass);
-							axioms.add(axiom);
-						}
+			return Optional.empty();
+		}
+		
+		OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
+		
+		if (classDeclarationNode.hasOWLSubclassOfNodes()) {
+			for (OWLSubclassOfNode subclassOfNode : classDeclarationNode.getOWLSubclassOfNodes()) {
+				for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
+					Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer.renderOWLClassExpression(classExpressionNode);
+					if (!classExpressionRendering.isPresent()) {
+						//logLine(
+						//  "processReference: skipping subclass declaration [" + subclassOfNode + "] because of missing class");
+					} else {
+						OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
+						OWLSubClassOfAxiom axiom = owlDataFactory.getOWLSubClassOfAxiom(classExpression, declaredClass);
+						axioms.add(axiom);
 					}
-				}
-			}
-
-			if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
-				for (OWLEquivalentClassesNode equivalentClassesNode : classDeclarationNode.getOWLEquivalentClassesNodes()) {
-					for (OWLClassExpressionNode classExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
-						Optional<OWLClassExpressionRendering> classExpressionRendering = this.classExpressionRenderer
-								.renderOWLClassExpression(classExpressionNode);
-						if (!classExpressionRendering.isPresent()) {
-							//logLine("processReference: skipping equivalent declaration [" + equivalentClassesNode
-							//  + "] because of missing class");
-						} else {
-							OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
-							OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-							OWLEquivalentClassesAxiom axiom = this.owlDataFactory
-									.getOWLEquivalentClassesAxiom(classExpression, declaredClass);
-							axioms.add(axiom);
-						}
-					}
-				}
-			}
-
-			if (classDeclarationNode.hasAnnotationFactNodes()) {
-				for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
-					Optional<OWLAnnotationPropertyRendering> propertyRendering = this.entityRenderer
-							.renderOWLAnnotationProperty(annotationFactNode.getOWLPropertyNode());
-					OWLAnnotationValueNode annotationValueNode = annotationFactNode.getOWLAnnotationValueNode();
-					Optional<OWLAnnotationValueRendering> annotationValueRendering = renderOWLAnnotationValue(
-							annotationValueNode);
-
-					if (!propertyRendering.isPresent()) {
-						//logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
-						//  + "] because of missing property name");
-						continue;
-					}
-
-					if (!annotationValueRendering.isPresent()) {
-						// logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
-						//  + "] because of missing property value");
-						continue;
-					}
-
-					OWLAnnotationProperty property = propertyRendering.get().getOWLAnnotationProperty();
-					OWLAnnotationValue annotationValue = annotationValueRendering.get().getOWLAnnotationValue();
-					OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
-					OWLAnnotationAssertionAxiom axiom = this.owlDataFactory
-							.getOWLAnnotationAssertionAxiom(property, declaredClass.getIRI(), annotationValue);
-					axioms.add(axiom);
 				}
 			}
 		}
-		if (!axioms.isEmpty())
-			return Optional.of(new OWLAPIRendering(axioms)); // TODO Declare the class
-		else
-			return Optional.empty();
+		else {
+			OWLDeclarationAxiom declaredAxiom = owlDataFactory.getOWLDeclarationAxiom(declaredClass);
+			axioms.add(declaredAxiom);
+		}
+
+		if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
+			for (OWLEquivalentClassesNode equivalentClassesNode : classDeclarationNode.getOWLEquivalentClassesNodes()) {
+				for (OWLClassExpressionNode classExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
+					Optional<OWLClassExpressionRendering> classExpressionRendering = this.classExpressionRenderer
+							.renderOWLClassExpression(classExpressionNode);
+					if (!classExpressionRendering.isPresent()) {
+						//logLine("processReference: skipping equivalent declaration [" + equivalentClassesNode
+						//  + "] because of missing class");
+					} else {
+						OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
+						OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(classExpression, declaredClass);
+						axioms.add(axiom);
+					}
+				}
+			}
+		}
+
+		if (classDeclarationNode.hasAnnotationFactNodes()) {
+			for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
+				Optional<OWLAnnotationPropertyRendering> propertyRendering = this.entityRenderer
+						.renderOWLAnnotationProperty(annotationFactNode.getOWLPropertyNode());
+				OWLAnnotationValueNode annotationValueNode = annotationFactNode.getOWLAnnotationValueNode();
+				Optional<OWLAnnotationValueRendering> annotationValueRendering = renderOWLAnnotationValue(
+						annotationValueNode);
+
+				if (!propertyRendering.isPresent()) {
+					//logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
+					//  + "] because of missing property name");
+					continue;
+				}
+
+				if (!annotationValueRendering.isPresent()) {
+					// logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
+					//  + "] because of missing property value");
+					continue;
+				}
+
+				OWLAnnotationProperty property = propertyRendering.get().getOWLAnnotationProperty();
+				OWLAnnotationValue annotationValue = annotationValueRendering.get().getOWLAnnotationValue();
+				OWLAnnotationAssertionAxiom axiom = owlDataFactory.getOWLAnnotationAssertionAxiom(property, declaredClass.getIRI(), annotationValue);
+				axioms.add(axiom);
+			}
+		}
+		return Optional.of(new OWLAPIRendering(axioms));
 	}
 
 	@Override public Optional<OWLAPIRendering> renderOWLIndividualDeclaration(

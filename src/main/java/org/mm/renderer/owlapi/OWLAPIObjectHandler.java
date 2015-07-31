@@ -1,23 +1,30 @@
 package org.mm.renderer.owlapi;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mm.core.ReferenceDirectives;
 import org.mm.core.ReferenceType;
 import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLProperty;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.semanticweb.owlapi.model.PrefixManager;
+import org.semanticweb.owlapi.util.DefaultPrefixManager;
 
 // TODO Lots of unimplemented methods
 // TODO Very long - possibly should be refactored into multiple classes
@@ -28,17 +35,33 @@ class OWLAPIObjectHandler
 	private final Map<String, Map<SpreadsheetLocation, OWLEntity>> createdOWLEntitiesUsingLocation; // Map of namespace to map of location to rdf:ID
 
 	private final OWLOntology ontology;
+	
+	private final OWLDataFactory owlDataFactory;
+
+	private final PrefixManager prefixManager = new DefaultPrefixManager();
 
 	public OWLAPIObjectHandler(OWLOntology ontology)
 	{
 		this.ontology = ontology;
 		this.createdOWLEntitiesUsingLabel = new HashMap<>();
 		this.createdOWLEntitiesUsingLocation = new HashMap<>();
+		this.owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
+		
+		// Assemble the prefix manager for the given ontology
+		OWLDocumentFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
+		if (format.isPrefixOWLOntologyFormat()) {
+			prefixManager.copyPrefixesFrom(format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap());
+		}
+	}
+
+	public IRI getQualifiedName(String shortName)
+	{
+		return prefixManager.getIRI(shortName);
 	}
 
 	public OWLClass getOWLClass(String shortName) throws RendererException
 	{
-		throw new InternalRendererException("not implemented");
+		return owlDataFactory.getOWLClass(getQualifiedName(shortName));
 	}
 
 	public OWLNamedIndividual getOWLNamedIndividual(String shortName) throws RendererException
@@ -58,12 +81,28 @@ class OWLAPIObjectHandler
 
 	public OWLAnnotationProperty getOWLAnnotationProperty(String shortName) throws RendererException
 	{
-		throw new InternalRendererException("not implemented");
+		return owlDataFactory.getOWLAnnotationProperty(getQualifiedName(shortName));
 	}
 
 	public OWLDatatype getOWLDatatype(String shortName) throws RendererException
 	{
 		throw new InternalRendererException("not implemented");
+	}
+
+	public OWLLiteral getOWLLiteral(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value);
+	}
+
+	public OWLLiteral getOWLLiteral(String value, OWLDatatype datatype)
+	{
+		return owlDataFactory.getOWLLiteral(value, datatype);
+	}
+
+	public OWLAnnotationAssertionAxiom getOWLAnnotationAssertionAxiom(OWLEntity entity, OWLAnnotationProperty property, OWLLiteral value)
+	{
+		OWLAnnotation annotation = owlDataFactory.getOWLAnnotation(property, value);
+		return owlDataFactory.getOWLAnnotationAssertionAxiom(entity.getIRI(), annotation);
 	}
 
 	public boolean isOWLClass(String shortName)
@@ -108,7 +147,12 @@ class OWLAPIObjectHandler
 
 	public String getNamespaceForPrefix(String prefix) throws RendererException
 	{
-		throw new InternalRendererException("not implemented");
+		
+		IRI iri = prefixManager.getIRI(prefix);
+		if (iri != null) {
+			return iri.toString();
+		}
+		throw new RendererException("Namespace for prefix '" + prefix + "' cannot be found!");
 	}
 
 	public boolean isOWLDataProperty(IRI iri)

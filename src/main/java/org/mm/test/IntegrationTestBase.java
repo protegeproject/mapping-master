@@ -1,39 +1,5 @@
 package org.mm.test;
 
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
-import org.mm.exceptions.MappingMasterException;
-import org.mm.parser.ASTExpression;
-import org.mm.parser.MappingMasterParser;
-import org.mm.parser.ParseException;
-import org.mm.parser.SimpleNode;
-import org.mm.parser.node.ExpressionNode;
-import org.mm.parser.node.MMExpressionNode;
-import org.mm.parser.node.OWLNamedIndividualNode;
-import org.mm.renderer.owlapi.OWLAPICoreRenderer;
-import org.mm.renderer.text.TextRenderer;
-import org.mm.rendering.owlapi.OWLAPIRendering;
-import org.mm.rendering.text.TextRendering;
-import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ss.SpreadsheetLocation;
-import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
-import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.PrefixManager;
-import org.semanticweb.owlapi.util.DefaultPrefixManager;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +9,37 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.mm.exceptions.MappingMasterException;
+import org.mm.parser.ASTExpression;
+import org.mm.parser.MappingMasterParser;
+import org.mm.parser.ParseException;
+import org.mm.parser.SimpleNode;
+import org.mm.parser.node.ExpressionNode;
+import org.mm.parser.node.MMExpressionNode;
+import org.mm.renderer.owlapi.OWLAPICoreRenderer;
+import org.mm.renderer.text.TextRenderer;
+import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.mm.rendering.text.TextRendering;
+import org.mm.ss.SpreadSheetDataSource;
+import org.mm.ss.SpreadsheetLocation;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
+import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.util.DefaultPrefixManager;
+
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import jxl.write.Label;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+import jxl.write.WriteException;
+
 public class IntegrationTestBase
 {
 	protected static final String SHEET1 = "Sheet1";
@@ -51,14 +48,14 @@ public class IntegrationTestBase
 	protected static final String DEFAULT_SHEET = SHEET1;
 	protected static final Set<Label> EMPTY_CELL_SET = Collections.emptySet();
 	protected static final SpreadsheetLocation DEFAULT_CURRENT_LOCATION = new SpreadsheetLocation(SHEET1, 1, 1);
-	protected static final String DEFAULT_NAMESPACE = ":";
+	protected static final String DEFAULT_PREFIX = ":";
 
 	protected final DefaultPrefixManager prefixManager;
 
 	protected IntegrationTestBase()
 	{
 		this.prefixManager = new DefaultPrefixManager();
-		prefixManager.setDefaultPrefix(DEFAULT_NAMESPACE);
+		prefixManager.setDefaultPrefix(DEFAULT_PREFIX);
 	}
 
 	protected OWLOntology createOWLOntology() throws OWLOntologyCreationException
