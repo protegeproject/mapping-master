@@ -131,6 +131,9 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		OWLDeclarationAxiom declaredAxiom = owlDataFactory.getOWLDeclarationAxiom(declaredClass);
 		axioms.add(declaredAxiom);
 		
+		/*
+		 * In case the class declaration node has a sub-class axiom
+		 */
 		if (classDeclarationNode.hasOWLSubclassOfNodes()) {
 			for (OWLSubclassOfNode subclassOfNode : classDeclarationNode.getOWLSubclassOfNodes()) {
 				for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
@@ -147,6 +150,9 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 			}
 		}
 		
+		/*
+		 * In case the class declaration has an equivalent class axiom
+		 */
 		if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
 			for (OWLEquivalentClassesNode equivalentClassesNode : classDeclarationNode.getOWLEquivalentClassesNodes()) {
 				for (OWLClassExpressionNode classExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
@@ -164,6 +170,9 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 			}
 		}
 
+		/*
+		 * In case the class declaration has an annotation axiom
+		 */
 		if (classDeclarationNode.hasAnnotationFactNodes()) {
 			for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
 				Optional<OWLAnnotationPropertyRendering> propertyRendering = this.entityRenderer
