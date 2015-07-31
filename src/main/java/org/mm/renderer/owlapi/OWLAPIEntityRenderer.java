@@ -77,20 +77,20 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 	@Override public Optional<OWLClassRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
 	{
 		if (classNode.hasNameNode()) {
-			return renderName(classNode.getNameNode());
+			return renderNameForClassNode(classNode.getNameNode());
 		} else if (classNode.hasReferenceNode()) {
-			return renderReferenceNode(classNode.getReferenceNode());
+			return renderReferenceForClassNode(classNode.getReferenceNode());
 		} else
 			throw new InternalRendererException("unknown child for node " + classNode.getNodeName());
 	}
 
-	private Optional<OWLClassRendering> renderName(NameNode nameNode) throws RendererException
+	private Optional<OWLClassRendering> renderNameForClassNode(NameNode nameNode) throws RendererException
 	{
 		OWLClass cls = handler.getOWLClass(nameNode.getName());
 		return Optional.of(new OWLClassRendering(cls));
 	}
 
-	private Optional<OWLClassRendering> renderReferenceNode(ReferenceNode referenceNode) throws RendererException
+	private Optional<OWLClassRendering> renderReferenceForClassNode(ReferenceNode referenceNode) throws RendererException
 	{
 		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
 		if (referenceType.isUntyped()) {
