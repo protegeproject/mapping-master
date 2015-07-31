@@ -125,6 +125,12 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		
 		OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
 		
+		/*
+		 * By default, the class declaration node will produce one OWL class declaration axiom 
+		 */
+		OWLDeclarationAxiom declaredAxiom = owlDataFactory.getOWLDeclarationAxiom(declaredClass);
+		axioms.add(declaredAxiom);
+		
 		if (classDeclarationNode.hasOWLSubclassOfNodes()) {
 			for (OWLSubclassOfNode subclassOfNode : classDeclarationNode.getOWLSubclassOfNodes()) {
 				for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
@@ -140,11 +146,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 				}
 			}
 		}
-		else {
-			OWLDeclarationAxiom declaredAxiom = owlDataFactory.getOWLDeclarationAxiom(declaredClass);
-			axioms.add(declaredAxiom);
-		}
-
+		
 		if (classDeclarationNode.hasOWLEquivalentClassesNode()) {
 			for (OWLEquivalentClassesNode equivalentClassesNode : classDeclarationNode.getOWLEquivalentClassesNodes()) {
 				for (OWLClassExpressionNode classExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
