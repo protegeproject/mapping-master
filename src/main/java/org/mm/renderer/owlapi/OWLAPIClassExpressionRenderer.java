@@ -205,7 +205,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLRestriction(OWLRestrictionNode restrictionNode)
 			throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer
 				.renderOWLProperty(restrictionNode.getOWLPropertyNode());
 
 		if (propertyRendering.isPresent()) {
@@ -287,7 +287,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
 			OWLExactCardinalityNode exactCardinalityNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
@@ -305,7 +305,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataExactCardinality(OWLPropertyNode propertyNode,
 			OWLExactCardinalityNode exactCardinalityNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
@@ -322,7 +322,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
 			OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
@@ -339,7 +339,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
 			OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
@@ -356,7 +356,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectMinCardinality(OWLPropertyNode propertyNode,
 			OWLMinCardinalityNode minCardinalityNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
@@ -373,7 +373,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
 			OWLMinCardinalityNode minCardinalityNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
@@ -390,7 +390,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode,
 			OWLHasValueNode objectHasValueNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			OWLProperty property = propertyRendering.get().getOWLProperty();
@@ -434,7 +434,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataHasValue(OWLPropertyNode propertyNode,
 			OWLHasValueNode hasValueNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			OWLProperty property = propertyRendering.get().getOWLProperty();
@@ -473,7 +473,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
 			OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			OWLProperty property = propertyRendering.get().getOWLProperty();
@@ -513,7 +513,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
 			OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			OWLProperty property = propertyRendering.get().getOWLProperty();
@@ -533,7 +533,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
 			OWLObjectAllValuesFromNode objectAllValuesFromNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			OWLProperty property = propertyRendering.get().getOWLProperty();
@@ -572,7 +572,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
 			OWLDataAllValuesFromNode dataAllValuesFromNode) throws RendererException
 	{
-		Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			OWLProperty property = propertyRendering.get().getOWLProperty();

@@ -139,44 +139,118 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 			throw new InternalRendererException("unknown child for node " + namedIndividualNode.getNodeName());
 	}
 
-	@Override public Optional<OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
+	@Override public Optional<? extends OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
 			throws RendererException
 	{
-		OWLObjectProperty property = null; // TODO Implement
-		throw new InternalRendererException("not implemented");
-		// return Optional.of(new OWLObjectPropertyRendering(property));
+		/*
+		 * MM assumes the default property node is a object property type.
+		 */
+		if (propertyNode.hasNameNode()) {
+			return renderNameForObjectPropertyNode(propertyNode.getNameNode());
+		} else if (propertyNode.hasReferenceNode()) {
+			return renderReferenceForObjectPropertyNode(propertyNode.getReferenceNode());
+		} else
+			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
 	}
 
 	@Override public Optional<OWLObjectPropertyRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode)
 			throws RendererException
 	{
-		OWLObjectProperty objectProperty = null; // TODO Implement
-
 		if (propertyNode.hasNameNode()) {
-			throw new InternalRendererException("not implemented");
-			//      return Optional.of(new OWLObjectPropertyRendering(objectProperty));
+			return renderNameForObjectPropertyNode(propertyNode.getNameNode());
 		} else if (propertyNode.hasReferenceNode()) {
-			throw new InternalRendererException("not implemented");
-			//      return Optional.of(new OWLObjectPropertyRendering(objectProperty));
+			return renderReferenceForObjectPropertyNode(propertyNode.getReferenceNode());
 		} else
 			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+	}
+
+	private Optional<OWLObjectPropertyRendering> renderNameForObjectPropertyNode(NameNode nameNode) throws RendererException
+	{
+		OWLObjectProperty prop = handler.getOWLObjectProperty(nameNode.getName());
+		return Optional.of(new OWLObjectPropertyRendering(prop));
+	}
+
+	private Optional<OWLObjectPropertyRendering> renderReferenceForObjectPropertyNode(ReferenceNode referenceNode) throws RendererException
+	{
+		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+		if (referenceType.isUntyped()) {
+			throw new RendererException("untyped reference " + referenceNode);
+		}
+		
+		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
+		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
+		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
+		if (resolvedReferenceValue.isEmpty()) {
+			switch (referenceNode.getActualEmptyLocationDirective()) {
+				case MM_SKIP_IF_EMPTY_LOCATION:
+					return Optional.empty();
+				case MM_WARNING_IF_EMPTY_LOCATION:
+					// TODO Warn in log files
+					return Optional.empty();
+			}
+		}
+		
+		if (referenceType.isOWLEntity()) {
+			String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
+			if (rdfID.isEmpty()) {
+				throw new InternalRendererException("missing class identifier for reference " + referenceNode);
+			}
+			
+			OWLObjectProperty prop = handler.getOWLObjectProperty(rdfID);
+			return Optional.of(new OWLObjectPropertyRendering(prop));
+			
+		}
+		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
 	}
 
 	@Override public Optional<OWLDataPropertyRendering> renderOWLDataProperty(OWLPropertyNode propertyNode)
 			throws RendererException
 	{
-		OWLDataProperty dataProperty = null; // TODO Implement
-
 		if (propertyNode.hasNameNode()) {
-			throw new InternalRendererException("not implemented");
-			// return Optional.of(new OWLDataPropertyRendering(dataProperty));
-
+			return renderNameForDataPropertyNode(propertyNode.getNameNode());
 		} else if (propertyNode.hasReferenceNode()) {
-
-			throw new InternalRendererException("not implemented");
-			// return Optional.of(new OWLDataPropertyRendering(dataProperty));
+			return renderReferenceForDataPropertyNode(propertyNode.getReferenceNode());
 		} else
 			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+	}
+
+	private Optional<OWLDataPropertyRendering> renderNameForDataPropertyNode(NameNode nameNode) throws RendererException
+	{
+		OWLDataProperty prop = handler.getOWLDataProperty(nameNode.getName());
+		return Optional.of(new OWLDataPropertyRendering(prop));
+	}
+
+	private Optional<OWLDataPropertyRendering> renderReferenceForDataPropertyNode(ReferenceNode referenceNode) throws RendererException
+	{
+		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+		if (referenceType.isUntyped()) {
+			throw new RendererException("untyped reference " + referenceNode);
+		}
+		
+		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
+		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
+		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
+		if (resolvedReferenceValue.isEmpty()) {
+			switch (referenceNode.getActualEmptyLocationDirective()) {
+				case MM_SKIP_IF_EMPTY_LOCATION:
+					return Optional.empty();
+				case MM_WARNING_IF_EMPTY_LOCATION:
+					// TODO Warn in log files
+					return Optional.empty();
+			}
+		}
+		
+		if (referenceType.isOWLEntity()) {
+			String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
+			if (rdfID.isEmpty()) {
+				throw new InternalRendererException("missing class identifier for reference " + referenceNode);
+			}
+			
+			OWLDataProperty prop = handler.getOWLDataProperty(rdfID);
+			return Optional.of(new OWLDataPropertyRendering(prop));
+			
+		}
+		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
 	}
 
 	@Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)

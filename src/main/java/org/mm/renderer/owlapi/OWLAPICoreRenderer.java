@@ -396,7 +396,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		if (declaredIndividualRendering.isPresent()) {
 
 			for (AnnotationFactNode annotationFact : annotationFactNodes) {
-				Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer
+				Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer
 						.renderOWLProperty(annotationFact.getOWLPropertyNode());
 
 				if (!propertyRendering.isPresent()) {
@@ -443,7 +443,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		if (subjectIndividualRendering.isPresent()) {
 			OWLIndividual subjectIndividual = subjectIndividualRendering.get().getOWLNamedIndividual();
 			for (FactNode factNode : factNodes) {
-				Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer
+				Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer
 						.renderOWLProperty(factNode.getOWLPropertyNode());
 
 				if (!propertyRendering.isPresent()) {

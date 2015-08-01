@@ -71,12 +71,12 @@ class OWLAPIObjectHandler
 
 	public OWLObjectProperty getOWLObjectProperty(String shortName) throws RendererException
 	{
-		throw new InternalRendererException("not implemented");
+		return owlDataFactory.getOWLObjectProperty(getQualifiedName(shortName));
 	}
 
 	public OWLDataProperty getOWLDataProperty(String shortName) throws RendererException
 	{
-		throw new InternalRendererException("not implemented");
+		return owlDataFactory.getOWLDataProperty(getQualifiedName(shortName));
 	}
 
 	public OWLAnnotationProperty getOWLAnnotationProperty(String shortName) throws RendererException

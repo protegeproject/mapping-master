@@ -224,7 +224,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
       } else
         return Optional.empty();
     } else if (typeNode.isOWLPropertyNode()) {
-      Optional<OWLPropertyRendering> propertyRendering = this.entityRenderer
+      Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer
         .renderOWLProperty((OWLPropertyNode)typeNode);
       if (propertyRendering.isPresent()) {
         return Optional.of(propertyRendering.get().getOWLProperty());
