@@ -107,7 +107,7 @@ class OWLAPIObjectHandler
 
 	public OWLDatatype getOWLDatatype(String shortName) throws RendererException
 	{
-		throw new InternalRendererException("not implemented");
+		return owlDataFactory.getOWLDatatype(getQualifiedName(shortName));
 	}
 
 	public OWLLiteral getOWLLiteral(String value)
