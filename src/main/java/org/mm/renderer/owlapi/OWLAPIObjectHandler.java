@@ -67,7 +67,7 @@ class OWLAPIObjectHandler
 
 	public OWLNamedIndividual getOWLNamedIndividual(String shortName) throws RendererException
 	{
-		throw new InternalRendererException("not implemented");
+		return owlDataFactory.getOWLNamedIndividual(getQualifiedName(shortName));
 	}
 
 	public OWLObjectProperty getOWLObjectProperty(String shortName) throws RendererException
@@ -128,22 +128,22 @@ class OWLAPIObjectHandler
 
 	public boolean isOWLClass(String shortName)
 	{
-		throw new RuntimeException("not implemented");
+		return this.ontology.containsClassInSignature(getQualifiedName(shortName));
 	}
 
 	public boolean isOWLNamedIndividual(String shortName)
 	{
-		throw new RuntimeException("not implemented");
+		return this.ontology.containsIndividualInSignature(getQualifiedName(shortName));
 	}
 
 	public boolean isOWLObjectProperty(String shortName)
 	{
-		throw new RuntimeException("not implemented");
+		return this.ontology.containsObjectPropertyInSignature(getQualifiedName(shortName));
 	}
 
 	public boolean isOWLDataProperty(String shortName)
 	{
-		throw new RuntimeException("not implemented");
+		return this.ontology.containsDataPropertyInSignature(getQualifiedName(shortName));
 	}
 
 	public boolean isOWLAnnotationProperty(String shortName)
