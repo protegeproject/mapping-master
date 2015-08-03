@@ -143,7 +143,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 						//  "processReference: skipping subclass declaration [" + subclassOfNode + "] because of missing class");
 					} else {
 						OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-						OWLSubClassOfAxiom axiom = owlDataFactory.getOWLSubClassOfAxiom(classExpression, declaredClass);
+						OWLSubClassOfAxiom axiom = owlDataFactory.getOWLSubClassOfAxiom(declaredClass, classExpression);
 						axioms.add(axiom);
 					}
 				}
@@ -163,7 +163,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 						//  + "] because of missing class");
 					} else {
 						OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-						OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(classExpression, declaredClass);
+						OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(declaredClass, classExpression);
 						axioms.add(axiom);
 					}
 				}
