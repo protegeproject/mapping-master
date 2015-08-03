@@ -275,8 +275,8 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 					if (someValuesFromNode.hasOWLDataSomeValuesFromNode())
 						throw new RendererException("expecting class for object some values from restriction " + restrictionNode);
 
-					return renderOWLDataSomeValuesFrom(restrictionNode.getOWLPropertyNode(),
-							someValuesFromNode.getOWLDataSomeValuesFromNode());
+					return renderOWLObjectSomeValuesFrom(restrictionNode.getOWLPropertyNode(),
+							someValuesFromNode.getOWLObjectSomeValuesFromNode());
 				} else
 					return Optional.empty();
 			}
@@ -525,7 +525,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 				return Optional.of(new OWLRestrictionRendering(dataSomeValuesFrom));
 			} else
 				throw new RendererException(
-						"property " + property.getIRI() + " in object some values from restriction is not an object property");
+						"property " + property.getIRI() + " in object some values from restriction is not a data property");
 		} else
 			return Optional.empty();
 	}
