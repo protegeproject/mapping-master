@@ -12,6 +12,7 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
@@ -82,6 +83,26 @@ class OWLAPIObjectHandler
 	public OWLAnnotationProperty getOWLAnnotationProperty(String shortName) throws RendererException
 	{
 		return owlDataFactory.getOWLAnnotationProperty(getQualifiedName(shortName));
+	}
+
+	public OWLAnnotationValue getOWLAnnotationValue(String value) throws RendererException
+	{
+		return owlDataFactory.getOWLLiteral(value);
+	}
+
+	public OWLAnnotationValue getOWLAnnotationValue(float value) throws RendererException
+	{
+		return owlDataFactory.getOWLLiteral(value);
+	}
+
+	public OWLAnnotationValue getOWLAnnotationValue(int value) throws RendererException
+	{
+		return owlDataFactory.getOWLLiteral(value);
+	}
+
+	public OWLAnnotationValue getOWLAnnotationValue(boolean value) throws RendererException
+	{
+		return owlDataFactory.getOWLLiteral(value);
 	}
 
 	public OWLDatatype getOWLDatatype(String shortName) throws RendererException

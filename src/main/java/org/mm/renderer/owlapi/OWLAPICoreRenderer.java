@@ -178,8 +178,8 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 				Optional<OWLAnnotationPropertyRendering> propertyRendering = this.entityRenderer
 						.renderOWLAnnotationProperty(annotationFactNode.getOWLPropertyNode());
 				OWLAnnotationValueNode annotationValueNode = annotationFactNode.getOWLAnnotationValueNode();
-				Optional<OWLAnnotationValueRendering> annotationValueRendering = renderOWLAnnotationValue(
-						annotationValueNode);
+				Optional<OWLAnnotationValueRendering> annotationValueRendering = this.entityRenderer
+						.renderOWLAnnotationValue(annotationValueNode);
 
 				if (!propertyRendering.isPresent()) {
 					//logLine("processReference: skipping OWL annotation clause [" + annotationFactNode
