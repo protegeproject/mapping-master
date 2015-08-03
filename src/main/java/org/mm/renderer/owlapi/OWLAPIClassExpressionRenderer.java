@@ -1,5 +1,9 @@
 package org.mm.renderer.owlapi;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAllValuesFromNode;
 import org.mm.parser.node.OWLClassExpressionNode;
@@ -52,6 +56,7 @@ import org.semanticweb.owlapi.model.OWLObjectComplementOf;
 import org.semanticweb.owlapi.model.OWLObjectExactCardinality;
 import org.semanticweb.owlapi.model.OWLObjectHasValue;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
+import org.semanticweb.owlapi.model.OWLObjectMaxCardinality;
 import org.semanticweb.owlapi.model.OWLObjectMinCardinality;
 import org.semanticweb.owlapi.model.OWLObjectOneOf;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -59,10 +64,6 @@ import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLProperty;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 {
@@ -329,7 +330,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 			// TODO Check if is object property
 			OWLObjectProperty objectProperty = this.owlDataFactory.getOWLObjectProperty(propertyIRI);
 			int cardinality = maxCardinalityNode.getCardinality();
-			OWLObjectMinCardinality restriction = this.owlDataFactory.getOWLObjectMinCardinality(cardinality, objectProperty);
+			OWLObjectMaxCardinality restriction = this.owlDataFactory.getOWLObjectMaxCardinality(cardinality, objectProperty);
 
 			return Optional.of(new OWLRestrictionRendering(restriction));
 		} else
