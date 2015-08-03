@@ -400,7 +400,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 				if (objectHasValueNode.hasNameNone()) {
 					NameNode nameNode = objectHasValueNode.getNameNode();
 					String shortName = nameNode.getName();
-					if (this.owlObjectHandler.isOWLDataProperty(shortName)) {
+					if (this.owlObjectHandler.isOWLNamedIndividual(shortName)) {
 						OWLNamedIndividual individual = this.owlObjectHandler.getOWLNamedIndividual(shortName);
 						OWLObjectHasValue objectHasValueRestriction = this.owlDataFactory
 								.getOWLObjectHasValue(objectProperty, individual);
