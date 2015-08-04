@@ -1,7 +1,13 @@
 package org.mm.renderer.owlapi;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.mm.core.ReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
+import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLLiteralNode;
 import org.mm.parser.node.OWLPropertyNode;
@@ -14,6 +20,7 @@ import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.OWLLiteralRendering;
 import org.mm.rendering.owlapi.OWLAPIReferenceRendering;
+import org.mm.rendering.owlapi.OWLClassExpressionRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.mm.ss.SpreadSheetDataSource;
@@ -21,21 +28,18 @@ import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
   implements ReferenceRenderer, MappingMasterParserConstants
@@ -44,6 +48,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
   private final OWLAPIObjectHandler owlObjectHandler;
   private final OWLAPIEntityRenderer entityRenderer;
   private final OWLAPILiteralRenderer literalRenderer;
+  private final OWLAPIClassExpressionRenderer classExpressionRenderer;
 
   public OWLAPIReferenceRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource,
     OWLAPIEntityRenderer entityRenderer, OWLAPILiteralRenderer literalRenderer)
@@ -53,6 +58,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
     this.owlObjectHandler = new OWLAPIObjectHandler(ontology);
     this.entityRenderer = entityRenderer;
     this.literalRenderer = literalRenderer;
+    this.classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, entityRenderer, this, literalRenderer);
   }
 
   @Override public Optional<OWLAPIReferenceRendering> renderReference(ReferenceNode referenceNode)
@@ -116,7 +122,7 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
     Set<OWLAxiom> axioms = new HashSet<>();
 
     for (TypeNode typeNode : typeNodes) {
-      Optional<OWLEntity> typeRendering = renderType(typeNode);
+      Optional<OWLObject> typeRendering = renderType(typeNode);
 
       if (!typeRendering.isPresent()) {
         //logLine(
@@ -125,16 +131,24 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
         continue;
       }
 
-      OWLEntity entity = typeRendering.get();
-
-      if (entity.isOWLClass()) {
-        OWLClass cls = entity.asOWLClass();
-        OWLClassAssertionAxiom axiom = this.owlDataFactory.getOWLClassAssertionAxiom(cls, declaredIndividual);
-
+      OWLObject obj = typeRendering.get();
+      if (obj instanceof OWLEntity) {
+        OWLEntity entity = (OWLEntity) obj;
+        if (entity.isOWLClass()) {
+          OWLClass cls = entity.asOWLClass();
+          OWLClassAssertionAxiom axiom = this.owlDataFactory.getOWLClassAssertionAxiom(cls, declaredIndividual);
+          axioms.add(axiom);
+        } else {
+          throw new RendererException(
+              "expecting OWL class as type for individual " + declaredIndividual.getIRI() + ", got " + entity.getIRI());
+        }
+      } else if (obj instanceof OWLClassExpression) {
+        OWLClassExpression clsExp = (OWLClassExpression) obj;
+        OWLClassAssertionAxiom axiom = this.owlDataFactory.getOWLClassAssertionAxiom(clsExp, declaredIndividual);
         axioms.add(axiom);
-      } else
-        throw new RendererException(
-          "expecting OWL class as type for individual " + declaredIndividual.getIRI() + ", got " + entity.getIRI());
+      } else {
+        throw new RendererException("unknown type node " + typeNode.getNodeName() + " for individual " + declaredIndividual);
+      }
     }
     return axioms;
   }
@@ -164,83 +178,91 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
   {
     Set<OWLAxiom> axioms = new HashSet<>();
     ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-
+    
     if (referenceNode.hasExplicitlySpecifiedTypes()) {
       for (TypeNode typeNode : referenceNode.getTypesNode().getTypeNodes()) {
-        Optional<OWLEntity> definingType = renderType(typeNode);
-        if (!definingType.isPresent()) {
-          if (referenceType.isOWLClass()) {
-            if (!entity.isOWLClass())
-              throw new RendererException(
-                "expecting class for type in reference " + referenceNode + " for " + entity + ", got " + entity
-                  .getClass().getCanonicalName());
-
-            OWLClass cls = definingType.get().asOWLClass();
-            OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(cls, entity.asOWLClass());
-            axioms.add(axiom);
-          } else if (referenceType.isOWLNamedIndividual()) {
-            if (!entity.isOWLNamedIndividual())
-              throw new RendererException(
-                "expecting individual for type in reference " + referenceNode + " for " + entity + ", got " + entity
-                  .getClass().getCanonicalName());
-
-            OWLClass cls = definingType.get().asOWLClass();
-            OWLClassAssertionAxiom axiom = this.owlDataFactory
-              .getOWLClassAssertionAxiom(cls, entity.asOWLNamedIndividual());
-            axioms.add(axiom);
-          } else if (referenceType.isOWLObjectProperty()) {
-            if (!entity.isOWLObjectProperty())
-              throw new RendererException(
-                "expecting object property for type in reference " + referenceNode + " for " + entity);
-
-            OWLObjectProperty property = definingType.get().asOWLObjectProperty();
-            OWLSubObjectPropertyOfAxiom axiom = this.owlDataFactory
-              .getOWLSubObjectPropertyOfAxiom(property, entity.asOWLObjectProperty());
-            axioms.add(axiom);
-          } else if (referenceType.isOWLDataProperty()) {
-            if (!entity.isOWLDataProperty())
-              throw new RendererException(
-                "expecting data property for type in reference " + referenceNode + " for " + entity);
-
-            OWLDataProperty property = definingType.get().asOWLDataProperty();
-
-            OWLSubDataPropertyOfAxiom axiom = this.owlDataFactory
-              .getOWLSubDataPropertyOfAxiom(property, entity.asOWLDataProperty());
-            axioms.add(axiom);
-          } else
-            throw new InternalRendererException("unknown entity type " + referenceType);
+        Optional<OWLObject> definingType = renderType(typeNode);
+        if (definingType.isPresent()) {
+          if (definingType.get() instanceof OWLEntity) {
+            OWLEntity definingTypeEntity = (OWLEntity) definingType.get();
+            if (referenceType.isOWLClass()) {
+              // TODO Make as a separate checking method
+              if (!entity.isOWLClass()) {
+                throw new RendererException(
+                    "expecting class for type in reference " + referenceNode + " for " + entity + ", got " + entity
+                        .getClass().getCanonicalName());
+              }
+              OWLClass cls = definingTypeEntity.asOWLClass();
+              OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(cls, entity.asOWLClass());
+              axioms.add(axiom);
+            } else if (referenceType.isOWLNamedIndividual()) {
+              if (!entity.isOWLNamedIndividual()) {
+                throw new RendererException(
+                    "expecting individual for type in reference " + referenceNode + " for " + entity + ", got " + entity
+                      .getClass().getCanonicalName());
+              }
+              OWLClass cls = definingTypeEntity.asOWLClass();
+              OWLClassAssertionAxiom axiom = this.owlDataFactory.getOWLClassAssertionAxiom(cls, entity.asOWLNamedIndividual());
+              axioms.add(axiom);
+            } else if (referenceType.isOWLObjectProperty()) {
+              if (!entity.isOWLObjectProperty()) {
+                throw new RendererException(
+                    "expecting object property for type in reference " + referenceNode + " for " + entity);
+              }
+              OWLObjectProperty property = definingTypeEntity.asOWLObjectProperty();
+              OWLSubObjectPropertyOfAxiom axiom = this.owlDataFactory.getOWLSubObjectPropertyOfAxiom(property, entity.asOWLObjectProperty());
+              axioms.add(axiom);
+            } else if (referenceType.isOWLDataProperty()) {
+              if (!entity.isOWLDataProperty()) {
+                throw new RendererException(
+                    "expecting data property for type in reference " + referenceNode + " for " + entity);
+              }
+              OWLDataProperty property = definingTypeEntity.asOWLDataProperty();
+              OWLSubDataPropertyOfAxiom axiom = this.owlDataFactory.getOWLSubDataPropertyOfAxiom(property, entity.asOWLDataProperty());
+              axioms.add(axiom);
+            } else
+              throw new InternalRendererException("unknown entity type " + referenceType);
+          } else {
+            throw new RendererException("unsupported type node " + definingType + " for reference " + referenceNode);
+          }
         }
       }
     }
     return axioms;
   }
 
-  private Optional<OWLEntity> renderType(TypeNode typeNode) throws RendererException
+  private Optional<OWLObject> renderType(TypeNode typeNode) throws RendererException
   {
     if (typeNode.isOWLClassNode()) {
       Optional<OWLClassRendering> classRendering = this.entityRenderer.renderOWLClass((OWLClassNode)typeNode);
       if (classRendering.isPresent()) {
         return Optional.of(classRendering.get().getOWLClass());
-      } else
-        return Optional.empty();
+      }
+    } else if (typeNode.isOWLClassExpressionNode()) {
+        Optional<OWLClassExpressionRendering> classExpresssionRendering =
+            this.classExpressionRenderer.renderOWLClassExpression((OWLClassExpressionNode)typeNode);
+        if (classExpresssionRendering.isPresent()) {
+          return Optional.of(classExpresssionRendering.get().getOWLClassExpression());
+        }
     } else if (typeNode.isOWLPropertyNode()) {
-      Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer
-        .renderOWLProperty((OWLPropertyNode)typeNode);
+      Optional<? extends OWLPropertyRendering> propertyRendering =
+          this.entityRenderer.renderOWLProperty((OWLPropertyNode)typeNode);
       if (propertyRendering.isPresent()) {
         return Optional.of(propertyRendering.get().getOWLProperty());
-      } else
-        return Optional.empty();
+      }
     } else if (typeNode.isReferenceNode()) {
       Optional<OWLAPIReferenceRendering> referenceRendering = renderReference((ReferenceNode)typeNode);
       if (referenceRendering.isPresent()) {
         if (referenceRendering.get().isOWLEntity()) {
           OWLEntity entity = referenceRendering.get().getOWLEntity().get();
           return Optional.of(entity);
-        } else
+        } else {
           throw new RendererException("expecting OWL entity for node " + typeNode.getNodeName());
-      } else
-        return Optional.empty();
-    } else
+        }
+      }
+    } else {
       throw new InternalRendererException("unknown type " + typeNode + " for node " + typeNode.getNodeName());
+    }
+    return Optional.empty();
   }
 }

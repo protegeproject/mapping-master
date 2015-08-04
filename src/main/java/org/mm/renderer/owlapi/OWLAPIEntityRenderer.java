@@ -53,6 +53,7 @@ import org.mm.rendering.owlapi.OWLClassRendering;
 import org.mm.rendering.owlapi.OWLDataPropertyRendering;
 import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLObjectPropertyRendering;
+import org.mm.rendering.owlapi.OWLPropertyAssertionObjectRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
@@ -60,6 +61,7 @@ import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -129,16 +131,52 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 			OWLNamedIndividualNode namedIndividualNode) throws RendererException
 	{
 		if (namedIndividualNode.hasNameNode()) {
-			OWLNamedIndividual individual = null; // TODO Implement
-			throw new InternalRendererException("not implemented");
-			// return Optional.of(new OWLNamedIndividualRendering(individual));
-
+			return renderNameForNamedIndividualNode(namedIndividualNode.getNameNode());
 		} else if (namedIndividualNode.hasReferenceNode()) {
-			OWLNamedIndividual individual = null; // TODO Implement
-			throw new InternalRendererException("not implemented");
-			// return Optional.of(new OWLNamedIndividualRendering(individual));
-		} else
+			return renderReferenceForNamedIndividualNode(namedIndividualNode.getReferenceNode());
+		} else {
 			throw new InternalRendererException("unknown child for node " + namedIndividualNode.getNodeName());
+		}
+	}
+
+	private Optional<OWLNamedIndividualRendering> renderNameForNamedIndividualNode(NameNode nameNode) throws RendererException
+	{
+		OWLNamedIndividual ind = handler.getOWLNamedIndividual(nameNode.getName());
+		return Optional.of(new OWLNamedIndividualRendering(ind));
+	}
+
+	private Optional<OWLNamedIndividualRendering> renderReferenceForNamedIndividualNode(ReferenceNode referenceNode)
+			throws RendererException
+	{
+		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+		if (referenceType.isUntyped()) {
+			throw new RendererException("untyped reference " + referenceNode);
+		}
+		
+		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
+		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
+		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
+		if (resolvedReferenceValue.isEmpty()) {
+			switch (referenceNode.getActualEmptyLocationDirective()) {
+				case MM_SKIP_IF_EMPTY_LOCATION:
+					return Optional.empty();
+				case MM_WARNING_IF_EMPTY_LOCATION:
+					// TODO Warn in log files
+					return Optional.empty();
+			}
+		}
+		
+		if (referenceType.isOWLEntity()) {
+			String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
+			if (rdfID.isEmpty()) {
+				throw new InternalRendererException("missing class identifier for reference " + referenceNode);
+			}
+			
+			OWLNamedIndividual ind = handler.getOWLNamedIndividual(rdfID);
+			return Optional.of(new OWLNamedIndividualRendering(ind));
+			
+		}
+		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
 	}
 
 	@Override public Optional<? extends OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
@@ -511,11 +549,86 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 	}
 
 	@Override
-	public Optional<? extends Rendering> renderOWLPropertyAssertionObject(
-	        OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException
+	public Optional<OWLPropertyAssertionObjectRendering> renderOWLPropertyAssertionObject(
+			OWLPropertyAssertionObjectNode value) throws RendererException
 	{
-		// TODO Auto-generated method stub
-		return null;
+		if (value.isName()) {
+			return renderNameForPropertyAssertionObject(value.getNameNode());
+		} else if (value.isLiteral()) {
+			return renderLiteralForPropertyAssertionObject(value.getOWLLiteralNode());
+		} else if (value.isReference()) {
+			return renderReferenceForPropertyAssertionObject(value.getReferenceNode());
+		} else {
+			throw new InternalRendererException("unknown child node for node " + value.getNodeName());
+		}
+	}
+
+	private Optional<OWLPropertyAssertionObjectRendering> renderNameForPropertyAssertionObject(NameNode nameNode)
+			throws RendererException
+	{
+		OWLNamedIndividual ind = handler.getOWLNamedIndividual(nameNode.getName());
+		return Optional.of(new OWLPropertyAssertionObjectRendering(ind));
+	}
+
+	private Optional<OWLPropertyAssertionObjectRendering> renderLiteralForPropertyAssertionObject(OWLLiteralNode owlLiteralNode)
+			throws RendererException
+	{
+		OWLLiteral lit;
+		if (owlLiteralNode.isString()) {
+			lit = handler.getOWLLiteral(owlLiteralNode.getStringLiteralNode().getValue());
+		} else if (owlLiteralNode.isInt()) {
+			lit = handler.getOWLLiteral(owlLiteralNode.getIntLiteralNode().getValue());
+		} else if (owlLiteralNode.isFloat()) {
+			lit = handler.getOWLLiteral(owlLiteralNode.getFloatLiteralNode().getValue());
+		} else if (owlLiteralNode.isBoolean()) {
+			lit = handler.getOWLLiteral(owlLiteralNode.getBooleanLiteralNode().getValue());
+		} else {
+			throw new InternalRendererException("unsupported datatype for node " + owlLiteralNode);
+		}
+		return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
+	}
+
+	private Optional<OWLPropertyAssertionObjectRendering> renderReferenceForPropertyAssertionObject(ReferenceNode referenceNode)
+			throws RendererException
+	{
+		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+		if (referenceType.isUntyped()) {
+			throw new RendererException("untyped reference " + referenceNode);
+		}
+		
+		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
+		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
+		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
+		if (resolvedReferenceValue.isEmpty()) {
+			switch (referenceNode.getActualEmptyLocationDirective()) {
+				case MM_SKIP_IF_EMPTY_LOCATION:
+					return Optional.empty();
+				case MM_WARNING_IF_EMPTY_LOCATION:
+					// TODO Warn in log files
+					return Optional.empty();
+			}
+		}
+		
+		if (referenceType.isOWLNamedIndividual()) {
+			OWLNamedIndividual ind = handler.getOWLNamedIndividual(resolvedReferenceValue);
+			return Optional.of(new OWLPropertyAssertionObjectRendering(ind));
+		} else if (referenceType.isOWLLiteral()) {
+			OWLLiteral lit = handler.getOWLLiteral(resolvedReferenceValue);
+			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
+		} else if (referenceType.isXSDString()) {
+			OWLLiteral lit = handler.getOWLLiteral(resolvedReferenceValue);
+			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
+		} else if (referenceType.isXSDInt()) {
+			OWLLiteral lit = handler.getOWLLiteral(Integer.parseInt(resolvedReferenceValue));
+			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
+		} else if (referenceType.isXSDFloat()) {
+			OWLLiteral lit = handler.getOWLLiteral(Float.parseFloat(resolvedReferenceValue));
+			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
+		} else if (referenceType.isXSDBoolean()) {
+			OWLLiteral lit = handler.getOWLLiteral(Boolean.parseBoolean(resolvedReferenceValue));
+			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
+		}
+		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
 	}
 
 	@Override

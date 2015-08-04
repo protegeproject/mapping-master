@@ -214,43 +214,46 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 				.renderOWLNamedIndividual(individualDeclarationNode.getOWLIndividualNode());
 		if (!declaredIndividualRendering.isPresent()) {
 			// logLine("Skipping OWL individual declaration because of missing individual name");
-		} else {
-			OWLNamedIndividual declaredIndividual = declaredIndividualRendering.get().getOWLNamedIndividual();
-
-			if (individualDeclarationNode.hasFacts()) { // We have a Facts: clause
-				List<FactNode> factNodes = individualDeclarationNode.getFactNodes();
-				Set<OWLAxiom> factsAxioms = processFactsClause(declaredIndividualRendering, factNodes);
-				axioms.addAll(factsAxioms);
-			}
-
-			if (individualDeclarationNode.hasAnnotations()) { // We have an Annotations: clause
-				List<AnnotationFactNode> annotationFactNodes = individualDeclarationNode.getAnnotationNodes();
-				Set<OWLAxiom> annotationsAxioms = processAnnotationClause(declaredIndividualRendering, annotationFactNodes);
-				axioms.addAll(annotationsAxioms);
-			}
-
-			if (individualDeclarationNode.hasSameAs()) { // We have a SameAs: clause
-				Set<OWLAxiom> sameAsAxioms = processSameAsClause(individualDeclarationNode, declaredIndividualRendering);
-				axioms.addAll(sameAsAxioms);
-			}
-
-			if (individualDeclarationNode.hasDifferentFrom()) { // We have a DifferentFrom: clause
-				Set<OWLAxiom> differentFromAxioms = processDifferentFromClause(individualDeclarationNode,
-						declaredIndividualRendering);
-				axioms.addAll(differentFromAxioms);
-			}
-
-			if (individualDeclarationNode.hasTypes()) { // We have a Types: clause
-				Set<OWLAxiom> typesAxioms = this.referenceRenderer
-						.processTypesClause(declaredIndividual, individualDeclarationNode.getTypesNode().getTypeNodes());
-				axioms.addAll(typesAxioms);
-			}
-			// TODO Implement individual declaration axioms
-		}
-		if (!axioms.isEmpty())
-			return Optional.of(new OWLAPIRendering(axioms));
-		else
 			return Optional.empty();
+		}
+		
+		OWLNamedIndividual declaredIndividual = declaredIndividualRendering.get().getOWLNamedIndividual();
+
+		/*
+		 * By default, the individual declaration node will produce one OWL named individual declaration axiom 
+		 */
+		OWLDeclarationAxiom declaredAxiom = owlDataFactory.getOWLDeclarationAxiom(declaredIndividual);
+		axioms.add(declaredAxiom);
+		
+		if (individualDeclarationNode.hasFacts()) { // We have a Facts: clause
+			List<FactNode> factNodes = individualDeclarationNode.getFactNodes();
+			Set<OWLAxiom> factsAxioms = processFactsClause(declaredIndividualRendering, factNodes);
+			axioms.addAll(factsAxioms);
+		}
+
+		if (individualDeclarationNode.hasAnnotations()) { // We have an Annotations: clause
+			List<AnnotationFactNode> annotationFactNodes = individualDeclarationNode.getAnnotationNodes();
+			Set<OWLAxiom> annotationsAxioms = processAnnotationClause(declaredIndividualRendering, annotationFactNodes);
+			axioms.addAll(annotationsAxioms);
+		}
+
+		if (individualDeclarationNode.hasSameAs()) { // We have a SameAs: clause
+			Set<OWLAxiom> sameAsAxioms = processSameAsClause(individualDeclarationNode, declaredIndividualRendering);
+			axioms.addAll(sameAsAxioms);
+		}
+
+		if (individualDeclarationNode.hasDifferentFrom()) { // We have a DifferentFrom: clause
+			Set<OWLAxiom> differentFromAxioms = processDifferentFromClause(individualDeclarationNode,
+					declaredIndividualRendering);
+			axioms.addAll(differentFromAxioms);
+		}
+
+		if (individualDeclarationNode.hasTypes()) { // We have a Types: clause
+			Set<OWLAxiom> typesAxioms = this.referenceRenderer
+					.processTypesClause(declaredIndividual, individualDeclarationNode.getTypesNode().getTypeNodes());
+			axioms.addAll(typesAxioms);
+		}
+		return Optional.of(new OWLAPIRendering(axioms));
 	}
 
 	@Override public Optional<OWLAPIRendering> renderOWLSubClassOf(OWLClassNode declaredClassNode,
@@ -278,6 +281,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 			return Optional.empty();
 	}
 
+	// TODO Remove this method as part of renderer refactoring
 	@Override public Optional<OWLPropertyAssertionObjectRendering> renderOWLPropertyAssertionObject(
 			OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException
 	{
@@ -441,7 +445,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		Set<OWLAxiom> axioms = new HashSet<>();
 
 		if (subjectIndividualRendering.isPresent()) {
-			OWLIndividual subjectIndividual = subjectIndividualRendering.get().getOWLNamedIndividual();
+			OWLIndividual individual = subjectIndividualRendering.get().getOWLNamedIndividual();
 			for (FactNode factNode : factNodes) {
 				Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer
 						.renderOWLProperty(factNode.getOWLPropertyNode());
@@ -452,8 +456,8 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 				}
 
 				OWLPropertyAssertionObjectNode propertyAssertionObjectNode = factNode.getOWLPropertyAssertionObjectNode();
-				Optional<OWLPropertyAssertionObjectRendering> propertyAssertionObjectRendering = renderOWLPropertyAssertionObject(
-						propertyAssertionObjectNode);
+				Optional<OWLPropertyAssertionObjectRendering> propertyAssertionObjectRendering =
+						entityRenderer.renderOWLPropertyAssertionObject(propertyAssertionObjectNode);
 
 				if (!propertyAssertionObjectRendering.isPresent()) {
 					// logLine("Skipping OWL fact declaration clause [" + factNode + "] because of missing property value");
@@ -466,26 +470,20 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
 				if (propertyAssertionObjectNode.isReference()) { // We have an object property so tell the reference the type
 					ReferenceNode reference = propertyAssertionObjectNode.getReferenceNode();
-
-					if (!reference.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property))
+					if (!reference.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property)) {
 						reference.updateReferenceType(OWL_NAMED_INDIVIDUAL);
+					}
 				}
 
 				if (this.owlObjectHandler.isOWLObjectProperty(property)) {
-					OWLObjectProperty objectProperty = (OWLObjectProperty)property;
-					// TODO Check this cast
-					OWLIndividual objectIndividual = (OWLIndividual)propertyAssertionObject;
-
-					OWLObjectPropertyAssertionAxiom axiom = this.owlDataFactory
-							.getOWLObjectPropertyAssertionAxiom(objectProperty, subjectIndividual, objectIndividual);
+					OWLObjectProperty op = owlDataFactory.getOWLObjectProperty(property.getIRI());
+					OWLIndividual value = (OWLNamedIndividual) propertyAssertionObject;
+					OWLObjectPropertyAssertionAxiom axiom = owlDataFactory.getOWLObjectPropertyAssertionAxiom(op, individual, value);
 					axioms.add(axiom);
 				} else if (this.owlObjectHandler.isOWLDataProperty(property)) {
-					OWLDataProperty dataProperty = (OWLDataProperty)property;
-					// TODO Check this cast
-					OWLLiteral literal = (OWLLiteral)propertyAssertionObject;
-
-					OWLDataPropertyAssertionAxiom axiom = this.owlDataFactory
-							.getOWLDataPropertyAssertionAxiom(dataProperty, subjectIndividual, literal);
+					OWLDataProperty dp = owlDataFactory.getOWLDataProperty(property.getIRI());
+					OWLLiteral value = (OWLLiteral) propertyAssertionObject;
+					OWLDataPropertyAssertionAxiom axiom = owlDataFactory.getOWLDataPropertyAssertionAxiom(dp, individual, value);
 					axioms.add(axiom);
 				} else {
 					// logLine(
