@@ -16,12 +16,15 @@ import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
+import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.PrefixManager;
@@ -115,15 +118,35 @@ class OWLAPIObjectHandler
 		return owlDataFactory.getOWLLiteral(value);
 	}
 
-	public OWLLiteral getOWLLiteral(String value, OWLDatatype datatype)
+	public OWLLiteral getOWLLiteral(boolean value)
 	{
-		return owlDataFactory.getOWLLiteral(value, datatype);
+		return owlDataFactory.getOWLLiteral(value);
+	}
+
+	public OWLLiteral getOWLLiteral(int value)
+	{
+		return owlDataFactory.getOWLLiteral(value);
+	}
+
+	public OWLLiteral getOWLLiteral(float value)
+	{
+		return owlDataFactory.getOWLLiteral(value);
 	}
 
 	public OWLAnnotationAssertionAxiom getOWLAnnotationAssertionAxiom(OWLEntity entity, OWLAnnotationProperty property, OWLLiteral value)
 	{
 		OWLAnnotation annotation = owlDataFactory.getOWLAnnotation(property, value);
 		return owlDataFactory.getOWLAnnotationAssertionAxiom(entity.getIRI(), annotation);
+	}
+
+	public OWLObjectPropertyAssertionAxiom getOWLObjectPropertyAssertionAxiom(OWLObjectProperty op, OWLIndividual source, OWLIndividual target)
+	{
+		return owlDataFactory.getOWLObjectPropertyAssertionAxiom(op, source, target);
+	}
+
+	public OWLDataPropertyAssertionAxiom getOWLDataPropertyAssertionAxiom(OWLDataProperty dp, OWLIndividual source, OWLLiteral target)
+	{
+		return owlDataFactory.getOWLDataPropertyAssertionAxiom(dp, source, target);
 	}
 
 	public boolean isOWLClass(String shortName)
