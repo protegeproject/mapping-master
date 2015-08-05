@@ -210,9 +210,9 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 				.renderOWLProperty(restrictionNode.getOWLPropertyNode());
 
 		if (propertyRendering.isPresent()) {
-			IRI propertyIRI = propertyRendering.get().getOWLProperty().getIRI();
-			if (this.owlObjectHandler.isOWLDataProperty(propertyIRI)) { // data property restrictions
-				OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(propertyIRI);
+			OWLProperty property = propertyRendering.get().getOWLProperty();
+			if (this.owlObjectHandler.isOWLDataProperty(property)) { // data property restrictions
+				OWLDataProperty dataProperty = this.owlDataFactory.getOWLDataProperty(property.getIRI());
 				if (restrictionNode.isOWLMinCardinality()) {
 					OWLMinCardinalityNode dataMinCardinalityNode = restrictionNode.getOWLMinCardinalityNode();
 					return renderOWLDataMinCardinality(restrictionNode.getOWLPropertyNode(), dataMinCardinalityNode);

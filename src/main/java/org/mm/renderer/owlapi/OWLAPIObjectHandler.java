@@ -204,11 +204,6 @@ class OWLAPIObjectHandler
 		throw new RendererException("Namespace for prefix '" + prefix + "' cannot be found!");
 	}
 
-	public boolean isOWLDataProperty(IRI iri)
-	{
-		return this.ontology.containsDataPropertyInSignature(iri);
-	}
-
 	// TODO Use Optional return value
 	public OWLEntity createOrResolveOWLEntity(SpreadsheetLocation location, String locationValue,
 			ReferenceType referenceType, String rdfID, String rdfsLabel, String defaultNamespace, String language,
