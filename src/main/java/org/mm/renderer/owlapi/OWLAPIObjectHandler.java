@@ -29,6 +29,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.PrefixManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
+import org.semanticweb.owlapi.vocab.OWL2Datatype;
+import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
 // TODO Lots of unimplemented methods
 // TODO Very long - possibly should be refactored into multiple classes
@@ -100,7 +102,7 @@ class OWLAPIObjectHandler
 
 	public OWLAnnotationValue getOWLAnnotationValue(int value) throws RendererException
 	{
-		return owlDataFactory.getOWLLiteral(value);
+		return owlDataFactory.getOWLLiteral(value+"", OWL2Datatype.XSD_INT);
 	}
 
 	public OWLAnnotationValue getOWLAnnotationValue(boolean value) throws RendererException
@@ -113,24 +115,64 @@ class OWLAPIObjectHandler
 		return owlDataFactory.getOWLDatatype(getQualifiedName(shortName));
 	}
 
-	public OWLLiteral getOWLLiteral(String value)
+	public OWLLiteral getOWLLiteralString(String value)
 	{
-		return owlDataFactory.getOWLLiteral(value);
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_STRING);
 	}
 
-	public OWLLiteral getOWLLiteral(boolean value)
+	public OWLLiteral getOWLLiteralBoolean(String value)
 	{
-		return owlDataFactory.getOWLLiteral(value);
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_BOOLEAN);
 	}
 
-	public OWLLiteral getOWLLiteral(int value)
+	public OWLLiteral getOWLLiteralDouble(String value)
 	{
-		return owlDataFactory.getOWLLiteral(value);
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DOUBLE);
 	}
 
-	public OWLLiteral getOWLLiteral(float value)
+	public OWLLiteral getOWLLiteralFloat(String value)
 	{
-		return owlDataFactory.getOWLLiteral(value);
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_FLOAT);
+	}
+
+	public OWLLiteral getOWLLiteralLong(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_LONG);
+	}
+
+	public OWLLiteral getOWLLiteralInteger(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_INT);
+	}
+
+	public OWLLiteral getOWLLiteralShort(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_SHORT);
+	}
+
+	public OWLLiteral getOWLLiteralByte(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_BYTE);
+	}
+
+	public OWLLiteral getOWLLiteralDateTime(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DATE_TIME);
+	}
+
+	public OWLLiteral getOWLLiteralDate(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.DATE.getIRI()));
+	}
+
+	public OWLLiteral getOWLLiteralTime(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.TIME.getIRI()));
+	}
+
+	public OWLLiteral getOWLLiteralDuration(String value)
+	{
+		return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.DURATION.getIRI()));
 	}
 
 	public OWLAnnotationAssertionAxiom getOWLAnnotationAssertionAxiom(OWLEntity entity, OWLAnnotationProperty property, OWLLiteral value)

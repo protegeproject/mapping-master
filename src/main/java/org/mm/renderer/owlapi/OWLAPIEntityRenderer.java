@@ -575,13 +575,13 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 	{
 		OWLLiteral lit;
 		if (owlLiteralNode.isString()) {
-			lit = handler.getOWLLiteral(owlLiteralNode.getStringLiteralNode().getValue());
+			lit = handler.getOWLLiteralString(owlLiteralNode.getStringLiteralNode().getValue());
 		} else if (owlLiteralNode.isInt()) {
-			lit = handler.getOWLLiteral(owlLiteralNode.getIntLiteralNode().getValue());
+			lit = handler.getOWLLiteralInteger(owlLiteralNode.getIntLiteralNode().getValue()+"");
 		} else if (owlLiteralNode.isFloat()) {
-			lit = handler.getOWLLiteral(owlLiteralNode.getFloatLiteralNode().getValue());
+			lit = handler.getOWLLiteralFloat(owlLiteralNode.getFloatLiteralNode().getValue()+"");
 		} else if (owlLiteralNode.isBoolean()) {
-			lit = handler.getOWLLiteral(owlLiteralNode.getBooleanLiteralNode().getValue());
+			lit = handler.getOWLLiteralBoolean(owlLiteralNode.getBooleanLiteralNode().getValue()+"");
 		} else {
 			throw new InternalRendererException("unsupported datatype for node " + owlLiteralNode);
 		}
@@ -613,19 +613,22 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 			OWLNamedIndividual ind = handler.getOWLNamedIndividual(resolvedReferenceValue);
 			return Optional.of(new OWLPropertyAssertionObjectRendering(ind));
 		} else if (referenceType.isOWLLiteral()) {
-			OWLLiteral lit = handler.getOWLLiteral(resolvedReferenceValue);
-			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
-		} else if (referenceType.isXSDString()) {
-			OWLLiteral lit = handler.getOWLLiteral(resolvedReferenceValue);
-			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
-		} else if (referenceType.isXSDInt()) {
-			OWLLiteral lit = handler.getOWLLiteral(Integer.parseInt(resolvedReferenceValue));
-			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
-		} else if (referenceType.isXSDFloat()) {
-			OWLLiteral lit = handler.getOWLLiteral(Float.parseFloat(resolvedReferenceValue));
-			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
-		} else if (referenceType.isXSDBoolean()) {
-			OWLLiteral lit = handler.getOWLLiteral(Boolean.parseBoolean(resolvedReferenceValue));
+			OWLLiteral lit = null;
+			if (referenceType.isXSDString()) { lit = handler.getOWLLiteralString(resolvedReferenceValue);
+			} else if (referenceType.isXSDBoolean()) { lit = handler.getOWLLiteralBoolean(resolvedReferenceValue);
+			} else if (referenceType.isXSDDouble()) { lit = handler.getOWLLiteralDouble(resolvedReferenceValue);
+			} else if (referenceType.isXSDFloat()) { lit = handler.getOWLLiteralFloat(resolvedReferenceValue);
+			} else if (referenceType.isXSDLong()) { lit = handler.getOWLLiteralLong(resolvedReferenceValue);
+			} else if (referenceType.isXSDInt()) { lit = handler.getOWLLiteralInteger(resolvedReferenceValue);
+			} else if (referenceType.isXSDShort()) { lit = handler.getOWLLiteralShort(resolvedReferenceValue);
+			} else if (referenceType.isXSDByte()) { lit = handler.getOWLLiteralByte(resolvedReferenceValue);
+			} else if (referenceType.isXSDDate()) { lit = handler.getOWLLiteralDate(resolvedReferenceValue);
+			} else if (referenceType.isXSDTime()) { lit = handler.getOWLLiteralTime(resolvedReferenceValue);
+			} else if (referenceType.isXSDDateTime()) { lit = handler.getOWLLiteralDateTime(resolvedReferenceValue);
+			} else if (referenceType.isXSDDuration()) { lit = handler.getOWLLiteralDuration(resolvedReferenceValue);
+			} else {
+				throw new RendererException("unsupported datatype for reference " + referenceNode);
+			}
 			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
 		}
 		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
