@@ -398,10 +398,10 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		Set<OWLAxiom> axioms = new HashSet<>();
 
 		if (declaredIndividualRendering.isPresent()) {
-
+			OWLNamedIndividual individual = declaredIndividualRendering.get().getOWLNamedIndividual();
 			for (AnnotationFactNode annotationFact : annotationFactNodes) {
-				Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer
-						.renderOWLProperty(annotationFact.getOWLPropertyNode());
+				Optional<? extends OWLAnnotationPropertyRendering> propertyRendering = this.entityRenderer
+						.renderOWLAnnotationProperty(annotationFact.getOWLPropertyNode());
 
 				if (!propertyRendering.isPresent()) {
 					// logLine("Skipping OWL annotation clause [" + annotationFact + "] because of missing property name");
@@ -409,28 +409,32 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 				}
 
 				OWLAnnotationValueNode annotationValueNode = annotationFact.getOWLAnnotationValueNode();
-				Optional<OWLAnnotationValueRendering> annotationValueRendering = renderOWLAnnotationValue(annotationValueNode);
+				Optional<OWLAnnotationValueRendering> annotationValueRendering =
+						entityRenderer.renderOWLAnnotationValue(annotationValueNode);
 
 				if (!annotationValueRendering.isPresent()) {
 					// logLine("Skipping OWL annotation clause [" + annotationFact + "] because of missing annotation value");
 					continue;
 				}
 
-				OWLNamedIndividual individual = declaredIndividualRendering.get().getOWLNamedIndividual();
-				// TODO Check that it is an annotation property
-				OWLAnnotationProperty property = (OWLAnnotationProperty)propertyRendering.get().getOWLProperty();
-				OWLAnnotationValue annotationValue = annotationValueRendering.get().getOWLAnnotationValue();
+				OWLAnnotationProperty property = propertyRendering.get().getOWLAnnotationProperty();
 
 				if (annotationValueNode.isReference()) { // We have an object property so tell the reference
 					ReferenceNode referenceNode = annotationValueNode.getReferenceNode();
-					if (!referenceNode.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler
-							.isOWLObjectProperty(property))
+					if (!referenceNode.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property)) {
 						referenceNode.updateReferenceType(OWL_NAMED_INDIVIDUAL);
+					}
 				}
 
-				OWLAnnotationAssertionAxiom axiom = this.owlDataFactory
-						.getOWLAnnotationAssertionAxiom(property, individual.getIRI(), annotationValue);
-				axioms.add(axiom);
+				if (this.owlObjectHandler.isOWLAnnotationProperty(property)) {
+					OWLAnnotationValue annotationValue = annotationValueRendering.get().getOWLAnnotationValue();
+					OWLAnnotationAssertionAxiom axiom = owlDataFactory.getOWLAnnotationAssertionAxiom(property, individual.getIRI(), annotationValue);
+					axioms.add(axiom);
+				} else {
+					// logLine(
+					//  "Skipping OWL annotation clause [" + factNode + "] because property is not found in the ontology");
+					continue;
+				}
 			}
 		}
 		return axioms;

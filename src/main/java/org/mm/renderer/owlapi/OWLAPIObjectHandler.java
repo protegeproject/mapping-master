@@ -171,7 +171,7 @@ class OWLAPIObjectHandler
 
 	public boolean isOWLAnnotationProperty(String shortName)
 	{
-		throw new RuntimeException("not implemented");
+		return this.ontology.containsAnnotationPropertyInSignature(getQualifiedName(shortName));
 	}
 
 	public boolean isOWLDatatype(String shortName)
@@ -187,6 +187,11 @@ class OWLAPIObjectHandler
 	public boolean isOWLDataProperty(OWLProperty property)
 	{
 		return this.ontology.containsDataPropertyInSignature(property.getIRI());
+	}
+
+	public boolean isOWLAnnotationProperty(OWLAnnotationProperty property)
+	{
+		return this.ontology.containsAnnotationPropertyInSignature(property.getIRI());
 	}
 
 	public String getNamespaceForPrefix(String prefix) throws RendererException
