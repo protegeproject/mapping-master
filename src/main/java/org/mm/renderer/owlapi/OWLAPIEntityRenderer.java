@@ -47,6 +47,7 @@ import org.mm.renderer.RendererException;
 import org.mm.rendering.OWLLiteralRendering;
 import org.mm.rendering.ReferenceRendering;
 import org.mm.rendering.Rendering;
+import org.mm.rendering.owlapi.OWLAPILiteralRendering;
 import org.mm.rendering.owlapi.OWLAnnotationPropertyRendering;
 import org.mm.rendering.owlapi.OWLAnnotationValueRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
@@ -491,8 +492,20 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 	@Override
 	public Optional<? extends OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
 	{
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Need to check with OWLAPILiteralRenderer
+		OWLLiteral lit;
+		if (literalNode.isString()) {
+			lit = handler.getOWLLiteralString(literalNode.getStringLiteralNode().getValue());
+		} else if (literalNode.isInt()) {
+			lit = handler.getOWLLiteralInteger(literalNode.getIntLiteralNode().getValue()+"");
+		} else if (literalNode.isFloat()) {
+			lit = handler.getOWLLiteralFloat(literalNode.getFloatLiteralNode().getValue()+"");
+		} else if (literalNode.isBoolean()) {
+			lit = handler.getOWLLiteralBoolean(literalNode.getBooleanLiteralNode().getValue()+"");
+		} else {
+			throw new InternalRendererException("unsupported datatype for node " + literalNode);
+		}
+		return Optional.of(new OWLAPILiteralRendering(lit));
 	}
 
 	@Override
