@@ -1,19 +1,17 @@
 package org.mm.renderer;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
 import org.mm.renderer.owlapi.OWLAPICoreRenderer;
 
-import java.util.HashSet;
-import java.util.Set;
-
-// TODO This is not very principled. We just hardcode all options. We should return a set of
-// possible options with valid values for each.
 public class ReferenceRendererOptionsManager implements MappingMasterParserConstants
 {
-  private final ReferenceRenderer referenceRenderer;
+  private final ReferenceRendererConfiguration referenceRenderer;
 
-  public ReferenceRendererOptionsManager(ReferenceRenderer referenceRenderer)
+  public ReferenceRendererOptionsManager(ReferenceRendererConfiguration referenceRenderer)
   {
     this.referenceRenderer = referenceRenderer;
   }

@@ -24,6 +24,8 @@ import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.renderer.CoreRenderer;
 import org.mm.renderer.InternalRendererException;
+import org.mm.renderer.ReferenceRendererConfiguration;
+import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.Rendering;
 import org.mm.rendering.owlapi.OWLAPIRendering;
@@ -41,7 +43,6 @@ import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDataPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
@@ -58,7 +59,7 @@ import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
-public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserConstants
+public class OWLAPICoreRenderer extends ReferenceRendererConfiguration implements Renderer, CoreRenderer, MappingMasterParserConstants
 {
 	public static final int NameEncodings[] = { MM_LOCATION, MM_LITERAL, RDF_ID, RDFS_LABEL };
 	public static final int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY,
@@ -69,24 +70,29 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 	public static final int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INT, XSD_FLOAT, XSD_DOUBLE,
 			XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DATE, XSD_DURATION };
 
-	private final OWLDataFactory owlDataFactory;
-	private final OWLAPIObjectHandler owlObjectHandler;
+	private final OWLAPIObjectHandler handler;
 	private final OWLAPIEntityRenderer entityRenderer;
-	private final OWLAPILiteralRenderer literalRenderer;
 	private final OWLAPIClassExpressionRenderer classExpressionRenderer;
 	private final OWLAPIReferenceRenderer referenceRenderer;
 
 	public OWLAPICoreRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
 	{
-		this.owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-		this.owlObjectHandler = new OWLAPIObjectHandler(ontology);
+		handler = new OWLAPIObjectHandler(ontology);
+		referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource);
+		entityRenderer = new OWLAPIEntityRenderer(ontology, referenceRenderer);
+		classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, entityRenderer);
+	}
 
-		this.entityRenderer = new OWLAPIEntityRenderer(ontology, dataSource);
-		this.literalRenderer = new OWLAPILiteralRenderer(ontology);
-		this.referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource, this.entityRenderer,
-				this.literalRenderer);
-		this.classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, this.entityRenderer,
-				this.referenceRenderer, this.literalRenderer);
+	@Override
+	public void changeDataSource(SpreadSheetDataSource dataSource)
+	{
+		referenceRenderer.setDataSource(dataSource);
+	}
+
+	@Override
+	public ReferenceRendererConfiguration getReferenceRendererConfiguration()
+	{
+		return this;
 	}
 
 	public Optional<OWLAPIRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
@@ -128,7 +134,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		/*
 		 * By default, the class declaration node will produce one OWL class declaration axiom 
 		 */
-		OWLDeclarationAxiom declaredAxiom = owlDataFactory.getOWLDeclarationAxiom(declaredClass);
+		OWLDeclarationAxiom declaredAxiom = handler.getOWLDeclarationAxiom(declaredClass);
 		axioms.add(declaredAxiom);
 		
 		/*
@@ -143,7 +149,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 						//  "processReference: skipping subclass declaration [" + subclassOfNode + "] because of missing class");
 					} else {
 						OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-						OWLSubClassOfAxiom axiom = owlDataFactory.getOWLSubClassOfAxiom(declaredClass, classExpression);
+						OWLSubClassOfAxiom axiom = handler.getOWLSubClassOfAxiom(declaredClass, classExpression);
 						axioms.add(axiom);
 					}
 				}
@@ -163,7 +169,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 						//  + "] because of missing class");
 					} else {
 						OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-						OWLEquivalentClassesAxiom axiom = owlDataFactory.getOWLEquivalentClassesAxiom(declaredClass, classExpression);
+						OWLEquivalentClassesAxiom axiom = handler.getOWLEquivalentClassesAxiom(declaredClass, classExpression);
 						axioms.add(axiom);
 					}
 				}
@@ -195,7 +201,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
 				OWLAnnotationProperty property = propertyRendering.get().getOWLAnnotationProperty();
 				OWLAnnotationValue annotationValue = annotationValueRendering.get().getOWLAnnotationValue();
-				OWLAnnotationAssertionAxiom axiom = owlDataFactory.getOWLAnnotationAssertionAxiom(property, declaredClass.getIRI(), annotationValue);
+				OWLAnnotationAssertionAxiom axiom = handler.getOWLAnnotationAssertionAxiom(property, declaredClass.getIRI(), annotationValue);
 				axioms.add(axiom);
 			}
 		}
@@ -222,7 +228,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		/*
 		 * By default, the individual declaration node will produce one OWL named individual declaration axiom 
 		 */
-		OWLDeclarationAxiom declaredAxiom = owlDataFactory.getOWLDeclarationAxiom(declaredIndividual);
+		OWLDeclarationAxiom declaredAxiom = handler.getOWLDeclarationAxiom(declaredIndividual);
 		axioms.add(declaredAxiom);
 		
 		if (individualDeclarationNode.hasFacts()) { // We have a Facts: clause
@@ -269,7 +275,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 						.renderOWLClassExpression(classExpressionNode);
 				if (subClassRendering.isPresent()) {
 					OWLClassExpression subClass = subClassRendering.get().getOWLClassExpression();
-					OWLSubClassOfAxiom axiom = this.owlDataFactory.getOWLSubClassOfAxiom(declaredClass, subClass);
+					OWLSubClassOfAxiom axiom = handler.getOWLSubClassOfAxiom(declaredClass, subClass);
 					axioms.add(axiom);
 				}
 			}
@@ -281,36 +287,35 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 			return Optional.empty();
 	}
 
-	@Override public Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAsNode) throws RendererException
+	@Override
+	public Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAsNode) throws RendererException
 	{
 		throw new InternalRendererException("not implemented");  // TODO
 	}
 
-	@Override public Optional<? extends Rendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
+	@Override
+	public Optional<? extends Rendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
 			throws RendererException
 	{
 		throw new InternalRendererException("not implemented"); // TODO
 	}
 
-	@Override public Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException
+	@Override
+	public Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException
 	{
 		throw new InternalRendererException("not implemented"); // TODO
 	}
 
-	@Override public Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
+	@Override
+	public Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
 			throws RendererException
 	{
 		throw new InternalRendererException("not implemented"); // TODO
 	}
 
-	@Override public void setDataSource(SpreadSheetDataSource dataSource)
+	public ReferenceRendererConfiguration getReferenceRenderer()
 	{
-		this.referenceRenderer.setDataSource(dataSource);
-	}
-
-	@Override public OWLAPIReferenceRenderer getReferenceRenderer()
-	{
-		return this.referenceRenderer;
+		return this;
 	}
 
 	/**
@@ -330,7 +335,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 						.renderOWLNamedIndividual(sameAsIndividualNode);
 				if (sameAsIndividualRendering.isPresent()) {
 					OWLNamedIndividual individual2 = sameAsIndividualRendering.get().getOWLNamedIndividual();
-					OWLSameIndividualAxiom axiom = this.owlDataFactory.getOWLSameIndividualAxiom(individual1, individual2);
+					OWLSameIndividualAxiom axiom = handler.getOWLSameIndividualAxiom(individual1, individual2);
 					axioms.add(axiom);
 				}
 			}
@@ -354,9 +359,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 						.renderOWLNamedIndividual(differentFromIndividualNode);
 				if (differentFromIndividualsRendering.isPresent()) {
 					OWLNamedIndividual individual2 = differentFromIndividualsRendering.get().getOWLNamedIndividual();
-					OWLDifferentIndividualsAxiom axiom = this.owlDataFactory
-							.getOWLDifferentIndividualsAxiom(individual1, individual2);
-
+					OWLDifferentIndividualsAxiom axiom = handler.getOWLDifferentIndividualsAxiom(individual1, individual2);
 					axioms.add(axiom);
 				}
 			}
@@ -396,14 +399,14 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
 				if (annotationValueNode.isReference()) { // We have an object property so tell the reference
 					ReferenceNode referenceNode = annotationValueNode.getReferenceNode();
-					if (!referenceNode.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property)) {
+					if (!referenceNode.hasExplicitlySpecifiedReferenceType() && handler.isOWLObjectProperty(property)) {
 						referenceNode.updateReferenceType(OWL_NAMED_INDIVIDUAL);
 					}
 				}
 
-				if (this.owlObjectHandler.isOWLAnnotationProperty(property)) {
+				if (handler.isOWLAnnotationProperty(property)) {
 					OWLAnnotationValue annotationValue = annotationValueRendering.get().getOWLAnnotationValue();
-					OWLAnnotationAssertionAxiom axiom = owlDataFactory.getOWLAnnotationAssertionAxiom(property, individual.getIRI(), annotationValue);
+					OWLAnnotationAssertionAxiom axiom = handler.getOWLAnnotationAssertionAxiom(property, individual.getIRI(), annotationValue);
 					axioms.add(axiom);
 				} else {
 					// logLine(
@@ -449,20 +452,20 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 
 				if (propertyAssertionObjectNode.isReference()) { // We have an object property so tell the reference the type
 					ReferenceNode reference = propertyAssertionObjectNode.getReferenceNode();
-					if (!reference.hasExplicitlySpecifiedReferenceType() && this.owlObjectHandler.isOWLObjectProperty(property)) {
+					if (!reference.hasExplicitlySpecifiedReferenceType() && handler.isOWLObjectProperty(property)) {
 						reference.updateReferenceType(OWL_NAMED_INDIVIDUAL);
 					}
 				}
 
-				if (this.owlObjectHandler.isOWLObjectProperty(property)) {
-					OWLObjectProperty op = owlDataFactory.getOWLObjectProperty(property.getIRI());
+				if (handler.isOWLObjectProperty(property)) {
+					OWLObjectProperty op = handler.getOWLObjectProperty(property.getIRI());
 					OWLIndividual value = (OWLNamedIndividual) propertyAssertionObject;
-					OWLObjectPropertyAssertionAxiom axiom = owlDataFactory.getOWLObjectPropertyAssertionAxiom(op, individual, value);
+					OWLObjectPropertyAssertionAxiom axiom = handler.getOWLObjectPropertyAssertionAxiom(op, individual, value);
 					axioms.add(axiom);
-				} else if (this.owlObjectHandler.isOWLDataProperty(property)) {
-					OWLDataProperty dp = owlDataFactory.getOWLDataProperty(property.getIRI());
+				} else if (handler.isOWLDataProperty(property)) {
+					OWLDataProperty dp = handler.getOWLDataProperty(property.getIRI());
 					OWLLiteral value = (OWLLiteral) propertyAssertionObject;
-					OWLDataPropertyAssertionAxiom axiom = owlDataFactory.getOWLDataPropertyAssertionAxiom(dp, individual, value);
+					OWLDataPropertyAssertionAxiom axiom = handler.getOWLDataPropertyAssertionAxiom(dp, individual, value);
 					axioms.add(axiom);
 				} else {
 					// logLine(

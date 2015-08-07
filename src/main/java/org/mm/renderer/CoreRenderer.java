@@ -13,7 +13,6 @@ import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLSameAsNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.rendering.Rendering;
-import org.mm.ss.SpreadSheetDataSource;
 
 public interface CoreRenderer
 {
@@ -37,8 +36,4 @@ public interface CoreRenderer
   Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException;
 
   Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode) throws RendererException;
-
-  void setDataSource(SpreadSheetDataSource dataSource);
-
-  ReferenceRenderer getReferenceRenderer();
 }

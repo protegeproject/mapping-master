@@ -1,8 +1,8 @@
 package org.mm.ui.model;
 
 import org.mm.core.MappingExpressionsPersistenceLayer;
-import org.mm.renderer.CoreRenderer;
 import org.mm.renderer.ReferenceRendererOptionsManager;
+import org.mm.renderer.Renderer;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ui.action.SaveMappingsAction;
 import org.mm.ui.view.MMApplicationView;
@@ -12,7 +12,7 @@ public class MMApplicationModel implements MMModel
 {
   private final DataSourceModel dataSourceModel;
   private final MappingsExpressionsModel expressionMappingsModel;
-  private final CoreRenderer coreRenderer;
+  private final Renderer renderer;
   private final ReferenceRendererOptionsManager optionsManager;
   private final MappingExpressionsPersistenceLayer mappingExpressionsPersistenceLayer;
 
@@ -21,14 +21,14 @@ public class MMApplicationModel implements MMModel
   private String mappingFileName;
   private SaveMappingsAction saveMappingsAction;
 
-  public MMApplicationModel(SpreadSheetDataSource dataSource, CoreRenderer coreRenderer,
+  public MMApplicationModel(SpreadSheetDataSource dataSource, Renderer renderer,
     MappingExpressionsPersistenceLayer mappingExpressionsPersistenceLayer)
   {
     this.dataSourceModel = new DataSourceModel(dataSource);
     this.expressionMappingsModel = new MappingsExpressionsModel();
     this.mappingExpressionsPersistenceLayer = mappingExpressionsPersistenceLayer;
-    this.coreRenderer = coreRenderer;
-    this.optionsManager = new ReferenceRendererOptionsManager(coreRenderer.getReferenceRenderer());
+    this.renderer = renderer;
+    this.optionsManager = new ReferenceRendererOptionsManager(renderer.getReferenceRendererConfiguration());
   }
 
   public DataSourceModel getDataSourceModel() { return this.dataSourceModel; }
@@ -39,7 +39,7 @@ public class MMApplicationModel implements MMModel
 
   public MappingsExpressionsModel getMappingExpressionsModel() { return this.expressionMappingsModel; }
 
-  public CoreRenderer getCoreRenderer() { return this.coreRenderer; }
+  public Renderer getCoreRenderer() { return this.renderer; }
 
   public ReferenceRendererOptionsManager getMappingConfigurationOptionsManager() { return this.optionsManager; }
 
@@ -73,7 +73,7 @@ public class MMApplicationModel implements MMModel
 
   public void dataSourceUpdated()
   {
-    this.coreRenderer.setDataSource(getDataSourceModel().getDataSource());
+    this.renderer.changeDataSource(getDataSourceModel().getDataSource());
   }
 
   public boolean hasMappingFile() { return this.mappingFileName != null; }
