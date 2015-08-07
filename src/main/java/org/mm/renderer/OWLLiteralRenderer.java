@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface OWLLiteralRenderer
 {
-	Optional<? extends OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException;
+	Optional<? extends OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode node) throws RendererException;
 }

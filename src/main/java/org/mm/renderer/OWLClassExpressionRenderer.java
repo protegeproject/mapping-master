@@ -22,55 +22,39 @@ import java.util.Optional;
 
 public interface OWLClassExpressionRenderer
 {
-  Optional<? extends Rendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
-    throws RendererException;
+	Optional<? extends Rendering> renderOWLClassExpression(OWLClassExpressionNode node) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLUnionClass(OWLUnionClassNode node) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLIntersectionClass(OWLIntersectionClassNode intersectionClassNode)
-    throws RendererException;
+	Optional<? extends Rendering> renderOWLIntersectionClass(OWLIntersectionClassNode node) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
-    throws RendererException;
+	Optional<? extends Rendering> renderOWLObjectOneOf(OWLObjectOneOfNode node) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
-    OWLEquivalentClassesNode equivalentClassesNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLEquivalentClasses(OWLClassNode node1, OWLEquivalentClassesNode node2) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictionNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode node) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
-    OWLExactCardinalityNode cardinalityNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLObjectExactCardinality(OWLPropertyNode pnode, OWLExactCardinalityNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLDataExactCardinality(OWLPropertyNode propertyNode,
-    OWLExactCardinalityNode cardinalityNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLDataExactCardinality(OWLPropertyNode pnode, OWLExactCardinalityNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
-    OWLMaxCardinalityNode maxCardinalityNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLObjectMaxCardinality(OWLPropertyNode pnode, OWLMaxCardinalityNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
-    OWLMaxCardinalityNode maxCardinalityNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLDataMaxCardinality(OWLPropertyNode pnode, OWLMaxCardinalityNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLObjectMinCardinality(OWLPropertyNode propertyNode,
-    OWLMinCardinalityNode minCardinalityNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLObjectMinCardinality(OWLPropertyNode pnode, OWLMinCardinalityNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
-    OWLMinCardinalityNode minCardinalityNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLDataMinCardinality(OWLPropertyNode pnode, OWLMinCardinalityNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
-    throws RendererException;
+	Optional<? extends Rendering> renderOWLObjectHasValue(OWLPropertyNode pnode, OWLHasValueNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLDataHasValue(OWLPropertyNode propertyNode, OWLHasValueNode hasValueNode)
-    throws RendererException;
+	Optional<? extends Rendering> renderOWLDataHasValue(OWLPropertyNode pnode, OWLHasValueNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
-    OWLDataAllValuesFromNode dataAllValuesFromNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLDataAllValuesFrom(OWLPropertyNode pnode, OWLDataAllValuesFromNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
-    OWLObjectAllValuesFromNode objectAllValuesFromNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLObjectAllValuesFrom(OWLPropertyNode pnode, OWLObjectAllValuesFromNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
-    OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLDataSomeValuesFrom(OWLPropertyNode pnode, OWLDataSomeValuesFromNode target) throws RendererException;
 
-  Optional<? extends Rendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
-    OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException;
+	Optional<? extends Rendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode prope, OWLObjectSomeValuesFromNode target) throws RendererException;
 }

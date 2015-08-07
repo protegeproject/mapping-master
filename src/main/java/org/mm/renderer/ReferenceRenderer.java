@@ -7,5 +7,5 @@ import org.mm.rendering.Rendering;
 
 public interface ReferenceRenderer
 {
-	public Optional<? extends Rendering> renderReference(ReferenceNode referenceNode) throws RendererException;
+	Optional<? extends Rendering> renderReference(ReferenceNode node) throws RendererException;
 }
