@@ -16,7 +16,7 @@ import org.mm.parser.ParseException;
 import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.MMExpressionNode;
-import org.mm.renderer.owlapi.OWLAPICoreRenderer;
+import org.mm.renderer.owlapi.OWLAPIRenderer;
 import org.mm.renderer.text.TextRenderer;
 import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.mm.rendering.text.TextRendering;
@@ -180,7 +180,7 @@ public class IntegrationTestBase
 
 		dataSource.setCurrentLocation(currentLocation);
 
-		OWLAPICoreRenderer renderer = new OWLAPICoreRenderer(ontology, dataSource);
+		OWLAPIRenderer renderer = new OWLAPIRenderer(ontology, dataSource);
 		MMExpressionNode mmExpressionNode = parseExpression(expression);
 
 		return renderer.renderMMExpression(mmExpressionNode);

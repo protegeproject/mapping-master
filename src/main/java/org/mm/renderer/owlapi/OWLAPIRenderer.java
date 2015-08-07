@@ -59,7 +59,7 @@ import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
-public class OWLAPICoreRenderer extends ReferenceRendererConfiguration implements Renderer, CoreRenderer, MappingMasterParserConstants
+public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Renderer, CoreRenderer, MappingMasterParserConstants
 {
 	public static final int NameEncodings[] = { MM_LOCATION, MM_LITERAL, RDF_ID, RDFS_LABEL };
 	public static final int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY,
@@ -75,7 +75,7 @@ public class OWLAPICoreRenderer extends ReferenceRendererConfiguration implement
 	private final OWLAPIClassExpressionRenderer classExpressionRenderer;
 	private final OWLAPIReferenceRenderer referenceRenderer;
 
-	public OWLAPICoreRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
+	public OWLAPIRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
 	{
 		handler = new OWLAPIObjectHandler(ontology);
 		referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource);

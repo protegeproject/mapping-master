@@ -10,7 +10,7 @@ import org.mm.parser.ParseException;
 import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.renderer.RendererException;
-import org.mm.renderer.owlapi.OWLAPICoreRenderer;
+import org.mm.renderer.owlapi.OWLAPIRenderer;
 
 import java.io.ByteArrayInputStream;
 
@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream;
 public class SpreadSheetExpressionMapper
 {
 	private static void processMappingExpression(SpreadSheetDataSource dataSource, SpreadsheetLocation currentLocation,
-			OWLAPICoreRenderer renderer, MappingExpression mappingExpression) throws MappingMasterException, ParseException
+			OWLAPIRenderer renderer, MappingExpression mappingExpression) throws MappingMasterException, ParseException
 	{
 		String comment = mappingExpression.getComment();
 		String expressionText = mappingExpression.getExpression();
