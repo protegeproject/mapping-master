@@ -219,7 +219,7 @@ class OWLAPIObjectHandler
 
 	public boolean isOWLDatatype(String shortName)
 	{
-		throw new RuntimeException("not implemented");
+		return this.ontology.containsDatatypeInSignature(getQualifiedName(shortName));
 	}
 
 	public boolean isOWLObjectProperty(OWLProperty property)
