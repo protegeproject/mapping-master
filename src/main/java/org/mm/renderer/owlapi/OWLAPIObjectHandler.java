@@ -2,6 +2,7 @@ package org.mm.renderer.owlapi;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.mm.core.ReferenceDirectives;
 import org.mm.core.ReferenceType;
@@ -408,12 +409,14 @@ class OWLAPIObjectHandler
 	// TODO Use Optional return value
 	private OWLEntity getOWLEntityWithRDFSLabel(String labelText, String language) throws RendererException
 	{
-		if (language != null && "*".equals(language))
-			return getOWLEntityWithRDFSLabel(labelText); // Match on any language or none
-		else if (language != null && "+".equals(language))
-			return getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(labelText); // Match on at least one language
-		else
-			return getOWLEntityWithRDFSLabelAndLanguage(labelText, language); // Match on specific language
+		// TODO Confirm with Martin
+		if (language != null && "*".equals(language)) {
+			return getOWLEntityWithRDFSLabel(labelText).iterator().next(); // Match on any language or none
+		} else if (language != null && "+".equals(language)) {
+			return getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(labelText).iterator().next(); // Match on at least one language
+		} else {
+			return getOWLEntityWithRDFSLabelAndLanguage(labelText, language).iterator().next(); // Match on specific language
+		}
 	}
 
 	private boolean shouldCreateOrResolveOWLEntityWithRDFSLabel(String labelText, String language,
@@ -534,7 +537,9 @@ class OWLAPIObjectHandler
 			return isEmptyName ? createOWLObjectProperty(namespace) : createOWLObjectProperty(namespace, entityLocalID);
 		} else if (referenceType.isOWLDataProperty()) {
 			return isEmptyName ? createOWLDataProperty(namespace) : createOWLDataProperty(namespace, entityLocalID);
-		} else
+		} else if (referenceType.isOWLAnnotationProperty()) {
+			return isEmptyName ? createOWLAnnotationProperty(namespace) : createOWLAnnotationProperty(namespace, entityLocalID);
+		}
 			throw new RendererException(
 					"unknown entity type " + referenceType + " for entity " + entityLocalID + " in namespace " + namespace
 							+ "	in reference " + referenceDirectives + " at location " + location);
@@ -672,76 +677,91 @@ class OWLAPIObjectHandler
 	}
 
 	// TODO Use Optional return value
-	private OWLEntity getOWLEntityWithRDFSLabel(String labelText)
+	private Set<OWLEntity> getOWLEntityWithRDFSLabel(String labelText)
 	{
-		throw new RuntimeException("not implemented");
+		// TODO Confirm with Martin
+		return this.ontology.getEntitiesInSignature(IRI.create(labelText));
 	}
 
 	// TODO Use Optional return value
-	private OWLEntity getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(String labelText)
+	private Set<OWLEntity> getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(String labelText)
 	{
-		throw new RuntimeException("not implemented");
+		// TODO Confirm with Martin
+		return this.ontology.getEntitiesInSignature(IRI.create(labelText));
 	}
 
 	// TODO Use Optional return value
-	private OWLEntity getOWLEntityWithRDFSLabelAndLanguage(String labelText, String language)
+	private Set<OWLEntity> getOWLEntityWithRDFSLabelAndLanguage(String labelText, String language)
 	{
-		throw new RuntimeException("not implemented");
+		// TODO Confirm with Martin
+		return this.ontology.getEntitiesInSignature(IRI.create(labelText));
 	}
 
 	private boolean isExistingOWLEntityWithRDFSLabel(String labelText)
 	{
-		throw new RuntimeException("not implemented");
+		// TODO Confirm with Martin
+		return this.ontology.containsEntityInSignature(IRI.create(labelText));
 	}
 
 	private boolean isExistingOWLEntityWithRDFSLabelAndLanguage(String labelText, String language)
 	{
-		throw new RuntimeException("not implemented");
+		// TODO Confirm with Martin
+		return this.ontology.containsEntityInSignature(IRI.create(labelText));
 	}
 
 	private boolean isExistingOWLEntityWithRDFID(String rdfID)
 	{
-		throw new RuntimeException("not implemented");
+		return this.ontology.containsEntityInSignature(IRI.create(rdfID));
 	}
 
 	private OWLClass createOWLClass(String namespace, String localName)
 	{
-		throw new RuntimeException("not implemented");
+		return owlDataFactory.getOWLClass(IRI.create(namespace, localName));
 	}
 
 	private OWLClass createOWLClass(String namespace)
 	{
-		throw new RuntimeException("not implemented");
+		return owlDataFactory.getOWLClass(IRI.create(namespace));
 	}
 
 	private OWLNamedIndividual createOWLNamedIndividual(String namespace, String localName)
 	{
-		return null; // TODO Implement
+		return owlDataFactory.getOWLNamedIndividual(IRI.create(namespace, localName));
 	}
 
 	private OWLNamedIndividual createOWLNamedIndividual(String namespace)
 	{
-		throw new RuntimeException("not implemented");
+		return owlDataFactory.getOWLNamedIndividual(IRI.create(namespace));
 	}
 
 	private OWLObjectProperty createOWLObjectProperty(String namespace, String localName)
 	{
-		return null; // TODO Implement
+		return owlDataFactory.getOWLObjectProperty(IRI.create(namespace, localName));
 	}
 
 	private OWLObjectProperty createOWLObjectProperty(String namespace)
 	{
-		throw new RuntimeException("not implemented");
+		return owlDataFactory.getOWLObjectProperty(IRI.create(namespace));
 	}
 
 	private OWLDataProperty createOWLDataProperty(String namespace, String localName)
 	{
-		throw new RuntimeException("not implemented");
+		return owlDataFactory.getOWLDataProperty(IRI.create(namespace, localName));
 	}
 
 	private OWLDataProperty createOWLDataProperty(String namespace)
 	{
-		throw new RuntimeException("not implemented");
+		return owlDataFactory.getOWLDataProperty(IRI.create(namespace));
+	}
+
+	private OWLAnnotationProperty createOWLAnnotationProperty(String namespace, String localName)
+	{
+		return owlDataFactory.getOWLAnnotationProperty(IRI.create(namespace, localName));
+	}
+
+	private OWLAnnotationProperty createOWLAnnotationProperty(String namespace)
+	{
+		return owlDataFactory.getOWLAnnotationProperty(IRI.create(namespace));
 	}
 
 	private void throwOWLEntityExistsWithLabelException(String labelText, String language) throws RendererException

@@ -281,31 +281,6 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 			return Optional.empty();
 	}
 
-	// TODO Remove this method as part of renderer refactoring
-	@Override public Optional<OWLPropertyAssertionObjectRendering> renderOWLPropertyAssertionObject(
-			OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException
-	{
-		if (propertyAssertionObjectNode.isName()) {
-			String name = propertyAssertionObjectNode.getNameNode().getName();
-			// TODO Implement
-			throw new InternalRendererException("not implemented");
-			//return Optional.empty();
-		} else if (propertyAssertionObjectNode.isLiteral()) {
-			throw new InternalRendererException("not implemented");
-			// return Optional.empty(); // TODO Implement
-		} else if (propertyAssertionObjectNode.isReference()) {
-			throw new InternalRendererException("not implemented");
-			// return Optional.empty(); // TODO Implement
-		} else
-			throw new InternalRendererException("unknown child node for node " + propertyAssertionObjectNode.getNodeName());
-	}
-
-	@Override public Optional<OWLAnnotationValueRendering> renderOWLAnnotationValue(
-			OWLAnnotationValueNode annotationValueNode) throws RendererException
-	{
-		throw new InternalRendererException("not implemented"); // TODO
-	}
-
 	@Override public Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAsNode) throws RendererException
 	{
 		throw new InternalRendererException("not implemented");  // TODO

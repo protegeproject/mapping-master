@@ -1,7 +1,9 @@
 package org.mm.renderer;
 
+import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
+import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.rendering.Rendering;
 
@@ -21,4 +23,11 @@ public interface OWLEntityRenderer
 	Optional<? extends Rendering> renderOWLDataProperty(OWLPropertyNode propertyNode) throws RendererException;
 
 	Optional<? extends Rendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode) throws RendererException;
+
+	Optional<? extends Rendering> renderOWLPropertyAssertionObject(OWLPropertyAssertionObjectNode propertyAssertionObjectNode)
+			throws RendererException;
+
+	Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
+			throws RendererException;
+
 }

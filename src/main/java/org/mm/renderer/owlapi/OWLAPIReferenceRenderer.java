@@ -101,9 +101,12 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
         OWLEntity owlEntity = this.owlObjectHandler
           .createOrResolveOWLEntity(location, resolvedReferenceValue, referenceType, rdfID, rdfsLabel, defaultNamespace,
             language, referenceNode.getReferenceDirectives());
+        if (owlEntity == null) {
+           return Optional.empty();
+        }
         Set<OWLAxiom> axioms = addDefiningTypesFromReference(owlEntity, referenceNode);
-
         return Optional.of(new OWLAPIReferenceRendering(owlEntity, axioms, referenceType));
+        
       } else
         throw new InternalRendererException(
           "unknown reference type " + referenceType + " for reference " + referenceNode);
@@ -164,13 +167,15 @@ public class OWLAPIReferenceRenderer extends BaseReferenceRenderer
       return namespace;
     } else if (referenceNode.hasExplicitlySpecifiedNamespace()) {
       return referenceNode.getNamespaceDirectiveNode().getNamespace();
-    } else {
-      if (!hasDefaultNamespace())
-        throw new RendererException(
-          "ontology has no default namespace and no namespace specified by reference " + referenceNode);
+    }
+    // TODO Recheck this later because default namespace is always empty and the API doesn't allow to updating it.
+//    else {
+//      if (!hasDefaultNamespace())
+//        throw new RendererException(
+//          "ontology has no default namespace and no namespace specified by reference " + referenceNode);
 
       return getDefaultNamespace();
-    }
+//    }
   }
 
   private Set<OWLAxiom> addDefiningTypesFromReference(OWLEntity entity, ReferenceNode referenceNode)

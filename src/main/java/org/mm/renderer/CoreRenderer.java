@@ -1,21 +1,19 @@
 package org.mm.renderer;
 
+import java.util.Optional;
+
 import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.MMExpressionNode;
-import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLDifferentFromNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
-import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLSameAsNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.rendering.Rendering;
 import org.mm.ss.SpreadSheetDataSource;
-
-import java.util.Optional;
 
 public interface CoreRenderer
 {
@@ -35,12 +33,6 @@ public interface CoreRenderer
   Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAs) throws RendererException;
 
   Optional<? extends Rendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode) throws RendererException;
-
-  Optional<? extends Rendering> renderOWLPropertyAssertionObject(
-    OWLPropertyAssertionObjectNode propertyAssertionObjectNode) throws RendererException;
-
-  Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode annotationValueNode)
-    throws RendererException;
 
   Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException;
 

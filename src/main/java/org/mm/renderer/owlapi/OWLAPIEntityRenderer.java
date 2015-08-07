@@ -4,50 +4,23 @@ import java.util.Optional;
 
 import org.mm.core.ReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
-import org.mm.parser.node.AnnotationFactNode;
-import org.mm.parser.node.ExpressionNode;
-import org.mm.parser.node.FactNode;
-import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
-import org.mm.parser.node.OWLClassDeclarationNode;
-import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassNode;
-import org.mm.parser.node.OWLDataAllValuesFromNode;
-import org.mm.parser.node.OWLDataSomeValuesFromNode;
-import org.mm.parser.node.OWLDifferentFromNode;
-import org.mm.parser.node.OWLEquivalentClassesNode;
-import org.mm.parser.node.OWLExactCardinalityNode;
-import org.mm.parser.node.OWLHasValueNode;
-import org.mm.parser.node.OWLIndividualDeclarationNode;
-import org.mm.parser.node.OWLIntersectionClassNode;
 import org.mm.parser.node.OWLLiteralNode;
-import org.mm.parser.node.OWLMaxCardinalityNode;
-import org.mm.parser.node.OWLMinCardinalityNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
-import org.mm.parser.node.OWLObjectAllValuesFromNode;
-import org.mm.parser.node.OWLObjectOneOfNode;
-import org.mm.parser.node.OWLObjectSomeValuesFromNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLPropertyNode;
-import org.mm.parser.node.OWLRestrictionNode;
-import org.mm.parser.node.OWLSameAsNode;
-import org.mm.parser.node.OWLSubclassOfNode;
-import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.renderer.BaseReferenceRenderer;
-import org.mm.renderer.CoreRenderer;
 import org.mm.renderer.InternalRendererException;
-import org.mm.renderer.OWLClassExpressionRenderer;
 import org.mm.renderer.OWLEntityRenderer;
 import org.mm.renderer.OWLLiteralRenderer;
-import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.OWLLiteralRendering;
 import org.mm.rendering.ReferenceRendering;
-import org.mm.rendering.Rendering;
-import org.mm.rendering.owlapi.OWLAPILiteralRendering;
+import org.mm.rendering.owlapi.OWLAPIReferenceRendering;
 import org.mm.rendering.owlapi.OWLAnnotationPropertyRendering;
 import org.mm.rendering.owlapi.OWLAnnotationValueRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
@@ -67,16 +40,18 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 
-// TODO Implement methods
-
-public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreRenderer, OWLEntityRenderer,
-		OWLLiteralRenderer, OWLClassExpressionRenderer, MappingMasterParserConstants
+public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements OWLEntityRenderer,
+		OWLLiteralRenderer, MappingMasterParserConstants
 {
 	private OWLAPIObjectHandler handler;
+	private OWLAPIReferenceRenderer referenceRenderer;
+	private OWLAPILiteralRenderer literalRenderer;
 
 	public OWLAPIEntityRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource) {
 		super(dataSource);
 		handler = new OWLAPIObjectHandler(ontology);
+		literalRenderer = new OWLAPILiteralRenderer(ontology.getOWLOntologyManager().getOWLDataFactory());
+		referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource, this, literalRenderer);
 	}
 
 	@Override public Optional<OWLClassRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
@@ -97,35 +72,21 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 
 	private Optional<OWLClassRendering> renderReferenceForClassNode(ReferenceNode referenceNode) throws RendererException
 	{
-		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-		if (referenceType.isUntyped()) {
-			throw new RendererException("untyped reference " + referenceNode);
+		Optional<OWLAPIReferenceRendering> referenceRendering = referenceRenderer.renderReference(referenceNode);
+		if (!referenceRendering.isPresent()) {
+			// TODO Logging here
+			return Optional.empty();
 		}
-		
-		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
-		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
-		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
-		if (resolvedReferenceValue.isEmpty()) {
-			switch (referenceNode.getActualEmptyLocationDirective()) {
-				case MM_SKIP_IF_EMPTY_LOCATION:
-					return Optional.empty();
-				case MM_WARNING_IF_EMPTY_LOCATION:
-					// TODO Warn in log files
-					return Optional.empty();
-			}
-		}
-		
-		if (referenceType.isOWLEntity()) {
-			String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
-			if (rdfID.isEmpty()) {
-				throw new InternalRendererException("missing class identifier for reference " + referenceNode);
-			}
-			
-			OWLClass cls = handler.getOWLClass(rdfID);
+		if (referenceRendering.get().isOWLClass()) {
+			OWLClass cls = referenceRendering.get().getOWLEntity().get().asOWLClass();
 			return Optional.of(new OWLClassRendering(cls));
-			
 		}
-		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
+		else if (referenceRendering.get().isOWLLiteral()) {
+			OWLLiteral lit = referenceRendering.get().getOWLLiteral().get();
+			OWLClass cls = handler.getOWLClass(lit.getLiteral());
+			return Optional.of(new OWLClassRendering(cls));
+		}
+		throw new RendererException("reference value " + referenceNode + " for object has value is not an OWL class");
 	}
 
 	@Override public Optional<OWLNamedIndividualRendering> renderOWLNamedIndividual(
@@ -149,35 +110,16 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 	private Optional<OWLNamedIndividualRendering> renderReferenceForNamedIndividualNode(ReferenceNode referenceNode)
 			throws RendererException
 	{
-		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-		if (referenceType.isUntyped()) {
-			throw new RendererException("untyped reference " + referenceNode);
+		Optional<OWLAPIReferenceRendering> referenceRendering = referenceRenderer.renderReference(referenceNode);
+		if (!referenceRendering.isPresent()) {
+			// TODO Logging here
+			return Optional.empty();
 		}
-		
-		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
-		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
-		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
-		if (resolvedReferenceValue.isEmpty()) {
-			switch (referenceNode.getActualEmptyLocationDirective()) {
-				case MM_SKIP_IF_EMPTY_LOCATION:
-					return Optional.empty();
-				case MM_WARNING_IF_EMPTY_LOCATION:
-					// TODO Warn in log files
-					return Optional.empty();
-			}
-		}
-		
-		if (referenceType.isOWLEntity()) {
-			String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
-			if (rdfID.isEmpty()) {
-				throw new InternalRendererException("missing class identifier for reference " + referenceNode);
-			}
-			
-			OWLNamedIndividual ind = handler.getOWLNamedIndividual(rdfID);
+		if (referenceRendering.get().isOWLNamedIndividual()) {
+			OWLNamedIndividual ind = referenceRendering.get().getOWLEntity().get().asOWLNamedIndividual();
 			return Optional.of(new OWLNamedIndividualRendering(ind));
-			
 		}
-		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
+		throw new RendererException("reference value " + referenceNode + " for object has value is not an OWL named individual");
 	}
 
 	@Override public Optional<? extends OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
@@ -213,35 +155,16 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 
 	private Optional<OWLObjectPropertyRendering> renderReferenceForObjectPropertyNode(ReferenceNode referenceNode) throws RendererException
 	{
-		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-		if (referenceType.isUntyped()) {
-			throw new RendererException("untyped reference " + referenceNode);
+		Optional<OWLAPIReferenceRendering> referenceRendering = referenceRenderer.renderReference(referenceNode);
+		if (!referenceRendering.isPresent()) {
+			// TODO Logging here
+			return Optional.empty();
 		}
-		
-		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
-		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
-		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
-		if (resolvedReferenceValue.isEmpty()) {
-			switch (referenceNode.getActualEmptyLocationDirective()) {
-				case MM_SKIP_IF_EMPTY_LOCATION:
-					return Optional.empty();
-				case MM_WARNING_IF_EMPTY_LOCATION:
-					// TODO Warn in log files
-					return Optional.empty();
-			}
+		if (referenceRendering.get().isOWLObjectProperty()) {
+			OWLObjectProperty op = referenceRendering.get().getOWLEntity().get().asOWLObjectProperty();
+			return Optional.of(new OWLObjectPropertyRendering(op));
 		}
-		
-		if (referenceType.isOWLEntity()) {
-			String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
-			if (rdfID.isEmpty()) {
-				throw new InternalRendererException("missing class identifier for reference " + referenceNode);
-			}
-			
-			OWLObjectProperty prop = handler.getOWLObjectProperty(rdfID);
-			return Optional.of(new OWLObjectPropertyRendering(prop));
-			
-		}
-		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
+		throw new RendererException("reference value " + referenceNode + " for object has value is not an OWL object property");
 	}
 
 	@Override public Optional<OWLDataPropertyRendering> renderOWLDataProperty(OWLPropertyNode propertyNode)
@@ -263,35 +186,16 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 
 	private Optional<OWLDataPropertyRendering> renderReferenceForDataPropertyNode(ReferenceNode referenceNode) throws RendererException
 	{
-		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-		if (referenceType.isUntyped()) {
-			throw new RendererException("untyped reference " + referenceNode);
+		Optional<OWLAPIReferenceRendering> referenceRendering = referenceRenderer.renderReference(referenceNode);
+		if (!referenceRendering.isPresent()) {
+			// TODO Logging here
+			return Optional.empty();
 		}
-		
-		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
-		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
-		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
-		if (resolvedReferenceValue.isEmpty()) {
-			switch (referenceNode.getActualEmptyLocationDirective()) {
-				case MM_SKIP_IF_EMPTY_LOCATION:
-					return Optional.empty();
-				case MM_WARNING_IF_EMPTY_LOCATION:
-					// TODO Warn in log files
-					return Optional.empty();
-			}
+		if (referenceRendering.get().isOWLDataProperty()) {
+			OWLDataProperty dp = referenceRendering.get().getOWLEntity().get().asOWLDataProperty();
+			return Optional.of(new OWLDataPropertyRendering(dp));
 		}
-		
-		if (referenceType.isOWLEntity()) {
-			String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
-			if (rdfID.isEmpty()) {
-				throw new InternalRendererException("missing class identifier for reference " + referenceNode);
-			}
-			
-			OWLDataProperty prop = handler.getOWLDataProperty(rdfID);
-			return Optional.of(new OWLDataPropertyRendering(prop));
-			
-		}
-		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
+		throw new RendererException("reference value " + referenceNode + " for object has value is not an OWL data property");
 	}
 
 	@Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
@@ -315,250 +219,22 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 	private Optional<OWLAnnotationPropertyRendering> renderReferenceForAnnotationPropertyNode(ReferenceNode referenceNode)
 			throws RendererException
 	{
-		ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-		if (referenceType.isUntyped()) {
-			throw new RendererException("untyped reference " + referenceNode);
+		Optional<OWLAPIReferenceRendering> referenceRendering = referenceRenderer.renderReference(referenceNode);
+		if (!referenceRendering.isPresent()) {
+			// TODO Logging here
+			return Optional.empty();
 		}
-		
-		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
-		SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
-		String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
-		if (resolvedReferenceValue.isEmpty()) {
-			switch (referenceNode.getActualEmptyLocationDirective()) {
-				case MM_SKIP_IF_EMPTY_LOCATION:
-					return Optional.empty();
-				case MM_WARNING_IF_EMPTY_LOCATION:
-					// TODO Warn in log files
-					return Optional.empty();
-			}
+		if (referenceRendering.get().isOWLAnnotationProperty()) {
+			OWLAnnotationProperty ap = referenceRendering.get().getOWLEntity().get().asOWLAnnotationProperty();
+			return Optional.of(new OWLAnnotationPropertyRendering(ap));
 		}
-		
-		if (referenceType.isOWLEntity()) {
-			String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
-			if (rdfID.isEmpty()) {
-				throw new InternalRendererException("missing class identifier for reference " + referenceNode);
-			}
-			
-			OWLAnnotationProperty anno = handler.getOWLAnnotationProperty(rdfID);
-			return Optional.of(new OWLAnnotationPropertyRendering(anno));
-			
-		}
-		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLClassExpression(OWLClassExpressionNode classExpressionNode)
-	        throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLIntersectionClass(OWLIntersectionClassNode intersectionClassNode)
-	        throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
-	        throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
-	        OWLEquivalentClassesNode equivalentClassesNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLRestriction(OWLRestrictionNode restrictionNode)
-	        throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLObjectExactCardinality(OWLPropertyNode propertyNode,
-	        OWLExactCardinalityNode cardinalityNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLDataExactCardinality(OWLPropertyNode propertyNode,
-	        OWLExactCardinalityNode cardinalityNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLObjectMaxCardinality(OWLPropertyNode propertyNode,
-	        OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLDataMaxCardinality(OWLPropertyNode propertyNode,
-	        OWLMaxCardinalityNode maxCardinalityNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLObjectMinCardinality(OWLPropertyNode propertyNode,
-	        OWLMinCardinalityNode minCardinalityNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLDataMinCardinality(OWLPropertyNode propertyNode,
-	        OWLMinCardinalityNode minCardinalityNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLObjectHasValue(OWLPropertyNode propertyNode,
-	        OWLHasValueNode hasValueNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLDataHasValue(OWLPropertyNode propertyNode,
-	        OWLHasValueNode hasValueNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,
-	        OWLDataAllValuesFromNode dataAllValuesFromNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
-	        OWLObjectAllValuesFromNode objectAllValuesFromNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLDataSomeValuesFrom(OWLPropertyNode propertyNode,
-	        OWLDataSomeValuesFromNode dataSomeValuesFromNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLObjectSomeValuesFrom(OWLPropertyNode propertyNode,
-	        OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
+		throw new RendererException("reference value " + referenceNode + " for object has value is not an OWL annotation property");
 	}
 
 	@Override
 	public Optional<? extends OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
 	{
-		// TODO Need to check with OWLAPILiteralRenderer
-		OWLLiteral lit;
-		if (literalNode.isString()) {
-			lit = handler.getOWLLiteralString(literalNode.getStringLiteralNode().getValue());
-		} else if (literalNode.isInt()) {
-			lit = handler.getOWLLiteralInteger(literalNode.getIntLiteralNode().getValue()+"");
-		} else if (literalNode.isFloat()) {
-			lit = handler.getOWLLiteralFloat(literalNode.getFloatLiteralNode().getValue()+"");
-		} else if (literalNode.isBoolean()) {
-			lit = handler.getOWLLiteralBoolean(literalNode.getBooleanLiteralNode().getValue()+"");
-		} else {
-			throw new InternalRendererException("unsupported datatype for node " + literalNode);
-		}
-		return Optional.of(new OWLAPILiteralRendering(lit));
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderMMExpression(MMExpressionNode MMExpressionNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLClassDeclaration(OWLClassDeclarationNode owlClassDeclarationNode)
-	        throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLSubClassOf(OWLClassNode declaredClassNode,
-	        OWLSubclassOfNode subclassOfNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLIndividualDeclaration(
-	        OWLIndividualDeclarationNode owlIndividualDeclarationNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAs) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
-	        throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
+		return literalRenderer.renderOWLLiteral(literalNode);
 	}
 
 	@Override
@@ -586,18 +262,7 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 	private Optional<OWLPropertyAssertionObjectRendering> renderLiteralForPropertyAssertionObject(OWLLiteralNode owlLiteralNode)
 			throws RendererException
 	{
-		OWLLiteral lit;
-		if (owlLiteralNode.isString()) {
-			lit = handler.getOWLLiteralString(owlLiteralNode.getStringLiteralNode().getValue());
-		} else if (owlLiteralNode.isInt()) {
-			lit = handler.getOWLLiteralInteger(owlLiteralNode.getIntLiteralNode().getValue()+"");
-		} else if (owlLiteralNode.isFloat()) {
-			lit = handler.getOWLLiteralFloat(owlLiteralNode.getFloatLiteralNode().getValue()+"");
-		} else if (owlLiteralNode.isBoolean()) {
-			lit = handler.getOWLLiteralBoolean(owlLiteralNode.getBooleanLiteralNode().getValue()+"");
-		} else {
-			throw new InternalRendererException("unsupported datatype for node " + owlLiteralNode);
-		}
+		OWLLiteral lit = literalRenderer.createOWLLiteral(owlLiteralNode);
 		return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
 	}
 
@@ -626,22 +291,7 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 			OWLNamedIndividual ind = handler.getOWLNamedIndividual(resolvedReferenceValue);
 			return Optional.of(new OWLPropertyAssertionObjectRendering(ind));
 		} else if (referenceType.isOWLLiteral()) {
-			OWLLiteral lit = null;
-			if (referenceType.isXSDString()) { lit = handler.getOWLLiteralString(resolvedReferenceValue);
-			} else if (referenceType.isXSDBoolean()) { lit = handler.getOWLLiteralBoolean(resolvedReferenceValue);
-			} else if (referenceType.isXSDDouble()) { lit = handler.getOWLLiteralDouble(resolvedReferenceValue);
-			} else if (referenceType.isXSDFloat()) { lit = handler.getOWLLiteralFloat(resolvedReferenceValue);
-			} else if (referenceType.isXSDLong()) { lit = handler.getOWLLiteralLong(resolvedReferenceValue);
-			} else if (referenceType.isXSDInt()) { lit = handler.getOWLLiteralInteger(resolvedReferenceValue);
-			} else if (referenceType.isXSDShort()) { lit = handler.getOWLLiteralShort(resolvedReferenceValue);
-			} else if (referenceType.isXSDByte()) { lit = handler.getOWLLiteralByte(resolvedReferenceValue);
-			} else if (referenceType.isXSDDate()) { lit = handler.getOWLLiteralDate(resolvedReferenceValue);
-			} else if (referenceType.isXSDTime()) { lit = handler.getOWLLiteralTime(resolvedReferenceValue);
-			} else if (referenceType.isXSDDateTime()) { lit = handler.getOWLLiteralDateTime(resolvedReferenceValue);
-			} else if (referenceType.isXSDDuration()) { lit = handler.getOWLLiteralDuration(resolvedReferenceValue);
-			} else {
-				throw new RendererException("unsupported datatype for reference " + referenceNode);
-			}
+			OWLLiteral lit = literalRenderer.createOWLLiteral(resolvedReferenceValue, referenceType);
 			return Optional.of(new OWLPropertyAssertionObjectRendering(lit));
 		}
 		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
@@ -716,28 +366,6 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements CoreR
 			
 		}
 		throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
-	        throws RendererException
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ReferenceRenderer getReferenceRenderer()
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
