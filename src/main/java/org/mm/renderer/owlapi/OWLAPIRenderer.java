@@ -82,6 +82,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 	@Override
 	public void changeDataSource(SpreadSheetDataSource dataSource)
 	{
+		// logging data source has been updated
 		referenceRenderer.setDataSource(dataSource);
 	}
 

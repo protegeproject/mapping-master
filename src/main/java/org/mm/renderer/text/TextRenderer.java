@@ -87,6 +87,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 	@Override
 	public void changeDataSource(SpreadSheetDataSource dataSource)
 	{
+		// Logging data source has been updated
 		this.dataSource = dataSource;
 	}
 
@@ -1203,56 +1204,6 @@ public class TextRenderer extends ReferenceRendererConfiguration
 			return Optional.of(new TextLiteralRendering(literalNode.getBooleanLiteralNode().getValue()));
 		else
 			throw new InternalRendererException("unknown child for node " + literalNode.getNodeName());
-	}
-
-	@Override public int getDefaultValueEncoding()
-	{
-		return this.defaultValueEncoding;
-	}
-
-	@Override public int getDefaultReferenceType()
-	{
-		return this.defaultReferenceType;
-	}
-
-	@Override public int getDefaultOWLPropertyType()
-	{
-		return this.defaultOWLPropertyType;
-	}
-
-	@Override public int getDefaultOWLPropertyValueType()
-	{
-		return this.defaultOWLPropertyValueType;
-	}
-
-	@Override public int getDefaultOWLDataPropertyValueType()
-	{
-		return this.defaultOWLDataPropertyValueType;
-	}
-
-	@Override public void setDefaultValueEncoding(int defaultValueEncoding)
-	{
-		this.defaultValueEncoding = defaultValueEncoding;
-	}
-
-	@Override public void setDefaultReferenceType(int defaultReferenceType)
-	{
-		this.defaultReferenceType = defaultReferenceType;
-	}
-
-	@Override public void setDefaultOWLPropertyType(int defaultOWLPropertyType)
-	{
-		this.defaultOWLDataPropertyValueType = defaultOWLPropertyType;
-	}
-
-	@Override public void setDefaultOWLPropertyValueType(int defaultOWLPropertyAssertionObjectType)
-	{
-		this.defaultOWLPropertyValueType = defaultOWLPropertyAssertionObjectType;
-	}
-
-	@Override public void setDefaultOWLDataPropertyValueType(int defaultOWLDataPropertyValueType)
-	{
-		this.defaultOWLDataPropertyValueType = defaultOWLDataPropertyValueType;
 	}
 
 	private Optional<? extends TextRendering> renderOWLAllValuesFrom(OWLPropertyNode propertyNode,
