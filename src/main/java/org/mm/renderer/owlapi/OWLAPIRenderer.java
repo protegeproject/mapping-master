@@ -19,7 +19,7 @@ import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.ReferenceNode;
-import org.mm.renderer.CoreRenderer;
+import org.mm.renderer.OWLCoreRenderer;
 import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.ReferenceRendererConfiguration;
 import org.mm.renderer.Renderer;
@@ -55,7 +55,7 @@ import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
-public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Renderer, CoreRenderer, MappingMasterParserConstants
+public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Renderer, OWLCoreRenderer, MappingMasterParserConstants
 {
 	public static final int NameEncodings[] = { MM_LOCATION, MM_LITERAL, RDF_ID, RDFS_LABEL };
 	public static final int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY,

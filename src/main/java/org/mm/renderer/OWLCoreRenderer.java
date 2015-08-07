@@ -7,7 +7,7 @@ import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.rendering.Rendering;
 
-public interface CoreRenderer
+public interface OWLCoreRenderer
 {
 	Optional<? extends Rendering> renderMMExpression(MMExpressionNode node) throws RendererException;
 

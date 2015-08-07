@@ -51,7 +51,7 @@ import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
 import org.mm.renderer.ReferenceRendererConfiguration;
-import org.mm.renderer.CoreRenderer;
+import org.mm.renderer.OWLCoreRenderer;
 import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.OWLClassExpressionRenderer;
 import org.mm.renderer.OWLEntityRenderer;
@@ -74,8 +74,8 @@ import org.mm.ss.SpreadsheetLocation;
  * substituted inline.
  */
 public class TextRenderer extends ReferenceRendererConfiguration
-		implements Renderer, CoreRenderer, OWLEntityRenderer, OWLLiteralRenderer, ReferenceRenderer, OWLClassExpressionRenderer,
-		MappingMasterParserConstants
+		implements Renderer, ReferenceRenderer, OWLCoreRenderer, OWLEntityRenderer, OWLLiteralRenderer,
+		OWLClassExpressionRenderer, MappingMasterParserConstants
 {
 	private SpreadSheetDataSource dataSource;
 
