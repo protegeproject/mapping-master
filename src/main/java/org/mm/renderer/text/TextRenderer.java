@@ -891,7 +891,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 			return Optional.empty();
 	}
 
-	@Override public Optional<? extends TextRendering> renderOWLSubClassOf(OWLClassNode declaredClassNode,
+	private Optional<? extends TextRendering> renderOWLSubClassOf(OWLClassNode declaredClassNode,
 			OWLSubclassOfNode subClassOfNode) throws RendererException
 	{
 		StringBuilder subClassesRepresentation = new StringBuilder();
@@ -923,7 +923,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 			return Optional.empty();
 	}
 
-	@Override public Optional<? extends TextRendering> renderOWLSameAs(OWLSameAsNode OWLSameAsNode)
+	private Optional<? extends TextRendering> renderOWLSameAs(OWLSameAsNode OWLSameAsNode)
 			throws RendererException
 	{
 		StringBuilder textRepresentation = new StringBuilder();
@@ -944,7 +944,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 				Optional.of(new TextRendering(" SameAs: " + textRepresentation));
 	}
 
-	@Override public Optional<? extends TextRendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
+	private Optional<? extends TextRendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
 			throws RendererException
 	{
 		StringBuilder textRepresentation = new StringBuilder();
@@ -995,7 +995,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 			throw new InternalRendererException("unknown child for node " + propertyAssertionObjectNode.getNodeName());
 	}
 
-	@Override public Optional<? extends TextRendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
+	private Optional<? extends TextRendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
 			throws RendererException
 	{
 		Optional<? extends TextRendering> propertyRendering = renderOWLProperty(annotationFactNode.getOWLPropertyNode());
@@ -1049,7 +1049,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 				Optional.of(new TextRendering(textRepresentation.toString()));
 	}
 
-	@Override public Optional<? extends TextRendering> renderFact(FactNode factNode) throws RendererException
+	private Optional<? extends TextRendering> renderFact(FactNode factNode) throws RendererException
 	{
 		Optional<? extends TextRendering> propertyRendering = renderOWLProperty(factNode.getOWLPropertyNode());
 		Optional<? extends TextRendering> propertyValueRendering = renderOWLPropertyAssertionObject(

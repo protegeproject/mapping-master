@@ -13,13 +13,10 @@ import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassExpressionNode;
-import org.mm.parser.node.OWLClassNode;
-import org.mm.parser.node.OWLDifferentFromNode;
 import org.mm.parser.node.OWLEquivalentClassesNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
-import org.mm.parser.node.OWLSameAsNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.renderer.CoreRenderer;
@@ -27,7 +24,6 @@ import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.ReferenceRendererConfiguration;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
-import org.mm.rendering.Rendering;
 import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.mm.rendering.owlapi.OWLAnnotationPropertyRendering;
 import org.mm.rendering.owlapi.OWLAnnotationValueRendering;
@@ -260,62 +256,6 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 			axioms.addAll(typesAxioms);
 		}
 		return Optional.of(new OWLAPIRendering(axioms));
-	}
-
-	@Override public Optional<OWLAPIRendering> renderOWLSubClassOf(OWLClassNode declaredClassNode,
-			OWLSubclassOfNode subclassOfNode) throws RendererException
-	{
-		Optional<OWLClassRendering> declaredClassRendering = this.entityRenderer.renderOWLClass(declaredClassNode);
-
-		if (declaredClassRendering.isPresent()) {
-			OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
-			Set<OWLAxiom> axioms = new HashSet<>();
-			for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
-				Optional<OWLClassExpressionRendering> subClassRendering = this.classExpressionRenderer
-						.renderOWLClassExpression(classExpressionNode);
-				if (subClassRendering.isPresent()) {
-					OWLClassExpression subClass = subClassRendering.get().getOWLClassExpression();
-					OWLSubClassOfAxiom axiom = handler.getOWLSubClassOfAxiom(declaredClass, subClass);
-					axioms.add(axiom);
-				}
-			}
-			if (!axioms.isEmpty())
-				return Optional.of(new OWLAPIRendering(axioms));
-			else
-				return Optional.empty();
-		} else
-			return Optional.empty();
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLSameAs(OWLSameAsNode sameAsNode) throws RendererException
-	{
-		throw new InternalRendererException("not implemented");  // TODO
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderOWLDifferentFrom(OWLDifferentFromNode differentFromNode)
-			throws RendererException
-	{
-		throw new InternalRendererException("not implemented"); // TODO
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderFact(FactNode factNode) throws RendererException
-	{
-		throw new InternalRendererException("not implemented"); // TODO
-	}
-
-	@Override
-	public Optional<? extends Rendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
-			throws RendererException
-	{
-		throw new InternalRendererException("not implemented"); // TODO
-	}
-
-	public ReferenceRendererConfiguration getReferenceRenderer()
-	{
-		return this;
 	}
 
 	/**
