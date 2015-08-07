@@ -3,7 +3,6 @@ package org.mm.renderer;
 import java.util.Optional;
 
 import org.mm.parser.node.AnnotationFactNode;
-import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
@@ -16,8 +15,6 @@ import org.mm.rendering.Rendering;
 
 public interface CoreRenderer
 {
-  Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode) throws RendererException;
-
   Optional<? extends Rendering> renderMMExpression(MMExpressionNode MMExpressionNode) throws RendererException;
 
   Optional<? extends Rendering> renderOWLClassDeclaration(OWLClassDeclarationNode owlClassDeclarationNode)
