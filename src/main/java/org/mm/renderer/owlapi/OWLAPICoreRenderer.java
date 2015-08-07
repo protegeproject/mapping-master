@@ -82,7 +82,7 @@ public class OWLAPICoreRenderer implements CoreRenderer, MappingMasterParserCons
 		this.owlObjectHandler = new OWLAPIObjectHandler(ontology);
 
 		this.entityRenderer = new OWLAPIEntityRenderer(ontology, dataSource);
-		this.literalRenderer = new OWLAPILiteralRenderer(ontology.getOWLOntologyManager().getOWLDataFactory());
+		this.literalRenderer = new OWLAPILiteralRenderer(ontology);
 		this.referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource, this.entityRenderer,
 				this.literalRenderer);
 		this.classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, this.entityRenderer,

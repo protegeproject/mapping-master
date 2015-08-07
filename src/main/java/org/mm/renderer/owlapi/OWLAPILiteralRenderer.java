@@ -8,74 +8,60 @@ import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.OWLLiteralRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.owlapi.OWLAPILiteralRendering;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLLiteral;
-import org.semanticweb.owlapi.vocab.OWL2Datatype;
-import org.semanticweb.owlapi.vocab.XSDVocabulary;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 public class OWLAPILiteralRenderer implements OWLLiteralRenderer
 {
-	private final OWLDataFactory owlDataFactory;
+	private final OWLAPIObjectHandler handler;
 
-	public OWLAPILiteralRenderer(OWLDataFactory owlDataFactory)
+	public OWLAPILiteralRenderer(OWLOntology ontology)
 	{
-		this.owlDataFactory = owlDataFactory;
+		handler = new OWLAPIObjectHandler(ontology);
 	}
 
-	@Override public Optional<OWLAPILiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
+	@Override public Optional<OWLAPILiteralRendering> renderOWLLiteral(OWLLiteralNode node) throws RendererException
 	{
-		return Optional.of(new OWLAPILiteralRendering(createOWLLiteral(literalNode)));
+		return Optional.of(new OWLAPILiteralRendering(createOWLLiteral(node)));
 	}
 
-	public OWLLiteral createOWLLiteral(OWLLiteralNode literalNode) throws RendererException
+	public OWLLiteral createOWLLiteral(OWLLiteralNode node) throws RendererException
 	{
-		if (literalNode.isString()) {
-			return this.owlDataFactory.getOWLLiteral(literalNode.getStringLiteralNode().getValue());
-		} else if (literalNode.isInt()) {
-			return this.owlDataFactory.getOWLLiteral(literalNode.getIntLiteralNode().getValue()+"", OWL2Datatype.XSD_INT);
-		} else if (literalNode.isFloat()) {
-			return this.owlDataFactory.getOWLLiteral(literalNode.getFloatLiteralNode().getValue());
-		} else if (literalNode.isBoolean()) {
-			return this.owlDataFactory.getOWLLiteral(literalNode.getBooleanLiteralNode().getValue());
+		if (node.isString()) {
+			return handler.getOWLLiteralString(node.getStringLiteralNode().getValue());
+		} else if (node.isInt()) {
+			return handler.getOWLLiteralInteger(node.getIntLiteralNode().getValue()+"");
+		} else if (node.isFloat()) {
+			return handler.getOWLLiteralFloat(node.getFloatLiteralNode().getValue()+"");
+		} else if (node.isBoolean()) {
+			return handler.getOWLLiteralBoolean(node.getBooleanLiteralNode().getValue()+""	);
 		} else {
-			throw new InternalRendererException("unsupported datatype for node " + literalNode);
+			throw new InternalRendererException("unsupported datatype for node " + node);
 		}
 	}
 
-	public OWLLiteral createOWLLiteral(String rawValue, ReferenceType referenceType)
+	public OWLLiteral createOWLLiteral(String value, ReferenceType type)
 		throws RendererException
 	{
-		if (referenceType.isXSDBoolean())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_BOOLEAN);
-		else if (referenceType.isXSDString())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_STRING);
-		else if (referenceType.isXSDByte())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_BYTE);
-		else if (referenceType.isXSDShort())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_SHORT);
-		else if (referenceType.isXSDInt())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_INT);
-		else if (referenceType.isXSDLong())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_LONG);
-		else if (referenceType.isXSDFloat())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_FLOAT);
-		else if (referenceType.isXSDDouble())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_DOUBLE);
-		else if (referenceType.isXSDDateTime())
-			return this.owlDataFactory.getOWLLiteral(rawValue, OWL2Datatype.XSD_DATE_TIME);
-		else if (referenceType.isXSDDate())
-			return this.owlDataFactory.getOWLLiteral(rawValue, this.owlDataFactory.getOWLDatatype(XSDVocabulary.DATE.getIRI()));
-		else if (referenceType.isXSDTime())
-			return this.owlDataFactory.getOWLLiteral(rawValue, this.owlDataFactory.getOWLDatatype(XSDVocabulary.TIME.getIRI()));
-		else if (referenceType.isXSDDuration())
-			return this.owlDataFactory.getOWLLiteral(rawValue, this.owlDataFactory.getOWLDatatype(XSDVocabulary.DURATION.getIRI()));
+		if (type.isXSDBoolean()) 			return handler.getOWLLiteralBoolean(value);
+		else if (type.isXSDString())		return handler.getOWLLiteralString(value);
+		else if (type.isXSDByte())			return handler.getOWLLiteralByte(value);
+		else if (type.isXSDShort())		return handler.getOWLLiteralShort(value);
+		else if (type.isXSDInt())			return handler.getOWLLiteralInteger(value);
+		else if (type.isXSDLong())			return handler.getOWLLiteralLong(value);
+		else if (type.isXSDFloat())		return handler.getOWLLiteralFloat(value);
+		else if (type.isXSDDouble())		return handler.getOWLLiteralDouble(value);
+		else if (type.isXSDDateTime())	return handler.getOWLLiteralDateTime(value);
+		else if (type.isXSDDate())			return handler.getOWLLiteralDate(value);
+		else if (type.isXSDTime())			return handler.getOWLLiteralTime(value);
+		else if (type.isXSDDuration())	return handler.getOWLLiteralDuration(value);
 		else
 			throw new RendererException(
-				"unknown type " + referenceType.getTypeName() + " for literal " + rawValue);
+				"unknown type " + type.getTypeName() + " for literal " + value);
 	}
 
-	public OWLLiteral createOWLLiteral(String rawValue) throws RendererException
+	public OWLLiteral createOWLLiteral(String value) throws RendererException
 	{
-		return this.owlDataFactory.getOWLLiteral(rawValue);
+		return handler.getOWLLiteralString(value);
 	}
 }

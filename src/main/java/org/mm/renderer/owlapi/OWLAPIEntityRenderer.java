@@ -50,7 +50,7 @@ public class OWLAPIEntityRenderer extends BaseReferenceRenderer implements OWLEn
 	public OWLAPIEntityRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource) {
 		super(dataSource);
 		handler = new OWLAPIObjectHandler(ontology);
-		literalRenderer = new OWLAPILiteralRenderer(ontology.getOWLOntologyManager().getOWLDataFactory());
+		literalRenderer = new OWLAPILiteralRenderer(ontology);
 		referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource, this, literalRenderer);
 	}
 
