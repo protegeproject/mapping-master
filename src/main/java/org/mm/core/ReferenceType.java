@@ -90,7 +90,7 @@ public class ReferenceType implements MappingMasterParserConstants
 
   public boolean isXSDLong()
   {
-    return this.type == XSD_FLOAT;
+    return this.type == XSD_LONG;
   }
 
   public boolean isXSDFloat()
