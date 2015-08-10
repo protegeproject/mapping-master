@@ -3,9 +3,6 @@ package org.mm.renderer.text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.mm.core.ReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
@@ -50,13 +47,14 @@ import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
-import org.mm.renderer.ReferenceRendererConfiguration;
-import org.mm.renderer.OWLCoreRenderer;
 import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.OWLClassExpressionRenderer;
+import org.mm.renderer.OWLCoreRenderer;
 import org.mm.renderer.OWLEntityRenderer;
 import org.mm.renderer.OWLLiteralRenderer;
 import org.mm.renderer.ReferenceRenderer;
+import org.mm.renderer.ReferenceRendererConfiguration;
+import org.mm.renderer.ReferenceUtil;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.OWLLiteralRendering;
@@ -126,11 +124,10 @@ public class TextRenderer extends ReferenceRendererConfiguration
 
 		if (sourceSpecificationNode.hasLiteral()) {
 			String literalValue = sourceSpecificationNode.getLiteral();
-
 			return Optional.of(new TextReferenceRendering(literalValue, referenceType));
 		} else {
-			SpreadsheetLocation location = resolveLocation(sourceSpecificationNode);
-			String resolvedReferenceValue = resolveReferenceValue(location, referenceNode);
+			SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
+			String resolvedReferenceValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
 
 			if (referenceType.isUntyped())
 				throw new RendererException("untyped reference " + referenceNode);
@@ -187,38 +184,6 @@ public class TextRenderer extends ReferenceRendererConfiguration
 		}
 	}
 
-	private SpreadsheetLocation resolveLocation(SourceSpecificationNode sourceSpecificationNode)
-			throws RendererException
-	{
-		return this.dataSource.resolveLocation(sourceSpecificationNode);
-	}
-
-	private String resolveReferenceValue(SpreadsheetLocation location, ReferenceNode referenceNode)
-		throws RendererException
-	{
-		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
-		String referenceValue;
-		
-		if (sourceSpecificationNode.hasLiteral()) {
-			// Reference is a literal, e.g., @"Person", @"http://a.com#Person"
-			referenceValue = sourceSpecificationNode.getLiteral();
-		} else { // Reference to data source location
-			String rawLocationValue = this.dataSource.getLocationValue(location, referenceNode); // Deals with shifting
-			if (rawLocationValue == null || rawLocationValue.isEmpty())
-				referenceValue = referenceNode.getActualDefaultLocationValue();
-			else
-				referenceValue = rawLocationValue;
-			
-			if (referenceValue.isEmpty() && referenceNode.getActualEmptyLocationDirective() == MM_ERROR_IF_EMPTY_LOCATION) {
-				throw new RendererException("empty location " + location + " in reference " + referenceNode);
-			}
-			if (referenceValue.isEmpty() && referenceNode.getActualEmptyLocationDirective() == MM_WARNING_IF_EMPTY_LOCATION) {
-				// NO-OP
-			}
-		}
-		return referenceValue;
-	}
-
 	private String processOWLLiteralReferenceValue(SpreadsheetLocation location, String rawLocationValue,
 			ReferenceNode referenceNode) throws RendererException
 	{
@@ -245,7 +210,6 @@ public class TextRenderer extends ReferenceRendererConfiguration
 		
 		return processedReferenceValue;
 	}
-
 
 	private String generateReferenceValue(String sourceValue, ValueEncodingDirectiveNode valueEncodingDirectiveNode,
 			ReferenceNode referenceNode) throws RendererException
@@ -287,7 +251,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 				processedReferenceValue += generateReferenceValue(sourceValue, valueExtractionFunction);
 			} else if (valueSpecificationItemNode.hasCapturingExpression() && sourceValue != null) {
 				String capturingExpression = valueSpecificationItemNode.getCapturingExpression();
-				processedReferenceValue += processCapturingExpression(sourceValue, capturingExpression);
+				processedReferenceValue += ReferenceUtil.capture(sourceValue, capturingExpression);
 			}
 		}
 		return processedReferenceValue;
@@ -299,111 +263,18 @@ public class TextRenderer extends ReferenceRendererConfiguration
 			throws RendererException
 	{
 		List<String> arguments = new ArrayList<>();
-		String functionName = valueExtractionFunctionNode.getFunctionName();
-		boolean hasExplicitArguments = valueExtractionFunctionNode.hasArguments();
-		String processedReferenceValue;
-
 		if (valueExtractionFunctionNode.hasArguments()) {
 			for (ValueExtractionFunctionArgumentNode argumentNode : valueExtractionFunctionNode.getArgumentNodes()) {
 				String argumentValue = generateValueExtractionFunctionArgument(argumentNode);
 				arguments.add(argumentValue);
 			}
 		}
-
-		switch (valueExtractionFunctionNode.getFunctionID()) {
-		case MM_TO_UPPER_CASE:
-			if (hasExplicitArguments) {
-				if (arguments.size() != 1)
-					throw new RendererException("function " + functionName + " expecting one argument, got " + arguments.size());
-				processedReferenceValue = arguments.get(0).toUpperCase();
-			} else
-				processedReferenceValue = sourceValue.toUpperCase();
-			break;
-		case MM_TO_LOWER_CASE:
-			if (hasExplicitArguments) {
-				if (arguments.size() != 1)
-					throw new RendererException(
-							"function " + functionName + " expecting only one argument, got " + arguments.size());
-				processedReferenceValue = arguments.get(0).toLowerCase();
-			} else
-				processedReferenceValue = sourceValue.toLowerCase();
-			break;
-		case MM_TRIM:
-			if (hasExplicitArguments) {
-				if (arguments.size() != 1)
-					throw new RendererException(
-							"function " + functionName + " expecting only one argument, got " + arguments.size());
-				processedReferenceValue = arguments.get(0).trim();
-			} else
-				processedReferenceValue = sourceValue.trim();
-			break;
-		case MM_REVERSE:
-			if (hasExplicitArguments) {
-				if (arguments.size() != 1)
-					throw new RendererException(
-							"function " + functionName + " expecting only one argument, got " + arguments.size());
-				processedReferenceValue = reverse(arguments.get(0));
-			} else
-				processedReferenceValue = reverse(sourceValue);
-			break;
-		case MM_CAPTURING:
-			if (arguments.size() == 1) {
-				processedReferenceValue = processCapturingExpression(sourceValue, arguments.get(0));
-			} else if (arguments.size() == 2) {
-				processedReferenceValue = processCapturingExpression(arguments.get(0), arguments.get(1));
-			} else
-				throw new RendererException(
-						"function " + functionName + " expecting one or two arguments, got " + arguments.size());
-			break;
-		case MM_PREPEND:
-			if (arguments.size() == 1) {
-				processedReferenceValue = arguments.get(0) + sourceValue;
-			} else if (arguments.size() == 2) {
-				processedReferenceValue = arguments.get(0) + arguments.get(1);
-			} else
-				throw new RendererException(
-						"function " + functionName + " expecting one or two arguments, got " + arguments.size());
-			break;
-		case MM_APPEND:
-			if (arguments.size() == 1) {
-				processedReferenceValue = sourceValue + arguments.get(0);
-			} else if (arguments.size() == 2) {
-				processedReferenceValue = arguments.get(0) + arguments.get(1);
-			} else
-				throw new RendererException(
-						"function " + functionName + " expecting one or two arguments, got " + arguments.size());
-			break;
-		case MM_REPLACE:
-			if (arguments.size() == 2) {
-				processedReferenceValue = sourceValue.replace(arguments.get(0), arguments.get(1));
-			} else if (arguments.size() == 3) {
-				processedReferenceValue = arguments.get(0).replace(arguments.get(1), arguments.get(2));
-			} else
-				throw new RendererException(
-						"function " + functionName + " expecting two or three arguments, got " + arguments.size());
-			break;
-		case MM_REPLACE_ALL:
-			if (arguments.size() == 2) {
-				processedReferenceValue = sourceValue.replaceAll(arguments.get(0), arguments.get(1));
-			} else if (arguments.size() == 3) {
-				processedReferenceValue = arguments.get(0).replaceAll(arguments.get(1), arguments.get(2));
-			} else
-				throw new RendererException(
-						"function " + functionName + " expecting two or three arguments, got " + arguments.size());
-			break;
-		case MM_REPLACE_FIRST:
-			if (arguments.size() == 2) {
-				processedReferenceValue = sourceValue.replaceFirst(arguments.get(0), arguments.get(1));
-			} else if (arguments.size() == 3) {
-				processedReferenceValue = arguments.get(0).replaceFirst(arguments.get(1), arguments.get(2));
-			} else
-				throw new RendererException(
-						"function " + functionName + " expecting two or three arguments, got " + arguments.size());
-			break;
-		default:
-			throw new RendererException("unknown mapping function " + valueExtractionFunctionNode.getFunctionName());
-		}
-		return processedReferenceValue;
+		return ReferenceUtil.evaluateReferenceValue(
+				valueExtractionFunctionNode.getFunctionName(),
+				valueExtractionFunctionNode.getFunctionID(),
+				arguments,
+				sourceValue,
+				valueExtractionFunctionNode.hasArguments());
 	}
 
 	private String getReferenceRDFID(String sourceValue, ReferenceNode referenceNode) throws RendererException
@@ -516,33 +387,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 				Optional.of(new TextRendering(textRepresentation.toString()));
 	}
 
-	private String processCapturingExpression(String locationValue, String capturingExpression) throws RendererException
-	{
-		try {
-			Pattern p = Pattern.compile(capturingExpression); // Pull the value out of the location
-			Matcher m = p.matcher(locationValue);
-			boolean matchFound = m.find();
-			String result = "";
-			if (matchFound) {
-				for (int groupIndex = 1; groupIndex <= m.groupCount(); groupIndex++)
-					result += m.group(groupIndex);
-			}
-			return result;
-		} catch (PatternSyntaxException e) {
-			throw new RendererException("invalid capturing expression " + capturingExpression + ": " + e.getMessage());
-		}
-	}
 
-	private String reverse(String source)
-	{
-		int i, len = source.length();
-		StringBuilder dest = new StringBuilder(len);
-
-		for (i = len - 1; i >= 0; i--)
-			dest.append(source.charAt(i));
-
-		return dest.toString();
-	}
 
 	/**
 	 * Arguments to value extraction functions cannot be dropped if the reference resolves to nothing.
