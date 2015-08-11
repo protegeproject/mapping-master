@@ -57,8 +57,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 			return renderNameForClassNode(classNode.getNameNode());
 		} else if (classNode.hasReferenceNode()) {
 			return renderReferenceForClassNode(classNode.getReferenceNode());
-		} else
-			throw new InternalRendererException("unknown child for node " + classNode.getNodeName());
+		}
+		throw new InternalRendererException("unknown child for node " + classNode.getNodeName());
 	}
 
 	private Optional<OWLClassRendering> renderNameForClassNode(NameNode nameNode) throws RendererException
@@ -93,9 +93,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 			return renderNameForNamedIndividualNode(namedIndividualNode.getNameNode());
 		} else if (namedIndividualNode.hasReferenceNode()) {
 			return renderReferenceForNamedIndividualNode(namedIndividualNode.getReferenceNode());
-		} else {
-			throw new InternalRendererException("unknown child for node " + namedIndividualNode.getNodeName());
 		}
+		throw new InternalRendererException("unknown child for node " + namedIndividualNode.getNodeName());
 	}
 
 	private Optional<OWLNamedIndividualRendering> renderNameForNamedIndividualNode(NameNode nameNode) throws RendererException
@@ -122,15 +121,21 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 	@Override public Optional<? extends OWLPropertyRendering> renderOWLProperty(OWLPropertyNode propertyNode)
 			throws RendererException
 	{
-		/*
-		 * MM assumes the default property node is a object property type.
-		 */
 		if (propertyNode.hasNameNode()) {
+			/*
+			 * We will assume the default property named node is a object property type.
+			 */
 			return renderNameForObjectPropertyNode(propertyNode.getNameNode());
 		} else if (propertyNode.hasReferenceNode()) {
-			return renderReferenceForObjectPropertyNode(propertyNode.getReferenceNode());
-		} else
-			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+			// XXX: Need to refactor
+			ReferenceNode referenceNode = propertyNode.getReferenceNode();
+			if (referenceNode.getReferenceTypeNode().getReferenceType().isOWLObjectProperty()) {
+				return renderReferenceForObjectPropertyNode(referenceNode);
+			} else if (referenceNode.getReferenceTypeNode().getReferenceType().isOWLDataProperty()) {
+				return renderReferenceForDataPropertyNode(referenceNode);
+			}
+		}
+		throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
 	}
 
 	@Override public Optional<OWLObjectPropertyRendering> renderOWLObjectProperty(OWLPropertyNode propertyNode)
@@ -140,8 +145,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 			return renderNameForObjectPropertyNode(propertyNode.getNameNode());
 		} else if (propertyNode.hasReferenceNode()) {
 			return renderReferenceForObjectPropertyNode(propertyNode.getReferenceNode());
-		} else
-			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+		}
+		throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
 	}
 
 	private Optional<OWLObjectPropertyRendering> renderNameForObjectPropertyNode(NameNode nameNode) throws RendererException
@@ -171,8 +176,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 			return renderNameForDataPropertyNode(propertyNode.getNameNode());
 		} else if (propertyNode.hasReferenceNode()) {
 			return renderReferenceForDataPropertyNode(propertyNode.getReferenceNode());
-		} else
-			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+		}
+		throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
 	}
 
 	private Optional<OWLDataPropertyRendering> renderNameForDataPropertyNode(NameNode nameNode) throws RendererException
@@ -202,8 +207,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 			return renderNameForAnnotationPropertyNode(propertyNode.getNameNode());
 		} else if (propertyNode.hasReferenceNode()) {
 			return renderReferenceForAnnotationPropertyNode(propertyNode.getReferenceNode());
-		} else
-			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
+		}
+		throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
 	}
 
 	private Optional<OWLAnnotationPropertyRendering> renderNameForAnnotationPropertyNode(NameNode nameNode)
@@ -238,9 +243,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 			return renderLiteralForPropertyAssertionObject(value.getOWLLiteralNode());
 		} else if (value.isReference()) {
 			return renderReferenceForPropertyAssertionObject(value.getReferenceNode());
-		} else {
-			throw new InternalRendererException("unknown child node for node " + value.getNodeName());
 		}
+		throw new InternalRendererException("unknown child node for node " + value.getNodeName());
 	}
 
 	private Optional<OWLPropertyAssertionObjectRendering> renderNameForPropertyAssertionObject(NameNode nameNode)
@@ -286,8 +290,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 			return renderLiteralForAnnotationValueNode(annotationValueNode.getOWLLiteralNode());
 		} else if (annotationValueNode.isReference()) {
 			return renderReferenceForAnnotationValueNode(annotationValueNode.getReferenceNode());
-		} else
-			throw new InternalRendererException("unknown child for node " + annotationValueNode.getNodeName());
+		}
+		throw new InternalRendererException("unknown child for node " + annotationValueNode.getNodeName());
 	}
 
 	private Optional<OWLAnnotationValueRendering> renderNameForAnnotationValueNode(NameNode nameNode)
