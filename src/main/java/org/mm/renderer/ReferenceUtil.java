@@ -104,7 +104,7 @@ public class ReferenceUtil implements MappingMasterParserConstants
 			if (arguments.size() == 1) {
 				processedReferenceValue = defaultValue + arguments.get(0);
 			} else if (arguments.size() == 2) {
-				processedReferenceValue = arguments.get(0) + arguments.get(1);
+				processedReferenceValue = defaultValue + arguments.get(0) + arguments.get(1);
 			} else
 				throw new RendererException(
 						"function " + functionName + " expecting one or two arguments, got " + arguments.size());
