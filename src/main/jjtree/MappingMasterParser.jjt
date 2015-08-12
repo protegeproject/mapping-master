@@ -259,11 +259,11 @@ TOKEN: { <MM_SKIP_IF_EMPTY_LABEL: "mm:SkipIfEmptyLabel"> }
 TOKEN: { <MM_RESOLVE_IF_OWL_ENTITY_EXISTS: "mm:ResolveIfOWLEntityExists"> }
 TOKEN: { <MM_SKIP_IF_OWL_ENTITY_EXISTS: "mm:SkipIfOWLEntityExists"> }
 TOKEN: { <MM_WARNING_IF_OWL_ENTITY_EXISTS: "mm:WarningIfOWLEntityExists"> }
-TOKEN: { <MM_ERROR_IF_OWL_ENTITY_EXISTS: "mm:ErrorIfOWLEntityDoesExist"> }
+TOKEN: { <MM_ERROR_IF_OWL_ENTITY_EXISTS: "mm:ErrorIfOWLEntityExists"> }
 TOKEN: { <MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:CreateIfOWLEntityDoesNotExist"> }
 TOKEN: { <MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:SkipIfOWLEntityDoesNotExist"> }
 TOKEN: { <MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:WarningIfOWLEntityDoesNotExist"> }
-TOKEN: { <MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:ErrorIfNotOWLEntityDoesExist"> }
+TOKEN: { <MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:ErrorIfOWLEntityDoesNotExist"> }
 
 TOKEN:
 {
