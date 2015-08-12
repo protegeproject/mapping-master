@@ -76,9 +76,12 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
   public Optional<OWLAPIReferenceRendering> renderReference(ReferenceNode referenceNode)
     throws RendererException
   {
-    SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
     ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-
+    if (referenceType.isUntyped()) {
+      throw new RendererException("untyped reference " + referenceNode);
+    }
+    
+    SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
     if (sourceSpecificationNode.hasLiteral()) {
       String literalValue = sourceSpecificationNode.getLiteral();
       OWLLiteral literal = literalRenderer.createOWLLiteral(literalValue);
@@ -86,43 +89,33 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
     } else {
       SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
       String resolvedReferenceValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
-
-      if (referenceType.isUntyped())
-        throw new RendererException("untyped reference " + referenceNode);
-
-      if (resolvedReferenceValue.isEmpty()
-        && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION)
+      if (resolvedReferenceValue.isEmpty() && referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION) {
         return Optional.empty();
-
+      }
+      
       if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
         String literalReferenceValue = processOWLLiteralReferenceValue(location, resolvedReferenceValue, referenceNode);
-
-        if (literalReferenceValue.isEmpty()
-          && referenceNode.getActualEmptyLiteralDirective() == MM_SKIP_IF_EMPTY_LITERAL)
+        if (literalReferenceValue.isEmpty() && referenceNode.getActualEmptyLiteralDirective() == MM_SKIP_IF_EMPTY_LITERAL) {
           return Optional.empty();
-
+        }
         OWLLiteral literal = this.literalRenderer.createOWLLiteral(literalReferenceValue, referenceType);
-
         return Optional.of(new OWLAPIReferenceRendering(literal, referenceType));
       } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
         String rdfID = getReferenceRDFID(resolvedReferenceValue, referenceNode);
         String rdfsLabel = getReferenceRDFSLabel(resolvedReferenceValue, referenceNode);
         String defaultNamespace = getReferenceNamespace(referenceNode);
         String language = getReferenceLanguage(referenceNode);
-        
-        OWLEntity owlEntity = this.handler
-          .createOrResolveOWLEntity(location, resolvedReferenceValue, referenceType, rdfID, rdfsLabel, defaultNamespace,
+        OWLEntity owlEntity = handler.createOrResolveOWLEntity(location, resolvedReferenceValue,
+            referenceType, rdfID, rdfsLabel, defaultNamespace,
             language, referenceNode.getReferenceDirectives());
         if (owlEntity == null) {
            return Optional.empty();
         }
         Set<OWLAxiom> axioms = addDefiningTypesFromReference(owlEntity, referenceNode);
         return Optional.of(new OWLAPIReferenceRendering(owlEntity, axioms, referenceType));
-        
-      } else
-        throw new InternalRendererException(
-          "unknown reference type " + referenceType + " for reference " + referenceNode);
+      }
     }
+    throw new InternalRendererException("unknown reference type " + referenceType + " for reference " + referenceNode);
   }
 
   public SpreadsheetLocation resolveLocation(SourceSpecificationNode sourceSpecificationNode)
