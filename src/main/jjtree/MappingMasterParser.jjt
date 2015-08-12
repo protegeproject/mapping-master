@@ -34,7 +34,7 @@ public class MappingMasterParser
   public int defaultDataPropertyValueType = XSD_STRING;
   public int defaultAnnotationPropertyValueType = XSD_STRING;
 
-  public int defaultValueEncoding = RDFS_LABEL;
+  public int defaultValueEncoding = RDF_ID;
   public int defaultClassValueEncoding = defaultValueEncoding;
   public int defaultPropertyValueEncoding = defaultValueEncoding;
   public int defaultObjectPropertyValueEncoding = defaultValueEncoding;
