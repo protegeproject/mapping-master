@@ -973,7 +973,7 @@ class OWLAPIObjectHandler
 
 	private void throwNoExistingOWLEntityWithRDFIDException(String namespace, String rdfID) throws RendererException
 	{
-		throw new RendererException("an entity does not exists in namespace " + namespace + " with the rdf:ID " + rdfID);
+		throw new RendererException("an entity does not exist in namespace '" + namespace + "' with the rdf:ID " + rdfID);
 	}
 
 	private void warnNoExistingOWLEntityWithRDFID(String namespace, String rdfID) throws RendererException
