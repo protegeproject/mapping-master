@@ -12,6 +12,7 @@ import org.mm.parser.node.FactNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAllValuesFromNode;
+import org.mm.parser.node.OWLAnnotationPropertyNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLClassExpressionNode;
@@ -636,7 +637,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 			throw new InternalRendererException("unknown child for node " + propertyNode.getNodeName());
 	}
 
-	@Override public Optional<? extends TextRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
+	@Override public Optional<? extends TextRendering> renderOWLAnnotationProperty(OWLAnnotationPropertyNode propertyNode)
 			throws RendererException
 	{
 		if (propertyNode.hasReferenceNode())
@@ -844,7 +845,8 @@ public class TextRenderer extends ReferenceRendererConfiguration
 	private Optional<? extends TextRendering> renderAnnotationFact(AnnotationFactNode annotationFactNode)
 			throws RendererException
 	{
-		Optional<? extends TextRendering> propertyRendering = renderOWLProperty(annotationFactNode.getOWLPropertyNode());
+		Optional<? extends TextRendering> propertyRendering = renderOWLAnnotationProperty(
+				annotationFactNode.getOWLAnnotationPropertyNode());
 		Optional<? extends TextRendering> annotationValueRendering = renderOWLAnnotationValue(
 				annotationFactNode.getOWLAnnotationValueNode());
 

@@ -1,8 +1,8 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTAnnotationFact;
+import org.mm.parser.ASTOWLAnnotationProperty;
 import org.mm.parser.ASTOWLAnnotationValue;
-import org.mm.parser.ASTOWLProperty;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
@@ -10,15 +10,15 @@ import org.mm.parser.ParserUtil;
 
 public class AnnotationFactNode implements MMNode
 {
-	private OWLPropertyNode owlPropertyNode;
 	private OWLAnnotationValueNode owlAnnotationValueNode;
+	private OWLAnnotationPropertyNode owlAnnotationPropertyNode;
 
 	public AnnotationFactNode(ASTAnnotationFact node) throws ParseException
 	{
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			Node child = node.jjtGetChild(i);
-			if (ParserUtil.hasName(child, "OWLProperty"))
-				this.owlPropertyNode = new OWLPropertyNode((ASTOWLProperty)child);
+			if (ParserUtil.hasName(child, "OWLAnnotationProperty"))
+				this.owlAnnotationPropertyNode = new OWLAnnotationPropertyNode((ASTOWLAnnotationProperty)child);
 			else if (ParserUtil.hasName(child, "OWLAnnotationValue"))
 				this.owlAnnotationValueNode = new OWLAnnotationValueNode((ASTOWLAnnotationValue)child);
 			else
@@ -26,9 +26,9 @@ public class AnnotationFactNode implements MMNode
 		}
 	}
 
-	public OWLPropertyNode getOWLPropertyNode()
+	public OWLAnnotationPropertyNode getOWLAnnotationPropertyNode()
 	{
-		return this.owlPropertyNode;
+		return this.owlAnnotationPropertyNode;
 	}
 
 	public OWLAnnotationValueNode getOWLAnnotationValueNode()
@@ -43,6 +43,6 @@ public class AnnotationFactNode implements MMNode
 
 	public String toString()
 	{
-		return this.owlPropertyNode + " " + this.owlAnnotationValueNode;
+		return this.owlAnnotationPropertyNode + " " + this.owlAnnotationValueNode;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.NameNode;
+import org.mm.parser.node.OWLAnnotationPropertyNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLLiteralNode;
@@ -200,7 +201,7 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 		throw new RendererException("reference value " + referenceNode + " for data property is not an OWL data property");
 	}
 
-	@Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLPropertyNode propertyNode)
+	@Override public Optional<OWLAnnotationPropertyRendering> renderOWLAnnotationProperty(OWLAnnotationPropertyNode propertyNode)
 			throws RendererException
 	{
 		if (propertyNode.hasNameNode()) {

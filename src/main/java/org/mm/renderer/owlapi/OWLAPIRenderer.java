@@ -179,7 +179,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 		if (classDeclarationNode.hasAnnotationFactNodes()) {
 			for (AnnotationFactNode annotationFactNode : classDeclarationNode.getAnnotationFactNodes()) {
 				Optional<OWLAnnotationPropertyRendering> propertyRendering = this.entityRenderer
-						.renderOWLAnnotationProperty(annotationFactNode.getOWLPropertyNode());
+						.renderOWLAnnotationProperty(annotationFactNode.getOWLAnnotationPropertyNode());
 				OWLAnnotationValueNode annotationValueNode = annotationFactNode.getOWLAnnotationValueNode();
 				Optional<OWLAnnotationValueRendering> annotationValueRendering = this.entityRenderer
 						.renderOWLAnnotationValue(annotationValueNode);
@@ -320,7 +320,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 			OWLNamedIndividual individual = declaredIndividualRendering.get().getOWLNamedIndividual();
 			for (AnnotationFactNode annotationFact : annotationFactNodes) {
 				Optional<? extends OWLAnnotationPropertyRendering> propertyRendering = this.entityRenderer
-						.renderOWLAnnotationProperty(annotationFact.getOWLPropertyNode());
+						.renderOWLAnnotationProperty(annotationFact.getOWLAnnotationPropertyNode());
 
 				if (!propertyRendering.isPresent()) {
 					// logLine("Skipping OWL annotation clause [" + annotationFact + "] because of missing property name");
