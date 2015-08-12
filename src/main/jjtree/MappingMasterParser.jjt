@@ -968,7 +968,7 @@ int datatype() :
   }
 }
 
-void reference(int defaultValueEncoding) #Reference : {}
+void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : {}
 {
    "@" source_specification()
        ( LOOKAHEAD(2) 
