@@ -498,12 +498,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 	{
 		StringBuilder textRepresentation = new StringBuilder();
 
-		if (classExpressionNode.hasOWLObjectOneOfNode()) {
-			Optional<? extends TextRendering> objectOneOfRendering = renderOWLObjectOneOf(
-					classExpressionNode.getOWLObjectOneOfNode());
-			if (objectOneOfRendering.isPresent())
-				textRepresentation.append(objectOneOfRendering.get().getRendering());
-		} else if (classExpressionNode.hasOWLUnionClassNode()) {
+		if (classExpressionNode.hasOWLUnionClassNode()) {
 			Optional<? extends TextRendering> unionClassRendering = renderOWLUnionClass(
 					classExpressionNode.getOWLUnionClassNode());
 			if (unionClassRendering.isPresent())
@@ -986,7 +981,9 @@ public class TextRenderer extends ReferenceRendererConfiguration
 			classRendering = renderOWLClass(objectAllValuesFromNode.getOWLClassNode());
 		else if (objectAllValuesFromNode.hasOWLClassExpression())
 			classRendering = renderOWLClassExpression(objectAllValuesFromNode.getOWLClassExpressionNode());
-		else
+		else if (objectAllValuesFromNode.hasOWLObjectOneOfNode()) {
+			classRendering = renderOWLObjectOneOf(objectAllValuesFromNode.getOWLObjectOneOfNode());
+		} else 
 			throw new InternalRendererException("unknown child for node " + objectAllValuesFromNode.getNodeName());
 
 		if (classRendering.isPresent())

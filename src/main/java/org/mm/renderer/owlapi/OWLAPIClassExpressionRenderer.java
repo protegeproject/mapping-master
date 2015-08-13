@@ -527,42 +527,42 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	}
 
 	@Override public Optional<OWLRestrictionRendering> renderOWLObjectAllValuesFrom(OWLPropertyNode propertyNode,
-			OWLObjectAllValuesFromNode objectAllValuesFromNode) throws RendererException
+			OWLObjectAllValuesFromNode onlyNode) throws RendererException
 	{
-		Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer.renderOWLProperty(propertyNode);
+		Optional<? extends OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(propertyNode);
 
 		if (propertyRendering.isPresent()) {
 			OWLProperty property = propertyRendering.get().getOWLProperty();
-			if (this.handler.isOWLObjectProperty(property)) {
-				OWLObjectProperty objectProperty = handler.getOWLObjectProperty(property.getIRI());
-
-				if (objectAllValuesFromNode.hasOWLClassExpression()) {
-					Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLClassExpression(
-							objectAllValuesFromNode.getOWLClassExpressionNode());
-					if (classExpressionRendering.isPresent()) {
-						OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-						OWLObjectAllValuesFrom objectAllValuesFromRestriction =
-								handler.getOWLObjectAllValuesFrom(objectProperty, classExpression);
+			if (handler.isOWLObjectProperty(property)) {
+				OWLObjectProperty op = handler.getOWLObjectProperty(property.getIRI());
+				if (onlyNode.hasOWLClassExpression()) {
+					Optional<OWLClassExpressionRendering> rendering = renderOWLClassExpression(onlyNode.getOWLClassExpressionNode());
+					if (rendering.isPresent()) {
+						OWLClassExpression ce = rendering.get().getOWLClassExpression();
+						OWLObjectAllValuesFrom objectAllValuesFromRestriction = handler.getOWLObjectAllValuesFrom(op, ce);
 						return Optional.of(new OWLRestrictionRendering(objectAllValuesFromRestriction));
-					} else
-						return Optional.empty();
-				} else {
-					Optional<OWLClassRendering> classRendering = this.entityRenderer
-							.renderOWLClass(objectAllValuesFromNode.getOWLClassNode());
-
-					if (classRendering.isPresent()) {
-						OWLClassExpression classExpression = classRendering.get().getOWLClass();
-						OWLObjectAllValuesFrom objectAllValuesFromRestriction =
-								handler.getOWLObjectAllValuesFrom(objectProperty, classExpression);
+					}
+				} else if (onlyNode.hasOWLClass()) {
+					Optional<OWLClassRendering> rendering = entityRenderer.renderOWLClass(onlyNode.getOWLClassNode());
+					if (rendering.isPresent()) {
+						OWLClassExpression ce = rendering.get().getOWLClass();
+						OWLObjectAllValuesFrom objectAllValuesFromRestriction = handler.getOWLObjectAllValuesFrom(op, ce);
 						return Optional.of(new OWLRestrictionRendering(objectAllValuesFromRestriction));
-					} else
-						return Optional.empty();
+					}
+				} else if (onlyNode.hasOWLObjectOneOfNode()) {
+					Optional<OWLClassExpressionRendering> rendering = renderOWLObjectOneOf(onlyNode.getOWLObjectOneOfNode());
+					if (rendering.isPresent()) {
+						OWLClassExpression ce = rendering.get().getOWLClassExpression();
+						OWLObjectAllValuesFrom objectAllValuesFromRestriction = handler.getOWLObjectAllValuesFrom(op, ce);
+						return Optional.of(new OWLRestrictionRendering(objectAllValuesFromRestriction));
+					}
 				}
-			} else
+			} else {
 				throw new RendererException(
 						"property " + property.getIRI() + " in object all values from restriction is not an object property");
-		} else
-			return Optional.empty();
+			}
+		}
+		return Optional.empty();
 	}
 
 	@Override public Optional<OWLRestrictionRendering> renderOWLDataAllValuesFrom(OWLPropertyNode propertyNode,

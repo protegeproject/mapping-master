@@ -3,6 +3,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTOWLClass;
 import org.mm.parser.ASTOWLClassExpression;
 import org.mm.parser.ASTOWLObjectAllValuesFrom;
+import org.mm.parser.ASTOWLObjectOneOf;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
@@ -12,6 +13,7 @@ public class OWLObjectAllValuesFromNode implements MMNode
 {
 	private OWLClassExpressionNode classExpressionNode;
 	private OWLClassNode classNode;
+	private OWLObjectOneOfNode objectOneOfNode;
 
 	public OWLObjectAllValuesFromNode(ASTOWLObjectAllValuesFrom node) throws ParseException
 	{
@@ -20,7 +22,9 @@ public class OWLObjectAllValuesFromNode implements MMNode
 			this.classExpressionNode = new OWLClassExpressionNode((ASTOWLClassExpression)child);
 		else if (ParserUtil.hasName(child, "OWLClass"))
 			this.classNode = new OWLClassNode((ASTOWLClass)child);
-		else
+		else if (ParserUtil.hasName(child, "OWLObjectOneOf"))
+			this.objectOneOfNode = new OWLObjectOneOfNode((ASTOWLObjectOneOf)child);
+		else 
 			throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
 	}
 
@@ -34,6 +38,11 @@ public class OWLObjectAllValuesFromNode implements MMNode
 		return this.classNode != null;
 	}
 
+	public OWLObjectOneOfNode getOWLObjectOneOfNode()
+	{
+		return this.objectOneOfNode;
+	}
+
 	public OWLClassExpressionNode getOWLClassExpressionNode()
 	{
 		return this.classExpressionNode;
@@ -42,6 +51,11 @@ public class OWLObjectAllValuesFromNode implements MMNode
 	public OWLClassNode getOWLClassNode()
 	{
 		return this.classNode;
+	}
+
+	public boolean hasOWLObjectOneOfNode()
+	{
+		return this.objectOneOfNode != null;
 	}
 
 	@Override public String getNodeName()
@@ -54,11 +68,11 @@ public class OWLObjectAllValuesFromNode implements MMNode
 		String representation = "ONLY ";
 
 		if (hasOWLClassExpression())
-			representation += this.classExpressionNode.toString();
+			representation += "(" + this.classExpressionNode.toString() + ")";
 		else if (hasOWLClass())
 			representation += this.classNode.toString();
-
-		representation += ")";
+		else if (hasOWLObjectOneOfNode())
+			representation += this.objectOneOfNode.toString();
 
 		return representation;
 	}
