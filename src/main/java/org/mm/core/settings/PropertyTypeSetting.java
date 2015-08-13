@@ -13,4 +13,9 @@ public enum PropertyTypeSetting
   private PropertyTypeSetting(int value) {
     this.value = value;
   }
+
+  public int getConstant()
+  {
+    return value;
+  }
 };

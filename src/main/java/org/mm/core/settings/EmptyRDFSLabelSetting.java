@@ -14,6 +14,11 @@ public enum EmptyRDFSLabelSetting
   private EmptyRDFSLabelSetting(int value) {
     this.value = value;
   }
+
+  public int getConstant()
+  {
+    return value;
+  }
 };
 
 

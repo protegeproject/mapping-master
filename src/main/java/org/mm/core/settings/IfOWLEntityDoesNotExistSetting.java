@@ -14,4 +14,9 @@ public enum IfOWLEntityDoesNotExistSetting
   private IfOWLEntityDoesNotExistSetting(int value) {
     this.value = value;
   }
+
+  public int getConstant()
+  {
+    return value;
+  }
 };

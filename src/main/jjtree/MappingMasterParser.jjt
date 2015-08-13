@@ -16,39 +16,70 @@ PARSER_BEGIN(MappingMasterParser)
 
 package org.mm.parser;
 
+import org.mm.core.settings.ReferenceSettings;
+
 import java.util.*;
 
 public class MappingMasterParser 
 {
-  public String defaultLocationValue = "";
-  public String defaultLiteral = "";
-  public String defaultID = "";
-  public String defaultLabel = "";
-  public String defaultLanguage = "";
-  public String defaultPrefix = "";
-  public String defaultNamespace = "";
+  private String defaultLocationValue = "";
+  private String defaultLiteral = "";
+  private String defaultID = "";
+  private String defaultLabel = "";
+  private String defaultLanguage = "";
+  private String defaultPrefix = "";
+  private String defaultNamespace = "";
 
-  public int defaultReferenceType = OWL_CLASS;
-  public int defaultPropertyType = OWL_OBJECT_PROPERTY;
-  public int defaultPropertyValueType = XSD_STRING;
-  public int defaultDataPropertyValueType = XSD_STRING;
-  public int defaultAnnotationPropertyValueType = XSD_STRING;
+  private int defaultReferenceType = -1;
+  private int defaultPropertyType = -1;
+  private int defaultPropertyValueType = XSD_STRING;
+  private int defaultDataPropertyValueType = XSD_STRING;
+  private int defaultAnnotationPropertyValueType = XSD_STRING;
 
-  public int defaultValueEncoding = RDF_ID;
-  public int defaultClassValueEncoding = defaultValueEncoding;
-  public int defaultPropertyValueEncoding = defaultValueEncoding;
-  public int defaultObjectPropertyValueEncoding = defaultValueEncoding;
-  public int defaultDataPropertyValueEncoding = defaultValueEncoding;
-  public int defaultIndividualValueEncoding = defaultValueEncoding;
-  public int defaultShiftSetting = MM_NO_SHIFT;
-  public int defaultEmptyLocationSetting = MM_PROCESS_IF_EMPTY_LOCATION;
-  public int defaultEmptyLiteralSetting = MM_PROCESS_IF_EMPTY_LITERAL;
-  public int defaultEmptyRDFIDSetting = MM_PROCESS_IF_EMPTY_ID;
-  public int defaultEmptyRDFSLabelSetting = MM_PROCESS_IF_EMPTY_LABEL;
-  public int defaultIfOWLEntityExistsSetting = MM_RESOLVE_IF_OWL_ENTITY_EXISTS;
-  public int defaultIfOWLEntityDoesNotExistSetting = MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST;
+  private int defaultValueEncoding = -1;
+  private int defaultClassValueEncoding = -1;
+  private int defaultPropertyValueEncoding = -1;
+  private int defaultObjectPropertyValueEncoding = -1;
+  private int defaultDataPropertyValueEncoding = -1;
+  private int defaultIndividualValueEncoding = -1;
+  private int defaultShiftSetting = -1;
+  private int defaultEmptyLocationSetting = -1;
+  private int defaultEmptyLiteralSetting = -1;
+  private int defaultEmptyRDFIDSetting = -1;
+  private int defaultEmptyRDFSLabelSetting = -1;
+  private int defaultIfOWLEntityExistsSetting = -1;
+  private int defaultIfOWLEntityDoesNotExistSetting = -1;
+  
+  private ReferenceSettings settings;
+  
+  public MappingMasterParser(java.io.InputStream stream, ReferenceSettings settings, int unused)
+  {
+    this(stream);
+    changeGlobalReferenceSettings(settings);
+  }
 
-} 
+  public void changeGlobalReferenceSettings(ReferenceSettings settings)
+  {
+    defaultLanguage = settings.getLanguage();
+    defaultPrefix = settings.getPrefix();
+    defaultNamespace = settings.getNamespace();
+    defaultReferenceType = settings.getReferenceTypeSetting().getConstant();
+    defaultPropertyType = settings.getPropertyTypeSetting().getConstant();
+    defaultValueEncoding = settings.getValueEncodingSetting().getConstant();
+    defaultClassValueEncoding = settings.getValueEncodingSetting().getConstant();
+    defaultPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
+    defaultObjectPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
+    defaultDataPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
+    defaultIndividualValueEncoding = settings.getValueEncodingSetting().getConstant();
+    defaultShiftSetting = settings.getShiftSetting().getConstant();
+    defaultEmptyLocationSetting = settings.getEmptyLocationSetting().getConstant();
+    defaultEmptyLiteralSetting = settings.getEmptyLiteralSetting().getConstant();
+    defaultEmptyRDFIDSetting = settings.getEmptyRDFIDSetting().getConstant();
+    defaultEmptyRDFSLabelSetting = settings.getEmptyRDFSLabelSetting().getConstant();
+    defaultIfOWLEntityExistsSetting = settings.getIfOWLEntityExistsSetting().getConstant();
+    defaultIfOWLEntityDoesNotExistSetting = settings.getIfOWLEntityDoesNotExistSetting().getConstant();
+  }
+}
 
 PARSER_END(MappingMasterParser)
 

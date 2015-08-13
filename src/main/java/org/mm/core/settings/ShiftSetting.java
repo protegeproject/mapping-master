@@ -15,4 +15,9 @@ public enum ShiftSetting
   private ShiftSetting(int value) {
     this.value = value;
   }
+
+  public int getConstant()
+  {
+    return value;
+  }
 };

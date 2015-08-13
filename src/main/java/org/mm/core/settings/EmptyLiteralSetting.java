@@ -14,6 +14,11 @@ public enum EmptyLiteralSetting
   private EmptyLiteralSetting(int value) {
     this.value = value;
   }
+
+  public int getConstant()
+  {
+    return value;
+  }
 };
 
 

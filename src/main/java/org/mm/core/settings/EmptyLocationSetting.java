@@ -14,6 +14,11 @@ public enum EmptyLocationSetting
   private EmptyLocationSetting(int value) {
     this.value = value;
   }
+
+  public int getConstant()
+  {
+    return value;
+  }
 };
 
 

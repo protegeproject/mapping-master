@@ -14,6 +14,11 @@ public enum EmptyRDFIDSetting
   private EmptyRDFIDSetting(int value) {
     this.value = value;
   }
+
+  public int getConstant()
+  {
+    return value;
+  }
 };
 
 
