@@ -1253,13 +1253,13 @@ void default_location_value_directive() #DefaultLocationValue :
 
 void default_id_directive() #DefaultID :
 {
-  String defaulrRDFID;
+  String defaultRDFID;
 }
 {
-  <MM_DEFAULT_ID> "=" defaulrRDFID = string()
+  <MM_DEFAULT_ID> "=" defaultRDFID = string()
 
   {
-    jjtThis.defaultID = defaulrRDFID;
+    jjtThis.defaultID = defaultRDFID;
   }
 }
 
