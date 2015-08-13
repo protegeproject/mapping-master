@@ -5,7 +5,7 @@ package org.mm.parser;
 public
 class ASTReferenceType extends SimpleNode {
 
-  public int referenceType;
+  public int referenceType; /* Manually added */
 
   public ASTReferenceType(int id) {
     super(id);

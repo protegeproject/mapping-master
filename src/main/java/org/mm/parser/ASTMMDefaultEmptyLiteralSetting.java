@@ -5,7 +5,7 @@ package org.mm.parser;
 public
 class ASTMMDefaultEmptyLiteralSetting extends SimpleNode {
 
-  public int emptyLiteralSetting;
+  public int emptyLiteralSetting; /* Manually added */
 
   public ASTMMDefaultEmptyLiteralSetting(int id) {
     super(id);

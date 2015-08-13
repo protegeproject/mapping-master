@@ -2,17 +2,13 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=false,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package org.mm.parser;
 
-public class ASTMMDefaultReferenceType extends SimpleNode
-{
-  public int referenceType;
-
-  public ASTMMDefaultReferenceType(int id)
-  {
+public
+class ASTMMDefaultReferenceType extends SimpleNode {
+  public ASTMMDefaultReferenceType(int id) {
     super(id);
   }
 
-  public ASTMMDefaultReferenceType(MappingMasterParser p, int id)
-  {
+  public ASTMMDefaultReferenceType(MappingMasterParser p, int id) {
     super(p, id);
   }
 

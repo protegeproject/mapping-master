@@ -5,7 +5,7 @@ package org.mm.parser;
 public
 class ASTDefaultLiteral extends SimpleNode {
 
-  public String defaultLiteral;
+  public String defaultLiteral; /* Manually added */
 
   public ASTDefaultLiteral(int id) {
     super(id);

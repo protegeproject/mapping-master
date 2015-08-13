@@ -5,8 +5,8 @@ package org.mm.parser;
 public
 class ASTEmptyLiteralSetting extends SimpleNode {
 
-  public int emptyLiteralSetting;
-  
+  public int emptyLiteralSetting; /* Manually added */
+
   public ASTEmptyLiteralSetting(int id) {
     super(id);
   }

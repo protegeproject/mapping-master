@@ -542,12 +542,12 @@ void owl_class_declaration() #OWLClassDeclaration : {}
 
 void owl_equivalent_classes() #OWLEquivalentClasses : {}
 {
-   <EQUIVALENT_TO> owl_class_expression() ( "," owl_class_expression() )*
+   <EQUIVALENT_TO> owl_class_expression_with_condition() ( "," owl_class_expression_with_condition() )*
 } 
 
 void owl_subclass_of() #OWLSubclassOf : {}
 {
-   <SUBCLASS_OF> owl_class_expression() ( "," owl_class_expression() )*
+   <SUBCLASS_OF> owl_class_expression_with_condition() ( "," owl_class_expression_with_condition() )*
 } 
 
 void owl_individual_declaration() #OWLIndividualDeclaration : {}
@@ -710,24 +710,25 @@ void owl_class_expression() #OWLClassExpression :
   boolean isNegated = false;
 }
 {
-  ( <NOT> { isNegated = true; } )? (  LOOKAHEAD(owl_restriction()) owl_restriction() 
-                                    | owl_class(defaultClassValueEncoding) 
-                                    | "(" owl_union_class() ")"
-                                    | owl_object_one_of() 
-                                   )
-
-  { jjtThis.isNegated = isNegated; }
+  ( <NOT> { isNegated = true; } )? ( LOOKAHEAD(owl_restriction()) owl_restriction() 
+                                     | owl_class(defaultClassValueEncoding) 
+                                     | "(" owl_union_class() ")" // parenthesized union expression
+                                     | owl_object_one_of() )
+                                   { jjtThis.isNegated = isNegated; }
 }
+
+void owl_class_expression_with_condition() #OWLClassExpression : {}
+{
+  owl_union_class()}
 
 void owl_union_class() #OWLUnionClass : {}
 {
-  owl_intersection_class() ( LOOKAHEAD(2) <OR> owl_intersection_class() )*
-} 
+  owl_intersection_class() ( <OR> owl_intersection_class() )*}
 
 void owl_intersection_class() #OWLIntersectionClass : {}
 {
-  owl_class_expression() ( LOOKAHEAD(2) <AND> owl_class_expression() )*
-} 
+  owl_class_expression() ( <AND> owl_class_expression() )*
+}
 
 void owl_object_one_of() #OWLObjectOneOf : {}
 {
@@ -755,8 +756,8 @@ void types(int referenceType) #Types :
   int defaultType = ParserUtil.getDefaultType(referenceType);
 } 
 {
-  ( LOOKAHEAD(2) owl_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) | "(" owl_class_expression() ")" )
-    ( "," ( LOOKAHEAD(2) owl_class(defaultClassValueEncoding) | reference(referenceType, defaultValueEncoding) | "(" owl_class_expression() ")" ) )?
+  ( LOOKAHEAD(3) reference(referenceType, defaultValueEncoding) | owl_class_expression() )
+    ( "," ( LOOKAHEAD(3) reference(referenceType, defaultValueEncoding) | owl_class_expression() ) )*
 }
 
 void value_specification_item() #ValueSpecificationItem : 

@@ -4,15 +4,16 @@ package org.mm.parser;
 
 public
 class ASTOWLMaxCardinalityRestriction extends SimpleNode {
-	public int cardinality;
 
-	public ASTOWLMaxCardinalityRestriction(int id) {
-		super(id);
-	}
+  public int cardinality; /* Manually added */
 
-	public ASTOWLMaxCardinalityRestriction(MappingMasterParser p, int id) {
-		super(p, id);
-	}
+  public ASTOWLMaxCardinalityRestriction(int id) {
+    super(id);
+  }
+
+  public ASTOWLMaxCardinalityRestriction(MappingMasterParser p, int id) {
+    super(p, id);
+  }
 
 }
 /* JavaCC - OriginalChecksum=ebbf4b12b5570bea7f5133fd15d72907 (do not edit this line) */

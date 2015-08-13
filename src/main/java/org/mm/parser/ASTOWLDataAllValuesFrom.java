@@ -4,15 +4,16 @@ package org.mm.parser;
 
 public
 class ASTOWLDataAllValuesFrom extends SimpleNode {
-	public int datatype;
 
-	public ASTOWLDataAllValuesFrom(int id) {
-		super(id);
-	}
+  public int datatype; /* Manually added */
 
-	public ASTOWLDataAllValuesFrom(MappingMasterParser p, int id) {
-		super(p, id);
-	}
+  public ASTOWLDataAllValuesFrom(int id) {
+    super(id);
+  }
+
+  public ASTOWLDataAllValuesFrom(MappingMasterParser p, int id) {
+    super(p, id);
+  }
 
 }
 /* JavaCC - OriginalChecksum=5b945a19b07757e145ee99a4f1918157 (do not edit this line) */
