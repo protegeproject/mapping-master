@@ -983,13 +983,14 @@ void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : 
          ")"
        )?
   {
-    jjtThis.defaultReferenceDirectives = new DefaultReferenceDirectives(defaultReferenceType, defaultValueEncoding, 
-                        defaultLocationValue, defaultLiteral, defaultID,
-			defaultLabel, defaultLanguage, defaultPrefix, defaultNamespace, 
-                        defaultShiftSetting, 
-                        defaultEmptyLocationSetting, defaultEmptyLiteralSetting, defaultEmptyRDFIDSetting,
-			defaultEmptyRDFSLabelSetting,
-                        defaultIfOWLEntityExistsSetting, defaultIfOWLEntityDoesNotExistSetting);
+    jjtThis.defaultReferenceDirectives = new DefaultReferenceDirectives(
+                        defaultReferenceType, defaultValueEncoding,defaultLocationValue,
+                        defaultLiteral, defaultID, defaultLabel,
+                        defaultLanguage, defaultPrefix, defaultNamespace,
+                        defaultShiftSetting, defaultEmptyLocationSetting,
+                        defaultEmptyLiteralSetting, defaultEmptyRDFIDSetting,
+                        defaultEmptyRDFSLabelSetting, defaultIfOWLEntityExistsSetting,
+                        defaultIfOWLEntityDoesNotExistSetting);
 
   }
 }
