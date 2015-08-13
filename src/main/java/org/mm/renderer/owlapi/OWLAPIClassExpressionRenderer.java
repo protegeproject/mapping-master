@@ -106,26 +106,27 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 			return Optional.empty();
 	}
 
-	@Override public Optional<OWLClassExpressionRendering> renderOWLUnionClass(OWLUnionClassNode unionClassNode)
+	@Override public Optional<OWLClassExpressionRendering> renderOWLUnionClass(OWLUnionClassNode unionNode)
 			throws RendererException
 	{
 		Set<OWLClassExpression> classExpressions = new HashSet<>();
 
-		for (OWLIntersectionClassNode intersectionClassNode : unionClassNode.getOWLIntersectionClassNodes()) {
-			Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLIntersectionClass(
-					intersectionClassNode);
-			if (classExpressionRendering.isPresent()) {
-				OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
+		for (OWLIntersectionClassNode intersectionNode : unionNode.getOWLIntersectionClassNodes()) {
+			Optional<OWLClassExpressionRendering> rendering = renderOWLIntersectionClass(intersectionNode);
+			if (rendering.isPresent()) {
+				OWLClassExpression classExpression = rendering.get().getOWLClassExpression();
 				classExpressions.add(classExpression);
 			}
 		}
 
-		if (!classExpressions.isEmpty()) {
+		if (classExpressions.size() == 1) {
+			return Optional.of(new OWLClassExpressionRendering(classExpressions.iterator().next()));
+		}
+		else if (classExpressions.size() > 1) {
 			OWLObjectUnionOf restriction = handler.getOWLObjectUnionOf(classExpressions);
-
 			return Optional.of(new OWLClassExpressionRendering(restriction));
-		} else
-			return Optional.empty();
+		}
+		return Optional.empty();
 	}
 
 	@Override public Optional<OWLClassExpressionRendering> renderOWLObjectOneOf(OWLObjectOneOfNode objectOneOfNode)
@@ -151,24 +152,26 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
 	}
 
 	@Override public Optional<OWLClassExpressionRendering> renderOWLIntersectionClass(
-			OWLIntersectionClassNode intersectionClassNode) throws RendererException
+			OWLIntersectionClassNode intersectionNode) throws RendererException
 	{
 		Set<OWLClassExpression> classExpressions = new HashSet<>();
 
-		for (OWLClassExpressionNode classExpressionNode : intersectionClassNode.getOWLClassExpressionNodes()) {
-			Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLClassExpression(classExpressionNode);
-			if (classExpressionRendering.isPresent()) {
-				OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
+		for (OWLClassExpressionNode classExpressionNode : intersectionNode.getOWLClassExpressionNodes()) {
+			Optional<OWLClassExpressionRendering> rendering = renderOWLClassExpression(classExpressionNode);
+			if (rendering.isPresent()) {
+				OWLClassExpression classExpression = rendering.get().getOWLClassExpression();
 				classExpressions.add(classExpression);
 			}
 		}
 
-		if (!classExpressions.isEmpty()) {
+		if (classExpressions.size() == 1) {
+			return Optional.of(new OWLClassExpressionRendering(classExpressions.iterator().next()));
+		} else if (classExpressions.size() > 1) {
 			OWLObjectIntersectionOf restriction = handler.getOWLObjectIntersectionOf(classExpressions);
 			OWLClassExpressionRendering classExpressionRendering = new OWLClassExpressionRendering(restriction);
 			return Optional.of(classExpressionRendering);
-		} else
-			return Optional.empty();
+		}
+		return Optional.empty();
 	}
 
 	@Override public Optional<OWLAPIRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
