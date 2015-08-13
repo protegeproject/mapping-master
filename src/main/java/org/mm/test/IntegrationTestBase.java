@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.mm.core.settings.ReferenceSettings;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ASTExpression;
 import org.mm.parser.MappingMasterParser;
@@ -118,23 +119,23 @@ public class IntegrationTestBase
 		return new SpreadSheetDataSource(workbook);
 	}
 
-	protected MMExpressionNode parseExpression(String expression) throws ParseException
+	protected MMExpressionNode parseExpression(String expression, ReferenceSettings settings) throws ParseException
 	{
-		MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expression.getBytes()));
+		MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expression.getBytes()), settings, -1);
 		SimpleNode simpleNode = parser.expression();
 		ExpressionNode expressionNode = new ExpressionNode((ASTExpression)simpleNode);
 
 		return expressionNode.getMMExpressionNode();
 	}
 
-	protected Optional<? extends TextRendering> createTextRendering(String expression)
+	protected Optional<? extends TextRendering> createTextRendering(String expression, ReferenceSettings settings)
 			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
 	{
-		return createTextRendering(DEFAULT_SHEET, this.EMPTY_CELL_SET, expression);
+		return createTextRendering(DEFAULT_SHEET, this.EMPTY_CELL_SET, expression, settings);
 	}
 
 	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells,
-			SpreadsheetLocation currentLocation, String expression)
+			SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
 			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
 	{
 		SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
@@ -142,38 +143,38 @@ public class IntegrationTestBase
 		dataSource.setCurrentLocation(currentLocation);
 
 		TextRenderer renderer = new TextRenderer(dataSource);
-		MMExpressionNode mmExpressionNode = parseExpression(expression);
+		MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
 
 		return renderer.renderMMExpression(mmExpressionNode);
 	}
 
-	protected Optional<? extends TextRendering> createTextRendering(String sheetName, String expression)
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	protected Optional<? extends TextRendering> createTextRendering(String sheetName, String expression,
+			ReferenceSettings settings) throws WriteException, BiffException, MappingMasterException, IOException, ParseException
 	{
-		return createTextRendering(sheetName, EMPTY_CELL_SET, expression);
+		return createTextRendering(sheetName, EMPTY_CELL_SET, expression, settings);
 	}
 
-	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells, String expression)
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells, String expression,
+			ReferenceSettings settings) throws WriteException, BiffException, MappingMasterException, IOException, ParseException
 	{
-		return createTextRendering(sheetName, cells, this.DEFAULT_CURRENT_LOCATION, expression);
+		return createTextRendering(sheetName, cells, this.DEFAULT_CURRENT_LOCATION, expression, settings);
 	}
 
-	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String expression)
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String expression,
+			ReferenceSettings settings) throws WriteException, BiffException, MappingMasterException, IOException, ParseException
 	{
-		return createOWLAPIRendering(ontology, DEFAULT_SHEET, EMPTY_CELL_SET, this.DEFAULT_CURRENT_LOCATION, expression);
-	}
-
-	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
-			Set<Label> cells, String expression)
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
-	{
-		return createOWLAPIRendering(ontology, sheetName, cells, this.DEFAULT_CURRENT_LOCATION, expression);
+		return createOWLAPIRendering(ontology, DEFAULT_SHEET, EMPTY_CELL_SET, this.DEFAULT_CURRENT_LOCATION, expression, settings);
 	}
 
 	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
-			Set<Label> cells, SpreadsheetLocation currentLocation, String expression)
+			Set<Label> cells, String expression, ReferenceSettings settings)
+			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+	{
+		return createOWLAPIRendering(ontology, sheetName, cells, this.DEFAULT_CURRENT_LOCATION, expression, settings);
+	}
+
+	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
+			Set<Label> cells, SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
 			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
 	{
 		SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
@@ -181,7 +182,7 @@ public class IntegrationTestBase
 		dataSource.setCurrentLocation(currentLocation);
 
 		OWLAPIRenderer renderer = new OWLAPIRenderer(ontology, dataSource);
-		MMExpressionNode mmExpressionNode = parseExpression(expression);
+		MMExpressionNode mmExpressionNode = parseExpression(expression, settings);
 
 		return renderer.renderMMExpression(mmExpressionNode);
 	}
