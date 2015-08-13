@@ -871,7 +871,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 
 			for (OWLNamedIndividualNode owlNamedIndividualNode : objectOneOfNode.getOWLNamedIndividualNodes()) {
 				if (isFirst)
-					textRepresentation.append("({"); // TODO These parenthesis should not be required. See comment in grammar.
+					textRepresentation.append("{");
 				else
 					textRepresentation.append(", ");
 
@@ -885,7 +885,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 				}
 			}
 			if (textRepresentation.length() != 0)
-				textRepresentation.append("})"); // TODO These parenthesis should not be required. See comment in grammar.
+				textRepresentation.append("}");
 		}
 		return textRepresentation.length() == 0 ?
 				Optional.empty() :
