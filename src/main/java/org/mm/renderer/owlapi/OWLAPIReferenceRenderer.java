@@ -148,31 +148,61 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       entity = resolveOWLEntityWithDuplicatesEncoding(type, namespace);
     } else if (directives.usesLocationEncoding()) {
       entity = resolveOWLEntityWithLocationEncoding(location, namespace, type);
-    } else { // Uses rdf:ID or rdfs:label encoding
-      boolean isEmptyRDFIDValue = id == null || id.isEmpty();
-      boolean isEmptyRDFSLabelText = label == null || label.isEmpty();
-      if (isEmptyRDFIDValue && isEmptyRDFSLabelText) { // Empty rdf:ID and rdfs:label
-        entity = createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(location, namespace, type);
-      } else if (!isEmptyRDFIDValue && isEmptyRDFSLabelText) {
-        if (directives.actualEmptyRDFSLabelDirectiveIsSkipIfEmpty()) {
-          // log "skipping because of empty rdfs:label"
-          entity = null;
-        } else { // Has an rdf:ID value but doesn't have a label value
-          entity = createOrResolveOWLEntityWithNonEmptyIDAndEmptyLabel(location, id, type, namespace, directives);
-        }
-      } else if (isEmptyRDFIDValue && !isEmptyRDFSLabelText) {
-        if (directives.actualEmptyRDFIDDirectiveIsSkipIfEmpty()) {
-          // log "skipping because of empty rdf:ID"
-          entity = null;
-        } else { // Has an rdfs:label but doesn't have ID value. Use label to resolve possible existing entity.
-          entity = createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(location, type, namespace, label, language, directives);
-        }
-      }
-      else { // Has both rdf:ID and rdfs:label values. Use rdf:ID to resolve resolve possible existing entity.
-        entity = createOrResolveOWLEntityWithNonEmptyIDAndNonEmptyLabel(location, id, label, type, namespace, language, directives);
+    } else {
+      // Uses rdf:ID or rdfs:label encoding
+      switch (determinePossibleCases(id, label)) {
+        /*
+         * Has an rdfs:label but doesn't have ID value. Use label to resolve possible existing entity.
+         */
+        case 0:
+          if (directives.actualEmptyRDFSLabelDirectiveIsSkipIfEmpty()) {
+            // log "skipping because of empty rdfs:label"
+            entity = null;
+          } else if (directives.actualEmptyRDFIDDirectiveIsSkipIfEmpty()) {
+            // log "skipping because of empty rdf:ID"
+            entity = null;
+          } else {
+            entity = createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(location, namespace, type);
+          }
+          break;
+        /*
+         *  Has an rdfs:label but rdf:ID is blank. Use label to resolve possible existing entity.
+         */
+        case 1:
+          if (directives.actualEmptyRDFIDDirectiveIsSkipIfEmpty()) {
+            // log "skipping because of empty rdf:ID"
+            entity = null;
+          } else {
+            entity = createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(location, type, namespace, label, language, directives);
+          }
+          break;
+         /*
+          * Has an rdf:ID value but rdfs:label is blank
+          */
+        case 2:
+          if (directives.actualEmptyRDFSLabelDirectiveIsSkipIfEmpty()) {
+            // log "skipping because of empty rdfs:label"
+            entity = null;
+          } else {
+            entity = createOrResolveOWLEntityWithNonEmptyIDAndEmptyLabel(location, id, type, namespace, directives);
+          }
+          break;
+        /*
+         * Has both rdf:ID and rdfs:label values. Use rdf:ID to resolve resolve possible existing entity.
+         */
+        case 3:
+          entity = createOrResolveOWLEntityWithNonEmptyIDAndNonEmptyLabel(location, id, label, type, namespace, language, directives);
+          break;
       }
     }
     return entity;
+  }
+
+  private int determinePossibleCases(String id, String label)
+  {
+     String b1 = (id == null || id.isEmpty()) ? "0" : "1";
+     String b2 = (label == null || label.isEmpty()) ? "0" : "1";
+     return Integer.parseInt(b1 + b2, 2);
   }
 
   private OWLEntity resolveOWLEntityWithDuplicatesEncoding(ReferenceType type, String namespace)
