@@ -124,7 +124,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 	{
 		if (propertyNode.hasNameNode()) {
 			/*
-			 * We will assume the default property named node is a object property type.
+			 * We will assume the default property type for named node is an object property. While for the reference
+			 * node we can determine the type by looking at its reference type.
 			 */
 			return renderNameForObjectPropertyNode(propertyNode.getNameNode());
 		} else if (propertyNode.hasReferenceNode()) {
