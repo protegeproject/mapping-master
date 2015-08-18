@@ -135,6 +135,11 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 		axioms.add(declaredAxiom);
 		
 		/*
+		 * Add any existing axioms in the class rendering object
+		 */
+		axioms.addAll(declaredClassRendering.get().getOWLAxioms());
+		
+		/*
 		 * In case the class declaration node has a sub-class axiom
 		 */
 		if (classDeclarationNode.hasOWLSubclassOfNodes()) {
@@ -228,6 +233,11 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 		OWLDeclarationAxiom declaredAxiom = handler.getOWLDeclarationAxiom(declaredIndividual);
 		axioms.add(declaredAxiom);
 		
+		/*
+		 * Add any existing axioms in the class rendering object
+		 */
+		axioms.addAll(declaredIndividualRendering.get().getOWLAxioms());
+
 		if (individualDeclarationNode.hasFacts()) { // We have a Facts: clause
 			List<FactNode> factNodes = individualDeclarationNode.getFactNodes();
 			Set<OWLAxiom> factsAxioms = processFactsClause(declaredIndividualRendering, factNodes);

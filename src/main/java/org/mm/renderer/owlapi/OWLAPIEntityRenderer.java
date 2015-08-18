@@ -1,6 +1,7 @@
 package org.mm.renderer.owlapi;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.NameNode;
@@ -26,6 +27,7 @@ import org.mm.rendering.owlapi.OWLPropertyAssertionObjectRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLLiteral;
@@ -77,12 +79,14 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 		}
 		if (referenceRendering.get().isOWLClass()) {
 			OWLClass cls = referenceRendering.get().getOWLEntity().get().asOWLClass();
-			return Optional.of(new OWLClassRendering(cls));
+			Set<OWLAxiom> axioms = referenceRendering.get().getOWLAxioms();
+			return Optional.of(new OWLClassRendering(cls, axioms));
 		}
 		else if (referenceRendering.get().isOWLLiteral()) {
 			OWLLiteral lit = referenceRendering.get().getOWLLiteral().get();
 			OWLClass cls = handler.getOWLClass(lit.getLiteral());
-			return Optional.of(new OWLClassRendering(cls));
+			Set<OWLAxiom> axioms = referenceRendering.get().getOWLAxioms();
+			return Optional.of(new OWLClassRendering(cls, axioms));
 		}
 		throw new RendererException("reference value " + referenceNode + " for class is not an OWL class");
 	}
@@ -114,7 +118,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 		}
 		if (referenceRendering.get().isOWLNamedIndividual()) {
 			OWLNamedIndividual ind = referenceRendering.get().getOWLEntity().get().asOWLNamedIndividual();
-			return Optional.of(new OWLNamedIndividualRendering(ind));
+			Set<OWLAxiom> axioms = referenceRendering.get().getOWLAxioms();
+			return Optional.of(new OWLNamedIndividualRendering(ind, axioms));
 		}
 		throw new RendererException("reference value " + referenceNode + " for named individual is not an OWL named individual");
 	}
