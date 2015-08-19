@@ -117,13 +117,13 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
         return Optional.of(new OWLAPIReferenceRendering(literal, type));
         
       } else if (type.isOWLEntity()) { // Reference is an OWL entity
-        String id = getReferenceRDFID(value, referenceNode);
+        String identifier = getReferenceRDFID(value, referenceNode);
         String label = getReferenceRDFSLabel(value, referenceNode);
         String namespace = getReferenceNamespace(referenceNode);
         String language = getReferenceLanguage(referenceNode);
         ReferenceDirectives directives = referenceNode.getReferenceDirectives();
         
-        OWLEntity owlEntity = createOrResolveOWLEntity(location, value, type, id, label, namespace, language, directives);
+        OWLEntity owlEntity = createOrResolveOWLEntity(namespace, identifier, label, language, type, location, directives);
         if (owlEntity == null) {
           return Optional.empty();
         } else {
@@ -139,18 +139,17 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
     throw new InternalRendererException("unknown reference type " + type + " for reference " + referenceNode);
   }
 
-  public OWLEntity createOrResolveOWLEntity(SpreadsheetLocation location, String value,
-      ReferenceType type, String id, String label, String namespace, String language,
-      ReferenceDirectives directives) throws RendererException
+  public OWLEntity createOrResolveOWLEntity(String namespace, String identifier, String label, String language,
+      ReferenceType type, SpreadsheetLocation location, ReferenceDirectives directives) throws RendererException
   {
     OWLEntity entity = null;
     if (directives.usesLocationWithDuplicatesEncoding()) {
-      entity = resolveOWLEntityWithDuplicatesEncoding(type, namespace);
+      entity = resolveOWLEntityWithDuplicatesEncoding(namespace, type, location);
     } else if (directives.usesLocationEncoding()) {
-      entity = resolveOWLEntityWithLocationEncoding(location, namespace, type);
+      entity = resolveOWLEntityWithLocationEncoding(namespace, type, location);
     } else {
       // Uses rdf:ID or rdfs:label encoding
-      switch (determinePossibleCases(id, label)) {
+      switch (determinePossibleCases(identifier, label)) {
         /*
          * Has an rdfs:label but doesn't have ID value. Use label to resolve possible existing entity.
          */
@@ -162,7 +161,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             // log "skipping because of empty rdf:ID"
             entity = null;
           } else {
-            entity = createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(location, namespace, type);
+            entity = createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(namespace, type, location);
           }
           break;
         /*
@@ -173,7 +172,9 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             // log "skipping because of empty rdf:ID"
             entity = null;
           } else {
-            entity = createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(location, type, namespace, label, language, directives);
+            if (shouldCreateOrResolveOWLEntityWithRDFSLabel(label, language, directives)) {
+              entity = createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(namespace, label, language, type, location);
+            }
           }
           break;
          /*
@@ -184,38 +185,44 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             // log "skipping because of empty rdfs:label"
             entity = null;
           } else {
-            entity = createOrResolveOWLEntityWithNonEmptyIDAndEmptyLabel(location, id, type, namespace, directives);
+            if (shouldCreateOrResolveOWLEntityWithRDFID(namespace, identifier, directives)) {
+              entity = createOrResolveOWLEntityWithNonEmptyIDAndEmptyLabel(namespace, identifier, type, location);
+            }
           }
           break;
         /*
-         * Has both rdf:ID and rdfs:label values. Use rdf:ID to resolve resolve possible existing entity.
+         * Has both rdf:identifier and rdfs:label values. Use rdf:ID to resolve resolve possible existing entity.
          */
         case 3:
-          entity = createOrResolveOWLEntityWithNonEmptyIDAndNonEmptyLabel(location, id, label, type, namespace, language, directives);
+          if (shouldCreateOrResolveOWLEntityWithRDFID(namespace, identifier, directives)
+              && shouldCreateOrResolveOWLEntityWithRDFSLabel(label, language, directives)) {
+          entity = createOrResolveOWLEntityWithNonEmptyIDAndNonEmptyLabel(namespace, identifier, type, location);
+          }
           break;
       }
     }
     return entity;
   }
 
-  private int determinePossibleCases(String id, String label)
+  private int determinePossibleCases(String identifier, String label)
   {
-     String b1 = (id == null || id.isEmpty()) ? "0" : "1";
+     String b1 = (identifier == null || identifier.isEmpty()) ? "0" : "1";
      String b2 = (label == null || label.isEmpty()) ? "0" : "1";
      return Integer.parseInt(b1 + b2, 2);
   }
 
-  private OWLEntity resolveOWLEntityWithDuplicatesEncoding(ReferenceType type, String namespace)
+  private OWLEntity resolveOWLEntityWithDuplicatesEncoding(String namespace, ReferenceType type, SpreadsheetLocation location)
       throws RendererException
   {
     // Create entity with an auto-generated rdf:ID
     // log "creating " + referenceType + " at this location using location with duplicates encoding"
-    OWLEntity entity = createOWLEntity(type, IRI.create(namespace));
+    String identifier = "";
+    OWLEntity entity = createOWLEntity(namespace, identifier, type, location);
     return entity;
   }
 
-  private OWLEntity resolveOWLEntityWithLocationEncoding(SpreadsheetLocation location, String namespace, ReferenceType type)
-      throws RendererException
+  private OWLEntity resolveOWLEntityWithLocationEncoding(String namespace, ReferenceType type, SpreadsheetLocation location)
+		  throws RendererException
   {
     OWLEntity entity = null;
     if (hasOWLEntityBeenCreatedAtLocation(location, namespace)) {
@@ -224,91 +231,84 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       entity = getOWLEntityAtLocation(type, location, namespace);
     } else {
       // log "--processReference: creating " + referenceType + " at this location using location encoding"
-      entity = createOWLEntity(type, IRI.create(namespace));
+      String identifier = "";
+      entity = createOWLEntity(namespace, identifier, type, location);
       recordOWLEntityAtLocation(type, location, namespace, entity);
     }
     return entity;
   }
 
-  private OWLEntity createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(SpreadsheetLocation location, String namespace, ReferenceType type)
+  private OWLEntity createOrResolveOWLEntityWithEmptyIDAndEmptyLabel(String namespace, ReferenceType type, SpreadsheetLocation location)
       throws RendererException
   {
-    return resolveOWLEntityWithLocationEncoding(location, namespace, type);
+    return resolveOWLEntityWithLocationEncoding(namespace, type, location);
   }
 
-  private OWLEntity createOrResolveOWLEntityWithNonEmptyIDAndEmptyLabel(SpreadsheetLocation location, String id, ReferenceType type, String namespace, ReferenceDirectives directives)
-      throws RendererException
+  private OWLEntity createOrResolveOWLEntityWithNonEmptyIDAndEmptyLabel(String namespace, String identifier, ReferenceType type,
+      SpreadsheetLocation location) throws RendererException
   {
     OWLEntity entity = null;
-    if (shouldCreateOrResolveOWLEntityWithRDFID(namespace, id, directives)) {
-      if (hasOWLEntityBeenCreatedAtLocation(location, namespace)) {
-        // log using existing " + referenceType + " " + resolvedOWLEntity + " created at this location"
-        entity = getOWLEntityAtLocation(type, location, namespace);
-      } else {
-        // log "--processReference: creating/resolving " + referenceType + " using rdf:ID " + rdfID
-        entity = createOWLEntity(location, namespace, id, type, directives); // If entity exists, it will be retrieved
-        recordOWLEntityAtLocation(type, location, namespace, entity);
-      }
+    if (hasOWLEntityBeenCreatedAtLocation(location, namespace)) {
+      // log using existing " + referenceType + " " + resolvedOWLEntity + " created at this location"
+      entity = getOWLEntityAtLocation(type, location, namespace);
+    } else {
+      // log "--processReference: creating/resolving " + referenceType + " using rdf:ID " + rdfID
+      entity = createOWLEntity(namespace, identifier, type, location); // If entity exists, it will be retrieved
+      recordOWLEntityAtLocation(type, location, namespace, entity);
     }
     return entity;
   }
 
-  private OWLEntity createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(SpreadsheetLocation location,
-      ReferenceType type, String namespace, String label, String language,
-      ReferenceDirectives directives) throws RendererException
+  private OWLEntity createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(String namespace, String label, String language,
+      ReferenceType type, SpreadsheetLocation location) throws RendererException
   {
     OWLEntity entity = null;
-    if (shouldCreateOrResolveOWLEntityWithRDFSLabel(label, language, directives)) {
-      if (hasOWLEntityBeenCreatedWithLabel(namespace, label, language)) {
-        // log "using existing " + referenceType + " " + resolvedOWLEntity + " with rdfs:label " + labelText
-        entity = getOWLEntityWithRDFSLabel(type, namespace, label, language); // Find the existing one
-      } else if (hasOWLEntityBeenCreatedInOntology(label, language)) {
-        // log "using existing ontology " + referenceType + " " + resolvedOWLEntity+ " with rdfs:label " + labelText
-        entity = getOWLEntityWithRDFSLabel(label, language);
-      } else {
-        entity = createOWLEntity(type, IRI.create(namespace, label));
-        recordOWLEntityWithRDFSLabel(type, namespace, label, language, entity);
-      }
+    if (hasOWLEntityBeenCreatedWithLabel(namespace, label, language)) {
+      // log "using existing " + referenceType + " " + resolvedOWLEntity + " with rdfs:label " + labelText
+      entity = getOWLEntityWithRDFSLabel(type, namespace, label, language); // Find the existing one
+    } else if (hasOWLEntityBeenCreatedInOntology(label, language)) {
+      // log "using existing ontology " + referenceType + " " + resolvedOWLEntity+ " with rdfs:label " + labelText
+      entity = getOWLEntityWithRDFSLabel(label, language);
+    } else {
+      String identifier = label;
+      entity = createOWLEntity(namespace, identifier, type, location);
+      recordOWLEntityWithRDFSLabel(type, namespace, label, language, entity);
     }
     return entity;
   }
 
-  private OWLEntity createOrResolveOWLEntityWithNonEmptyIDAndNonEmptyLabel(SpreadsheetLocation location, String id,
-      String label, ReferenceType type, String namespace, String language,
-      ReferenceDirectives directives) throws RendererException
+  private OWLEntity createOrResolveOWLEntityWithNonEmptyIDAndNonEmptyLabel(String namespace, String identifier, ReferenceType type,
+      SpreadsheetLocation location) throws RendererException
   {
     OWLEntity entity = null;
-    if (shouldCreateOrResolveOWLEntityWithRDFID(namespace, id, directives)
-        && shouldCreateOrResolveOWLEntityWithRDFSLabel(label, language, directives)) {
-      if (hasOWLEntityBeenCreatedAtLocation(location, namespace)) {
-         // log"--using existing " + referenceType + " " + resolvedOWLEntity + " created at this location"
-        entity = getOWLEntityAtLocation(type, location, namespace);
-      } else {
-        // log "--processReference: creating/resolving " + referenceType + " using rdf:ID " + rdfID
-        entity = createOWLEntity(location, namespace, id, type, directives);
-        recordOWLEntityAtLocation(type, location, namespace, entity);
-      }
+    if (hasOWLEntityBeenCreatedAtLocation(location, namespace)) {
+      // log"--using existing " + referenceType + " " + resolvedOWLEntity + " created at this location"
+      entity = getOWLEntityAtLocation(type, location, namespace);
+    } else {
+      // log "--processReference: creating/resolving " + referenceType + " using rdf:ID " + rdfID
+      entity = createOWLEntity(namespace, identifier, type, location);
+      recordOWLEntityAtLocation(type, location, namespace, entity);
     }
     return entity;
   }
 
-  private boolean shouldCreateOrResolveOWLEntityWithRDFID(String namespace, String id, ReferenceDirectives directives)
+  private boolean shouldCreateOrResolveOWLEntityWithRDFID(String namespace, String identifier, ReferenceDirectives directives)
       throws RendererException
   {
-    if (handler.isOWLEntity(IRI.create(id))) {
+    if (handler.isOWLEntity(IRI.create(identifier))) {
       if (directives.actualIfExistsDirectiveIsError()) {
-        throwOWLEntityExistsWithRDFIDException(namespace, id);
+        throwOWLEntityExistsWithRDFIDException(namespace, identifier);
       } else if (directives.actualIfExistsDirectiveIsWarning()) {
-        warnOWLEntityExistsWithRDFID(namespace, id);
+        warnOWLEntityExistsWithRDFID(namespace, identifier);
       } else if (directives.actualIfOWLEntityExistsDirectiveIsSkip()) {
         return false;
       }
       // If setting is MM_RESOLVE_IF_EXISTS we resolve it.
     } else { // No existing entity
       if (directives.actualIfOWLEntityDoesNotExistDirectiveIsError()) {
-        throwNoExistingOWLEntityWithRDFIDException(namespace, id);
+        throwNoExistingOWLEntityWithRDFIDException(namespace, identifier);
       } else if (directives.actualIfOWLEntityDoesNotExistDirectiveIsWarning()) {
-        warnNoExistingOWLEntityWithRDFID(namespace, id);
+        warnNoExistingOWLEntityWithRDFID(namespace, identifier);
       } else if (directives.actualIfOWLEntityDoesNotExistDirectiveIsSkip()) {
         return false;
       }
@@ -423,37 +423,21 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
     }
   }
 
-  private OWLEntity createOWLEntity(SpreadsheetLocation location, String namespace, String id, ReferenceType type, ReferenceDirectives directives)
+  private OWLEntity createOWLEntity(String namespace, String identifier, ReferenceType type, SpreadsheetLocation location)
       throws RendererException
   {
-    boolean isEmptyName = id.isEmpty();
     if (type.isOWLClass()) {
-      return isEmptyName ? handler.getOWLClass(IRI.create(namespace)) : handler.getOWLClass(namespace, id);
+      return handler.getOWLClass(namespace, identifier);
     } else if (type.isOWLNamedIndividual()) {
-      return isEmptyName ? handler.getOWLNamedIndividual(IRI.create(namespace)) : handler.getOWLNamedIndividual(namespace, id);
+      return handler.getOWLNamedIndividual(namespace, identifier);
     } else if (type.isOWLObjectProperty()) {
-      return isEmptyName ? handler.getOWLObjectProperty(IRI.create(namespace)) : handler.getOWLObjectProperty(namespace, id);
+      return handler.getOWLObjectProperty(namespace, identifier);
     } else if (type.isOWLDataProperty()) {
-      return isEmptyName ? handler.getOWLDataProperty(IRI.create(namespace)) : handler.getOWLDataProperty(namespace, id);
+      return handler.getOWLDataProperty(namespace, identifier);
     } else if (type.isOWLAnnotationProperty()) {
-      return isEmptyName ? handler.getOWLAnnotationProperty(IRI.create(namespace)) : handler.getOWLAnnotationProperty(namespace, id);
+      return handler.getOWLAnnotationProperty(namespace, identifier);
     }
-    throw new RendererException("unknown entity type " + type + " for entity " + id + " in namespace " + namespace + " in reference " + directives
-        + " at location " + location);
-  }
-
-  private OWLEntity createOWLEntity(ReferenceType type, IRI iri) throws RendererException
-  {
-    if (type.isOWLClass()) {
-      return handler.getOWLClass(iri);
-    } else if (type.isOWLNamedIndividual()) {
-      return handler.getOWLNamedIndividual(iri);
-    } else if (type.isOWLObjectProperty()) {
-      return handler.getOWLObjectProperty(iri);
-    } else if (type.isOWLDataProperty()) {
-      return handler.getOWLDataProperty(iri);
-    }
-    throw new InternalRendererException("unknown entity type " + type);
+    throw new RendererException("unknown entity type '" + type + "' for entity '" + namespace + identifier + "' at location " + location);
   }
 
   private OWLEntity getOWLEntityWithRDFSLabel(String labelText, String language) throws RendererException
@@ -864,22 +848,22 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
     // log errorMessage
   }
 
-  private void throwOWLEntityExistsWithRDFIDException(String namespace, String id) throws RendererException
+  private void throwOWLEntityExistsWithRDFIDException(String namespace, String identifier) throws RendererException
   {
-    throw new RendererException("an OWL entity already exists in namespace " + namespace + " with the rdf:ID " + id);
+    throw new RendererException("an OWL entity already exists in namespace " + namespace + " with the rdf:ID " + identifier);
   }
 
-  private void warnOWLEntityExistsWithRDFID(String namespace, String id)
+  private void warnOWLEntityExistsWithRDFID(String namespace, String identifier)
   {
     // log "WARNING: an entity already exists in namespace " + namespace + " with the rdf:ID " + rdfID
   }
 
-  private void throwNoExistingOWLEntityWithRDFIDException(String namespace, String id) throws RendererException
+  private void throwNoExistingOWLEntityWithRDFIDException(String namespace, String identifier) throws RendererException
   {
-    throw new RendererException("an entity does not exist in namespace '" + namespace + "' with the rdf:ID " + id);
+    throw new RendererException("an entity does not exist in namespace '" + namespace + "' with the rdf:ID " + identifier);
   }
 
-  private void warnNoExistingOWLEntityWithRDFID(String namespace, String id)
+  private void warnNoExistingOWLEntityWithRDFID(String namespace, String identifier)
   {
     // log "WARNING: an entity does not exists in namespace " + namespace + " with the rdf:ID " + rdfID
   }
