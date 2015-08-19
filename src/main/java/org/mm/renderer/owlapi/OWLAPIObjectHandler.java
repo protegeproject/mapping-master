@@ -477,6 +477,7 @@ class OWLAPIObjectHandler
 	{
 		return this.ontology.containsAnnotationPropertyInSignature(property.getIRI());
 	}
+
 	public Set<OWLEntity> getOWLEntityWithRDFSLabel(String labelText)
 	{
 		/*
@@ -504,12 +505,12 @@ class OWLAPIObjectHandler
 		return this.ontology.getEntitiesInSignature(IRI.create(labelText));
 	}
 
-	public String getNamespaceForPrefix(String prefix) throws RendererException
+	public String getPrefixForPrefixLabel(String prefixLabel) throws RendererException
 	{
-		IRI iri = prefixManager.getIRI(prefix);
+		IRI iri = prefixManager.getIRI(prefixLabel);
 		if (iri != null) {
 			return iri.toString();
 		}
-		throw new RendererException("Namespace for prefix '" + prefix + "' cannot be found!");
+		throw new RendererException("Prefix for prefix label '" + prefixLabel + "' cannot be found!");
 	}
 }
