@@ -216,7 +216,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
   {
     // Create entity with an auto-generated rdf:ID
     // log "creating " + referenceType + " at this location using location with duplicates encoding"
-    String identifier = "";
+    String identifier = ReferenceUtil.produceIdentifierString(location);
     OWLEntity entity = createOWLEntity(namespace, identifier, type, location);
     return entity;
   }
@@ -231,7 +231,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       entity = getOWLEntityAtLocation(type, location, namespace);
     } else {
       // log "--processReference: creating " + referenceType + " at this location using location encoding"
-      String identifier = "";
+      String identifier = ReferenceUtil.produceIdentifierString(location);
       entity = createOWLEntity(namespace, identifier, type, location);
       recordOWLEntityAtLocation(type, location, namespace, entity);
     }
@@ -270,7 +270,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       // log "using existing ontology " + referenceType + " " + resolvedOWLEntity+ " with rdfs:label " + labelText
       entity = getOWLEntityWithRDFSLabel(label, language);
     } else {
-      String identifier = label;
+      String identifier = ReferenceUtil.produceIdentifierString(label);
       entity = createOWLEntity(namespace, identifier, type, location);
       recordOWLEntityWithRDFSLabel(type, namespace, label, language, entity);
     }

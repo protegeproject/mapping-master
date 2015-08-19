@@ -169,4 +169,45 @@ public class ReferenceUtil implements MappingMasterParserConstants
 			throw new RendererException("invalid capturing expression " + regexExpression + ": " + e.getMessage());
 		}
 	}
+
+	public static String produceIdentifierString(SpreadsheetLocation location)
+	{
+		StringBuffer sb = new StringBuffer();
+		sb.append(location.getSheetName());
+		sb.append("_");
+		sb.append(location.getCellLocation());
+		sb.append("_");
+		sb.append(System.currentTimeMillis());
+		return sb.toString();
+	}
+
+	public static String produceIdentifierString(String text)
+	{
+		return toCamelCase(text);
+	}
+
+	public static String produceIdentifierString()
+	{
+		return "MM_" + System.currentTimeMillis();
+	}
+
+	private static String toCamelCase(final String text)
+	{
+		final StringBuilder sb = new StringBuilder();
+		for (final String word : text.split("\\s+")) {
+			if (!word.isEmpty()) {
+				if (word.matches("\\p{javaLowerCase}*")) {
+					/*
+					 * If all the characters are lower-case then upper-case the first letter to conform
+					 * with CamelCasing.
+					 */
+					sb.append(word.substring(0, 1).toUpperCase());
+					sb.append(word.substring(1).toLowerCase());
+				} else {
+					sb.append(word);
+				}
+			}
+		}
+		return sb.toString();
+	}
 }
