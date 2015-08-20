@@ -1,14 +1,18 @@
 package org.mm.test;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mm.core.settings.ReferenceSettings;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ASTExpression;
@@ -34,13 +38,6 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
-
 public class IntegrationTestBase
 {
 	protected static final String SHEET1 = "Sheet1";
@@ -64,56 +61,26 @@ public class IntegrationTestBase
 		return OWLManager.createOWLOntologyManager().createOntology();
 	}
 
-	/**
-	 * Create a single sheet workbook. Not clear how to create an in-memory-only {@link Workbook} in JXL so
-	 * we create a {@link WritableWorkbook} (which is not a subclass of {@link Workbook}) save it to a temporary file and
-	 * then create a {@link Workbook} from it.
-	 */
-	protected Workbook createWorkbook(String sheetName, Set<Label> cells)
-			throws IOException, WriteException, BiffException
+	protected Workbook createWorkbook(String sheetName, Set<Label> cells) throws IOException
 	{
-		File file = File.createTempFile("temp", "xlsx");
-		WritableWorkbook writableWorkbook = Workbook.createWorkbook(file);
-		WritableSheet sheet = writableWorkbook.createSheet(sheetName, 0);
-
-		for (Label cell : cells)
-			sheet.addCell(cell);
-
-		writableWorkbook.write();
-		writableWorkbook.close();
-
-		return Workbook.getWorkbook(file);
-	}
-
-	/**
-	 * @param data Map of sheet names to cells
-	 * @return A workbook
-	 * @throws IOException
-	 * @throws WriteException
-	 * @throws BiffException
-	 */
-	protected Workbook createWorkbook(Map<String, Set<Label>> data) throws IOException, WriteException, BiffException
-	{
-		File file = File.createTempFile("temp", "xlsx");
-		WritableWorkbook writableWorkbook = Workbook.createWorkbook(file);
-
-		int sheetIndex = 0;
-		for (String sheetName : data.keySet()) {
-			Set<Label> cells = data.get(sheetName);
-			WritableSheet sheet = writableWorkbook.createSheet(sheetName, sheetIndex++);
-
-			for (Label cell : cells)
-				sheet.addCell(cell);
+		Workbook workbook = new XSSFWorkbook();
+		Sheet sheet = workbook.createSheet(sheetName);
+		
+		Map<Integer, Row> buffer = new HashMap<Integer, Row>();
+		for (Label cell : cells) {
+			int rownum = cell.getRowIndex();
+			Row row = buffer.get(rownum);
+			if (row == null) {
+				row = sheet.createRow(rownum);
+				buffer.put(rownum, row);
+			}
+			row.createCell(cell.columnIndex).setCellValue(cell.getContent());
 		}
-
-		writableWorkbook.write();
-		writableWorkbook.close();
-
-		return Workbook.getWorkbook(file);
+		return workbook;
 	}
 
 	protected SpreadSheetDataSource createSpreadsheetDataSource(String sheetName, Set<Label> cells)
-			throws BiffException, IOException, WriteException, MappingMasterException
+			throws IOException, MappingMasterException
 	{
 		Workbook workbook = createWorkbook(sheetName, cells);
 		return new SpreadSheetDataSource(workbook);
@@ -129,14 +96,14 @@ public class IntegrationTestBase
 	}
 
 	protected Optional<? extends TextRendering> createTextRendering(String expression, ReferenceSettings settings)
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+			throws MappingMasterException, IOException, ParseException
 	{
-		return createTextRendering(DEFAULT_SHEET, this.EMPTY_CELL_SET, expression, settings);
+		return createTextRendering(DEFAULT_SHEET, EMPTY_CELL_SET, expression, settings);
 	}
 
 	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells,
 			SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+			throws MappingMasterException, IOException, ParseException
 	{
 		SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
 
@@ -149,33 +116,33 @@ public class IntegrationTestBase
 	}
 
 	protected Optional<? extends TextRendering> createTextRendering(String sheetName, String expression,
-			ReferenceSettings settings) throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+			ReferenceSettings settings) throws MappingMasterException, IOException, ParseException
 	{
 		return createTextRendering(sheetName, EMPTY_CELL_SET, expression, settings);
 	}
 
 	protected Optional<? extends TextRendering> createTextRendering(String sheetName, Set<Label> cells, String expression,
-			ReferenceSettings settings) throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+			ReferenceSettings settings) throws MappingMasterException, IOException, ParseException
 	{
-		return createTextRendering(sheetName, cells, this.DEFAULT_CURRENT_LOCATION, expression, settings);
+		return createTextRendering(sheetName, cells, DEFAULT_CURRENT_LOCATION, expression, settings);
 	}
 
 	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String expression,
-			ReferenceSettings settings) throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+			ReferenceSettings settings) throws MappingMasterException, IOException, ParseException
 	{
-		return createOWLAPIRendering(ontology, DEFAULT_SHEET, EMPTY_CELL_SET, this.DEFAULT_CURRENT_LOCATION, expression, settings);
+		return createOWLAPIRendering(ontology, DEFAULT_SHEET, EMPTY_CELL_SET, DEFAULT_CURRENT_LOCATION, expression, settings);
 	}
 
 	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
 			Set<Label> cells, String expression, ReferenceSettings settings)
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+			throws MappingMasterException, IOException, ParseException
 	{
-		return createOWLAPIRendering(ontology, sheetName, cells, this.DEFAULT_CURRENT_LOCATION, expression, settings);
+		return createOWLAPIRendering(ontology, sheetName, cells, DEFAULT_CURRENT_LOCATION, expression, settings);
 	}
 
 	protected Optional<? extends OWLAPIRendering> createOWLAPIRendering(OWLOntology ontology, String sheetName,
 			Set<Label> cells, SpreadsheetLocation currentLocation, String expression, ReferenceSettings settings)
-			throws WriteException, BiffException, MappingMasterException, IOException, ParseException
+			throws MappingMasterException, IOException, ParseException
 	{
 		SpreadSheetDataSource dataSource = createSpreadsheetDataSource(sheetName, cells);
 
@@ -195,7 +162,7 @@ public class IntegrationTestBase
 	 */
 	protected Label createCell(String content, int columnNumber, int rowNumber)
 	{
-		return new Label(columnNumber - 1, rowNumber - 1, content); // JXL is 0-based
+		return new Label(content, columnNumber-1, rowNumber-1); // POI is 0-based
 	}
 
 	protected Set<Label> createCells(Label... cells)
@@ -306,5 +273,34 @@ public class IntegrationTestBase
 		OWLOntologyManager ontologyManager = ontology.getOWLOntologyManager();
 		for (OWLAxiom axiom : axioms)
 			ontologyManager.addAxiom(ontology, axiom);
+	}
+
+	public class Label
+	{
+		private String content;
+		private int columnIndex;
+		private int rowIndex;
+		
+		public Label(String content, int columnIndex, int rowIndex)
+		{
+			this.content = content;
+			this.columnIndex = columnIndex;
+			this.rowIndex = rowIndex;
+		}
+		
+		public String getContent()
+		{
+			return content;
+		}
+		
+		public int getColumnIndex()
+		{
+			return columnIndex;
+		}
+		
+		public int getRowIndex()
+		{
+			return rowIndex;
+		}
 	}
 }

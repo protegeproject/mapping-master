@@ -1,7 +1,11 @@
 package org.mm.ui.action;
 
-import jxl.Sheet;
-import jxl.Workbook;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Set;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.core.MappingExpression;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.renderer.RendererException;
@@ -14,10 +18,6 @@ import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.model.MMApplicationModel;
 import org.mm.ui.model.MappingsExpressionsModel;
 import org.mm.ui.view.MMApplicationView;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Set;
 
 public class MapExpressionsAction implements ActionListener
 {
@@ -43,10 +43,10 @@ public class MapExpressionsAction implements ActionListener
           int startColumnNumber = SpreadSheetUtil.columnName2Number(mappingExpression.getStartColumn());
           int startRowNumber = SpreadSheetUtil.row2Number(mappingExpression.getStartRow());
           int finishColumnNumber = mappingExpression.hasFinishColumnWildcard() ?
-            sheet.getColumns() :
+            sheet.getRow(startRowNumber).getLastCellNum() :
             SpreadSheetUtil.columnName2Number(mappingExpression.getFinishColumn());
           int finishRowNumber = mappingExpression.hasFinishRowWildcard() ?
-            sheet.getRows() :
+            sheet.getLastRowNum() :
             SpreadSheetUtil.row2Number(mappingExpression.getFinishRow());
 
           if (startColumnNumber > finishColumnNumber)
@@ -75,15 +75,15 @@ public class MapExpressionsAction implements ActionListener
   }
 
   private static SpreadsheetLocation incrementLocation(SpreadsheetLocation currentLocation,
-    SpreadsheetLocation startLocation, SpreadsheetLocation finishLocation) throws RendererException
+    SpreadsheetLocation startLocation, SpreadsheetLocation endLocation) throws RendererException
   {
-    if (currentLocation.getRowNumber() < finishLocation.getRowNumber())
-      return new SpreadsheetLocation(currentLocation.getSheetName(), currentLocation.getColumnNumber(),
-        currentLocation.getRowNumber() + 1);
-    else if (currentLocation.getRowNumber() == finishLocation.getRowNumber()) {
-      if (currentLocation.getColumnNumber() < finishLocation.getColumnNumber()) {
-        return new SpreadsheetLocation(currentLocation.getSheetName(), currentLocation.getColumnNumber() + 1,
-          startLocation.getRowNumber());
+    if (currentLocation.getPhysicalRowNumber() < endLocation.getPhysicalRowNumber())
+      return new SpreadsheetLocation(
+          currentLocation.getSheetName(), currentLocation.getPhysicalColumnNumber(), currentLocation.getPhysicalRowNumber());
+    else if (currentLocation.getPhysicalRowNumber() == endLocation.getPhysicalRowNumber()) {
+      if (currentLocation.getPhysicalColumnNumber() < endLocation.getPhysicalColumnNumber()) {
+        return new SpreadsheetLocation(
+            currentLocation.getSheetName(), currentLocation.getPhysicalColumnNumber(), startLocation.getPhysicalRowNumber());
       } else {
         throw new RendererException("incrementLocation called redundantly");
       }

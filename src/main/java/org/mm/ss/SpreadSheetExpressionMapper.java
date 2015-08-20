@@ -1,7 +1,9 @@
 package org.mm.ss;
 
-import jxl.Sheet;
-import jxl.Workbook;
+import java.io.ByteArrayInputStream;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.core.MappingExpression;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ASTExpression;
@@ -11,8 +13,6 @@ import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.renderer.RendererException;
 import org.mm.renderer.owlapi.OWLAPIRenderer;
-
-import java.io.ByteArrayInputStream;
 
 /**
  * Class that converts a spreadsheet to OWL using the supplied mapping expressions.

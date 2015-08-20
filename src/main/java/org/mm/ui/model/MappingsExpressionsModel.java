@@ -9,6 +9,8 @@ import java.util.Set;
 
 public class MappingsExpressionsModel extends AbstractTableModel implements MMModel
 {
+  private static final long serialVersionUID = 1L;
+
   private static final int ACTIVE_COLUMN = 0;
   private static final int COMMENT_COLUMN = 1;
   private static final int EXPRESSION_COLUMN = 2;

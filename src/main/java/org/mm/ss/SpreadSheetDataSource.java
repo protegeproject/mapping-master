@@ -1,9 +1,15 @@
 package org.mm.ss;
 
-import jxl.Cell;
-import jxl.CellType;
-import jxl.Sheet;
-import jxl.Workbook;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.core.DataSource;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.MappingMasterParserConstants;
@@ -11,13 +17,6 @@ import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.RendererException;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SpreadSheetDataSource implements DataSource, MappingMasterParserConstants
 {
@@ -30,54 +29,59 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 		this.currentLocation = Optional.empty();
 	}
 
-	public void setCurrentLocation(SpreadsheetLocation currentLocation)
+	public void setCurrentLocation(SpreadsheetLocation location)
 	{
-		this.currentLocation = Optional.of(currentLocation);
+		currentLocation = Optional.of(location);
 	}
 
 	public Optional<SpreadsheetLocation> getCurrentLocation()
 	{
-		return this.currentLocation;
+		return currentLocation;
 	}
 
 	public boolean hasCurrentLocation()
 	{
-		return this.currentLocation != null;
+		return currentLocation != null;
 	}
 
 	public Workbook getWorkbook()
 	{
-		return this.workbook;
+		return workbook;
 	}
 
 	public boolean hasWorkbook()
 	{
-		return this.workbook != null;
+		return workbook != null;
 	}
 
 	public List<Sheet> getSheets()
 	{
-		if (hasWorkbook())
-			return Arrays.asList(this.workbook.getSheets());
-		else
-			return Collections.emptyList();
+		List<Sheet> sheets = Collections.emptyList();
+		if (hasWorkbook()) {
+			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+				sheets.add(workbook.getSheetAt(i));
+			}
+		}
+		return sheets;
 	}
 
 	public List<String> getSubSourceNames()
 	{
-		if (hasWorkbook())
-			return Arrays.asList(this.workbook.getSheetNames());
-		else
-			return Collections.emptyList();
+		List<String> sheetNames = Collections.emptyList();
+		if (hasWorkbook()) {
+			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+				sheetNames.add(workbook.getSheetName(i));
+			}
+		}
+		return sheetNames;
 	}
 
 	public String getLocationValue(SpreadsheetLocation location, ReferenceNode referenceNode) throws RendererException
 	{
 		String locationValue = getLocationValue(location);
-
-		if (referenceNode.getActualShiftDirective() != MM_NO_SHIFT)
+		if (referenceNode.getActualShiftDirective() != MM_NO_SHIFT) {
 			locationValue = getLocationValueWithShifting(location, referenceNode);
-
+		}
 		return locationValue;
 	}
 
@@ -85,59 +89,66 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 	{
 		int columnNumber = location.getColumnNumber();
 		int rowNumber = location.getRowNumber();
-		Sheet sheet = this.workbook.getSheet(location.getSheetName());
-		Cell cell;
-
-		try {
-			cell = sheet.getCell(columnNumber - 1, rowNumber - 1);
-		} catch (Exception e) {
+		
+		Sheet sheet = workbook.getSheet(location.getSheetName());
+		Row row = sheet.getRow(rowNumber);
+		if (row == null) {
 			throw new RendererException(
-					"error accessing sheet " + location.getSheetName() + " at location " + location + ": " + e.getMessage());
+					"invalid source specification @" + location + " - row " + location.getPhysicalRowNumber() + " is out of range");
 		}
-
-		if (cell.getType() == CellType.EMPTY)
-			return null;
-		else
-			return cell.getContents();
+		Cell cell = row.getCell(columnNumber);
+		if (cell == null) {
+			throw new RendererException(
+					"invalid source specification @" + location + " - column " + location.getColumnName() + " is out of range");
+		}
+		return (cell.getCellType() == Cell.CELL_TYPE_BLANK) ? null : cell.getStringCellValue();
 	}
 
-	public String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode referenceNode)
-			throws RendererException
+	public String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode referenceNode) throws RendererException
 	{
+		String sheetName = location.getSheetName();
+		Sheet sheet = workbook.getSheet(sheetName);
 		String shiftedLocationValue = getLocationValue(location);
-		Sheet sheet = this.workbook.getSheet(location.getSheetName());
-
 		if (shiftedLocationValue == null || shiftedLocationValue.isEmpty()) {
-			if (referenceNode.getActualShiftDirective() == MM_SHIFT_LEFT) {
-				for (int currentColumn = location.getColumnNumber() - 1; currentColumn >= 1; currentColumn--) {
-					shiftedLocationValue = getLocationValue(
-							new SpreadsheetLocation(location.getSheetName(), currentColumn, location.getRowNumber()));
-					if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty())
-						return shiftedLocationValue;
-				}
-			} else if (referenceNode.getActualShiftDirective() == MM_SHIFT_RIGHT) {
-				for (int currentColumn = location.getColumnNumber() + 1; currentColumn <= sheet.getColumns(); currentColumn++) {
-					shiftedLocationValue = getLocationValue(
-							new SpreadsheetLocation(location.getSheetName(), currentColumn, location.getRowNumber()));
-					if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty())
-						return shiftedLocationValue;
-				}
-			} else if (referenceNode.getActualShiftDirective() == MM_SHIFT_DOWN) {
-				for (int currentRow = location.getRowNumber() + 1; currentRow <= sheet.getRows(); currentRow++) {
-					shiftedLocationValue = getLocationValue(
-							new SpreadsheetLocation(location.getSheetName(), location.getColumnNumber(), currentRow));
-					if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty())
-						return shiftedLocationValue;
-				}
-			} else if (referenceNode.getActualShiftDirective() == MM_SHIFT_UP) {
-				for (int currentRow = location.getRowNumber() - 1; currentRow >= 1; currentRow--) {
-					shiftedLocationValue = getLocationValue(
-							new SpreadsheetLocation(location.getSheetName(), location.getColumnNumber(), currentRow));
-					if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty())
-						return shiftedLocationValue;
-				}
+			switch (referenceNode.getActualShiftDirective()) {
+				case MM_SHIFT_LEFT:
+					int firstColumnNumber = 1;
+					for (int currentColumn = location.getPhysicalColumnNumber(); currentColumn >= firstColumnNumber; currentColumn--) {
+						shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName, currentColumn, location.getPhysicalRowNumber()));
+						if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty()) {
+							break;
+						}
+					}
+					return shiftedLocationValue;
+				case MM_SHIFT_RIGHT:
+					int lastColumnNumber = sheet.getRow(location.getRowNumber()).getLastCellNum();
+					for (int currentColumn = location.getPhysicalColumnNumber(); currentColumn <= lastColumnNumber; currentColumn++) {
+						shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName, currentColumn, location.getPhysicalRowNumber()));
+						if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty()) {
+							break;
+						}
+					}
+					return shiftedLocationValue;
+				case MM_SHIFT_DOWN:
+					int lastRowNumber = sheet.getLastRowNum() + 1;
+					for (int currentRow = location.getPhysicalRowNumber(); currentRow <= lastRowNumber; currentRow++) {
+						shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName, location.getPhysicalColumnNumber(), currentRow));
+						if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty()) {
+							break;
+						}
+					}
+					return shiftedLocationValue;
+				case MM_SHIFT_UP:
+					int firstRowNumber = 1;
+					for (int currentRow = location.getPhysicalRowNumber(); currentRow >= firstRowNumber; currentRow--) {
+						shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName, location.getPhysicalColumnNumber(), currentRow));
+						if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty()) {
+							break;
+						}
+					}
+					return shiftedLocationValue;
+				default: throw new InternalRendererException("unknown shift setting " + referenceNode.getActualShiftDirective());
 			}
-			throw new InternalRendererException("unknown shift setting " + referenceNode.getActualShiftDirective());
 		} else {
 			referenceNode.setShiftedLocation(location);
 			return shiftedLocationValue;
@@ -151,19 +162,18 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 		Sheet sheet;
 		SpreadsheetLocation resolvedLocation;
 
-		if (!this.currentLocation.isPresent())
+		if (!currentLocation.isPresent()) {
 			throw new RendererException("current location not set");
-
+		}
 		if (sourceSpecification.hasSource()) {
 			String sheetName = sourceSpecification.getSource();
-
-			if (!hasWorkbook())
+			if (!hasWorkbook()) {
 				throw new RendererException("sheet name " + sheetName + " specified but there is no active workbook");
-
+			}
 			sheet = getWorkbook().getSheet(sheetName);
-
-			if (sheet == null)
+			if (sheet == null) {
 				throw new RendererException("invalid sheet name " + sheetName);
+			}
 		} else
 			sheet = getWorkbook().getSheet(getCurrentLocation().get().getSheetName());
 
@@ -171,32 +181,34 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 			String columnSpecification = m.group(1);
 			String rowSpecification = m.group(2);
 
-			if (columnSpecification == null)
+			if (columnSpecification == null) {
 				throw new RendererException("missing column specification in location " + sourceSpecification);
-			if (rowSpecification == null)
+			}
+			if (rowSpecification == null) {
 				throw new RendererException("missing row specification in location " + sourceSpecification);
-
+			}
 			boolean isColumnWildcard = "*".equals(columnSpecification);
 			boolean isRowWildcard = "*".equals(rowSpecification);
 			int columnNumber, rowNumber;
 
 			try {
-				if (isColumnWildcard)
-					columnNumber = getCurrentLocation().get().getColumnNumber();
-				else
+				if (isColumnWildcard) {
+					columnNumber = getCurrentLocation().get().getPhysicalColumnNumber();
+				} else {
 					columnNumber = SpreadSheetUtil.getColumnNumber(sheet, columnSpecification);
-
-				if (isRowWildcard)
-					rowNumber = this.currentLocation.get().getRowNumber();
-				else
+				}
+				if (isRowWildcard) {
+					rowNumber = currentLocation.get().getPhysicalRowNumber();
+				} else {
 					rowNumber = SpreadSheetUtil.getRowNumber(sheet, rowSpecification);
+				}
 			} catch (MappingMasterException e) {
 				throw new RendererException("invalid source specification " + sourceSpecification + " - " + e.getMessage());
 			}
-			resolvedLocation = new SpreadsheetLocation(sheet.getName(), columnNumber, rowNumber);
-		} else
+			resolvedLocation = new SpreadsheetLocation(sheet.getSheetName(), columnNumber, rowNumber);
+		} else {
 			throw new RendererException("invalid source specification " + sourceSpecification);
-
+		}
 		return resolvedLocation;
 	}
 }

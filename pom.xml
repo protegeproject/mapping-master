@@ -12,7 +12,7 @@
 
     <javacc.version>6.1.2</javacc.version>
     <owlapi.version>4.0.2</owlapi.version> 
-    <jxl.version>2.6.12</jxl.version>
+    <poi.version>3.13-beta1</poi.version>
     
     <java.version>1.8</java.version>
 
@@ -34,9 +34,15 @@
     </dependency>
 
     <dependency>
-      <groupId>net.sourceforge.jexcelapi</groupId>
-      <artifactId>jxl</artifactId>
-      <version>${jxl.version}</version>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>${poi.version}</version>
     </dependency>
 
   </dependencies>

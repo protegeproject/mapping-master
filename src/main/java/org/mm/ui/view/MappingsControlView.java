@@ -1,21 +1,34 @@
 package org.mm.ui.view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import org.mm.renderer.ReferenceRendererOptionsManager;
 import org.mm.ui.MMApplication;
-import org.mm.ui.action.SaveMappingsAction;
-import org.mm.ui.model.MMApplicationModel;
 import org.mm.ui.action.CloseMappingsAction;
 import org.mm.ui.action.MapExpressionsAction;
 import org.mm.ui.action.OpenMappingsAction;
 import org.mm.ui.action.SaveAsMappingsAction;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import org.mm.ui.action.SaveMappingsAction;
+import org.mm.ui.model.MMApplicationModel;
 
 public class MappingsControlView extends JPanel implements MMView
 {
+	private static final long serialVersionUID = 1L;
+
 	private final MMApplication application;
 	private JTextField fileNameTextField;
 	private JTextArea statusWindow;

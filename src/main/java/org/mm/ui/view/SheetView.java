@@ -1,48 +1,60 @@
 package org.mm.ui.view;
 
-import jxl.Sheet;
-import org.mm.ui.model.SheetModel;
+import java.awt.BorderLayout;
 
-import javax.swing.*;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.table.TableColumn;
-import java.awt.*;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.mm.ui.model.SheetModel;
 
 public class SheetView extends JPanel implements MMView
 {
-  private final Sheet sheet;
-  private final SheetModel sheetModel;
-  private final JTable sheetTable;
+	private static final long serialVersionUID = 1L;
 
-  public SheetView(Sheet sheet)
-  {
-    this.sheet = sheet;
-    this.sheetModel = new SheetModel(sheet);
+	private final Sheet sheet;
+	private final SheetModel sheetModel;
+	private final JTable sheetTable;
 
-    setLayout(new BorderLayout());
+	public SheetView(Sheet sheet)
+	{
+		this.sheet = sheet;
+		this.sheetModel = new SheetModel(sheet);
 
-    this.sheetTable = new JTable(this.sheetModel);
-    setFirstColumnWidth(30);
-    JScrollPane scrollPane = new JScrollPane(this.sheetTable);
-    JViewport viewport = scrollPane.getViewport();
-    viewport.setBackground(this.sheetTable.getBackground());
+		setLayout(new BorderLayout());
 
-    add(BorderLayout.CENTER, scrollPane);
-  }
+		this.sheetTable = new JTable(this.sheetModel);
+		setFirstColumnWidth(30);
+		JScrollPane scrollPane = new JScrollPane(this.sheetTable);
+		JViewport viewport = scrollPane.getViewport();
+		viewport.setBackground(this.sheetTable.getBackground());
 
-  public String getSheetName() { return this.sheet.getName(); }
+		add(BorderLayout.CENTER, scrollPane);
+	}
 
-  private void setFirstColumnWidth(int newWidth)
-  {
-    TableColumn column1 = this.sheetTable.getColumnModel().getColumn(0);
-    column1.setPreferredWidth(newWidth);
-    column1.setMaxWidth(2 * newWidth);
-  }
+	public String getSheetName()
+	{
+		return sheet.getSheetName();
+	}
 
-  public void update() { validate(); }
+	private void setFirstColumnWidth(int newWidth)
+	{
+		TableColumn column1 = this.sheetTable.getColumnModel().getColumn(0);
+		column1.setPreferredWidth(newWidth);
+		column1.setMaxWidth(2 * newWidth);
+	}
 
-  public void validate()
-  {
-    this.sheetModel.fireTableDataChanged();
-    super.validate();
-  }
+	public void update()
+	{
+		validate();
+	}
+
+	public void validate()
+	{
+		this.sheetModel.fireTableDataChanged();
+		super.validate();
+	}
 }

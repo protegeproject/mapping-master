@@ -1,9 +1,9 @@
 package org.mm.ss;
 
-import jxl.Sheet;
-import jxl.Workbook;
-import org.mm.exceptions.MappingMasterException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.core.MappingExpression;
+import org.mm.exceptions.MappingMasterException;
 
 public class SpreadSheetUtil
 {
@@ -83,30 +83,16 @@ public class SpreadSheetUtil
 
   public static int getColumnNumber(Sheet sheet, String columnSpecification) throws MappingMasterException
   {
-    int columnNumber, numberOfColumns = sheet.getColumns();
-
     checkColumnSpecification(columnSpecification);
-
-    columnNumber = columnName2Number(columnSpecification);
-
-    if (columnNumber > numberOfColumns)
-      throw new MappingMasterException("column " + columnSpecification + " out of range");
-
-    return columnNumber; // 0-indexed by JExcel
+    int columnNumber = columnName2Number(columnSpecification);
+    return columnNumber; // 0-indexed
   }
 
   public static int getRowNumber(Sheet sheet, String rowSpecification) throws MappingMasterException
   {
-    int rowNumber, numberOfRows = sheet.getRows();
-
     checkRowSpecification(rowSpecification);
-
-    rowNumber = Integer.parseInt(rowSpecification);
-
-    if (rowNumber > numberOfRows)
-      throw new MappingMasterException("row " + rowSpecification + " out of range");
-
-    return rowNumber; // 0-indexed by JExcel
+    int rowNumber = Integer.parseInt(rowSpecification);
+    return rowNumber; // 0-indexed
   }
 
   public static Sheet getSheet(Workbook workbook, String sheetName) throws MappingMasterException

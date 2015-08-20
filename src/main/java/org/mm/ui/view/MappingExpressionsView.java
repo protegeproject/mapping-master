@@ -15,6 +15,8 @@ import java.awt.event.MouseEvent;
 
 public class MappingExpressionsView extends JPanel implements MMView
 {
+  private static final long serialVersionUID = 1L;
+
   private final MMApplication application;
   private final JTable mappingExpressionsTable;
 

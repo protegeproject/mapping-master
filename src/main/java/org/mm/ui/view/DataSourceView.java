@@ -1,26 +1,35 @@
 package org.mm.ui.view;
 
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import org.mm.exceptions.MappingMasterException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ui.MMApplication;
 import org.mm.ui.dialog.MMApplicationDialogManager;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.model.MMApplicationModel;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 public class DataSourceView extends JPanel implements MMView
 {
+  private static final long serialVersionUID = 1L;
+
   private MMApplication application; // Use Optional to get rid of null.
 
   private final Map<String, SheetView> sheetViewMaps;
@@ -91,9 +100,9 @@ public class DataSourceView extends JPanel implements MMView
       int i = 0;
       for (Sheet sheet : getDataSourceModel().getDataSource().getSheets()) {
         SheetView sheetView = new SheetView(sheet);
-        String sheetName = sheet.getName();
+        String sheetName = sheet.getSheetName();
         this.tabbedPane.addTab(sheetName, null, sheetView, "Sheet '" + sheetName + "'");
-        this.tabbedPane.setForegroundAt(i, sheet.getSettings().isHidden() ? Color.GRAY : Color.BLACK);
+        this.tabbedPane.setForegroundAt(i, sheet.isSelected() ? Color.GRAY : Color.BLACK);
         this.sheetViewMaps.put(sheetName, sheetView);
         i++;
       }
@@ -114,17 +123,16 @@ public class DataSourceView extends JPanel implements MMView
       JFileChooser fileChooser = getApplicationDialogManager().createFileChooser("Open Data Source", "xls");
       if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
         File file = fileChooser.getSelectedFile();
-        String fileName = file.getAbsolutePath();
-
+        String filename = file.getAbsolutePath();
         try {
-          Workbook workbook = Workbook.getWorkbook(file);
+          Workbook workbook = WorkbookFactory.create(new FileInputStream(filename));
           SpreadSheetDataSource dataSource = new SpreadSheetDataSource(workbook);
           getDataSourceModel().setDataSource(dataSource);
-          getDataSourceModel().setFileName(fileName);
+          getDataSourceModel().setFileName(filename);
           getApplicationModel().dataSourceUpdated();
-        } catch (MappingMasterException | IOException | BiffException ex) {
+        } catch (Exception ex) {
           getApplicationDialogManager()
-            .showErrorMessageDialog(DataSourceView.this.tabbedPane, "error opening file '" + fileName + "': " + ex.getMessage());
+            .showErrorMessageDialog(DataSourceView.this.tabbedPane, "error opening file '" + filename + "': " + ex.getMessage());
         }
       }
     }

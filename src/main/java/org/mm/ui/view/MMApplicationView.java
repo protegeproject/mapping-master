@@ -13,6 +13,8 @@ import javax.swing.*;
  */
 public class MMApplicationView extends JSplitPane implements MMView
 {
+  private static final long serialVersionUID = 1L;
+
   private static final String MAPPINGS_CONTROL_VIEW_TITLE = "MappingsControl";
   private static final String MAPPINGS_CONTROL_VIEW_DESCRIPTION = "MappingsControl";
   private static final String EXPRESSIONS_VIEW_TITLE = "Expressions";
