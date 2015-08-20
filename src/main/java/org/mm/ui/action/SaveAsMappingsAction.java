@@ -31,8 +31,7 @@ public class SaveAsMappingsAction implements ActionListener
     MMApplicationModel applicationModel = this.application.getApplicationModel();
     MappingsControlView mappingsControlView = applicationView.getMappingsControlView();
 
-    JFileChooser fileChooser = getApplicationDialogManager()
-      .createSaveFileChooser("Save Mapping Ontology", "owl", true);
+    JFileChooser fileChooser = getApplicationDialogManager().createSaveFileChooser("Save Mapping Ontology", "owl", true);
 
     if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
       File file = fileChooser.getSelectedFile();

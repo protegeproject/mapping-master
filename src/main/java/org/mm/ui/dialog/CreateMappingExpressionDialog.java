@@ -198,7 +198,7 @@ public class CreateMappingExpressionDialog extends JDialog
         startRow = CreateMappingExpressionDialog.this.startRowTextField.getText().trim();
         finishRow = CreateMappingExpressionDialog.this.finishRowTextField.getText().trim();
       } catch (MappingMasterException ex) {
-        getApplicationDialogManager().showErrorMessageDialog(ex.getMessage());
+        getApplicationDialogManager().showErrorMessageDialog(null, ex.getMessage());
         errorOccurred = true;
       }
 

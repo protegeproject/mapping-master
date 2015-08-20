@@ -120,7 +120,7 @@ public class DataSourceView extends JPanel implements MMView
   {
     public void actionPerformed(ActionEvent e)
     {
-      JFileChooser fileChooser = getApplicationDialogManager().createFileChooser("Open Data Source", "xls");
+      JFileChooser fileChooser = getApplicationDialogManager().createOpenFileChooser("Open Data Source", "xls");
       if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
         File file = fileChooser.getSelectedFile();
         String filename = file.getAbsolutePath();

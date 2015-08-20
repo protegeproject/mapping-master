@@ -31,7 +31,7 @@ public class OpenMappingsAction implements ActionListener
     MMApplicationModel applicationModel = this.application.getApplicationModel();
     MappingsControlView mappingsControlView = applicationView.getMappingsControlView();
 
-    JFileChooser fileChooser = getApplicationDialogManager().createFileChooser("Open Mapping Ontology", "owl");
+    JFileChooser fileChooser = getApplicationDialogManager().createOpenFileChooser("Open Mapping Ontology", "owl");
 
     if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
       File file = fileChooser.getSelectedFile();
