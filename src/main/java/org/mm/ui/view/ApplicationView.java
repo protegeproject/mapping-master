@@ -15,7 +15,7 @@ import org.mm.parser.node.ExpressionNode;
 import org.mm.renderer.Renderer;
 import org.mm.ui.MMApplication;
 import org.mm.ui.MMApplicationFactory;
-import org.mm.ui.dialog.MMApplicationDialogManager;
+import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.ApplicationModel;
 
 /**
@@ -27,7 +27,7 @@ public class ApplicationView extends JSplitPane implements MMView
 {
 	private static final long serialVersionUID = 1L;
 
-	private MMApplicationDialogManager applicationDialogManager;
+	private MMDialogManager applicationDialogManager;
 	private DataSourceView dataSourceView;
 	private MappingControlView mappingControlView;
 	private MappingBrowserView mappingExpressionView;
@@ -39,7 +39,7 @@ public class ApplicationView extends JSplitPane implements MMView
 
 	private ReferenceSettings referenceSettings = new ReferenceSettings();
 
-	public ApplicationView(MMApplicationDialogManager applicationDialogManager)
+	public ApplicationView(MMDialogManager applicationDialogManager)
 	{
 		this.applicationDialogManager = applicationDialogManager;
 
@@ -161,7 +161,7 @@ public class ApplicationView extends JSplitPane implements MMView
 		return getApplicationModel().getRenderer();
 	}
 
-	public MMApplicationDialogManager getApplicationDialogManager()
+	public MMDialogManager getApplicationDialogManager()
 	{
 		return applicationDialogManager;
 	}

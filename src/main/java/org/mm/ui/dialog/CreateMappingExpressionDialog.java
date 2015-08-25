@@ -203,7 +203,7 @@ public class CreateMappingExpressionDialog extends JDialog
 		return container.getApplicationModel().getDataSourceModel();
 	}
 
-	private MMApplicationDialogManager getApplicationDialogManager()
+	private MMDialogManager getApplicationDialogManager()
 	{
 		return container.getApplicationDialogManager();
 	}

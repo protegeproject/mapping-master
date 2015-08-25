@@ -7,7 +7,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class SimpleDialogManager implements MMApplicationDialogManager
+public class SimpleDialogManager implements MMDialogManager
 {
 	@Override
 	public int showConfirmDialog(Component parent, String title, String message)

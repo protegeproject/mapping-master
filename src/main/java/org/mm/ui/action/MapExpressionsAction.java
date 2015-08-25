@@ -12,7 +12,7 @@ import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
-import org.mm.ui.dialog.MMApplicationDialogManager;
+import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.model.MappingExpressionModel;
 import org.mm.ui.view.ApplicationView;
@@ -122,7 +122,7 @@ public class MapExpressionsAction implements ActionListener
 		return container.getApplicationModel().getDataSourceModel();
 	}
 
-	private MMApplicationDialogManager getApplicationDialogManager()
+	private MMDialogManager getApplicationDialogManager()
 	{
 		return container.getApplicationDialogManager();
 	}

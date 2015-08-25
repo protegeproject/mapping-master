@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ui.dialog.MMApplicationDialogManager;
+import org.mm.ui.dialog.MMDialogManager;
 
 public class DataSourceView extends JPanel implements MMView
 {
@@ -69,7 +69,7 @@ public class DataSourceView extends JPanel implements MMView
 		}
 	}
 
-	private MMApplicationDialogManager getApplicationDialogManager()
+	private MMDialogManager getApplicationDialogManager()
 	{
 		return container.getApplicationDialogManager();
 	}

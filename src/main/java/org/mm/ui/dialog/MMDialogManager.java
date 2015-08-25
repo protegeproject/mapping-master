@@ -8,7 +8,7 @@ import javax.swing.JFileChooser;
  * See https://github.com/protegeproject/swrlapi/blob/master/src/main/java/org/swrlapi/factory/DefaultSWRLAPIDialogManager.java
  * for a potential implementation.
  */
-public interface MMApplicationDialogManager
+public interface MMDialogManager
 {
 	int showConfirmDialog(Component parent, String title, String message);
 

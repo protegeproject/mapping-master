@@ -25,7 +25,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.mm.core.MappingExpression;
 import org.mm.ui.dialog.CreateMappingExpressionDialog;
-import org.mm.ui.dialog.MMApplicationDialogManager;
+import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.MappingExpressionModel;
 
 public class MappingBrowserView extends JPanel implements MMView
@@ -118,7 +118,7 @@ public class MappingBrowserView extends JPanel implements MMView
 		return container.getApplicationModel().getMappingExpressionsModel();
 	}
 
-	private MMApplicationDialogManager getApplicationDialogManager()
+	private MMDialogManager getApplicationDialogManager()
 	{
 		return container.getApplicationDialogManager();
 	}
