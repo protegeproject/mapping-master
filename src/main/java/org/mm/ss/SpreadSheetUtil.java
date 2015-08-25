@@ -12,7 +12,7 @@ public class SpreadSheetUtil
     if (columnSpecification.isEmpty())
       throw new MappingMasterException("empty column specification");
 
-    if (!columnSpecification.equals(MappingExpression.FinishRowOrColumnWildcard)) {
+    if (!columnSpecification.equals(MappingExpression.EndWildcard)) {
       for (int i = 0; i < columnSpecification.length(); i++) {
         char c = columnSpecification.charAt(i);
         if (!isAlpha(c))
@@ -26,7 +26,7 @@ public class SpreadSheetUtil
     if (rowSpecification.isEmpty())
       throw new MappingMasterException("empty row specification");
 
-    if (!rowSpecification.equals(MappingExpression.FinishRowOrColumnWildcard)) {
+    if (!rowSpecification.equals(MappingExpression.EndWildcard)) {
       for (int i = 0; i < rowSpecification.length(); i++) {
         char c = rowSpecification.charAt(i);
         if (!isNumeric(c))

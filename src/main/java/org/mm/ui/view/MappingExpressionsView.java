@@ -138,12 +138,12 @@ public class MappingExpressionsView extends JPanel implements MMView
 		{
 			for (MappingExpression mapping : mappings) {
 				Vector<Object> row = new Vector<Object>();
-				row.add(mapping.getSourceSheetName());
+				row.add(mapping.getSheetName());
 				row.add(mapping.getStartColumn());
-				row.add(mapping.getFinishColumn());
+				row.add(mapping.getEndColumn());
 				row.add(mapping.getStartRow());
-				row.add(mapping.getFinishRow());
-				row.add(mapping.getExpression());
+				row.add(mapping.getEndRow());
+				row.add(mapping.getExpressionString());
 				row.add(mapping.getComment());
 				data.add(row);
 			}

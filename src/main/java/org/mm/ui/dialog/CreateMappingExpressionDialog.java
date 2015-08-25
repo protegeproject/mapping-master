@@ -122,7 +122,7 @@ public class CreateMappingExpressionDialog extends JDialog
 
 	public void fillDialogFields(MappingExpression mapping)
 	{
-		String sheetName = mapping.getSourceSheetName();
+		String sheetName = mapping.getSheetName();
 
 		if (getDataSourceModel().isEmpty()) {
 			List<String> sheetNames = getDataSourceModel().getSheetNames();
@@ -132,17 +132,17 @@ public class CreateMappingExpressionDialog extends JDialog
 			}
 		}
 		else {
-			cbbSheetName.addItem(mapping.getSourceSheetName());
+			cbbSheetName.addItem(mapping.getSheetName());
 		}
 		cbbSheetName.setSelectedItem(sheetName);
 
 		txtStartColumn.setText(mapping.getStartColumn());
-		txtEndColumn.setText(mapping.getFinishColumn());
+		txtEndColumn.setText(mapping.getEndColumn());
 		txtStartRow.setText(mapping.getStartRow());
-		txtEndRow.setText(mapping.getFinishRow());
+		txtEndRow.setText(mapping.getEndRow());
 
 		txtComment.setText(mapping.getComment());
-		txtExpression.setText(mapping.getExpression());
+		txtExpression.setText(mapping.getExpressionString());
 
 		editMode = true;
 		selectedMapping = mapping;

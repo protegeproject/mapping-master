@@ -135,7 +135,7 @@ public class ApplicationView extends JSplitPane implements MMView
 	public void evaluate(MappingExpression mapping, Renderer renderer)
 	{
 		try {
-			String expression = mapping.getExpression();
+			String expression = mapping.getExpressionString();
 			ExpressionNode expressionNode = parseExpression(expression, referenceSettings);
 			renderer.renderExpression(expressionNode);
 		} catch (Exception e) {

@@ -46,16 +46,16 @@ public class MapExpressionsAction implements ActionListener
 			Workbook workbook = dataSource.getWorkbook();
 			for (MappingExpression mapping : mappingSet) {
 				if (mapping.isActive()) {
-					String sheetName = mapping.getSourceSheetName();
+					String sheetName = mapping.getSheetName();
 					Sheet sheet = workbook.getSheet(sheetName);
 					int startColumn = SpreadSheetUtil.columnName2Number(mapping.getStartColumn());
 					int startRow = SpreadSheetUtil.row2Number(mapping.getStartRow());
-					int endColumn = mapping.hasFinishColumnWildcard()
+					int endColumn = mapping.hasEndColumnWildcard()
 							? sheet.getRow(startRow).getLastCellNum()
-							: SpreadSheetUtil.columnName2Number(mapping.getFinishColumn());
-					int endRow = mapping.hasFinishRowWildcard()
+							: SpreadSheetUtil.columnName2Number(mapping.getEndColumn());
+					int endRow = mapping.hasEndRowWildcard()
 							? sheet.getLastRowNum()
-							: SpreadSheetUtil.row2Number(mapping.getFinishRow());
+							: SpreadSheetUtil.row2Number(mapping.getEndRow());
 
 					if (startColumn > endColumn) {
 						throw new RendererException("start column after finish column in expression " + mapping);
