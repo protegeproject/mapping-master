@@ -4,8 +4,6 @@ import java.awt.Component;
 
 import javax.swing.JFileChooser;
 
-import org.mm.ui.MMApplication;
-
 /*
  * See https://github.com/protegeproject/swrlapi/blob/master/src/main/java/org/swrlapi/factory/DefaultSWRLAPIDialogManager.java
  * for a potential implementation.
