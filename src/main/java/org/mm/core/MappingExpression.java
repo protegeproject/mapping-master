@@ -13,17 +13,17 @@ public class MappingExpression
 	private String expression;
 	private boolean active;
 
-	public MappingExpression(String comment, String expression, String sheetName, String startColumn,String endColumn,
-			String startRow, String endRow)
+	public MappingExpression(String sheetName, String startColumn,String endColumn, String startRow, String endRow,
+			String comment, String expression)
 	{
 		this.active = true;
-		this.expression = expression;
-		this.comment = comment;
 		this.sheetName = sheetName;
 		this.startColumn = startColumn;
 		this.endColumn = endColumn;
 		this.startRow = startRow;
 		this.endRow = endRow;
+		this.comment = comment;
+		this.expression = expression;
 	}
 
 	public void setActive(boolean active)

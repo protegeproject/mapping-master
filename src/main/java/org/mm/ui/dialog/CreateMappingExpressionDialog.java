@@ -174,7 +174,7 @@ public class CreateMappingExpressionDialog extends JDialog
 				String comment = txtComment.getText().trim();
 				String expression = txtExpression.getText().trim();
 				
-				MappingExpression newMapping = new MappingExpression(comment, expression, sheetName, startColumn, endColumn, startRow, endRow);
+				MappingExpression newMapping = new MappingExpression(sheetName, startColumn, endColumn, startRow, endRow, comment, expression);
 				if (editMode) {
 					getMappingExpressionsModel().removeMappingExpression(selectedMapping); // Remove original
 				}
