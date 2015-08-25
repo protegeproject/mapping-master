@@ -6,7 +6,7 @@ import org.mm.renderer.Renderer;
 import org.mm.ss.SpreadSheetDataSource;
 import org.semanticweb.owlapi.model.OWLOntology;
 
-public class MMApplicationModel implements MMModel
+public class ApplicationModel implements MMModel
 {
 	private DataSourceModel dataSourceModel;
 	private MappingsExpressionsModel expressionMappingsModel;
@@ -14,7 +14,7 @@ public class MMApplicationModel implements MMModel
 
 	private Renderer renderer;
 
-	public MMApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
+	public ApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
 	{
 		dataSourceModel = new DataSourceModel(dataSource);
 		expressionMappingsModel = new MappingsExpressionsModel(mappings);

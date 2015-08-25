@@ -16,7 +16,7 @@ import org.mm.renderer.Renderer;
 import org.mm.ui.MMApplication;
 import org.mm.ui.MMApplicationFactory;
 import org.mm.ui.dialog.MMApplicationDialogManager;
-import org.mm.ui.model.MMApplicationModel;
+import org.mm.ui.model.ApplicationModel;
 
 /**
  * This is the main Mapping Master user interface. It contains a view of a
@@ -69,7 +69,7 @@ public class ApplicationView extends JSplitPane implements MMView
 		validate();
 	}
 
-	public MMApplicationModel getApplicationModel()
+	public ApplicationModel getApplicationModel()
 	{
 		return application.getApplicationModel();
 	}
