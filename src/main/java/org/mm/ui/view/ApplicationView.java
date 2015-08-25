@@ -30,7 +30,7 @@ public class ApplicationView extends JSplitPane implements MMView
 	private MMApplicationDialogManager applicationDialogManager;
 	private DataSourceView dataSourceView;
 	private MappingsControlView mappingControlView;
-	private MappingExpressionsView mappingExpressionView;
+	private MappingBrowserView mappingExpressionView;
 
 	private MMApplication application;
 	private MMApplicationFactory applicationFactory = new MMApplicationFactory();
@@ -63,7 +63,7 @@ public class ApplicationView extends JSplitPane implements MMView
 		/*
 		 * Mapping browser, create, edit, remove panel
 		 */
-		mappingExpressionView = new MappingExpressionsView(this);
+		mappingExpressionView = new MappingBrowserView(this);
 		tabContainer.addTab("Mapping Browser", null, mappingExpressionView, "Load, add, edit, remove mapping expressions");
 		
 		validate();
@@ -181,7 +181,7 @@ public class ApplicationView extends JSplitPane implements MMView
 		return mappingControlView;
 	}
 
-	public MappingExpressionsView getMappingBrowserView()
+	public MappingBrowserView getMappingBrowserView()
 	{
 		return mappingExpressionView;
 	}

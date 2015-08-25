@@ -28,7 +28,7 @@ import org.mm.ui.dialog.CreateMappingExpressionDialog;
 import org.mm.ui.dialog.MMApplicationDialogManager;
 import org.mm.ui.model.MappingsExpressionsModel;
 
-public class MappingExpressionsView extends JPanel implements MMView
+public class MappingBrowserView extends JPanel implements MMView
 {
 	private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class MappingExpressionsView extends JPanel implements MMView
 	private JTextField txtMappingPath;
 	private JTable tblMappingExpression;
 
-	public MappingExpressionsView(ApplicationView container)
+	public MappingBrowserView(ApplicationView container)
 	{
 		this.container = container;
 		
