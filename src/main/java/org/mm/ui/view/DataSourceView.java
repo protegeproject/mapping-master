@@ -20,12 +20,12 @@ public class DataSourceView extends JPanel implements MMView
 {
 	private static final long serialVersionUID = 1L;
 
-	private MMApplicationView container;
+	private ApplicationView container;
 
 	private JTextField txtWorkbookPath;
 	private JTabbedPane tabSheetPanel;
 
-	public DataSourceView(MMApplicationView container)
+	public DataSourceView(ApplicationView container)
 	{
 		this.container = container;
 

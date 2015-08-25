@@ -15,13 +15,13 @@ import org.mm.ss.SpreadsheetLocation;
 import org.mm.ui.dialog.MMApplicationDialogManager;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.model.MappingsExpressionsModel;
-import org.mm.ui.view.MMApplicationView;
+import org.mm.ui.view.ApplicationView;
 
 public class MapExpressionsAction implements ActionListener
 {
-	private MMApplicationView container;
+	private ApplicationView container;
 
-	public MapExpressionsAction(MMApplicationView container)
+	public MapExpressionsAction(ApplicationView container)
 	{
 		this.container = container;
 	}

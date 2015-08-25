@@ -25,13 +25,13 @@ import org.mm.exceptions.MappingMasterException;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.model.MappingsExpressionsModel;
-import org.mm.ui.view.MMApplicationView;
+import org.mm.ui.view.ApplicationView;
 
 public class CreateMappingExpressionDialog extends JDialog
 {
 	private static final long serialVersionUID = 1L;
 
-	private MMApplicationView container;
+	private ApplicationView container;
 
 	private boolean editMode = false;
 	private MappingExpression selectedMapping;
@@ -46,7 +46,7 @@ public class CreateMappingExpressionDialog extends JDialog
 
 	private JTextArea txtExpression;
 
-	public CreateMappingExpressionDialog(MMApplicationView container)
+	public CreateMappingExpressionDialog(ApplicationView container)
 	{
 		this.container = container;
 

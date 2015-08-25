@@ -32,7 +32,7 @@ public class MappingExpressionsView extends JPanel implements MMView
 {
 	private static final long serialVersionUID = 1L;
 
-	private MMApplicationView container;
+	private ApplicationView container;
 
 	private JButton cmdAdd;
 	private JButton cmdEdit;
@@ -41,7 +41,7 @@ public class MappingExpressionsView extends JPanel implements MMView
 	private JTextField txtMappingPath;
 	private JTable tblMappingExpression;
 
-	public MappingExpressionsView(MMApplicationView container)
+	public MappingExpressionsView(ApplicationView container)
 	{
 		this.container = container;
 		

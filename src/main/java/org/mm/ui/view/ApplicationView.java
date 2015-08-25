@@ -23,7 +23,7 @@ import org.mm.ui.model.MMApplicationModel;
  * spreadsheet and a control area to edit and execute Mapping Master
  * expressions.
  */
-public class MMApplicationView extends JSplitPane implements MMView
+public class ApplicationView extends JSplitPane implements MMView
 {
 	private static final long serialVersionUID = 1L;
 
@@ -39,7 +39,7 @@ public class MMApplicationView extends JSplitPane implements MMView
 
 	private ReferenceSettings referenceSettings = new ReferenceSettings();
 
-	public MMApplicationView(MMApplicationDialogManager applicationDialogManager)
+	public ApplicationView(MMApplicationDialogManager applicationDialogManager)
 	{
 		this.applicationDialogManager = applicationDialogManager;
 

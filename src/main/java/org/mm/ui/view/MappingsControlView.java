@@ -25,12 +25,12 @@ public class MappingsControlView extends JPanel implements MMView
 {
 	private static final long serialVersionUID = 1L;
 
-	private MMApplicationView container;
+	private ApplicationView container;
 
 	private JTextArea txtMessageArea;
 	private JButton cmdRunMapping;
 
-	public MappingsControlView(MMApplicationView container)
+	public MappingsControlView(ApplicationView container)
 	{
 		this.container = container;
 
