@@ -1,7 +1,7 @@
 package org.mm.ui.model;
 
 import org.mm.core.MappingExpressionSet;
-import org.mm.core.MappingExpressionsPersistenceLayer;
+import org.mm.core.MappingExpressionPersistenceLayer;
 import org.mm.renderer.Renderer;
 import org.mm.ss.SpreadSheetDataSource;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -10,7 +10,7 @@ public class ApplicationModel implements MMModel
 {
 	private DataSourceModel dataSourceModel;
 	private MappingExpressionModel expressionMappingsModel;
-	private MappingExpressionsPersistenceLayer mappingExpressionsPersistenceLayer;
+	private MappingExpressionPersistenceLayer mappingExpressionsPersistenceLayer;
 
 	private Renderer renderer;
 
@@ -30,7 +30,7 @@ public class ApplicationModel implements MMModel
 		return expressionMappingsModel;
 	}
 
-	public MappingExpressionsPersistenceLayer getMappingExpressionsPersistenceLayer()
+	public MappingExpressionPersistenceLayer getMappingExpressionsPersistenceLayer()
 	{
 		return mappingExpressionsPersistenceLayer;
 	}
