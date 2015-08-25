@@ -29,7 +29,7 @@ public class ApplicationView extends JSplitPane implements MMView
 
 	private MMApplicationDialogManager applicationDialogManager;
 	private DataSourceView dataSourceView;
-	private MappingsControlView mappingControlView;
+	private MappingControlView mappingControlView;
 	private MappingBrowserView mappingExpressionView;
 
 	private MMApplication application;
@@ -57,7 +57,7 @@ public class ApplicationView extends JSplitPane implements MMView
 		/*
 		 * Mapping Master command control, reference settings
 		 */
-		mappingControlView = new MappingsControlView(this);
+		mappingControlView = new MappingControlView(this);
 		tabContainer.addTab("Mapping Control", null, mappingControlView, "Evaluate mapping expressions");
 
 		/*
@@ -176,7 +176,7 @@ public class ApplicationView extends JSplitPane implements MMView
 		return dataSourceView;
 	}
 
-	public MappingsControlView getMappingsControlView()
+	public MappingControlView getMappingsControlView()
 	{
 		return mappingControlView;
 	}

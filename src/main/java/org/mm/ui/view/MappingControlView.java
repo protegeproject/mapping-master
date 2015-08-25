@@ -21,7 +21,7 @@ import org.mm.core.settings.ValueEncodingSetting;
 import org.mm.ui.Environment;
 import org.mm.ui.action.MapExpressionsAction;
 
-public class MappingsControlView extends JPanel implements MMView
+public class MappingControlView extends JPanel implements MMView
 {
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class MappingsControlView extends JPanel implements MMView
 	private JTextArea txtMessageArea;
 	private JButton cmdRunMapping;
 
-	public MappingsControlView(ApplicationView container)
+	public MappingControlView(ApplicationView container)
 	{
 		this.container = container;
 
