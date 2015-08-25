@@ -7,16 +7,16 @@ import java.util.List;
 import org.mm.core.MappingExpression;
 import org.mm.core.MappingExpressionSet;
 
-public class MappingsExpressionsModel implements MMModel
+public class MappingExpressionModel implements MMModel
 {
 	private List<MappingExpression> cache = new ArrayList<MappingExpression>();
 
-	public MappingsExpressionsModel()
+	public MappingExpressionModel()
 	{
 		this(new MappingExpressionSet());
 	}
 
-	public MappingsExpressionsModel(MappingExpressionSet mappings)
+	public MappingExpressionModel(MappingExpressionSet mappings)
 	{
 		for (MappingExpression mapping : mappings) {
 			cache.add(mapping);

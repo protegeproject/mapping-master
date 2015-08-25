@@ -24,7 +24,7 @@ import org.mm.core.MappingExpression;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ui.model.DataSourceModel;
-import org.mm.ui.model.MappingsExpressionsModel;
+import org.mm.ui.model.MappingExpressionModel;
 import org.mm.ui.view.ApplicationView;
 
 public class CreateMappingExpressionDialog extends JDialog
@@ -193,7 +193,7 @@ public class CreateMappingExpressionDialog extends JDialog
 		}
 	}
 
-	private MappingsExpressionsModel getMappingExpressionsModel()
+	private MappingExpressionModel getMappingExpressionsModel()
 	{
 		return container.getApplicationModel().getMappingExpressionsModel();
 	}

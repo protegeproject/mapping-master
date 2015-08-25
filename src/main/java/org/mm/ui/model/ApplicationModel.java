@@ -9,7 +9,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 public class ApplicationModel implements MMModel
 {
 	private DataSourceModel dataSourceModel;
-	private MappingsExpressionsModel expressionMappingsModel;
+	private MappingExpressionModel expressionMappingsModel;
 	private MappingExpressionsPersistenceLayer mappingExpressionsPersistenceLayer;
 
 	private Renderer renderer;
@@ -17,7 +17,7 @@ public class ApplicationModel implements MMModel
 	public ApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
 	{
 		dataSourceModel = new DataSourceModel(dataSource);
-		expressionMappingsModel = new MappingsExpressionsModel(mappings);
+		expressionMappingsModel = new MappingExpressionModel(mappings);
 	}
 
 	public DataSourceModel getDataSourceModel()
@@ -25,7 +25,7 @@ public class ApplicationModel implements MMModel
 		return dataSourceModel;
 	}
 
-	public MappingsExpressionsModel getMappingExpressionsModel()
+	public MappingExpressionModel getMappingExpressionsModel()
 	{
 		return expressionMappingsModel;
 	}

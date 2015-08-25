@@ -26,7 +26,7 @@ import javax.swing.table.AbstractTableModel;
 import org.mm.core.MappingExpression;
 import org.mm.ui.dialog.CreateMappingExpressionDialog;
 import org.mm.ui.dialog.MMApplicationDialogManager;
-import org.mm.ui.model.MappingsExpressionsModel;
+import org.mm.ui.model.MappingExpressionModel;
 
 public class MappingBrowserView extends JPanel implements MMView
 {
@@ -113,7 +113,7 @@ public class MappingBrowserView extends JPanel implements MMView
 		tblMappingExpression.setModel(new MappingExpressionTableModel(getMappingExpressionsModel().getExpressions()));
 	}
 
-	private MappingsExpressionsModel getMappingExpressionsModel()
+	private MappingExpressionModel getMappingExpressionsModel()
 	{
 		return container.getApplicationModel().getMappingExpressionsModel();
 	}

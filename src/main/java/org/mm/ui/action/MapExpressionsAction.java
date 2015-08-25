@@ -14,7 +14,7 @@ import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
 import org.mm.ui.dialog.MMApplicationDialogManager;
 import org.mm.ui.model.DataSourceModel;
-import org.mm.ui.model.MappingsExpressionsModel;
+import org.mm.ui.model.MappingExpressionModel;
 import org.mm.ui.view.ApplicationView;
 
 public class MapExpressionsAction implements ActionListener
@@ -112,7 +112,7 @@ public class MapExpressionsAction implements ActionListener
 		throw new RendererException("incrementLocation called redundantly");
 	}
 
-	private MappingsExpressionsModel getMappingExpressionsModel()
+	private MappingExpressionModel getMappingExpressionsModel()
 	{
 		return container.getApplicationModel().getMappingExpressionsModel();
 	}
