@@ -1,169 +1,295 @@
 package org.mm.ui.view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+
 import org.mm.core.MappingExpression;
-import org.mm.ui.MMApplication;
+import org.mm.ui.dialog.CreateMappingExpressionDialog;
 import org.mm.ui.dialog.MMApplicationDialogManager;
 import org.mm.ui.model.MappingsExpressionsModel;
 
-import javax.swing.*;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 public class MappingExpressionsView extends JPanel implements MMView
 {
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  private final MMApplication application;
-  private final JTable mappingExpressionsTable;
+	private MMApplicationView container;
 
-  public MappingExpressionsView(MMApplication application)
-  {
-    this.application = application;
-    this.mappingExpressionsTable = new JTable(getMappingExpressionsModel());
+	private JButton cmdAdd;
+	private JButton cmdEdit;
+	private JButton cmdDelete;
 
-    addTableListeners();
-    setPreferredColumnWidths();
+	private JTextField txtMappingPath;
+	private JTable tblMappingExpression;
 
-    getMappingExpressionsModel().setView(this);
+	public MappingExpressionsView(MMApplicationView container)
+	{
+		this.container = container;
+		
+		tblMappingExpression = new JTable();
+		tblMappingExpression.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tblMappingExpression.getSelectionModel().addListSelectionListener(new EditMappingExpressionListener());
+		
+		JScrollPane scrMappingExpression = new JScrollPane(tblMappingExpression);
+		
+		setLayout(new BorderLayout());
+		
+		JPanel pnlTop = new JPanel(new BorderLayout());
+		add(pnlTop, BorderLayout.NORTH);
+		
+		JPanel pnlCommandButton = new JPanel(new BorderLayout());
+		pnlTop.add(pnlCommandButton, BorderLayout.EAST);
+		
+		cmdAdd = new JButton("Add");
+		cmdAdd.addActionListener(new AddButtonActionListener());
+		cmdAdd.setEnabled(false);
+		pnlCommandButton.add(cmdAdd, BorderLayout.WEST);
+		
+		cmdEdit = new JButton("Edit");
+		cmdEdit.addActionListener(new EditButtonActionListener());
+		cmdEdit.setEnabled(false);
+		pnlCommandButton.add(cmdEdit, BorderLayout.CENTER);
+		
+		cmdDelete = new JButton("Delete");
+		cmdDelete.addActionListener(new DeleteButtonActionListener());
+		cmdDelete.setEnabled(false);
+		pnlCommandButton.add(cmdDelete, BorderLayout.EAST);
+		
+		add(scrMappingExpression, BorderLayout.CENTER);
+		
+		JPanel pnlBottom = new JPanel(new BorderLayout());
+		pnlBottom.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Mapping File"));
+		add(pnlBottom, BorderLayout.SOUTH);
 
-    JPanel headingPanel, buttonPanel;
-    JButton addButton, editButton, deleteButton;
+		txtMappingPath = new JTextField();
+		txtMappingPath.setPreferredSize(new Dimension(80, 30));
+		txtMappingPath.setEnabled(true);
+		pnlBottom.add(txtMappingPath, BorderLayout.CENTER);
 
-    JScrollPane scrollPane = new JScrollPane(this.mappingExpressionsTable);
-    JViewport viewport = scrollPane.getViewport();
+		JPanel pnlMappingOpenSave = new JPanel(new GridLayout(1, 4));
+		pnlBottom.add(pnlMappingOpenSave, BorderLayout.EAST);
 
-    setLayout(new BorderLayout());
+		JButton cmdOpen = new JButton("Open");
+		cmdOpen.addActionListener(new OpenMappingAction());
+		pnlMappingOpenSave.add(cmdOpen);
 
-    headingPanel = new JPanel(new BorderLayout());
-    add(headingPanel, BorderLayout.NORTH);
+		JButton cmdSave = new JButton("Save");
+		cmdSave.addActionListener(new SaveMappingAction());
+		pnlMappingOpenSave.add(cmdSave);
 
-    viewport.setBackground(this.mappingExpressionsTable.getBackground());
+		JButton cmdSaveAs = new JButton("Save As...");
+		cmdSaveAs.addActionListener(new SaveAsMappingAction());
+		pnlMappingOpenSave.add(cmdSaveAs);
+		
+		validate();
+	}
 
-    buttonPanel = new JPanel(new BorderLayout());
-    headingPanel.add(buttonPanel, BorderLayout.EAST);
+	@Override
+	public void update()
+	{
+		cmdAdd.setEnabled(true);
+		cmdEdit.setEnabled(true);
+		cmdDelete.setEnabled(true);
+		
+		tblMappingExpression.setModel(new MappingExpressionTableModel(getMappingExpressionsModel().getExpressions()));
+	}
 
-    addButton = new JButton("Add");
-    addButton.addActionListener(new AddButtonActionListener());
-    buttonPanel.add(addButton, BorderLayout.WEST);
+	private MappingsExpressionsModel getMappingExpressionsModel()
+	{
+		return container.getApplicationModel().getMappingExpressionsModel();
+	}
 
-    editButton = new JButton("Edit");
-    editButton.addActionListener(new EditButtonActionListener());
-    buttonPanel.add(editButton, BorderLayout.CENTER);
+	private MMApplicationDialogManager getApplicationDialogManager()
+	{
+		return container.getApplicationDialogManager();
+	}
 
-    deleteButton = new JButton("Delete");
-    deleteButton.addActionListener(new DeleteButtonActionListener());
-    buttonPanel.add(deleteButton, BorderLayout.EAST);
+	class MappingExpressionTableModel extends AbstractTableModel
+	{
+		private static final long serialVersionUID = 1L;
 
-    add(scrollPane, BorderLayout.CENTER);
+		private final String[] COLUMN_NAMES = {
+			"Sheet name", "Start column", "End column", "Start row", "End row",
+			"Mapping expression", "Comment"
+		};
 
-    validate();
-  }
+		private Vector<Vector<Object>> data = new Vector<Vector<Object>>();
 
-  private void addTableListeners()
-  {
-    this.mappingExpressionsTable.addMouseListener(new MouseAdapter()
-    {
-      public void mouseClicked(MouseEvent e)
-      {
-        if (e.getClickCount() == 2) {
-          if (e.getSource() == MappingExpressionsView.this.mappingExpressionsTable) {
-            editSelectedClassMap();
-          }
-        }
-      }
-    });
-  }
+		public MappingExpressionTableModel(List<MappingExpression> mappings)
+		{
+			for (MappingExpression mapping : mappings) {
+				Vector<Object> row = new Vector<Object>();
+				row.add(mapping.getSourceSheetName());
+				row.add(mapping.getStartColumn());
+				row.add(mapping.getFinishColumn());
+				row.add(mapping.getStartRow());
+				row.add(mapping.getFinishRow());
+				row.add(mapping.getExpression());
+				row.add(mapping.getComment());
+				data.add(row);
+			}
+		}
 
-  // TODO Calculate these dimensions dynamically based on the size of the view.
-  private void setPreferredColumnWidths()
-  {
-    TableColumnModel columnModel = this.mappingExpressionsTable.getColumnModel();
-    columnModel.getColumn(0).setPreferredWidth(30);
-    columnModel.getColumn(0).setMaxWidth(50);
-    columnModel.getColumn(1).setPreferredWidth(150);
-    columnModel.getColumn(2).setPreferredWidth(300);
-    columnModel.getColumn(3).setPreferredWidth(100);
-    columnModel.getColumn(3).setMaxWidth(200);
-    columnModel.getColumn(4).setPreferredWidth(100);
-    columnModel.getColumn(4).setMaxWidth(150);
-    columnModel.getColumn(5).setPreferredWidth(100);
-    columnModel.getColumn(5).setMaxWidth(150);
-    columnModel.getColumn(6).setMaxWidth(100);
-    columnModel.getColumn(7).setMaxWidth(100);
-  }
+		@Override
+		public String getColumnName(int column) // 0-based
+		{
+			return COLUMN_NAMES[column];
+		}
+	
+		@Override
+		public int getRowCount()
+		{
+			return data.size();
+		}
 
-  public void update()
-  {
-    getMappingExpressionsModel().fireTableDataChanged();
-    validate();
-  }
+		@Override
+		public int getColumnCount()
+		{
+			return COLUMN_NAMES.length;
+		}
 
-  // TODO Use Optional to get rid of null.
-  /**
-   * Returns the selected expression if one is selected; null is returned otherwise.
-   */
-  public MappingExpression getSelectedExpression()
-  {
-    MappingExpression selectedClassMap = null;
-    int selectedRow = this.mappingExpressionsTable.getSelectedRow();
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) // 1-based
+		{
+			return data.get(rowIndex).get(columnIndex);
+		}
 
-    if (selectedRow != -1)
-      selectedClassMap = (MappingExpression)getMappingExpressionsModel().getMappingExpressions().toArray()[selectedRow];
+		@Override
+		public boolean isCellEditable(int rowIndex, int columnIndex)
+		{
+			return false;
+		}
+	}
 
-    return selectedClassMap;
-  }
+	class EditMappingExpressionListener implements ListSelectionListener
+	{
+		@Override
+		public void valueChanged(ListSelectionEvent e)
+		{
+			int rowIndex = tblMappingExpression.getSelectedRow();
+			CreateMappingExpressionDialog dialog = new CreateMappingExpressionDialog(container);
+			dialog.fillDialogFields(getMappingExpressionsModel().getExpressions().get(rowIndex));
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		}
+	}
 
-  private class AddButtonActionListener implements ActionListener
-  {
-    public void actionPerformed(ActionEvent e)
-    {
-      getApplicationDialogManager().getCreateMappingExpressionDialog().setVisible(true);
-    }
-  }
+	/*
+	 * Action listener implementations for command buttons in MappingExpressionView panel
+	 */
 
-  private class EditButtonActionListener implements ActionListener
-  {
-    public void actionPerformed(ActionEvent e)
-    {
-      editSelectedClassMap();
-    }
-  }
+	class AddButtonActionListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			CreateMappingExpressionDialog dialog = new CreateMappingExpressionDialog(container);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		}
+	}
 
-  private void editSelectedClassMap()
-  {
-    MappingExpression selectedClassMap = getSelectedExpression();
+	class EditButtonActionListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			int selectedRow = tblMappingExpression.getSelectedRow();
+			if (selectedRow == -1) {
+				getApplicationDialogManager().showMessageDialog(container, "No mapping expression was selected");
+				return;
+			}
+			MappingExpression selectedMapping = getSelectedExpression(selectedRow);
+			CreateMappingExpressionDialog dialog = new CreateMappingExpressionDialog(container);
+			dialog.fillDialogFields(selectedMapping);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		}
 
-    if (selectedClassMap != null && getMappingExpressionsModel().hasMappingExpressions(selectedClassMap)) {
-      getApplicationDialogManager().getCreateMappingExpressionDialog(selectedClassMap).setVisible(true);
-    }
-  }
+		private MappingExpression getSelectedExpression(int selectedRow)
+		{
+			return getMappingExpressionsModel().getExpressions().get(selectedRow);
+		}
+	}
 
-  private class DeleteButtonActionListener implements ActionListener
-  {
-    public void actionPerformed(ActionEvent e)
-    {
-      MappingExpression selectedClassMap = getSelectedExpression();
+	class DeleteButtonActionListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			int selectedRow = tblMappingExpression.getSelectedRow();
+			if (selectedRow == -1) {
+				getApplicationDialogManager().showMessageDialog(container, "No mapping expression was selected");
+				return;
+			}
+			MappingExpression selectedMapping = getSelectedExpression(selectedRow);
+			int answer = getApplicationDialogManager().showConfirmDialog(container,
+					"Delete", "Do you really want to delete the selected expression?");
+			if (answer == JOptionPane.YES_OPTION) {
+				getMappingExpressionsModel().removeMappingExpression(selectedMapping);
+			}
+		}
 
-      if (getMappingExpressionsModel().hasMappingExpressions(selectedClassMap) && getApplicationDialogManager()
-        .showConfirmDialog(getApplicationView(), "Delete Expression", "Do you really want to delete the expression?")) {
-        getMappingExpressionsModel().removeMappingExpression(selectedClassMap);
-      }
-    }
-  }
+		private MappingExpression getSelectedExpression(int selectedRow)
+		{
+			return getMappingExpressionsModel().getExpressions().get(selectedRow);
+		}
+	}
 
-  private MappingsExpressionsModel getMappingExpressionsModel()
-  {
-    return this.application.getApplicationModel().getMappingExpressionsModel();
-  }
+	class OpenMappingAction implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			JFileChooser fileChooser = getApplicationDialogManager().createOpenFileChooser(
+					"Open Mapping Expression", "json", "MappingMaster DSL Mapping Expression (.json)");
+			if (fileChooser.showOpenDialog(container) == JFileChooser.APPROVE_OPTION) {
+				try {
+					File file = fileChooser.getSelectedFile();
+					String filename = file.getAbsolutePath();
+					container.loadMappingDocument(filename);
+					txtMappingPath.setText(filename);
+				} catch (Exception ex) {
+					getApplicationDialogManager().showErrorMessageDialog(container,
+							"Error opening file: " + ex.getMessage());
+				}
+			}
+		}
+	}
 
-  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
+	class SaveMappingAction implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			// TODO Implement save to JSON
+		}
+	}
 
-  private MMApplicationDialogManager getApplicationDialogManager()
-  {
-    return getApplicationView().getApplicationDialogManager();
-  }
+	class SaveAsMappingAction implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			// TODO Implement save as to JSON
+		}
+	}
 }

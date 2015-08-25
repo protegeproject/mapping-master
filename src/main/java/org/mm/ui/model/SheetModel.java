@@ -2,6 +2,7 @@ package org.mm.ui.model;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.mm.ss.SpreadSheetUtil;
 
@@ -35,16 +36,34 @@ public class SheetModel extends AbstractTableModel
 
 	public String getColumnName(int column)
 	{
-		if (column == 0) {
-			return "";
-		}
-		else {
-			return SpreadSheetUtil.columnNumber2Name(column);
-		}
+		return SpreadSheetUtil.columnNumber2Name(column+1);
 	}
 
 	public Object getValueAt(int row, int column)
 	{
-		return sheet.getRow(row).getCell(column).getStringCellValue();
+		try {
+			Cell cell = sheet.getRow(row).getCell(column);
+			switch (cell.getCellType()) {
+				case Cell.CELL_TYPE_BLANK: return "";
+				case Cell.CELL_TYPE_STRING: return cell.getStringCellValue();
+				case Cell.CELL_TYPE_NUMERIC: 
+					if (isInteger(cell.getNumericCellValue())) { // check if the numeric is an integer or double
+						return (int) cell.getNumericCellValue();
+					} else {
+						return cell.getNumericCellValue();
+					}
+				case Cell.CELL_TYPE_BOOLEAN: return cell.getBooleanCellValue();
+				case Cell.CELL_TYPE_FORMULA: return cell.getNumericCellValue();
+				default: return "";
+			}
+		} catch (NullPointerException e) {
+			// TODO Log this strange error
+			return "";
+		}
+	}
+
+	private boolean isInteger(double number)
+	{
+		return (number == Math.floor(number) && !Double.isInfinite(number));
 	}
 }

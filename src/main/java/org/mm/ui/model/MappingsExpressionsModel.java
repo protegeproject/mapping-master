@@ -1,165 +1,64 @@
 package org.mm.ui.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.mm.core.MappingExpression;
-import org.mm.ui.view.MMView;
+import org.mm.core.MappingExpressionSet;
 
-import javax.swing.table.AbstractTableModel;
-import java.util.HashSet;
-import java.util.Set;
-
-public class MappingsExpressionsModel extends AbstractTableModel implements MMModel
+public class MappingsExpressionsModel implements MMModel
 {
-  private static final long serialVersionUID = 1L;
+	private List<MappingExpression> cache = new ArrayList<MappingExpression>();
 
-  private static final int ACTIVE_COLUMN = 0;
-  private static final int COMMENT_COLUMN = 1;
-  private static final int EXPRESSION_COLUMN = 2;
-  private static final int SOURCE_SHEET_NAME_COLUMN = 3;
-  private static final int START_COLUMN_COLUMN = 4;
-  private static final int FINISH_COLUMN_COLUMN = 5;
-  private static final int START_ROW_COLUMN = 6;
-  private static final int FINISH_ROW_COLUMN = 7;
-  private static final int NUMBER_OF_COLUMNS = 8;
+	public MappingsExpressionsModel()
+	{
+		this(new MappingExpressionSet());
+	}
 
-  private MMView view; // TODO Use Optional to get rid of null
-  private boolean isModified;
+	public MappingsExpressionsModel(MappingExpressionSet mappings)
+	{
+		for (MappingExpression mapping : mappings) {
+			cache.add(mapping);
+		}
+	}
 
-  private Set<MappingExpression> mappingExpressions;
+	public MappingExpression getExpression(int index)
+	{
+		return cache.get(index);
+	}
 
-  public MappingsExpressionsModel() { this.mappingExpressions = new HashSet<>(); }
+	public List<MappingExpression> getExpressions()
+	{
+		return Collections.unmodifiableList(cache);
+	}
 
-  public void setView(MMView view) { this.view = view; }
+	public boolean isEmpty()
+	{
+		return cache.isEmpty();
+	}
 
-  public Set<MappingExpression> getMappingExpressions() { return this.mappingExpressions; }
+	public boolean contains(MappingExpression mapping)
+	{
+		return cache.contains(mapping);
+	}
 
-  public Set<MappingExpression> getMappingExpressions(boolean isActiveFlag)
-  {
-    Set<MappingExpression> expressions = new HashSet<>();
+	public void addMappingExpression(MappingExpression mapping)
+	{
+		cache.add(mapping);
+	}
 
-    for (MappingExpression expression : this.mappingExpressions) {
-      if (expression.isActive() == isActiveFlag) {
-        expressions.add(expression);
-      }
-    }
-    return expressions;
-  }
+	public void removeMappingExpression(MappingExpression mapping)
+	{
+		cache.remove(mapping);
+	}
 
-  public boolean hasMappingExpressions() { return !this.mappingExpressions.isEmpty(); }
-
-  public boolean hasMappingExpressions(MappingExpression mappingExpression)
-  {
-    return this.mappingExpressions.contains(mappingExpression);
-  }
-
-  public void setMappingExpression(Set<MappingExpression> mappingExpressions)
-  {
-    this.mappingExpressions = new HashSet<>(mappingExpressions);
-    updateView();
-  }
-
-  public void addMappingExpression(MappingExpression mappingExpression)
-  {
-    if (!this.mappingExpressions.contains(mappingExpression))
-      this.mappingExpressions.add(mappingExpression);
-
-    this.isModified = true;
-    updateView();
-  }
-
-  public void removeMappingExpression(MappingExpression mappingExpression)
-  {
-    if (this.mappingExpressions.contains(mappingExpression))
-      this.mappingExpressions.remove(mappingExpression);
-    this.isModified = true;
-    updateView();
-  }
-
-  public void clearMappingExpressions()
-  {
-    this.mappingExpressions = new HashSet<>();
-    updateView();
-    this.isModified = false;
-  }
-
-  public boolean hasBeenModified() { return this.isModified; }
-
-  public void clearModifiedStatus() { this.isModified = false; }
-
-  public int getRowCount() { return this.mappingExpressions.size(); }
-
-  public int getColumnCount() { return NUMBER_OF_COLUMNS; }
-
-  @Override public String getColumnName(int column)
-  {
-    if (column == COMMENT_COLUMN)
-      return "Comment";
-    else if (column == EXPRESSION_COLUMN)
-      return "MM DSL expression";
-    else if (column == SOURCE_SHEET_NAME_COLUMN)
-      return "Sheet name";
-    else if (column == START_COLUMN_COLUMN)
-      return "Start column";
-    else if (column == FINISH_COLUMN_COLUMN)
-      return "Finish column";
-    else if (column == START_ROW_COLUMN)
-      return "Start row";
-    else if (column == FINISH_ROW_COLUMN)
-      return "Finish row";
-    else if (column == ACTIVE_COLUMN)
-      return "";
-    else
-      return null;
-  }
-
-  public Object getValueAt(int row, int column)
-  {
-    if (row < 0 || row >= getRowCount() || column < 0 || column >= getColumnCount())
-      return "OUT OF BOUNDS";
-    else {
-      if (column == EXPRESSION_COLUMN)
-        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getExpression();
-      else if (column == COMMENT_COLUMN)
-        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getComment();
-      else if (column == SOURCE_SHEET_NAME_COLUMN)
-        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getSourceSheetName();
-      else if (column == START_COLUMN_COLUMN)
-        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getStartColumn();
-      else if (column == FINISH_COLUMN_COLUMN)
-        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getFinishColumn();
-      else if (column == START_ROW_COLUMN)
-        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getStartRow();
-      else if (column == FINISH_ROW_COLUMN)
-        return ((MappingExpression)this.mappingExpressions.toArray()[row]).getFinishRow();
-      else if (column == ACTIVE_COLUMN)
-        return ((MappingExpression)this.mappingExpressions.toArray()[row]).isActive();
-      else
-        return null;
-    }
-  }
-
-  @Override public boolean isCellEditable(int rowIndex, int columnIndex) { return columnIndex == ACTIVE_COLUMN; }
-
-  @Override public Class<?> getColumnClass(int columnIndex)
-  {
-    if (columnIndex == ACTIVE_COLUMN) {
-      return Boolean.class;
-    } else {
-      return super.getColumnClass(columnIndex);
-    }
-  }
-
-  @Override public void setValueAt(Object aValue, int rowIndex, int columnIndex)
-  {
-    if (columnIndex == ACTIVE_COLUMN) {
-      ((MappingExpression)this.mappingExpressions.toArray()[rowIndex]).setActive((Boolean)aValue);
-    } else {
-      super.setValueAt(aValue, rowIndex, columnIndex);
-    }
-  }
-
-  private void updateView()
-  {
-    if (this.view != null)
-      this.view.update();
-  }
-} 
+	public MappingExpressionSet getMappingExpressionSet()
+	{
+		MappingExpressionSet mappings = new MappingExpressionSet();
+		for (MappingExpression mapping : cache) {
+			mappings.add(mapping);
+		}
+		return mappings;
+	}
+}

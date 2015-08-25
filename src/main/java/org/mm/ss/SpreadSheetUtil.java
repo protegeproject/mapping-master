@@ -58,7 +58,7 @@ public class SpreadSheetUtil
     return columnNumber2Name(column) + row;
   }
 
-  static public String columnNumber2Name(int pos)
+  static public String columnNumber2Name(int pos) // 1-based
   {
     String col = "";
     while (pos > 0) {

@@ -22,18 +22,6 @@ public class MappingExpression
     this.finishRow = finishRow;
   }
 
-  public void update(String comment, String expression, String sourceSheetName, String startColumn, String finishColumn,
-    String startRow, String finishRow)
-  {
-    this.comment = comment;
-    this.expression = expression;
-    this.sourceSheetName = sourceSheetName;
-    this.startColumn = startColumn;
-    this.finishColumn = finishColumn;
-    this.startRow = startRow;
-    this.finishRow = finishRow;
-  }
-
   public void setActive(boolean active) { this.active = active; }
 
   public boolean isActive() { return this.active; }
@@ -63,7 +51,4 @@ public class MappingExpression
       + ", finishColumn: " + this.finishColumn +
       ", startRow: " + this.startRow + ", finishRow: " + this.finishRow + ", active: " + this.active + ")";
   }
-
 }
-
-  

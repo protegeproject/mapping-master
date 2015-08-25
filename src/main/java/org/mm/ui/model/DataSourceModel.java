@@ -1,58 +1,40 @@
 package org.mm.ui.model;
 
-import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ui.view.MMView;
-
+import java.util.ArrayList;
 import java.util.List;
 
-// TODO Use Optional to get rid of nulls.
+import org.mm.ss.SpreadSheetDataSource;
+
 public class DataSourceModel implements MMModel
 {
-  private SpreadSheetDataSource dataSource;
-  private MMView view;
-  private String fileName;
+	private SpreadSheetDataSource dataSource;
 
-  public DataSourceModel(SpreadSheetDataSource dataSource) { this.dataSource = dataSource; }
+	public DataSourceModel()
+	{
+		this(null);
+	}
 
-  public void setView(MMView view) { this.view = view; }
+	public DataSourceModel(SpreadSheetDataSource dataSource)
+	{
+		this.dataSource = dataSource;
+	}
 
-  public void setDataSource(SpreadSheetDataSource dataSource)
-  {
-    this.dataSource = dataSource;
-    updateView();
-  }
+	public boolean isEmpty()
+	{
+		return dataSource == null;
+	}
 
-  public boolean hasDataSource() { return this.dataSource != null; }
+	public SpreadSheetDataSource getDataSource()
+	{
+		return dataSource;
+	}
 
-  public void clearDataSource()
-  {
-    this.dataSource = null;
-    updateView();
-  }
-
-  public SpreadSheetDataSource getDataSource() { return this.dataSource; }
-
-  public void setFileName(String fileName)
-  {
-    this.fileName = fileName;
-    updateView();
-  }
-
-  public void clearFileName()
-  {
-    this.fileName = null;
-    updateView();
-  }
-
-  public boolean hasFileName() { return this.fileName != null; }
-
-  public String getFileName() { return this.fileName; }
-
-  public List<String> getSubSourceNames() { return this.dataSource.getSubSourceNames(); }
-
-  private void updateView()
-  {
-    if (this.view != null)
-      this.view.update();
-  }
-} 
+	public List<String> getSheetNames()
+	{
+		List<String> sheetNames = new ArrayList<String>();
+		if (dataSource != null) {
+			sheetNames.addAll(dataSource.getSheetNames());
+		}
+		return sheetNames;
+	}
+}

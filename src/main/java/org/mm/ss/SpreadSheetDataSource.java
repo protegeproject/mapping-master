@@ -1,7 +1,10 @@
 package org.mm.ss;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,10 +26,19 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 	private final Workbook workbook;
 	private Optional<SpreadsheetLocation> currentLocation;
 
+	private Map<String, Sheet> sheetMap = new HashMap<String, Sheet>();
+
 	public SpreadSheetDataSource(Workbook workbook) throws MappingMasterException
 	{
 		this.workbook = workbook;
-		this.currentLocation = Optional.empty();
+		currentLocation = Optional.empty();
+		
+		/*
+		 * Populate the sheets from the workbook 
+		 */
+		for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+			sheetMap.put(workbook.getSheetName(i), workbook.getSheetAt(i));
+		}
 	}
 
 	public void setCurrentLocation(SpreadsheetLocation location)
@@ -56,24 +68,17 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 
 	public List<Sheet> getSheets()
 	{
-		List<Sheet> sheets = Collections.emptyList();
-		if (hasWorkbook()) {
-			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-				sheets.add(workbook.getSheetAt(i));
-			}
-		}
-		return sheets;
+		return new ArrayList<Sheet>(sheetMap.values());
 	}
 
-	public List<String> getSubSourceNames()
+	public List<String> getSheetNames()
 	{
-		List<String> sheetNames = Collections.emptyList();
-		if (hasWorkbook()) {
-			for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-				sheetNames.add(workbook.getSheetName(i));
-			}
-		}
-		return sheetNames;
+		return new ArrayList<String>(sheetMap.keySet());
+	}
+
+	public Map<String, Sheet> getSheetMap()
+	{
+		return Collections.unmodifiableMap(sheetMap);
 	}
 
 	public String getLocationValue(SpreadsheetLocation location, ReferenceNode referenceNode) throws RendererException

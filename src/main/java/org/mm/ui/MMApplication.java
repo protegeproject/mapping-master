@@ -1,26 +1,23 @@
 package org.mm.ui;
 
+import org.mm.core.MappingExpressionSet;
+import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ui.model.MMApplicationModel;
-import org.mm.core.MappingExpressionsPersistenceLayer;
-import org.mm.ui.view.MMApplicationView;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MMApplication
 {
-  private final MMApplicationView applicationView;
-  private final MMApplicationModel applicationModel;
+	private MMApplicationModel applicationModel;
 
-  public MMApplication(MMApplicationView applicationView, MMApplicationModel applicationModel)
-  {
-    this.applicationView = applicationView;
-    this.applicationModel = applicationModel;
-  }
+	public MMApplication(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
+	{
+		applicationModel = new MMApplicationModel(ontology, dataSource, mappings);
+		applicationModel.registerRenderer(new OWLAPIRenderer(ontology, dataSource));
+	}
 
-  public MMApplicationView getApplicationView() { return this.applicationView; }
-
-  public MMApplicationModel getApplicationModel() { return this.applicationModel; }
-
-  public MappingExpressionsPersistenceLayer getMappingExpressionsPersistenceLayer()
-  {
-    return getApplicationModel().getMappingExpressionsPersistenceLayer();
-  }
-} 
+	public MMApplicationModel getApplicationModel()
+	{
+		return applicationModel;
+	}
+}

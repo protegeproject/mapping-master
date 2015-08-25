@@ -1,237 +1,210 @@
 package org.mm.ui.dialog;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import org.mm.core.MappingExpression;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.ss.SpreadSheetUtil;
-import org.mm.ui.MMApplication;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.model.MappingsExpressionsModel;
 import org.mm.ui.view.MMApplicationView;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.List;
-
 public class CreateMappingExpressionDialog extends JDialog
 {
-  private final MMApplication application;
+	private static final long serialVersionUID = 1L;
 
-  private JLabel commentLabel, sourceSheetNameLabel, startColumnLabel, finishColumnLabel, startRowLabel, finishRowLabel;
-  private JTextField commentTextField, startColumnTextField, finishColumnTextField, startRowTextField, finishRowTextField;
-  private JTextArea expressionTextArea;
-  private JComboBox subSourceNameComboBox;
+	private MMApplicationView container;
 
-  private boolean editMode;
-  private MappingExpression editMappingExpression;
+	private boolean editMode = false;
+	private MappingExpression selectedMapping;
 
-  public CreateMappingExpressionDialog(MMApplication application)
-  {
-    setTitle("MappingMaster Expression");
-    setModal(true);
+	private JComboBox<String> cbbSheetName;
 
-    this.application = application;
+	private JTextField txtStartColumn;
+	private JTextField txtEndColumn;
+	private JTextField txtStartRow;
+	private JTextField txtEndRow;
+	private JTextField txtComment;
 
-    createComponents();
+	private JTextArea txtExpression;
 
-    setLocationRelativeTo(application.getApplicationView());
+	public CreateMappingExpressionDialog(MMApplicationView container)
+	{
+		this.container = container;
 
-    setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+		setTitle("MappingMaster Expression Dialog");
+		setLocationRelativeTo(container);
 
-    addWindowListener(new WindowAdapter()
-    {
-      public void windowClosing(WindowEvent we) {}
-    }); // Thwart user close
-  }
+		Container contentPane = getContentPane();
+		contentPane.setLayout(new BorderLayout());
 
-  public void reset()
-  {
-    clearEntryFields();
-    getDataSourceModel().getSubSourceNames().forEach(this.subSourceNameComboBox::addItem);
-  }
+		JPanel pnlMain = new JPanel(new BorderLayout());
+		pnlMain.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		
+		contentPane.add(pnlMain, BorderLayout.CENTER);
 
-  public void setEditMappingExpression(MappingExpression mappingExpression)
-  {
-    String sourceSheetName = mappingExpression.getSourceSheetName();
+		JLabel lblSheetName = new JLabel("Sheet name*:");
+		cbbSheetName = new JComboBox<>();
+		cbbSheetName.setModel(new DefaultComboBoxModel<>(new Vector<>(getDataSourceModel().getSheetNames())));
 
-    clearEntryFields();
+		JLabel lblStartColumn = new JLabel("Start column*:");
+		txtStartColumn = new JTextField("");
 
-    this.commentTextField.setText(mappingExpression.getComment());
-    this.expressionTextArea.setText(mappingExpression.getExpression());
+		JLabel lblEndColumn = new JLabel("End column*:");
+		txtEndColumn = new JTextField("");
 
-    if (getDataSourceModel().hasDataSource()) {
-      List<String> subSourceNames = getDataSourceModel().getSubSourceNames();
-      subSourceNames.forEach(this.subSourceNameComboBox::addItem);
-      if (!subSourceNames.contains(sourceSheetName))
-        this.subSourceNameComboBox.addItem(sourceSheetName);
-    } else {
-      this.subSourceNameComboBox.addItem(mappingExpression.getSourceSheetName());
-    }
+		JLabel lblStartRow = new JLabel("Start row*:");
+		txtStartRow = new JTextField("");
 
-    this.subSourceNameComboBox.setSelectedItem(sourceSheetName);
+		JLabel lblEndRow = new JLabel("End row*:");
+		txtEndRow = new JTextField("");
 
-    this.startColumnTextField.setText(mappingExpression.getStartColumn());
-    this.finishColumnTextField.setText(mappingExpression.getFinishColumn());
-    this.startRowTextField.setText("" + mappingExpression.getStartRow());
-    this.finishRowTextField.setText("" + mappingExpression.getFinishRow());
+		JLabel lblComment = new JLabel("Comment:");
+		txtComment = new JTextField("");
 
-    this.editMode = true;
-    this.editMappingExpression = mappingExpression;
-  }
+		JLabel lblExpression = new JLabel("DSL mapping expression*:");
 
-  private void clearEntryFields()
-  {
-    this.commentTextField.setText("");
-    this.commentTextField.setEnabled(true);
-    this.expressionTextArea.setText("");
-    this.expressionTextArea.setEnabled(true);
-    this.subSourceNameComboBox.removeAllItems();
-    this.startColumnTextField.setText("");
-    this.finishColumnTextField.setText("");
-    this.startRowTextField.setText("");
-    this.finishRowTextField.setText("");
+		JPanel pnlFields = new JPanel(new GridLayout(7, 2));
+		pnlFields.add(lblSheetName);
+		pnlFields.add(cbbSheetName);
+		pnlFields.add(lblStartColumn);
+		pnlFields.add(txtStartColumn);
+		pnlFields.add(lblEndColumn);
+		pnlFields.add(txtEndColumn);
+		pnlFields.add(lblStartRow);
+		pnlFields.add(txtStartRow);
+		pnlFields.add(lblEndRow);
+		pnlFields.add(txtEndRow);
+		pnlFields.add(lblComment);
+		pnlFields.add(txtComment);
+		pnlFields.add(lblExpression);
 
-    this.editMode = false;
-    this.editMappingExpression = null;
-  }
+		pnlMain.add(pnlFields, BorderLayout.NORTH);
 
-  private void createComponents()
-  {
-    Container contentPane = getContentPane();
-    JPanel surroundPanel, buttonPanel, textFieldPanel;
-    JButton cancelButton, okButton;
+		txtExpression = new JTextArea("", 20, 48);
+		pnlMain.add(txtExpression, BorderLayout.CENTER);
 
-    this.commentLabel = new JLabel("Comment");
-    this.commentTextField = new JTextField("");
+		JPanel pnlCommands = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-    this.expressionTextArea = new JTextArea("", 20, 80);
-    this.expressionTextArea.setBorder(BorderFactory.createLoweredBevelBorder());
+		JButton cmdCancel = new JButton("Cancel");
+		cmdCancel.setPreferredSize(new Dimension(100, 30));
+		cmdCancel.addActionListener(new CancelActionListener());
 
-    this.sourceSheetNameLabel = new JLabel("Sheet name");
-    this.subSourceNameComboBox = new JComboBox();
+		JButton cmdOK = new JButton("Save Changes");
+		cmdOK.setPreferredSize(new Dimension(150, 30));
+		cmdOK.addActionListener(new SaveChangesActionListener());
 
-    this.startColumnLabel = new JLabel("Start column");
-    this.startColumnTextField = new JTextField("");
+		pnlCommands.add(cmdCancel);
+		pnlCommands.add(cmdOK);
 
-    this.finishColumnLabel = new JLabel("Finish column");
-    this.finishColumnTextField = new JTextField("");
+		pnlMain.add(pnlCommands, BorderLayout.SOUTH);
 
-    this.startRowLabel = new JLabel("Start row");
-    this.startRowTextField = new JTextField("");
+		pack();
+	}
 
-    this.finishRowLabel = new JLabel("Finish row");
-    this.finishRowTextField = new JTextField("");
+	public void fillDialogFields(MappingExpression mapping)
+	{
+		String sheetName = mapping.getSourceSheetName();
 
-    cancelButton = new JButton("Cancel");
-    cancelButton.setPreferredSize(new Dimension(100, 30));
-    cancelButton.addActionListener(new CancelButtonActionListener());
+		if (getDataSourceModel().isEmpty()) {
+			List<String> sheetNames = getDataSourceModel().getSheetNames();
+			sheetNames.forEach(cbbSheetName::addItem);
+			if (!sheetNames.contains(sheetName)) {
+				cbbSheetName.addItem(sheetName);
+			}
+		}
+		else {
+			cbbSheetName.addItem(mapping.getSourceSheetName());
+		}
+		cbbSheetName.setSelectedItem(sheetName);
 
-    okButton = new JButton("OK");
-    okButton.setPreferredSize(new Dimension(100, 30));
-    okButton.addActionListener(new OkButtonActionListener());
+		txtStartColumn.setText(mapping.getStartColumn());
+		txtEndColumn.setText(mapping.getFinishColumn());
+		txtStartRow.setText(mapping.getStartRow());
+		txtEndRow.setText(mapping.getFinishRow());
 
-    contentPane.setLayout(new BorderLayout());
+		txtComment.setText(mapping.getComment());
+		txtExpression.setText(mapping.getExpression());
 
-    surroundPanel = new JPanel(new BorderLayout());
-    surroundPanel.setBorder(BorderFactory.createLoweredBevelBorder());
-    contentPane.add(surroundPanel, BorderLayout.CENTER);
+		editMode = true;
+		selectedMapping = mapping;
+	}
 
-    textFieldPanel = new JPanel(new GridLayout(6, 2));
+	private class CancelActionListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			setVisible(false);
+		}
+	}
 
-    surroundPanel.add(textFieldPanel, BorderLayout.NORTH);
-    surroundPanel.add(this.expressionTextArea, BorderLayout.CENTER);
+	private class SaveChangesActionListener implements ActionListener
+	{
+		public void actionPerformed(ActionEvent e)
+		{
+			try {
+				String sheetName = (String) cbbSheetName.getSelectedItem();
 
-    textFieldPanel.add(this.commentLabel);
-    textFieldPanel.add(this.commentTextField);
-    textFieldPanel.add(this.sourceSheetNameLabel);
-    textFieldPanel.add(this.subSourceNameComboBox);
-    textFieldPanel.add(this.startColumnLabel);
-    textFieldPanel.add(this.startColumnTextField);
-    textFieldPanel.add(this.finishColumnLabel);
-    textFieldPanel.add(this.finishColumnTextField);
-    textFieldPanel.add(this.startRowLabel);
-    textFieldPanel.add(this.startRowTextField);
-    textFieldPanel.add(this.finishRowLabel);
-    textFieldPanel.add(this.finishRowTextField);
+				String startColumn = txtStartColumn.getText().trim().toUpperCase();
+				String endColumn = txtEndColumn.getText().trim().toUpperCase();
+				SpreadSheetUtil.checkColumnSpecification(startColumn);
+				SpreadSheetUtil.checkColumnSpecification(endColumn);
+				
+				String startRow = txtStartRow.getText().trim();
+				String endRow = txtEndRow.getText().trim();
+				
+				String comment = txtComment.getText().trim();
+				String expression = txtExpression.getText().trim();
+				
+				MappingExpression newMapping = new MappingExpression(comment, expression, sheetName, startColumn, endColumn, startRow, endRow);
+				if (editMode) {
+					getMappingExpressionsModel().removeMappingExpression(selectedMapping); // Remove original
+				}
+				getMappingExpressionsModel().addMappingExpression(newMapping);
+				updateMappingBrowserView();
+				setVisible(false);
+			}
+			catch (MappingMasterException ex) {
+				getApplicationDialogManager().showErrorMessageDialog(container, ex.getMessage());
+			}
+		}
 
-    buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    buttonPanel.add(cancelButton);
-    buttonPanel.add(okButton);
+		private void updateMappingBrowserView()
+		{
+			container.getMappingBrowserView().update();
+		}
+	}
 
-    surroundPanel.add(buttonPanel, BorderLayout.SOUTH);
+	private MappingsExpressionsModel getMappingExpressionsModel()
+	{
+		return container.getApplicationModel().getMappingExpressionsModel();
+	}
 
-    pack();
-  }
+	private DataSourceModel getDataSourceModel()
+	{
+		return container.getApplicationModel().getDataSourceModel();
+	}
 
-  private class CancelButtonActionListener implements ActionListener
-  {
-    public void actionPerformed(ActionEvent e)
-    {
-      clearEntryFields();
-      setVisible(false);
-    }
-  }
-
-  private class OkButtonActionListener implements ActionListener
-  {
-    public void actionPerformed(ActionEvent e)
-    {
-      String comment, expression, sourceSheetName;
-      String startColumn = "", finishColumn = "";
-      String startRow = "", finishRow = "";
-      MappingExpression mappingExpression;
-      boolean errorOccurred = false;
-
-      comment = CreateMappingExpressionDialog.this.commentTextField.getText();
-      expression = CreateMappingExpressionDialog.this.expressionTextArea.getText().trim();
-      sourceSheetName = (String)CreateMappingExpressionDialog.this.subSourceNameComboBox.getSelectedItem();
-
-      try {
-        startColumn = CreateMappingExpressionDialog.this.startColumnTextField.getText().trim().toUpperCase();
-        finishColumn = CreateMappingExpressionDialog.this.finishColumnTextField.getText().trim().toUpperCase();
-        SpreadSheetUtil.checkColumnSpecification(startColumn);
-        SpreadSheetUtil.checkColumnSpecification(finishColumn);
-
-        startRow = CreateMappingExpressionDialog.this.startRowTextField.getText().trim();
-        finishRow = CreateMappingExpressionDialog.this.finishRowTextField.getText().trim();
-      } catch (MappingMasterException ex) {
-        getApplicationDialogManager().showErrorMessageDialog(null, ex.getMessage());
-        errorOccurred = true;
-      }
-
-      if (!errorOccurred) {
-        if (CreateMappingExpressionDialog.this.editMode) {
-          CreateMappingExpressionDialog.this.editMappingExpression
-            .update(comment, expression, sourceSheetName, startColumn, finishColumn, startRow, finishRow);
-          getMappingExpressionsModel().removeMappingExpression(CreateMappingExpressionDialog.this.editMappingExpression); // Remove original
-          getMappingExpressionsModel().addMappingExpression(CreateMappingExpressionDialog.this.editMappingExpression);
-        } else {
-          mappingExpression = new MappingExpression(comment, expression, sourceSheetName, startColumn, finishColumn,
-            startRow, finishRow);
-          getMappingExpressionsModel().addMappingExpression(mappingExpression);
-        }
-
-        setVisible(false);
-
-        clearEntryFields();
-      }
-    }
-  }
-
-  private MappingsExpressionsModel getMappingExpressionsModel()
-  {
-    return this.application.getApplicationModel().getMappingExpressionsModel();
-  }
-
-  private DataSourceModel getDataSourceModel() { return this.application.getApplicationModel().getDataSourceModel(); }
-
-  private MMApplicationView getApplicationView() { return this.application.getApplicationView(); }
-
-  private MMApplicationDialogManager getApplicationDialogManager()
-  {
-    return getApplicationView().getApplicationDialogManager();
-  }
+	private MMApplicationDialogManager getApplicationDialogManager()
+	{
+		return container.getApplicationDialogManager();
+	}
 }
