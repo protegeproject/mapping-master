@@ -27,5 +27,8 @@ public class OWLClassRendering extends OWLClassExpressionRendering
 		this.cls = cls;
 	}
 
-	public OWLClass getOWLClass() { return this.cls; }
+	public OWLClass getOWLClass()
+	{
+		return this.cls;
+	}
 }

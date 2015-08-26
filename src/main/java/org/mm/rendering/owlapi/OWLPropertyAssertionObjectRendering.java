@@ -12,5 +12,8 @@ public class OWLPropertyAssertionObjectRendering extends OWLAPIRendering
 		this.property = propertyAssertionObject;
 	}
 
-	public OWLPropertyAssertionObject getOWLPropertyAssertionObject() { return this.property; }
+	public OWLPropertyAssertionObject getOWLPropertyAssertionObject()
+	{
+		return this.property;
+	}
 }

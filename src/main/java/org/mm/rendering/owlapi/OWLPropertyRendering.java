@@ -27,5 +27,8 @@ public abstract class OWLPropertyRendering extends OWLAPIRendering
 		this.property = property;
 	}
 
-	public OWLProperty getOWLProperty() { return this.property; }
+	public OWLProperty getOWLProperty()
+	{
+		return this.property;
+	}
 }

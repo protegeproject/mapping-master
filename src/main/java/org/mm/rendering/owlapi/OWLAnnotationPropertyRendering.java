@@ -12,5 +12,8 @@ public class OWLAnnotationPropertyRendering extends OWLAPIRendering
 		this.property = property;
 	}
 
-	public OWLAnnotationProperty getOWLAnnotationProperty() { return this.property; }
+	public OWLAnnotationProperty getOWLAnnotationProperty()
+	{
+		return this.property;
+	}
 }

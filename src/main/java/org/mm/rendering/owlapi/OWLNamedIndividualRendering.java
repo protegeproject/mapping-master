@@ -27,5 +27,8 @@ public class OWLNamedIndividualRendering extends OWLAPIRendering
 		this.individual = individual;
 	}
 
-	public OWLNamedIndividual getOWLNamedIndividual() { return this.individual; }
+	public OWLNamedIndividual getOWLNamedIndividual()
+	{
+		return this.individual;
+	}
 }

@@ -27,5 +27,8 @@ public class OWLRestrictionRendering extends OWLClassExpressionRendering
 		this.restriction = restriction;
 	}
 
-	public OWLRestriction getOWLRestriction() { return this.restriction; }
+	public OWLRestriction getOWLRestriction()
+	{
+		return this.restriction;
+	}
 }

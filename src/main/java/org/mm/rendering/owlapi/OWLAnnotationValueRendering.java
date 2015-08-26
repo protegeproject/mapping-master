@@ -13,5 +13,8 @@ public class OWLAnnotationValueRendering extends OWLAPIRendering
 		this.annotationValue = annotationValue;
 	}
 
-	public OWLAnnotationValue getOWLAnnotationValue() { return this.annotationValue; }
+	public OWLAnnotationValue getOWLAnnotationValue()
+	{
+		return this.annotationValue;
+	}
 }
