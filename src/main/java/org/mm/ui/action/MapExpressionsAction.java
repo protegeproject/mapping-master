@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.core.MappingExpression;
-import org.mm.core.MappingExpressionSet;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.renderer.RendererException;
@@ -18,7 +17,6 @@ import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
 import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.DataSourceModel;
-import org.mm.ui.model.MappingExpressionModel;
 import org.mm.ui.view.ApplicationView;
 import org.mm.ui.view.MappingControlView;
 
@@ -46,10 +44,11 @@ public class MapExpressionsAction implements ActionListener
 			container.initRenderer();
 			
 			// TODO: Move this business logic inside the renderer
-			MappingExpressionSet mappingSet = getMappingExpressionsModel().getMappingExpressionSet();
+			List<Rendering> results = new ArrayList<Rendering>();
+			List<MappingExpression> mappings = getMappingExpressions();
 			SpreadSheetDataSource dataSource = getDataSourceModel().getDataSource();
 			Workbook workbook = dataSource.getWorkbook();
-			for (MappingExpression mapping : mappingSet) {
+			for (MappingExpression mapping : mappings) {
 				if (mapping.isActive()) {
 					String sheetName = mapping.getSheetName();
 					Sheet sheet = workbook.getSheet(sheetName);
@@ -74,16 +73,15 @@ public class MapExpressionsAction implements ActionListener
 
 					dataSource.setCurrentLocation(currentLocation);
 
-					List<Rendering> results = new ArrayList<Rendering>();
 					evaluate(mapping, results);
 					while (!currentLocation.equals(endLocation)) {
 						currentLocation = incrementLocation(currentLocation, startLocation, endLocation);
 						dataSource.setCurrentLocation(currentLocation);
 						evaluate(mapping, results);
 					}
-					printResults(results);
 				}
 			}
+			printResults(results);
 		}
 		catch (Exception ex) {
 			getApplicationDialogManager().showErrorMessageDialog(container, ex.getMessage());
@@ -102,7 +100,7 @@ public class MapExpressionsAction implements ActionListener
 
 	private void verify() throws MappingMasterException
 	{
-		if (getMappingExpressionsModel().isEmpty()) {
+		if (getMappingExpressions().isEmpty()) {
 			throw new MappingMasterException("No mappings defined");
 		}
 		if (getDataSourceModel().isEmpty()) {
@@ -129,9 +127,9 @@ public class MapExpressionsAction implements ActionListener
 		throw new RendererException("incrementLocation called redundantly");
 	}
 
-	private MappingExpressionModel getMappingExpressionsModel()
+	private List<MappingExpression> getMappingExpressions()
 	{
-		return container.getApplicationModel().getMappingExpressionsModel();
+		return container.getMappingBrowserView().getMappingExpressions();
 	}
 
 	private DataSourceModel getDataSourceModel()

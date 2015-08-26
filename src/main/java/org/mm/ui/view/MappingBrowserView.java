@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -166,6 +168,11 @@ public class MappingBrowserView extends JPanel implements MMView
 		}
 	}
 
+	public List<MappingExpression> getMappingExpressions()
+	{
+		return tableModel.getMappingExpressions();
+	}
+
 	private MappingExpressionModel getMappingExpressionsModel()
 	{
 		return container.getApplicationModel().getMappingExpressionsModel();
@@ -212,11 +219,29 @@ public class MappingBrowserView extends JPanel implements MMView
 		{
 			return COLUMN_NAMES.length;
 		}
-		
+
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex)
 		{
 			return false;
+		}
+
+		public List<MappingExpression> getMappingExpressions()
+		{
+			List<MappingExpression> mappings = new ArrayList<>();
+			for (int row = 0; row < getRowCount(); row++) {
+				@SuppressWarnings("unchecked")
+				Vector<String> rowVector = (Vector<String>) getDataVector().elementAt(row);
+				String sheetName = rowVector.get(0);
+				String startColumn = rowVector.get(1);
+				String endColumn = rowVector.get(2);
+				String startRow = rowVector.get(3);
+				String endRow = rowVector.get(4);
+				String expression = rowVector.get(5);
+				String comment = rowVector.get(6);
+				mappings.add(new MappingExpression(sheetName, startColumn, endColumn, startRow, endRow, comment, expression));
+			}
+			return mappings;
 		}
 	}
 
