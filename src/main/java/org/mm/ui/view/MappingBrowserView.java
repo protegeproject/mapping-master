@@ -236,17 +236,11 @@ public class MappingBrowserView extends JPanel implements MMView
 				getApplicationDialogManager().showMessageDialog(container, "No mapping expression was selected");
 				return;
 			}
-			MappingExpression selectedMapping = getSelectedExpression(selectedRow);
 			int answer = getApplicationDialogManager().showConfirmDialog(container,
 					"Delete", "Do you really want to delete the selected expression?");
 			if (answer == JOptionPane.YES_OPTION) {
-				getMappingExpressionsModel().removeMappingExpression(selectedMapping);
+				tableModel.removeRow(selectedRow);
 			}
-		}
-
-		private MappingExpression getSelectedExpression(int selectedRow)
-		{
-			return getMappingExpressionsModel().getExpressions().get(selectedRow);
 		}
 	}
 
