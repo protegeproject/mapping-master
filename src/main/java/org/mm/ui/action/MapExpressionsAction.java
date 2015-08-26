@@ -20,6 +20,7 @@ import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.model.MappingExpressionModel;
 import org.mm.ui.view.ApplicationView;
+import org.mm.ui.view.MappingControlView;
 
 public class MapExpressionsAction implements ActionListener
 {
@@ -80,15 +81,22 @@ public class MapExpressionsAction implements ActionListener
 						dataSource.setCurrentLocation(currentLocation);
 						evaluate(mapping, results);
 					}
-					container.getMappingsControlView().messageAreaAppend("Successfully rendering " + results.size() + " axioms.\n");
-					for (Rendering rendering : results) {
-						container.getMappingsControlView().messageAreaAppend(" -- " + rendering + "\n");
-					}
+					printResults(results);
 				}
 			}
 		}
 		catch (Exception ex) {
 			getApplicationDialogManager().showErrorMessageDialog(container, ex.getMessage());
+		}
+	}
+
+	private void printResults(List<Rendering> results)
+	{
+		final MappingControlView view = container.getMappingsControlView();
+		view.messageAreaClear();
+		view.messageAreaAppend("Successfully rendering " + results.size() + " axioms.\n");
+		for (Rendering rendering : results) {
+			view.messageAreaAppend(" -- " + rendering + "\n");
 		}
 	}
 
