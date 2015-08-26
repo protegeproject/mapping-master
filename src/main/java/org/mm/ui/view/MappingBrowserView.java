@@ -1,6 +1,8 @@
 package org.mm.ui.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -19,6 +21,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import org.mm.core.MappingExpression;
 import org.mm.ui.dialog.CreateMappingExpressionDialog;
@@ -46,7 +50,9 @@ public class MappingBrowserView extends JPanel implements MMView
 		
 		tblMappingExpression = new JTable();
 		tblMappingExpression.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
+		tblMappingExpression.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tblMappingExpression.setGridColor(Color.LIGHT_GRAY);
+
 		JScrollPane scrMappingExpression = new JScrollPane(tblMappingExpression);
 		
 		setLayout(new BorderLayout());
@@ -110,6 +116,7 @@ public class MappingBrowserView extends JPanel implements MMView
 		
 		tableModel = new MappingExpressionTableModel(getMappingExpressionsModel());
 		tblMappingExpression.setModel(tableModel);
+		setPreferredColumnSize();
 	}
 
 	public void updateTableModel(int selectedRow, String sheetName, String startColumn, String endColumn, String startRow, String endRow, String expression, String comment)
@@ -127,6 +134,36 @@ public class MappingBrowserView extends JPanel implements MMView
 			tableModel.removeRow(selectedRow);
 		}
 		tableModel.addRow(row);
+		resizeColumnWidth();
+	}
+
+	private void setPreferredColumnSize()
+	{
+		final TableColumnModel columnModel = tblMappingExpression.getColumnModel();
+		columnModel.getColumn(0).setPreferredWidth(80);
+		columnModel.getColumn(1).setPreferredWidth(80);
+		columnModel.getColumn(2).setPreferredWidth(80);
+		columnModel.getColumn(3).setPreferredWidth(80);
+		columnModel.getColumn(4).setPreferredWidth(80);
+		columnModel.getColumn(5).setPreferredWidth(400);
+		columnModel.getColumn(6).setPreferredWidth(280);
+	}
+
+	private void resizeColumnWidth()
+	{
+		final TableColumnModel columnModel = tblMappingExpression.getColumnModel();
+		for (int column = 0; column < tblMappingExpression.getColumnCount(); column++) {
+			if (column == 1 || column == 2 || column == 3 || column == 4) { // skip for certain columns
+				continue;
+			}
+			int width = columnModel.getColumn(column).getPreferredWidth(); // min width
+			for (int row = 0; row < tblMappingExpression.getRowCount(); row++) {
+				TableCellRenderer renderer = tblMappingExpression.getCellRenderer(row, column);
+				Component comp = tblMappingExpression.prepareRenderer(renderer, row, column);
+				width = Math.max(comp.getPreferredSize().width + 1, width);
+			}
+			columnModel.getColumn(column).setPreferredWidth(width);
+		}
 	}
 
 	private MappingExpressionModel getMappingExpressionsModel()
@@ -144,8 +181,8 @@ public class MappingBrowserView extends JPanel implements MMView
 		private static final long serialVersionUID = 1L;
 
 		private final String[] COLUMN_NAMES = {
-			"Sheet name", "Start column", "End column", "Start row", "End row",
-			"Mapping expression", "Comment"
+			"Sheet Name", "Start Column", "End Column", "Start Row", "End Row",
+			"Mapping Expression", "Comment"
 		};
 
 		public MappingExpressionTableModel(final MappingExpressionModel model)
