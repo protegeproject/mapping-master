@@ -106,7 +106,29 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 			throw new RendererException(
 					"invalid source specification @" + location + " - column " + location.getColumnName() + " is out of range");
 		}
-		return (cell.getCellType() == Cell.CELL_TYPE_BLANK) ? null : cell.getStringCellValue();
+		return getStringValue(cell);
+	}
+
+	private String getStringValue(Cell cell)
+	{
+		switch (cell.getCellType()) {
+			case Cell.CELL_TYPE_BLANK: return null;
+			case Cell.CELL_TYPE_STRING: return cell.getStringCellValue();
+			case Cell.CELL_TYPE_NUMERIC: 
+				if (isInteger(cell.getNumericCellValue())) { // check if the numeric is an integer or double
+					return Integer.toString((int) cell.getNumericCellValue());
+				} else {
+					return Double.toString(cell.getNumericCellValue());
+				}
+			case Cell.CELL_TYPE_BOOLEAN: return Boolean.toString(cell.getBooleanCellValue());
+			case Cell.CELL_TYPE_FORMULA: return Double.toString(cell.getNumericCellValue());
+			default: return null;
+		}
+	}
+
+	private boolean isInteger(double number)
+	{
+		return (number == Math.floor(number) && !Double.isInfinite(number));
 	}
 
 	public String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode referenceNode) throws RendererException
