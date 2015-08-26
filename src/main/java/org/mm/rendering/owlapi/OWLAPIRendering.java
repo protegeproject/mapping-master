@@ -32,8 +32,20 @@ public class OWLAPIRendering implements Rendering
     return Collections.unmodifiableSet(this.axioms);
   }
 
-  @Override public String toString()
+  @Override
+  public String toString()
   {
-    return "TODO"; // TODO Pretty print
+    StringBuffer sb = new StringBuffer();
+    
+    boolean newline = false;
+    for (OWLAxiom axiom : getOWLAxioms())
+    {
+      if (newline) {
+        sb.append("\n");
+      }
+      sb.append(axiom.getAxiomType() + ": " + axiom.toString());
+      newline = true;
+    }
+    return sb.toString();
   }
 }
