@@ -27,6 +27,8 @@ public class MappingControlView extends JPanel implements MMView
 
 	private ApplicationView container;
 
+	private JComboBox<ValueEncodingSetting> cbbValueEncoding;
+
 	private JTextArea txtMessageArea;
 	private JButton cmdRunMapping;
 
@@ -53,10 +55,13 @@ public class MappingControlView extends JPanel implements MMView
 
 		JLabel lblValueEncoding = new JLabel("Default value encoding:");
 		pnlReferenceSettings.add(lblValueEncoding);
-		JComboBox<ValueEncodingSetting> cbbValueEncoding = new JComboBox<>();
+		
+		cbbValueEncoding = new JComboBox<>();
 		cbbValueEncoding.setModel(new DefaultComboBoxModel<>(ValueEncodingSetting.values()));
-		cbbValueEncoding.addActionListener(new ConfigurationActionListener(ValueEncodingSetting.class));
+		cbbValueEncoding.addActionListener(new ConfigurationActionListener());
 		pnlReferenceSettings.add(cbbValueEncoding);
+
+		updateValueEncoding();
 
 		txtMessageArea = new JTextArea();
 		txtMessageArea.setBorder(BorderFactory.createEtchedBorder());
@@ -73,6 +78,11 @@ public class MappingControlView extends JPanel implements MMView
 		messageAreaAppend("Click the 'Run Mapping' button to perform mappings.\n");
 		
 		validate();
+	}
+
+	private void updateValueEncoding()
+	{
+		getReferenceSettings().setValueEncodingSetting((ValueEncodingSetting) cbbValueEncoding.getSelectedItem());
 	}
 
 	@Override
@@ -98,23 +108,10 @@ public class MappingControlView extends JPanel implements MMView
 
 	private class ConfigurationActionListener implements ActionListener
 	{
-		private Object object;
-
-		public ConfigurationActionListener(Object object)
-		{
-			this.object = object;
-		}
-
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			if (object instanceof ValueEncodingSetting) {
-				@SuppressWarnings("unchecked")
-				JComboBox<ValueEncodingSetting> cb = (JComboBox<ValueEncodingSetting>) e.getSource();
-				ValueEncodingSetting selectedItem = (ValueEncodingSetting) cb.getSelectedItem();
-				cb.setSelectedItem(selectedItem);
-				getReferenceSettings().setValueEncodingSetting(selectedItem);
-			}
+			updateValueEncoding();
 		}
 	}
 }
