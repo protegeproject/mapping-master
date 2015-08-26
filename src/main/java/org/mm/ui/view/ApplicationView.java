@@ -1,6 +1,7 @@
 package org.mm.ui.view;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -13,6 +14,7 @@ import org.mm.parser.ParseException;
 import org.mm.parser.SimpleNode;
 import org.mm.parser.node.ExpressionNode;
 import org.mm.renderer.Renderer;
+import org.mm.rendering.Rendering;
 import org.mm.ui.MMApplication;
 import org.mm.ui.MMApplicationFactory;
 import org.mm.ui.dialog.MMDialogManager;
@@ -132,15 +134,11 @@ public class ApplicationView extends JSplitPane implements MMView
 		setupApplication();
 	}
 
-	public void evaluate(MappingExpression mapping, Renderer renderer)
+	public void evaluate(MappingExpression mapping, Renderer renderer, List<Rendering> results) throws ParseException
 	{
-		try {
-			String expression = mapping.getExpressionString();
-			ExpressionNode expressionNode = parseExpression(expression, referenceSettings);
-			renderer.renderExpression(expressionNode);
-		} catch (Exception e) {
-			applicationDialogManager.showErrorMessageDialog(this, e.getMessage());
-		}
+		String expression = mapping.getExpressionString();
+		ExpressionNode expressionNode = parseExpression(expression, referenceSettings);
+		results.add(renderer.renderExpression(expressionNode).get());
 	}
 
 	private ExpressionNode parseExpression(String expression, ReferenceSettings settings) throws ParseException
