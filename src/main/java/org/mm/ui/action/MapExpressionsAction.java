@@ -2,13 +2,17 @@ package org.mm.ui.action;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.core.MappingExpression;
 import org.mm.core.MappingExpressionSet;
 import org.mm.exceptions.MappingMasterException;
+import org.mm.parser.ParseException;
 import org.mm.renderer.RendererException;
+import org.mm.rendering.Rendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
@@ -69,16 +73,21 @@ public class MapExpressionsAction implements ActionListener
 
 					dataSource.setCurrentLocation(currentLocation);
 
-					evaluate(mapping);
+					List<Rendering> results = new ArrayList<Rendering>();
+					evaluate(mapping, results);
 					while (!currentLocation.equals(endLocation)) {
 						currentLocation = incrementLocation(currentLocation, startLocation, endLocation);
 						dataSource.setCurrentLocation(currentLocation);
-						evaluate(mapping);
+						evaluate(mapping, results);
+					}
+					container.getMappingsControlView().messageAreaAppend("Successfully rendering " + results.size() + " axioms.\n");
+					for (Rendering rendering : results) {
+						container.getMappingsControlView().messageAreaAppend(" -- " + rendering + "\n");
 					}
 				}
 			}
 		}
-		catch (MappingMasterException | RendererException ex) {
+		catch (Exception ex) {
 			getApplicationDialogManager().showErrorMessageDialog(container, ex.getMessage());
 		}
 	}
@@ -93,20 +102,20 @@ public class MapExpressionsAction implements ActionListener
 		}
 	}
 
-	private void evaluate(MappingExpression mapping)
+	private void evaluate(MappingExpression mapping, List<Rendering> results) throws ParseException
 	{
-		container.evaluate(mapping, container.getDefaultRenderer());
+		container.evaluate(mapping, container.getDefaultRenderer(), results);
 	}
 
 	private SpreadsheetLocation incrementLocation(SpreadsheetLocation current, SpreadsheetLocation start, SpreadsheetLocation end)
 			throws RendererException
 	{
 		if (current.getPhysicalRowNumber() < end.getPhysicalRowNumber()) {
-			return new SpreadsheetLocation(current.getSheetName(), current.getPhysicalColumnNumber(), current.getPhysicalRowNumber());
+			return new SpreadsheetLocation(current.getSheetName(), current.getPhysicalColumnNumber(), current.getPhysicalRowNumber() + 1);
 		}
 		if (current.getPhysicalRowNumber() == end.getPhysicalRowNumber()) {
 			if (current.getPhysicalColumnNumber() < end.getPhysicalColumnNumber()) {
-				return new SpreadsheetLocation(current.getSheetName(), current.getPhysicalColumnNumber(), start.getPhysicalRowNumber());
+				return new SpreadsheetLocation(current.getSheetName(), current.getPhysicalColumnNumber() + 1, start.getPhysicalRowNumber());
 			}
 		}
 		throw new RendererException("incrementLocation called redundantly");
