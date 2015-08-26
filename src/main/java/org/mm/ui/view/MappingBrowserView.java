@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -19,9 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 
 import org.mm.core.MappingExpression;
 import org.mm.ui.dialog.CreateMappingExpressionDialog;
@@ -41,13 +38,14 @@ public class MappingBrowserView extends JPanel implements MMView
 	private JTextField txtMappingPath;
 	private JTable tblMappingExpression;
 
+	private MappingExpressionTableModel tableModel;
+
 	public MappingBrowserView(ApplicationView container)
 	{
 		this.container = container;
 		
 		tblMappingExpression = new JTable();
 		tblMappingExpression.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tblMappingExpression.getSelectionModel().addListSelectionListener(new EditMappingExpressionListener());
 		
 		JScrollPane scrMappingExpression = new JScrollPane(tblMappingExpression);
 		
@@ -110,7 +108,25 @@ public class MappingBrowserView extends JPanel implements MMView
 		cmdEdit.setEnabled(true);
 		cmdDelete.setEnabled(true);
 		
-		tblMappingExpression.setModel(new MappingExpressionTableModel(getMappingExpressionsModel().getExpressions()));
+		tableModel = new MappingExpressionTableModel(getMappingExpressionsModel());
+		tblMappingExpression.setModel(tableModel);
+	}
+
+	public void updateTableModel(int selectedRow, String sheetName, String startColumn, String endColumn, String startRow, String endRow, String expression, String comment)
+	{
+		Vector<String> row = new Vector<>();
+		row.add(0, sheetName);
+		row.add(1, startColumn);
+		row.add(2, endColumn);
+		row.add(3, startRow);
+		row.add(4, endRow);
+		row.add(5, expression);
+		row.add(6, comment);
+		
+		if (selectedRow != -1) { // there was row selected
+			tableModel.removeRow(selectedRow);
+		}
+		tableModel.addRow(row);
 	}
 
 	private MappingExpressionModel getMappingExpressionsModel()
@@ -123,7 +139,7 @@ public class MappingBrowserView extends JPanel implements MMView
 		return container.getApplicationDialogManager();
 	}
 
-	class MappingExpressionTableModel extends AbstractTableModel
+	class MappingExpressionTableModel extends DefaultTableModel
 	{
 		private static final long serialVersionUID = 1L;
 
@@ -132,11 +148,10 @@ public class MappingBrowserView extends JPanel implements MMView
 			"Mapping expression", "Comment"
 		};
 
-		private Vector<Vector<Object>> data = new Vector<Vector<Object>>();
-
-		public MappingExpressionTableModel(List<MappingExpression> mappings)
+		public MappingExpressionTableModel(final MappingExpressionModel model)
 		{
-			for (MappingExpression mapping : mappings) {
+			super();
+			for (MappingExpression mapping : model.getExpressions()) {
 				Vector<Object> row = new Vector<Object>();
 				row.add(mapping.getSheetName());
 				row.add(mapping.getStartColumn());
@@ -145,7 +160,7 @@ public class MappingBrowserView extends JPanel implements MMView
 				row.add(mapping.getEndRow());
 				row.add(mapping.getExpressionString());
 				row.add(mapping.getComment());
-				data.add(row);
+				addRow(row);
 			}
 		}
 
@@ -154,42 +169,17 @@ public class MappingBrowserView extends JPanel implements MMView
 		{
 			return COLUMN_NAMES[column];
 		}
-	
-		@Override
-		public int getRowCount()
-		{
-			return data.size();
-		}
 
 		@Override
 		public int getColumnCount()
 		{
 			return COLUMN_NAMES.length;
 		}
-
-		@Override
-		public Object getValueAt(int rowIndex, int columnIndex) // 1-based
-		{
-			return data.get(rowIndex).get(columnIndex);
-		}
-
+		
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex)
 		{
 			return false;
-		}
-	}
-
-	class EditMappingExpressionListener implements ListSelectionListener
-	{
-		@Override
-		public void valueChanged(ListSelectionEvent e)
-		{
-			int rowIndex = tblMappingExpression.getSelectedRow();
-			CreateMappingExpressionDialog dialog = new CreateMappingExpressionDialog(container);
-			dialog.fillDialogFields(getMappingExpressionsModel().getExpressions().get(rowIndex));
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
 		}
 	}
 
@@ -218,16 +208,22 @@ public class MappingBrowserView extends JPanel implements MMView
 				getApplicationDialogManager().showMessageDialog(container, "No mapping expression was selected");
 				return;
 			}
-			MappingExpression selectedMapping = getSelectedExpression(selectedRow);
 			CreateMappingExpressionDialog dialog = new CreateMappingExpressionDialog(container);
-			dialog.fillDialogFields(selectedMapping);
+			dialog.fillDialogFields(selectedRow,
+					getValueAt(selectedRow, 0),
+					getValueAt(selectedRow, 1),
+					getValueAt(selectedRow, 2),
+					getValueAt(selectedRow, 3),
+					getValueAt(selectedRow, 4),
+					getValueAt(selectedRow, 5),
+					getValueAt(selectedRow, 6));
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		}
 
-		private MappingExpression getSelectedExpression(int selectedRow)
+		private String getValueAt(int row, int column)
 		{
-			return getMappingExpressionsModel().getExpressions().get(selectedRow);
+			return (String) tableModel.getValueAt(row, column);
 		}
 	}
 

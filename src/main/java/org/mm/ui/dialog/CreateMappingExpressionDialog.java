@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -20,12 +19,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.mm.core.MappingExpression;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ui.model.DataSourceModel;
-import org.mm.ui.model.MappingExpressionModel;
 import org.mm.ui.view.ApplicationView;
+import org.mm.ui.view.MappingBrowserView;
 
 public class CreateMappingExpressionDialog extends JDialog
 {
@@ -33,8 +31,7 @@ public class CreateMappingExpressionDialog extends JDialog
 
 	private ApplicationView container;
 
-	private boolean editMode = false;
-	private MappingExpression selectedMapping;
+	private int selectedRow = -1;
 
 	private JComboBox<String> cbbSheetName;
 
@@ -120,32 +117,19 @@ public class CreateMappingExpressionDialog extends JDialog
 		pack();
 	}
 
-	public void fillDialogFields(MappingExpression mapping)
+	public void fillDialogFields(int rowIndex, String sheetName, String startColumn, String endColumn, String startRow, String endRow, String expression, String comment)
 	{
-		String sheetName = mapping.getSheetName();
+		selectedRow = rowIndex;
 
-		if (getDataSourceModel().isEmpty()) {
-			List<String> sheetNames = getDataSourceModel().getSheetNames();
-			sheetNames.forEach(cbbSheetName::addItem);
-			if (!sheetNames.contains(sheetName)) {
-				cbbSheetName.addItem(sheetName);
-			}
-		}
-		else {
-			cbbSheetName.addItem(mapping.getSheetName());
-		}
 		cbbSheetName.setSelectedItem(sheetName);
 
-		txtStartColumn.setText(mapping.getStartColumn());
-		txtEndColumn.setText(mapping.getEndColumn());
-		txtStartRow.setText(mapping.getStartRow());
-		txtEndRow.setText(mapping.getEndRow());
+		txtStartColumn.setText(startColumn);
+		txtEndColumn.setText(endColumn);
+		txtStartRow.setText(startRow);
+		txtEndRow.setText(endRow);
 
-		txtComment.setText(mapping.getComment());
-		txtExpression.setText(mapping.getExpressionString());
-
-		editMode = true;
-		selectedMapping = mapping;
+		txtComment.setText(comment);
+		txtExpression.setText(expression);
 	}
 
 	private class CancelActionListener implements ActionListener
@@ -174,28 +158,19 @@ public class CreateMappingExpressionDialog extends JDialog
 				String comment = txtComment.getText().trim();
 				String expression = txtExpression.getText().trim();
 				
-				MappingExpression newMapping = new MappingExpression(sheetName, startColumn, endColumn, startRow, endRow, comment, expression);
-				if (editMode) {
-					getMappingExpressionsModel().removeMappingExpression(selectedMapping); // Remove original
-				}
-				getMappingExpressionsModel().addMappingExpression(newMapping);
-				updateMappingBrowserView();
+				getMappingBrowserView().updateTableModel(selectedRow, sheetName, startColumn, endColumn, startRow, endRow, expression, comment);
+				
 				setVisible(false);
 			}
 			catch (MappingMasterException ex) {
 				getApplicationDialogManager().showErrorMessageDialog(container, ex.getMessage());
 			}
 		}
-
-		private void updateMappingBrowserView()
-		{
-			container.getMappingBrowserView().update();
-		}
 	}
 
-	private MappingExpressionModel getMappingExpressionsModel()
+	private MappingBrowserView getMappingBrowserView()
 	{
-		return container.getApplicationModel().getMappingExpressionsModel();
+		return container.getMappingBrowserView();
 	}
 
 	private DataSourceModel getDataSourceModel()
