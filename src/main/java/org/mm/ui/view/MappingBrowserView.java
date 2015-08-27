@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -27,6 +28,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import org.mm.core.MappingExpression;
+import org.mm.core.MappingExpressionSet;
+import org.mm.core.MappingExpressionSetFactory;
 import org.mm.ui.dialog.CreateMappingExpressionDialog;
 import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.MappingExpressionModel;
@@ -40,6 +43,7 @@ public class MappingBrowserView extends JPanel implements MMView
 	private JButton cmdAdd;
 	private JButton cmdEdit;
 	private JButton cmdDelete;
+	private JButton cmdSave;
 
 	private JTextField txtMappingPath;
 	private JTable tblMappingExpression;
@@ -67,17 +71,14 @@ public class MappingBrowserView extends JPanel implements MMView
 		
 		cmdAdd = new JButton("Add");
 		cmdAdd.addActionListener(new AddButtonActionListener());
-		cmdAdd.setEnabled(false);
 		pnlCommandButton.add(cmdAdd, BorderLayout.WEST);
 		
 		cmdEdit = new JButton("Edit");
 		cmdEdit.addActionListener(new EditButtonActionListener());
-		cmdEdit.setEnabled(false);
 		pnlCommandButton.add(cmdEdit, BorderLayout.CENTER);
 		
 		cmdDelete = new JButton("Delete");
 		cmdDelete.addActionListener(new DeleteButtonActionListener());
-		cmdDelete.setEnabled(false);
 		pnlCommandButton.add(cmdDelete, BorderLayout.EAST);
 		
 		add(scrMappingExpression, BorderLayout.CENTER);
@@ -98,8 +99,9 @@ public class MappingBrowserView extends JPanel implements MMView
 		cmdOpen.addActionListener(new OpenMappingAction());
 		pnlMappingOpenSave.add(cmdOpen);
 
-		JButton cmdSave = new JButton("Save");
+		cmdSave = new JButton("Save");
 		cmdSave.addActionListener(new SaveMappingAction());
+		cmdSave.setEnabled(false);
 		pnlMappingOpenSave.add(cmdSave);
 
 		JButton cmdSaveAs = new JButton("Save As...");
@@ -112,13 +114,10 @@ public class MappingBrowserView extends JPanel implements MMView
 	@Override
 	public void update()
 	{
-		cmdAdd.setEnabled(true);
-		cmdEdit.setEnabled(true);
-		cmdDelete.setEnabled(true);
-		
 		tableModel = new MappingExpressionTableModel(getMappingExpressionsModel());
 		tblMappingExpression.setModel(tableModel);
 		setPreferredColumnSize();
+		resizeColumnWidth();
 	}
 
 	public void updateTableModel(int selectedRow, String sheetName, String startColumn, String endColumn, String startRow, String endRow, String expression, String comment)
@@ -243,6 +242,15 @@ public class MappingBrowserView extends JPanel implements MMView
 			}
 			return mappings;
 		}
+
+		public MappingExpressionSet getMappingExpressionSet()
+		{
+			MappingExpressionSet mappings = new MappingExpressionSet();
+			for (MappingExpression mapping : getMappingExpressions()) {
+				mappings.add(mapping);
+			}
+			return mappings;
+		}
 	}
 
 	/*
@@ -312,13 +320,14 @@ public class MappingBrowserView extends JPanel implements MMView
 		public void actionPerformed(ActionEvent e)
 		{
 			JFileChooser fileChooser = getApplicationDialogManager().createOpenFileChooser(
-					"Open Mapping Expression", "json", "MappingMaster DSL Mapping Expression (.json)");
+					"Open", "json", "MappingMaster DSL Mapping Expression (.json)");
 			if (fileChooser.showOpenDialog(container) == JFileChooser.APPROVE_OPTION) {
 				try {
 					File file = fileChooser.getSelectedFile();
 					String filename = file.getAbsolutePath();
 					container.loadMappingDocument(filename);
 					txtMappingPath.setText(filename);
+					cmdSave.setEnabled(true);
 				} catch (Exception ex) {
 					getApplicationDialogManager().showErrorMessageDialog(container,
 							"Error opening file: " + ex.getMessage());
@@ -332,7 +341,16 @@ public class MappingBrowserView extends JPanel implements MMView
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			// TODO Implement save to JSON
+			try {
+				MappingExpressionSetFactory.saveMappingExpressionSetToDocument(
+						txtMappingPath.getText(),
+						tableModel.getMappingExpressionSet());
+				container.updateMappingExpressionModel(tableModel.getMappingExpressionSet());
+			}
+			catch (IOException ex) {
+				getApplicationDialogManager().showErrorMessageDialog(container,
+						"Error saving file: " + ex.getMessage());
+			}
 		}
 	}
 
@@ -341,7 +359,22 @@ public class MappingBrowserView extends JPanel implements MMView
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			// TODO Implement save as to JSON
+			JFileChooser fileChooser = getApplicationDialogManager().createSaveFileChooser(
+					"Save As", "json", "MappingMaster DSL Mapping Expression (.json)", true);
+			if (fileChooser.showSaveDialog(container) == JFileChooser.APPROVE_OPTION) {
+				try {
+					File file = fileChooser.getSelectedFile();
+					String filename = file.getAbsolutePath();
+					MappingExpressionSetFactory.saveMappingExpressionSetToDocument(
+							filename,
+							tableModel.getMappingExpressionSet());
+					container.updateMappingExpressionModel(tableModel.getMappingExpressionSet());
+					txtMappingPath.setText(filename);
+				} catch (Exception ex) {
+					getApplicationDialogManager().showErrorMessageDialog(container,
+							"Error saving file: " + ex.getMessage());
+				}
+			}
 		}
 	}
 }

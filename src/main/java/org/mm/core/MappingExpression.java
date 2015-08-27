@@ -83,8 +83,14 @@ public class MappingExpression
 
 	public String toString()
 	{
-		return "(expression: " + expression + ", comment: " + comment + ", sourceSheetName: " + sheetName + ", startColumn: "
-				+ startColumn + ", finishColumn: " + endColumn + ", startRow: " + startRow + ", finishRow: " + endRow + ", active: "
-				+ active + ")";
+		return "MappingExpression ["
+				+ "sheetName=" + sheetName + ", "
+				+ "startColumn=" + startColumn + ", "
+				+ "endColumn=" + endColumn + ", "
+				+ "startRow=" + startRow + ", "
+				+ "endRow=" + endRow + ", "
+				+ "expression=" + expression + ", "
+				+ "comment=" + comment + ", "
+				+ "active=" + active + "]";
 	}
 }
