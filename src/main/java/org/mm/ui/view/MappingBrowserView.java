@@ -176,14 +176,14 @@ public class MappingBrowserView extends JPanel implements MMView
 	{
 		for (int column = 0; column < tblMappingExpression.getColumnCount(); column++) {
 			if (column == 5) {
-				int height = 0; // min height;
 				for (int row = 0; row < tblMappingExpression.getRowCount(); row++) {
+					int height = 35; // min height;
 					Object value = tblMappingExpression.getModel().getValueAt(row, column);
 					TableCellRenderer renderer = tblMappingExpression.getDefaultRenderer(String.class);
 					Component comp = renderer.getTableCellRendererComponent(tblMappingExpression, value, false, false, row, column);
 					height = Math.max(comp.getPreferredSize().height, height);
+					tblMappingExpression.setRowHeight(row, height);
 				}
-				tblMappingExpression.setRowHeight(height);
 			}
 		}
 	}
