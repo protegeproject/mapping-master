@@ -419,9 +419,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 					OWLDataPropertyAssertionAxiom axiom = handler.getOWLDataPropertyAssertionAxiom(dp, individual, value);
 					axioms.add(axiom);
 				} else {
-					// logLine(
-					//  "Skipping OWL fact declaration clause [" + factNode + "] because property is an annotation property");
-					continue;
+					throw new RendererException("Property " + property + " does not exist in the ontology");
 				}
 			}
 		}
