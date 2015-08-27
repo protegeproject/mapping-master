@@ -7,6 +7,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 
 import org.mm.core.MappingExpression;
+import org.mm.core.MappingExpressionSet;
 import org.mm.core.settings.ReferenceSettings;
 import org.mm.parser.ASTExpression;
 import org.mm.parser.MappingMasterParser;
@@ -37,13 +38,13 @@ public class ApplicationView extends JSplitPane implements MMView
 	private MMApplication application;
 	private MMApplicationFactory applicationFactory = new MMApplicationFactory();
 
-	private boolean resourceChanged = true;
-
 	private ReferenceSettings referenceSettings = new ReferenceSettings();
 
 	public ApplicationView(MMDialogManager applicationDialogManager)
 	{
 		this.applicationDialogManager = applicationDialogManager;
+
+		setupApplication();
 
 		setOrientation(JSplitPane.VERTICAL_SPLIT);
 
@@ -76,12 +77,17 @@ public class ApplicationView extends JSplitPane implements MMView
 		return application.getApplicationModel();
 	}
 
+	public void updateOntologyDocument(String path)
+	{
+		applicationFactory.setOntologyLocation(path);
+		fireApplicationResourceChanged();
+	}
+
 	public void loadWorkbookDocument(String path)
 	{
 		applicationFactory.setWorkbookLocation(path);
-		resourceChanged = true;
-		
-		setupApplication();
+		fireApplicationResourceChanged();
+
 		updateDataSourceView();
 		updateMappingControlView();
 		updateMappingBrowserView();
@@ -90,10 +96,14 @@ public class ApplicationView extends JSplitPane implements MMView
 	public void loadMappingDocument(String path)
 	{
 		applicationFactory.setMappingLocation(path);
-		resourceChanged = true;
+		fireApplicationResourceChanged();
 		
-		setupApplication();
 		updateMappingBrowserView();
+	}
+
+	private void fireApplicationResourceChanged()
+	{
+		setupApplication();
 	}
 
 	private void updateDataSourceView()
@@ -114,24 +124,10 @@ public class ApplicationView extends JSplitPane implements MMView
 	private void setupApplication()
 	{
 		try {
-			if (resourceChanged) {
-				application = applicationFactory.createApplication();
-				resourceChanged = false; // application was created, reset the flag
-			}
+			application = applicationFactory.createApplication();
 		} catch (Exception e) {
 			applicationDialogManager.showErrorMessageDialog(this, e.getMessage());
 		}
-	}
-
-	public void updateOntologyDocument(String path)
-	{
-		applicationFactory.setOntologyLocation(path);
-		resourceChanged = true;
-	}
-
-	public void initRenderer()
-	{
-		setupApplication();
 	}
 
 	public void evaluate(MappingExpression mapping, Renderer renderer, List<Rendering> results) throws ParseException
@@ -145,13 +141,18 @@ public class ApplicationView extends JSplitPane implements MMView
 	{
 		MappingMasterParser parser = new MappingMasterParser(new ByteArrayInputStream(expression.getBytes()), settings, -1);
 		SimpleNode simpleNode = parser.expression();
-		return new ExpressionNode((ASTExpression)simpleNode);
+		return new ExpressionNode((ASTExpression) simpleNode);
 	}
 
 	@Override
 	public void update()
 	{
 		// NO-OP
+	}
+
+	public void updateMappingExpressionModel(MappingExpressionSet mappings)
+	{
+		getApplicationModel().getMappingExpressionsModel().changeMappingExpressionSet(mappings);
 	}
 
 	public Renderer getDefaultRenderer()

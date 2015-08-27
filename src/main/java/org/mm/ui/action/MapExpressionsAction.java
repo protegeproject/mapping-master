@@ -39,11 +39,6 @@ public class MapExpressionsAction implements ActionListener
 			 */
 			verify();
 			
-			/*
-			 * Initialize the renderer
-			 */
-			container.initRenderer();
-			
 			// TODO: Move this business logic inside the renderer
 			List<Rendering> results = new ArrayList<Rendering>();
 			List<MappingExpression> mappings = getMappingExpressions();

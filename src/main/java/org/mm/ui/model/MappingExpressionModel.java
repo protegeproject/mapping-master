@@ -9,6 +9,8 @@ import org.mm.core.MappingExpressionSet;
 
 public class MappingExpressionModel implements MMModel
 {
+	private MappingExpressionSet mappings;
+
 	private List<MappingExpression> cache = new ArrayList<MappingExpression>();
 
 	public MappingExpressionModel()
@@ -18,19 +20,31 @@ public class MappingExpressionModel implements MMModel
 
 	public MappingExpressionModel(MappingExpressionSet mappings)
 	{
+		changeMappingExpressionSet(mappings);
+	}
+
+	public void changeMappingExpressionSet(MappingExpressionSet mappings)
+	{
+		this.mappings = mappings;
+		fireModelChanged();
+	}
+
+	private void fireModelChanged()
+	{
+		cache.clear(); // reset the cache
 		for (MappingExpression mapping : mappings) {
 			cache.add(mapping);
 		}
 	}
 
-	public MappingExpression getExpression(int index)
-	{
-		return cache.get(index);
-	}
-
 	public List<MappingExpression> getExpressions()
 	{
 		return Collections.unmodifiableList(cache);
+	}
+
+	public MappingExpression getExpression(int index)
+	{
+		return cache.get(index);
 	}
 
 	public boolean isEmpty()
@@ -51,14 +65,5 @@ public class MappingExpressionModel implements MMModel
 	public void removeMappingExpression(MappingExpression mapping)
 	{
 		cache.remove(mapping);
-	}
-
-	public MappingExpressionSet getMappingExpressionSet()
-	{
-		MappingExpressionSet mappings = new MappingExpressionSet();
-		for (MappingExpression mapping : cache) {
-			mappings.add(mapping);
-		}
-		return mappings;
 	}
 }
