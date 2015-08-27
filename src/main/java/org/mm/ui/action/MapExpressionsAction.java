@@ -15,6 +15,7 @@ import org.mm.rendering.Rendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
+import org.mm.ui.Environment;
 import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.view.ApplicationView;
@@ -92,9 +93,10 @@ public class MapExpressionsAction implements ActionListener
 	{
 		final MappingControlView view = container.getMappingsControlView();
 		view.messageAreaClear();
+		view.messageAreaAppend("MappingMaster v" + Environment.MAPPINGMASTER_VERSION + "\n\n");
 		view.messageAreaAppend("Successfully rendering " + results.size() + " axioms.\n");
 		for (Rendering rendering : results) {
-			view.messageAreaAppend(" -- " + rendering + "\n");
+			view.messageAreaAppend(rendering + "\n");
 		}
 	}
 
