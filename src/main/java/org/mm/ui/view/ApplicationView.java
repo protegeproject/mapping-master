@@ -90,7 +90,6 @@ public class ApplicationView extends JSplitPane implements MMView
 
 		updateDataSourceView();
 		updateMappingControlView();
-		updateMappingBrowserView();
 	}
 
 	public void loadMappingDocument(String path)
