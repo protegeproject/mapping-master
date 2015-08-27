@@ -64,7 +64,6 @@ public class MMApplicationFactory
 
 	public MMApplication createApplication() throws Exception
 	{
-		verify();
 		Properties copy = new Properties();
 		copy.putAll(properties);
 		Resources resources = buildResources(copy);
@@ -79,7 +78,10 @@ public class MMApplicationFactory
 		Resources resources = new Resources();
 		
 		String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
-		Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
+		Workbook workbook = SpreadsheetFactory.createEmptyWorkbook();
+		if (workbookLocation != null) {
+			workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
+		}
 		SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
 		resources.setSpreadSheetDataSource(datasource);
 		
@@ -99,13 +101,6 @@ public class MMApplicationFactory
 		resources.setMappingExpressionSet(mappings);
 		
 		return resources;
-	}
-
-	private void verify() throws ApplicationStartupException
-	{
-		if (getWorkbookLocation() == null) {
-			throw new ApplicationStartupException("Missing workbook input!");
-		}
 	}
 
 	class Resources
