@@ -99,12 +99,12 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 		Row row = sheet.getRow(rowNumber);
 		if (row == null) {
 			throw new RendererException(
-					"invalid source specification @" + location + " - row " + location.getPhysicalRowNumber() + " is out of range");
+					"Invalid source specification @" + location + " - row " + location.getPhysicalRowNumber() + " is out of range");
 		}
 		Cell cell = row.getCell(columnNumber);
 		if (cell == null) {
 			throw new RendererException(
-					"invalid source specification @" + location + " - column " + location.getColumnName() + " is out of range");
+					"Invalid source specification @" + location + " - column " + location.getColumnName() + " is out of range");
 		}
 		return getStringValue(cell);
 	}
@@ -174,7 +174,7 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 						}
 					}
 					return shiftedLocationValue;
-				default: throw new InternalRendererException("unknown shift setting " + referenceNode.getActualShiftDirective());
+				default: throw new InternalRendererException("Unknown shift setting " + referenceNode.getActualShiftDirective());
 			}
 		} else {
 			referenceNode.setShiftedLocation(location);
@@ -195,24 +195,29 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 		if (sourceSpecification.hasSource()) {
 			String sheetName = sourceSpecification.getSource();
 			if (!hasWorkbook()) {
-				throw new RendererException("sheet name " + sheetName + " specified but there is no active workbook");
+				throw new RendererException("Sheet name '" + sheetName + "' specified but there is no active workbook");
 			}
 			sheet = getWorkbook().getSheet(sheetName);
 			if (sheet == null) {
-				throw new RendererException("invalid sheet name " + sheetName);
+				throw new RendererException("Sheet name '" + sheetName + "' does not exist");
 			}
-		} else
-			sheet = getWorkbook().getSheet(getCurrentLocation().get().getSheetName());
-
+		} else {
+			String sheetName = getCurrentLocation().get().getSheetName();
+			sheet = getWorkbook().getSheet(sheetName);
+			if (sheet == null) {
+				throw new RendererException("Sheet name '" + sheetName + "' does not exist");
+			}
+		}
+		
 		if (m.find()) {
 			String columnSpecification = m.group(1);
 			String rowSpecification = m.group(2);
 
 			if (columnSpecification == null) {
-				throw new RendererException("missing column specification in location " + sourceSpecification);
+				throw new RendererException("Missing column specification in location " + sourceSpecification);
 			}
 			if (rowSpecification == null) {
-				throw new RendererException("missing row specification in location " + sourceSpecification);
+				throw new RendererException("Missing row specification in location " + sourceSpecification);
 			}
 			boolean isColumnWildcard = "*".equals(columnSpecification);
 			boolean isRowWildcard = "*".equals(rowSpecification);
@@ -230,11 +235,11 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 					rowNumber = SpreadSheetUtil.getRowNumber(sheet, rowSpecification);
 				}
 			} catch (MappingMasterException e) {
-				throw new RendererException("invalid source specification " + sourceSpecification + " - " + e.getMessage());
+				throw new RendererException("Invalid source specification " + sourceSpecification + " - " + e.getMessage());
 			}
 			resolvedLocation = new SpreadsheetLocation(sheet.getSheetName(), columnNumber, rowNumber);
 		} else {
-			throw new RendererException("invalid source specification " + sourceSpecification);
+			throw new RendererException("Invalid source specification " + sourceSpecification);
 		}
 		return resolvedLocation;
 	}
