@@ -1,18 +1,20 @@
 package org.mm.ui.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.mm.core.MappingExpressionSet;
-import org.mm.core.MappingExpressionPersistenceLayer;
 import org.mm.renderer.Renderer;
 import org.mm.ss.SpreadSheetDataSource;
+import org.mm.ui.Environment;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class ApplicationModel implements MMModel
 {
 	private DataSourceModel dataSourceModel;
 	private MappingExpressionModel expressionMappingsModel;
-	private MappingExpressionPersistenceLayer mappingExpressionsPersistenceLayer;
 
-	private Renderer renderer;
+	private Map<String, Renderer> renderers = new HashMap<String, Renderer>();
 
 	public ApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
 	{
@@ -30,18 +32,18 @@ public class ApplicationModel implements MMModel
 		return expressionMappingsModel;
 	}
 
-	public MappingExpressionPersistenceLayer getMappingExpressionsPersistenceLayer()
+	public Renderer getDefaultRenderer()
 	{
-		return mappingExpressionsPersistenceLayer;
+		return getRenderer(Environment.TEXT_RENDERER);
 	}
 
-	public Renderer getRenderer()
+	public Renderer getRenderer(String label)
 	{
-		return renderer;
+		return renderers.get(label);
 	}
 
-	public void registerRenderer(Renderer renderer)
+	public void registerRenderer(String label, Renderer renderer)
 	{
-		this.renderer = renderer;
+		renderers.put(label, renderer);
 	}
 }

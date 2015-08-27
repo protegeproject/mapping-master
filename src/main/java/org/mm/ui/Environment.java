@@ -21,4 +21,14 @@ public class Environment
 	 * Mapping resource location
 	 */
 	public static final String MAPPING_SOURCE = "mapping-source-path";
+
+	/**
+	 * Text renderer
+	 */
+	public static final String TEXT_RENDERER = "Text Renderer";
+
+	/**
+	 * OWL-API renderer
+	 */
+	public static final String OWLAPI_RENDERER = "OWL-API Renderer";
 }

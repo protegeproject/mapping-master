@@ -156,7 +156,7 @@ public class ApplicationView extends JSplitPane implements MMView
 
 	public Renderer getDefaultRenderer()
 	{
-		return getApplicationModel().getRenderer();
+		return getApplicationModel().getDefaultRenderer();
 	}
 
 	public MMDialogManager getApplicationDialogManager()
