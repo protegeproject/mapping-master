@@ -21,8 +21,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -58,6 +61,7 @@ public class MappingBrowserView extends JPanel implements MMView
 		tblMappingExpression.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tblMappingExpression.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		tblMappingExpression.setGridColor(Color.LIGHT_GRAY);
+		tblMappingExpression.setDefaultRenderer(String.class, new MultiLineCellRenderer());
 
 		JScrollPane scrMappingExpression = new JScrollPane(tblMappingExpression);
 		
@@ -118,6 +122,7 @@ public class MappingBrowserView extends JPanel implements MMView
 		tblMappingExpression.setModel(tableModel);
 		setPreferredColumnSize();
 		resizeColumnWidth();
+		resizeColumnHeight();
 	}
 
 	public void updateTableModel(int selectedRow, String sheetName, String startColumn, String endColumn, String startRow, String endRow, String expression, String comment)
@@ -136,6 +141,7 @@ public class MappingBrowserView extends JPanel implements MMView
 		}
 		tableModel.addRow(row);
 		resizeColumnWidth();
+		resizeColumnHeight();
 	}
 
 	private void setPreferredColumnSize()
@@ -161,9 +167,25 @@ public class MappingBrowserView extends JPanel implements MMView
 			for (int row = 0; row < tblMappingExpression.getRowCount(); row++) {
 				TableCellRenderer renderer = tblMappingExpression.getCellRenderer(row, column);
 				Component comp = tblMappingExpression.prepareRenderer(renderer, row, column);
-				width = Math.max(comp.getPreferredSize().width + 1, width);
+				width = Math.max(comp.getPreferredSize().width + 5, width);
 			}
 			columnModel.getColumn(column).setPreferredWidth(width);
+		}
+	}
+
+	private void resizeColumnHeight()
+	{
+		for (int column = 0; column < tblMappingExpression.getColumnCount(); column++) {
+			if (column == 5) {
+				int height = 0; // min height;
+				for (int row = 0; row < tblMappingExpression.getRowCount(); row++) {
+					Object value = tblMappingExpression.getModel().getValueAt(row, column);
+					TableCellRenderer renderer = tblMappingExpression.getDefaultRenderer(String.class);
+					Component comp = renderer.getTableCellRendererComponent(tblMappingExpression, value, false, false, row, column);
+					height = Math.max(comp.getPreferredSize().height, height);
+				}
+				tblMappingExpression.setRowHeight(height);
+			}
 		}
 	}
 
@@ -220,6 +242,12 @@ public class MappingBrowserView extends JPanel implements MMView
 		}
 
 		@Override
+		public Class<?> getColumnClass(int columnIndex)
+		{
+			return String.class;
+		}
+
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex)
 		{
 			return false;
@@ -250,6 +278,34 @@ public class MappingBrowserView extends JPanel implements MMView
 				mappings.add(mapping);
 			}
 			return mappings;
+		}
+	}
+
+	class MultiLineCellRenderer extends JTextArea implements TableCellRenderer
+	{
+		private static final long serialVersionUID = 1L;
+
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+		{
+			if (isSelected) {
+				setForeground(table.getSelectionForeground());
+				setBackground(table.getSelectionBackground());
+			} else {
+				setForeground(table.getForeground());
+				setBackground(table.getBackground());
+			}
+			setFont(table.getFont());
+			if (hasFocus) {
+				setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+				if (table.isCellEditable(row, column)) {
+					setForeground(UIManager.getColor("Table.focusCellForeground"));
+					setBackground(UIManager.getColor("Table.focusCellBackground"));
+				}
+			} else {
+				setBorder(new EmptyBorder(1, 2, 1, 2));
+			}
+			setText((value == null) ? "" : value.toString());
+			return this;
 		}
 	}
 
