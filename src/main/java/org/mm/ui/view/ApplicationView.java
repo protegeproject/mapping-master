@@ -20,6 +20,7 @@ import org.mm.ui.MMApplication;
 import org.mm.ui.MMApplicationFactory;
 import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.ApplicationModel;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
  * This is the main Mapping Master user interface. It contains a view of a
@@ -80,6 +81,12 @@ public class ApplicationView extends JSplitPane implements MMView
 	public void updateOntologyDocument(String path)
 	{
 		applicationFactory.setOntologyLocation(path);
+		fireApplicationResourceChanged();
+	}
+
+	public void setUserOntology(OWLOntology ontology)
+	{
+		applicationFactory.setUserOntology(ontology);
 		fireApplicationResourceChanged();
 	}
 

@@ -16,6 +16,8 @@ public class MMApplicationFactory
 {
 	private Properties properties;
 
+	private OWLOntology userOntology;
+
 	public MMApplicationFactory()
 	{
 		properties = new Properties();
@@ -45,6 +47,17 @@ public class MMApplicationFactory
 	public void setOntologyLocation(String path)
 	{
 		properties.setProperty(Environment.ONTOLOGY_SOURCE, path);
+	}
+
+	/**
+	 * An alternative way to feed ontology to the system, i.e., to pass the OWLOntology object itself
+	 * rather than the file location.
+	 *
+	 * @param ontology An OWLOntology object.
+	 */
+	public void setUserOntology(OWLOntology ontology)
+	{
+		userOntology = ontology;
 	}
 
 	public String getMappingLocation()
@@ -87,7 +100,7 @@ public class MMApplicationFactory
 		
 		String ontologyLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
 		OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = owlManager.createOntology();
+		OWLOntology ontology = userOntology;
 		if (ontologyLocation != null) {
 			ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologyLocation));
 		}
