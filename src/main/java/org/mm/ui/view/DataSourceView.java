@@ -30,20 +30,18 @@ public class DataSourceView extends JPanel implements MMView
 
 		setLayout(new BorderLayout());
 
-		setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Workbook"));
-
 		tabSheetContainer = new JTabbedPane();
 		tabSheetContainer.addTab("NONE", new JPanel());
 		add(tabSheetContainer, BorderLayout.CENTER);
 
 		JPanel pnlWorkbookFile = new JPanel(new BorderLayout());
-		pnlWorkbookFile.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Workbook File"));
-		add(pnlWorkbookFile, BorderLayout.SOUTH);
+		pnlWorkbookFile.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Spreadsheet File"));
+		add(pnlWorkbookFile, BorderLayout.NORTH);
 
 		txtWorkbookPath = new JTextField("");
 		pnlWorkbookFile.add(txtWorkbookPath, BorderLayout.CENTER);
 
-		JButton cmdOpen = new JButton("Open");
+		JButton cmdOpen = new JButton("Browse...");
 		cmdOpen.addActionListener(new OpenWorkbookAction());
 		pnlWorkbookFile.add(cmdOpen, BorderLayout.EAST);
 
@@ -57,9 +55,11 @@ public class DataSourceView extends JPanel implements MMView
 			try {
 				File file = getApplicationDialogManager().showOpenFileChooser(
 						container, "Open Excel Workbook", "xlsx", "Excel Workbook (.xlsx)");
-				String filename = file.getAbsolutePath();
-				container.loadWorkbookDocument(filename);
-				txtWorkbookPath.setText(filename);
+				if (file != null) {
+					String filename = file.getAbsolutePath();
+					container.loadWorkbookDocument(filename);
+					txtWorkbookPath.setText(filename);
+				}
 			} catch (Exception ex) {
 				getApplicationDialogManager().showErrorMessageDialog(container,
 						"Error opening file: " + ex.getMessage());
