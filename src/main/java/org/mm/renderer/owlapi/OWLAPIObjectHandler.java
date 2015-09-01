@@ -1,5 +1,6 @@
 package org.mm.renderer.owlapi;
 
+import java.util.Map;
 import java.util.Set;
 
 import org.mm.renderer.RendererException;
@@ -26,7 +27,6 @@ import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
-import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -46,12 +46,12 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
-import org.semanticweb.owlapi.model.PrefixManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
@@ -62,7 +62,7 @@ class OWLAPIObjectHandler
 	
 	private final OWLDataFactory owlDataFactory;
 
-	private final PrefixManager prefixManager = new DefaultPrefixManager();
+	private final DefaultPrefixManager prefixManager = new DefaultPrefixManager();
 
 	public OWLAPIObjectHandler(OWLOntology ontology)
 	{
@@ -70,9 +70,12 @@ class OWLAPIObjectHandler
 		owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
 		
 		// Assemble the prefix manager for the given ontology
-		OWLDocumentFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
+		OWLOntologyFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
 		if (format.isPrefixOWLOntologyFormat()) {
-			prefixManager.copyPrefixesFrom(format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap());
+			Map<String, String> prefixMap = format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap();
+			for (String prefixName : prefixMap.keySet()) {
+				prefixManager.setPrefix(prefixName, prefixMap.get(prefixName));
+			}
 		}
 	}
 

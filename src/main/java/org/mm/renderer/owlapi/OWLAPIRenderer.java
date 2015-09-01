@@ -19,8 +19,8 @@ import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLPropertyAssertionObjectNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.ReferenceNode;
-import org.mm.renderer.OWLCoreRenderer;
 import org.mm.renderer.InternalRendererException;
+import org.mm.renderer.OWLCoreRenderer;
 import org.mm.renderer.ReferenceRendererConfiguration;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
@@ -350,7 +350,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 
 				if (annotationValueNode.isReference()) { // We have an object property so tell the reference
 					ReferenceNode referenceNode = annotationValueNode.getReferenceNode();
-					if (!referenceNode.hasExplicitlySpecifiedReferenceType() && handler.isOWLObjectProperty(property)) {
+					if (!referenceNode.hasExplicitlySpecifiedReferenceType() && handler.isOWLObjectProperty(property.getIRI())) {
 						referenceNode.updateReferenceType(OWL_NAMED_INDIVIDUAL);
 					}
 				}

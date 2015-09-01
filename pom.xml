@@ -11,7 +11,7 @@
   <properties>
 
     <javacc.version>6.1.2</javacc.version>
-    <owlapi.version>4.0.2</owlapi.version> 
+    <owlapi.version>3.5.1</owlapi.version> 
     <poi.version>3.13-beta1</poi.version>
     <gson.version>2.3.1</gson.version>
     
