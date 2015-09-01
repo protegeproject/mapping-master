@@ -99,9 +99,9 @@ public class MMApplicationFactory
 		resources.setSpreadSheetDataSource(datasource);
 		
 		String ontologyLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
-		OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
 		OWLOntology ontology = userOntology;
 		if (ontologyLocation != null) {
+			OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
 			ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologyLocation));
 		}
 		resources.setOWLOntology(ontology);
