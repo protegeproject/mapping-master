@@ -377,10 +377,12 @@ public class MappingBrowserView extends JPanel implements MMView
 			try {
 				File file = getApplicationDialogManager().showOpenFileChooser(
 						container, "Open", "json", "MappingMaster DSL Mapping Expression (.json)");
-				String filePath = file.getAbsolutePath();
-				container.loadMappingDocument(filePath);
-				txtMappingPath.setText(filePath);
-				cmdSave.setEnabled(true);
+				if (file != null) {
+					String filePath = file.getAbsolutePath();
+					container.loadMappingDocument(filePath);
+					txtMappingPath.setText(filePath);
+					cmdSave.setEnabled(true);
+				}
 			} catch (Exception ex) {
 				getApplicationDialogManager().showErrorMessageDialog(container,
 						"Error opening file: " + ex.getMessage());

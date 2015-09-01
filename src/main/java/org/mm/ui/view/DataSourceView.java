@@ -55,9 +55,11 @@ public class DataSourceView extends JPanel implements MMView
 			try {
 				File file = getApplicationDialogManager().showOpenFileChooser(
 						container, "Open Excel Workbook", "xlsx", "Excel Workbook (.xlsx)");
-				String filename = file.getAbsolutePath();
-				container.loadWorkbookDocument(filename);
-				txtWorkbookPath.setText(filename);
+				if (file != null) {
+					String filename = file.getAbsolutePath();
+					container.loadWorkbookDocument(filename);
+					txtWorkbookPath.setText(filename);
+				}
 			} catch (Exception ex) {
 				getApplicationDialogManager().showErrorMessageDialog(container,
 						"Error opening file: " + ex.getMessage());
