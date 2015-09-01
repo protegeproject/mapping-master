@@ -98,7 +98,7 @@ public class MappingBrowserView extends JPanel implements MMView
 		JPanel pnlMappingOpenSave = new JPanel(new GridLayout(1, 4));
 		pnlBottom.add(pnlMappingOpenSave, BorderLayout.EAST);
 
-		JButton cmdOpen = new JButton("Open");
+		JButton cmdOpen = new JButton("Browse...");
 		cmdOpen.addActionListener(new OpenMappingAction());
 		pnlMappingOpenSave.add(cmdOpen);
 
