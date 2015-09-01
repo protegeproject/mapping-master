@@ -1,8 +1,7 @@
 package org.mm.ui.dialog;
 
 import java.awt.Component;
-
-import javax.swing.JFileChooser;
+import java.io.File;
 
 /*
  * See https://github.com/protegeproject/swrlapi/blob/master/src/main/java/org/swrlapi/factory/DefaultSWRLAPIDialogManager.java
@@ -16,7 +15,7 @@ public interface MMDialogManager
 
 	void showErrorMessageDialog(Component parent, String message);
 
-	JFileChooser createOpenFileChooser(String message, String fileExtension, String fileDescription);
+	File showOpenFileChooser(Component parent, String message, String fileExtension, String fileDescription);
 
-	JFileChooser createSaveFileChooser(String message, String fileExtension, String fileDescription, boolean overwrite);
+	File showSaveFileChooser(Component parent, String message, String fileExtension, String fileDescription, boolean overwrite);
 }

@@ -7,7 +7,6 @@ import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -23,7 +22,7 @@ public class DataSourceView extends JPanel implements MMView
 	private ApplicationView container;
 
 	private JTextField txtWorkbookPath;
-	private JTabbedPane tabSheetPanel;
+	private JTabbedPane tabSheetContainer;
 
 	public DataSourceView(ApplicationView container)
 	{
@@ -33,8 +32,9 @@ public class DataSourceView extends JPanel implements MMView
 
 		setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Workbook"));
 
-		tabSheetPanel = new JTabbedPane();
-		add(tabSheetPanel, BorderLayout.CENTER);
+		tabSheetContainer = new JTabbedPane();
+		tabSheetContainer.addTab("NONE", new JPanel());
+		add(tabSheetContainer, BorderLayout.CENTER);
 
 		JPanel pnlWorkbookFile = new JPanel(new BorderLayout());
 		pnlWorkbookFile.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Workbook File"));
@@ -54,17 +54,15 @@ public class DataSourceView extends JPanel implements MMView
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			JFileChooser fileChooser = getApplicationDialogManager().createOpenFileChooser(
-					"Open Excel Workbook", "xlsx", "Excel Workbook (.xlsx)");
-			if (fileChooser.showOpenDialog(container) == JFileChooser.APPROVE_OPTION) {
-				try {
-					File file = fileChooser.getSelectedFile();
-					String filename = file.getAbsolutePath();
-					container.loadWorkbookDocument(filename);
-					txtWorkbookPath.setText(filename);
-				} catch (Exception ex) {
-					getApplicationDialogManager().showErrorMessageDialog(container, "Error opening file: " + ex.getMessage());
-				}
+			try {
+				File file = getApplicationDialogManager().showOpenFileChooser(
+						container, "Open Excel Workbook", "xlsx", "Excel Workbook (.xlsx)");
+				String filename = file.getAbsolutePath();
+				container.loadWorkbookDocument(filename);
+				txtWorkbookPath.setText(filename);
+			} catch (Exception ex) {
+				getApplicationDialogManager().showErrorMessageDialog(container,
+						"Error opening file: " + ex.getMessage());
 			}
 		}
 	}
@@ -77,12 +75,11 @@ public class DataSourceView extends JPanel implements MMView
 	@Override
 	public void update()
 	{
-		tabSheetPanel.removeAll(); // reset the tab panel first
+		tabSheetContainer.removeAll(); // reset the tab panel first
 		SpreadSheetDataSource spreadsheet = container.getApplicationModel().getDataSourceModel().getDataSource();
 		for (Sheet sheet : spreadsheet.getSheets()) {
 			SheetView sheetView = new SheetView(sheet);
-			tabSheetPanel.addTab(sheet.getSheetName(), null, sheetView);
+			tabSheetContainer.addTab(sheet.getSheetName(), null, sheetView);
 		}
-		validate();
 	}
 }
