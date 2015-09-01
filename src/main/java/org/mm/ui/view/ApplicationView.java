@@ -43,11 +43,17 @@ public class ApplicationView extends JSplitPane implements MMView
 
 	public ApplicationView(MMDialogManager applicationDialogManager)
 	{
+		this(null, applicationDialogManager);
+	}
+
+	public ApplicationView(OWLOntology ontology, MMDialogManager applicationDialogManager)
+	{
+		setUserOntology(ontology);
 		this.applicationDialogManager = applicationDialogManager;
 
-		setupApplication();
-
 		setOrientation(JSplitPane.VERTICAL_SPLIT);
+		setDividerLocation(500);
+		setResizeWeight(0.8);
 
 		/*
 		 * Workbook sheet GUI presentation
@@ -62,7 +68,7 @@ public class ApplicationView extends JSplitPane implements MMView
 		 * Mapping Master command control, reference settings
 		 */
 		mappingControlView = new MappingControlView(this);
-		tabContainer.addTab("Mapping Control", null, mappingControlView, "Evaluate mapping expressions");
+		tabContainer.addTab("Mapping Evaluator", null, mappingControlView, "Evaluate mapping expressions");
 
 		/*
 		 * Mapping browser, create, edit, remove panel
@@ -73,20 +79,16 @@ public class ApplicationView extends JSplitPane implements MMView
 		validate();
 	}
 
-	public ApplicationModel getApplicationModel()
+	protected void setUserOntology(OWLOntology ontology)
 	{
-		return application.getApplicationModel();
+		if (ontology != null) {
+			applicationFactory.setUserOntology(ontology);
+		}
 	}
 
 	public void updateOntologyDocument(String path)
 	{
 		applicationFactory.setOntologyLocation(path);
-		fireApplicationResourceChanged();
-	}
-
-	public void setUserOntology(OWLOntology ontology)
-	{
-		applicationFactory.setUserOntology(ontology);
 		fireApplicationResourceChanged();
 	}
 
@@ -97,6 +99,7 @@ public class ApplicationView extends JSplitPane implements MMView
 
 		updateDataSourceView();
 		updateMappingControlView();
+		updateMappingBrowserView();
 	}
 
 	public void loadMappingDocument(String path)
@@ -132,8 +135,13 @@ public class ApplicationView extends JSplitPane implements MMView
 		try {
 			application = applicationFactory.createApplication();
 		} catch (Exception e) {
-			applicationDialogManager.showErrorMessageDialog(this, e.getMessage());
+			applicationDialogManager.showErrorMessageDialog(this, "Initialization error: " + e.getMessage());
 		}
+	}
+
+	public ApplicationModel getApplicationModel()
+	{
+		return application.getApplicationModel();
 	}
 
 	public void evaluate(MappingExpression mapping, Renderer renderer, List<Rendering> results) throws ParseException
