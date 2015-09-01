@@ -28,7 +28,7 @@ public class SimpleDialogManager implements MMDialogManager
 	}
 
 	@Override
-	public JFileChooser createOpenFileChooser(String message, String fileExtension, String fileDescription)
+	public File showOpenFileChooser(Component parent, String message, String fileExtension, String fileDescription)
 	{
 		JFileChooser chooser = new JFileChooser();
 		chooser.setDialogTitle("Open");
@@ -39,11 +39,15 @@ public class SimpleDialogManager implements MMDialogManager
 		else {
 			chooser.setFileFilter(new FileNameExtensionFilter(fileDescription, fileExtension));
 		}
-		return chooser;
+		
+		if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+			return chooser.getSelectedFile();
+		}
+		return null;
 	}
 
 	@Override
-	public JFileChooser createSaveFileChooser(String message, String fileExtension, String fileDescription, boolean overwrite)
+	public File showSaveFileChooser(Component parent, String message, String fileExtension, String fileDescription, boolean overwrite)
 	{
 		JFileChooser chooser = new JFileChooser()
 		{
@@ -71,6 +75,10 @@ public class SimpleDialogManager implements MMDialogManager
 		if (fileExtension != null) {
 			chooser.setFileFilter(new FileNameExtensionFilter(fileExtension, fileDescription));
 		}
-		return chooser;
+		
+		if (chooser.showSaveDialog(parent) == JFileChooser.APPROVE_OPTION) {
+			return chooser.getSelectedFile();
+		}
+		return null;
 	}
 }

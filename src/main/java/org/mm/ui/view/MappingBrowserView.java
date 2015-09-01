@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,6 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -361,8 +361,8 @@ public class MappingBrowserView extends JPanel implements MMView
 				getApplicationDialogManager().showMessageDialog(container, "No mapping expression was selected");
 				return;
 			}
-			int answer = getApplicationDialogManager().showConfirmDialog(container,
-					"Delete", "Do you really want to delete the selected expression?");
+			int answer = getApplicationDialogManager().showConfirmDialog(
+					container, "Delete", "Do you really want to delete the selected expression?");
 			if (answer == JOptionPane.YES_OPTION) {
 				tableModel.removeRow(selectedRow);
 			}
@@ -374,18 +374,16 @@ public class MappingBrowserView extends JPanel implements MMView
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			JFileChooser fileChooser = getApplicationDialogManager().createOpenFileChooser(
-					"Open", "json", "MappingMaster DSL Mapping Expression (.json)");
-			if (fileChooser.showOpenDialog(container) == JFileChooser.APPROVE_OPTION) {
-				try {
-					String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-					container.loadMappingDocument(filePath);
-					txtMappingPath.setText(filePath);
-					cmdSave.setEnabled(true);
-				} catch (Exception ex) {
-					getApplicationDialogManager().showErrorMessageDialog(container,
-							"Error opening file: " + ex.getMessage());
-				}
+			try {
+				File file = getApplicationDialogManager().showOpenFileChooser(
+						container, "Open", "json", "MappingMaster DSL Mapping Expression (.json)");
+				String filePath = file.getAbsolutePath();
+				container.loadMappingDocument(filePath);
+				txtMappingPath.setText(filePath);
+				cmdSave.setEnabled(true);
+			} catch (Exception ex) {
+				getApplicationDialogManager().showErrorMessageDialog(container,
+						"Error opening file: " + ex.getMessage());
 			}
 		}
 	}
@@ -413,24 +411,23 @@ public class MappingBrowserView extends JPanel implements MMView
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			JFileChooser fileChooser = getApplicationDialogManager().createSaveFileChooser(
-					"Save As", "json", "MappingMaster DSL Mapping Expression (.json)", true);
-			if (fileChooser.showSaveDialog(container) == JFileChooser.APPROVE_OPTION) {
-				try {
-					String ext = ".json";
-					String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-					if (!filePath.endsWith(ext)) {
-						filePath = filePath + ext;
-					}
-					MappingExpressionSetFactory.saveMappingExpressionSetToDocument(
-							filePath,
-							tableModel.getMappingExpressionSet());
-					container.updateMappingExpressionModel(tableModel.getMappingExpressionSet());
-					txtMappingPath.setText(filePath);
-				} catch (Exception ex) {
-					getApplicationDialogManager().showErrorMessageDialog(container,
-							"Error saving file: " + ex.getMessage());
+			try {
+				File file = getApplicationDialogManager().showSaveFileChooser(
+						container, "Save As", "json", "MappingMaster DSL Mapping Expression (.json)", true);
+				
+				String filePath = file.getAbsolutePath();
+				String ext = ".json";
+				if (!filePath.endsWith(ext)) {
+					filePath = filePath + ext;
 				}
+				MappingExpressionSetFactory.saveMappingExpressionSetToDocument(
+						filePath,
+						tableModel.getMappingExpressionSet());
+				container.updateMappingExpressionModel(tableModel.getMappingExpressionSet());
+				txtMappingPath.setText(filePath);
+			} catch (Exception ex) {
+				getApplicationDialogManager().showErrorMessageDialog(container,
+						"Error saving file: " + ex.getMessage());
 			}
 		}
 	}

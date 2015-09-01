@@ -90,6 +90,14 @@ public class MMApplicationFactory
 	{
 		Resources resources = new Resources();
 		
+		String ontologyLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
+		if (ontologyLocation != null) {
+			OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
+			OWLOntology ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologyLocation));
+			setUserOntology(ontology);
+		}
+		resources.setOWLOntology(userOntology);
+		
 		String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
 		Workbook workbook = SpreadsheetFactory.createEmptyWorkbook();
 		if (workbookLocation != null) {
@@ -97,14 +105,6 @@ public class MMApplicationFactory
 		}
 		SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
 		resources.setSpreadSheetDataSource(datasource);
-		
-		String ontologyLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
-		OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
-		OWLOntology ontology = userOntology;
-		if (ontologyLocation != null) {
-			ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologyLocation));
-		}
-		resources.setOWLOntology(ontology);
 		
 		String mappingLocation = properties.getProperty(Environment.MAPPING_SOURCE);
 		MappingExpressionSet mappings = MappingExpressionSetFactory.createEmptyMappingExpressionSet();
