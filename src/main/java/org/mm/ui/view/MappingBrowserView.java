@@ -416,17 +416,18 @@ public class MappingBrowserView extends JPanel implements MMView
 			try {
 				File file = getApplicationDialogManager().showSaveFileChooser(
 						container, "Save As", "json", "MappingMaster DSL Mapping Expression (.json)", true);
-				
-				String filePath = file.getAbsolutePath();
-				String ext = ".json";
-				if (!filePath.endsWith(ext)) {
-					filePath = filePath + ext;
+				if (file != null) {
+					String filePath = file.getAbsolutePath();
+					String ext = ".json";
+					if (!filePath.endsWith(ext)) {
+						filePath = filePath + ext;
+					}
+					MappingExpressionSetFactory.saveMappingExpressionSetToDocument(
+							filePath,
+							tableModel.getMappingExpressionSet());
+					container.updateMappingExpressionModel(tableModel.getMappingExpressionSet());
+					txtMappingPath.setText(filePath);
 				}
-				MappingExpressionSetFactory.saveMappingExpressionSetToDocument(
-						filePath,
-						tableModel.getMappingExpressionSet());
-				container.updateMappingExpressionModel(tableModel.getMappingExpressionSet());
-				txtMappingPath.setText(filePath);
 			} catch (Exception ex) {
 				getApplicationDialogManager().showErrorMessageDialog(container,
 						"Error saving file: " + ex.getMessage());
