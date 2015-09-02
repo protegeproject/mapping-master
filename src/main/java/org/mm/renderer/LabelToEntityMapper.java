@@ -31,10 +31,11 @@ public class LabelToEntityMapper
 			for (OWLAnnotationAssertionAxiom axiom : axioms) {
 				OWLAnnotationValue value = axiom.getValue();
 				if (value instanceof IRI) {
-					String label = value.asIRI().get().toString();
+					IRI iri = (IRI) value;
+					String label = iri.toString();
 					mapper.put(label, entity); // put the IRI string
 				} else if (value instanceof OWLLiteral) {
-					OWLLiteral literal = value.asLiteral().get();
+					OWLLiteral literal = (OWLLiteral) value;
 					String label = literal.getLiteral();
 					mapper.put(label, entity); // put the Literal string
 					if (literal.hasLang()) {
