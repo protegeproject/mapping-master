@@ -36,6 +36,9 @@ public class MapExpressionsAction implements ActionListener
 {
 	private ApplicationView container;
 
+	private static final int IMPORT_TO_CURRENT_ONTOLOGY = 1;
+	private static final int IMPORT_TO_NEW_ONTOLOGY = 2;
+
 	public MapExpressionsAction(ApplicationView container)
 	{
 		this.container = container;
@@ -124,11 +127,11 @@ public class MapExpressionsAction implements ActionListener
 	{
 		int answer = showConfirmImportDialog();
 		switch (answer) {
-			case 1:
+			case IMPORT_TO_CURRENT_ONTOLOGY:
 				OWLOntology currentOntology = container.getApplicationModel().getOntology();
 				importResult(currentOntology, results);
 				break;
-			case 2:
+			case IMPORT_TO_NEW_ONTOLOGY:
 				File file = container.getApplicationDialogManager().showSaveFileChooser(container, "Save", "owl", "OWL ontology file", true);
 				if (file != null) {
 					OWLOntology newOntology = OWLManager.createOWLOntologyManager().createOntology(IRI.create(file.toURI()));
@@ -160,8 +163,8 @@ public class MapExpressionsAction implements ActionListener
 	private int showConfirmImportDialog()
 	{
 		ImportOption[] options = {
-				new ImportOption(1, "Import axioms to the current ontology"),
-				new ImportOption(2, "Import axioms to new ontology")
+				new ImportOption(IMPORT_TO_CURRENT_ONTOLOGY, "Import axioms to the current ontology"),
+				new ImportOption(IMPORT_TO_NEW_ONTOLOGY, "Import axioms to new ontology")
 		};
 		Object answer = JOptionPane.showInputDialog(container, "Please select the import action:", "Import", JOptionPane.DEFAULT_OPTION, null, options, null);
 		if (answer != null) {
