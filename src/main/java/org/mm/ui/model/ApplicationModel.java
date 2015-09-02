@@ -11,6 +11,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 public class ApplicationModel implements MMModel
 {
+	private OWLOntology ontology;
+	
 	private DataSourceModel dataSourceModel;
 	private MappingExpressionModel expressionMappingsModel;
 
@@ -18,8 +20,14 @@ public class ApplicationModel implements MMModel
 
 	public ApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
 	{
+		this.ontology = ontology;
 		dataSourceModel = new DataSourceModel(dataSource);
 		expressionMappingsModel = new MappingExpressionModel(mappings);
+	}
+
+	public OWLOntology getOntology()
+	{
+		return ontology;
 	}
 
 	public DataSourceModel getDataSourceModel()

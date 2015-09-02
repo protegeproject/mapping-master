@@ -2,8 +2,12 @@ package org.mm.ui.action;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import javax.swing.JOptionPane;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -12,6 +16,7 @@ import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.ParseException;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.Rendering;
+import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
@@ -20,6 +25,12 @@ import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.view.ApplicationView;
 import org.mm.ui.view.MappingControlView;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
 public class MapExpressionsAction implements ActionListener
 {
@@ -78,6 +89,7 @@ public class MapExpressionsAction implements ActionListener
 				}
 			}
 			printResults(results);
+			confirmImport(results);
 		}
 		catch (Exception ex) {
 			getApplicationDialogManager().showErrorMessageDialog(container, ex.getMessage());
@@ -89,10 +101,73 @@ public class MapExpressionsAction implements ActionListener
 		final MappingControlView view = container.getMappingsControlView();
 		view.messageAreaClear();
 		view.messageAreaAppend("MappingMaster v" + Environment.MAPPINGMASTER_VERSION + "\n\n");
-		view.messageAreaAppend("Successfully rendering " + results.size() + " axioms.\n");
+		view.messageAreaAppend("Successfully rendering " + countAxioms(results) + " axioms.\n");
 		for (Rendering rendering : results) {
 			view.messageAreaAppend(rendering + "\n");
 		}
+	}
+
+	private int countAxioms(List<Rendering> results)
+	{
+		int counter = 0;
+		for (Rendering rendering : results) {
+			if (rendering instanceof OWLAPIRendering) {
+				counter += ((OWLAPIRendering) rendering).getOWLAxioms().size();
+			} else {
+				counter++;
+			}
+		}
+		return counter;
+	}
+
+	private void confirmImport(List<Rendering> results) throws OWLOntologyCreationException, OWLOntologyStorageException
+	{
+		int answer = showConfirmImportDialog();
+		switch (answer) {
+			case 1:
+				OWLOntology currentOntology = container.getApplicationModel().getOntology();
+				importResult(currentOntology, results);
+				break;
+			case 2:
+				File file = container.getApplicationDialogManager().showSaveFileChooser(container, "Save", "owl", "OWL ontology file", true);
+				if (file != null) {
+					OWLOntology newOntology = OWLManager.createOWLOntologyManager().createOntology(IRI.create(file.toURI()));
+					importResult(newOntology, results);
+				}
+				break;
+			default:
+				// NO-OP
+		}
+	}
+
+	private void importResult(OWLOntology ontology, List<Rendering> results) throws OWLOntologyStorageException
+	{
+		int counter = 0;
+		for (Rendering rendering : results) {
+			if (rendering instanceof OWLAPIRendering) {
+				Set<OWLAxiom> owlAxioms = ((OWLAPIRendering) rendering).getOWLAxioms();
+				for (OWLAxiom axiom : owlAxioms) {
+					ontology.getOWLOntologyManager().addAxiom(ontology, axiom);
+					counter++;
+				}
+			}
+		}
+		IRI ontologyIri = ontology.getOWLOntologyManager().getOntologyDocumentIRI(ontology);
+		ontology.getOWLOntologyManager().saveOntology(ontology, ontologyIri);
+		JOptionPane.showMessageDialog(container, "Cellfie successfully imports " + counter + " axioms to ontology " + ontologyIri);
+	}
+
+	private int showConfirmImportDialog()
+	{
+		ImportOption[] options = {
+				new ImportOption(1, "Import axioms to the current ontology"),
+				new ImportOption(2, "Import axioms to new ontology")
+		};
+		Object answer = JOptionPane.showInputDialog(container, "Please select the import action:", "Import", JOptionPane.DEFAULT_OPTION, null, options, null);
+		if (answer != null) {
+			return ((ImportOption) answer).get();
+		}
+		return 0;
 	}
 
 	private void verify() throws MappingMasterException
@@ -137,5 +212,28 @@ public class MapExpressionsAction implements ActionListener
 	private MMDialogManager getApplicationDialogManager()
 	{
 		return container.getApplicationDialogManager();
+	}
+
+	class ImportOption
+	{
+		private int option;
+		private String title;
+		
+		public ImportOption(int option, String title)
+		{
+			this.option = option;
+			this.title = title;
+		}
+		
+		public int get()
+		{
+			return option;
+		}
+		
+		@Override
+		public String toString()
+		{
+			return title;
+		}
 	}
 }
