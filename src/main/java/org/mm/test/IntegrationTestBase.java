@@ -29,6 +29,9 @@ import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
@@ -172,14 +175,30 @@ public class IntegrationTestBase
 		return cellSet;
 	}
 
+	protected void createRDFSLabelAnnotationAxiom(OWLOntology ontology, String subject, String annotation)
+	{
+		OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
+		IRI subjectIri = IRI.create(subject);
+		OWLAnnotationProperty rdfsLabel = dataFactory.getRDFSLabel();
+		OWLAnnotationValue value = dataFactory.getOWLLiteral(annotation);
+		OWLAnnotationAssertionAxiom annotationAxiom = dataFactory.getOWLAnnotationAssertionAxiom(rdfsLabel, subjectIri, value);
+		ontology.getOWLOntologyManager().addAxiom(ontology, annotationAxiom);
+	}
+
 	protected void declareOWLClass(OWLOntology ontology, String shortName)
 	{
 		OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-		IRI iri = IRI.create(shortName);
-		OWLEntity entity = dataFactory.getOWLClass(iri);
+		IRI classIri = IRI.create(shortName);
+		OWLEntity entity = dataFactory.getOWLClass(classIri);
+		
+		OWLDeclarationAxiom classDeclarationxiom = dataFactory.getOWLDeclarationAxiom(entity);
+		ontology.getOWLOntologyManager().addAxiom(ontology, classDeclarationxiom);
+	}
 
-		OWLDeclarationAxiom axiom = dataFactory.getOWLDeclarationAxiom(entity);
-		ontology.getOWLOntologyManager().addAxiom(ontology, axiom);
+	protected void declareOWLClass(OWLOntology ontology, String shortName, String labelAnnotation)
+	{
+		declareOWLClass(ontology, shortName);
+		createRDFSLabelAnnotationAxiom(ontology, shortName, labelAnnotation);
 	}
 
 	protected void declareOWLNamedIndividual(OWLOntology ontology, String shortName)
@@ -187,9 +206,15 @@ public class IntegrationTestBase
 		OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
 		IRI iri = IRI.create(shortName);
 		OWLEntity entity = dataFactory.getOWLNamedIndividual(iri);
-
+		
 		OWLDeclarationAxiom axiom = dataFactory.getOWLDeclarationAxiom(entity);
 		ontology.getOWLOntologyManager().addAxiom(ontology, axiom);
+	}
+
+	protected void declareOWLNamedIndividual(OWLOntology ontology, String shortName, String labelAnnotation)
+	{
+		declareOWLNamedIndividual(ontology, shortName);
+		createRDFSLabelAnnotationAxiom(ontology, shortName, labelAnnotation);
 	}
 
 	protected void declareOWLObjectProperty(OWLOntology ontology, String shortName)
@@ -202,6 +227,12 @@ public class IntegrationTestBase
 		ontology.getOWLOntologyManager().addAxiom(ontology, axiom);
 	}
 
+	protected void declareOWLObjectProperty(OWLOntology ontology, String shortName, String labelAnnotation)
+	{
+		declareOWLObjectProperty(ontology, shortName);
+		createRDFSLabelAnnotationAxiom(ontology, shortName, labelAnnotation);
+	}
+
 	protected void declareOWLDataProperty(OWLOntology ontology, String shortName)
 	{
 		OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
@@ -210,6 +241,12 @@ public class IntegrationTestBase
 
 		OWLDeclarationAxiom axiom = dataFactory.getOWLDeclarationAxiom(entity);
 		ontology.getOWLOntologyManager().addAxiom(ontology, axiom);
+	}
+
+	protected void declareOWLDataProperty(OWLOntology ontology, String shortName, String labelAnnotation)
+	{
+		declareOWLDataProperty(ontology, shortName);
+		createRDFSLabelAnnotationAxiom(ontology, shortName, labelAnnotation);
 	}
 
 	protected void declareOWLAnnotationProperty(OWLOntology ontology, String shortName)
