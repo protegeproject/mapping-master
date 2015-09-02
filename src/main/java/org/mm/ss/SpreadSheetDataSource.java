@@ -102,17 +102,16 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 					"Invalid source specification @" + location + " - row " + location.getPhysicalRowNumber() + " is out of range");
 		}
 		Cell cell = row.getCell(columnNumber);
-		if (cell == null) {
-			throw new RendererException(
-					"Invalid source specification @" + location + " - column " + location.getColumnName() + " is out of range");
-		}
 		return getStringValue(cell);
 	}
 
 	private String getStringValue(Cell cell)
 	{
+		if (cell == null) {
+			return "";
+		}
 		switch (cell.getCellType()) {
-			case Cell.CELL_TYPE_BLANK: return null;
+			case Cell.CELL_TYPE_BLANK: return "";
 			case Cell.CELL_TYPE_STRING: return cell.getStringCellValue();
 			case Cell.CELL_TYPE_NUMERIC: 
 				if (isInteger(cell.getNumericCellValue())) { // check if the numeric is an integer or double
@@ -122,7 +121,7 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 				}
 			case Cell.CELL_TYPE_BOOLEAN: return Boolean.toString(cell.getBooleanCellValue());
 			case Cell.CELL_TYPE_FORMULA: return Double.toString(cell.getNumericCellValue());
-			default: return null;
+			default: return "";
 		}
 	}
 

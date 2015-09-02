@@ -42,7 +42,7 @@ public class ApplicationModel implements MMModel
 
 	public Renderer getDefaultRenderer()
 	{
-		return getRenderer(Environment.TEXT_RENDERER);
+		return getRenderer(Environment.OWLAPI_RENDERER);
 	}
 
 	public Renderer getRenderer(String label)
