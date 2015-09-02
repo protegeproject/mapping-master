@@ -60,7 +60,6 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
   private OWLAPIClassExpressionRenderer classExpressionRenderer;
 
   private String defaultNamespace = "";
-  private String defaultLanguage = "";
 
   /*
    * Map of prefix to map of rdfs:label to rdf:ID
@@ -262,17 +261,15 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
   private OWLEntity createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(String prefix, String label, String language,
       ReferenceType type, SpreadsheetLocation location) throws RendererException
   {
-    OWLEntity entity = null;
-    if (hasOWLEntityBeenCreatedWithLabel(prefix, label, language)) {
-      // log "using existing " + referenceType + " " + resolvedOWLEntity + " with rdfs:label " + labelText
-      entity = getOWLEntityWithRDFSLabel(type, prefix, label, language); // Find the existing one
-    } else if (hasOWLEntityBeenCreatedInOntology(label, language)) {
-      // log "using existing ontology " + referenceType + " " + resolvedOWLEntity+ " with rdfs:label " + labelText
-      entity = getOWLEntityWithRDFSLabel(label, language);
-    } else {
-      String identifier = ReferenceUtil.produceIdentifierString(label);
-      entity = createOWLEntity(prefix, identifier, type, location);
-      recordOWLEntityWithRDFSLabel(type, prefix, label, language, entity);
+    OWLEntity entity = getOWLEntityWithRDFSLabel(label, language);
+    if (entity == null) {
+      if (hasOWLEntityBeenCreatedWithLabel(prefix, label, language)) {
+        entity = getOWLEntityWithRDFSLabel(type, prefix, label, language); // Find the existing one
+      } else {
+        String identifier = ReferenceUtil.produceIdentifierString(label);
+        entity = createOWLEntity(prefix, identifier, type, location);
+        recordOWLEntityWithRDFSLabel(type, prefix, label, language, entity);
+      }
     }
     return entity;
   }
@@ -389,12 +386,6 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       return false;
   }
 
-  private boolean hasOWLEntityBeenCreatedInOntology(String label, String language)
-  {
-    // XXX: Currently we are ignoring the language tag
-    return handler.isOWLEntity(IRI.create(label));
-  }
-
   private OWLEntity getOWLEntityWithRDFSLabel(ReferenceType type, String prefix, String label, String language)
       throws RendererException
   {
@@ -442,13 +433,17 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 
   private OWLEntity getOWLEntityWithRDFSLabel(String labelText, String language) throws RendererException
   {
-    // TODO Confirm with Martin
-    if (language != null && "*".equals(language)) {
-      return handler.getOWLEntityWithRDFSLabel(labelText).iterator().next(); // Match on any language or none
-    } else if (language != null && "+".equals(language)) {
-      return handler.getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(labelText).iterator().next(); // Match on at least one language
+    if (language != null) {
+      if ("*".equals(language)) {
+        return handler.getOWLEntityWithRDFSLabel(labelText); // Match on any language or none
+      } else if ("+".equals(language)) {
+        // TODO Need better implementation for this case
+        return handler.getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(labelText); // Match on at least one language
+      } else {
+        return handler.getOWLEntityWithRDFSLabelAndLanguage(labelText, language); // Match on specific language
+      }
     } else {
-      return handler.getOWLEntityWithRDFSLabelAndLanguage(labelText, language).iterator().next(); // Match on specific language
+      return handler.getOWLEntityWithRDFSLabel(labelText); // Match on any language or none
     }
   }
 
@@ -791,22 +786,12 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
     if (referenceNode.hasExplicitlySpecifiedLanguage())
       return referenceNode.getActualLanguage();
     else
-      return getDefaultLanguage(); // Which might be null or empty
+      return null;
   }
 
-  private String getDefaultPrefix()
+  public String getDefaultPrefix()
   {
     return this.defaultNamespace;
-  }
-
-  private String getDefaultLanguage()
-  {
-    return this.defaultLanguage;
-  }
-
-  public boolean hasDefaultNamespace()
-  {
-    return !this.defaultNamespace.isEmpty();
   }
 
   private void throwOWLEntityExistsWithLabelException(String label, String language) throws RendererException
