@@ -2,6 +2,7 @@ package org.mm.renderer.owlapi;
 
 import java.util.Set;
 
+import org.mm.renderer.LabelToEntityMapper;
 import org.mm.renderer.RendererException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -59,14 +60,19 @@ import org.semanticweb.owlapi.vocab.XSDVocabulary;
 class OWLAPIObjectHandler
 {
 	private final OWLOntology ontology;
-	
+
 	private final OWLDataFactory owlDataFactory;
+
+	private final LabelToEntityMapper labelToEntityMapper;
 
 	private final PrefixManager prefixManager = new DefaultPrefixManager();
 
 	public OWLAPIObjectHandler(OWLOntology ontology)
 	{
 		this.ontology = ontology;
+		
+		labelToEntityMapper = new LabelToEntityMapper(ontology);
+
 		owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
 		
 		// Assemble the prefix manager for the given ontology
@@ -478,31 +484,19 @@ class OWLAPIObjectHandler
 		return this.ontology.containsAnnotationPropertyInSignature(property.getIRI());
 	}
 
-	public Set<OWLEntity> getOWLEntityWithRDFSLabel(String labelText)
+	public OWLEntity getOWLEntityWithRDFSLabel(String labelText)
 	{
-		/*
-		 * The current implementation treats labelText the same as the OWL entity ID.
-		 * TODO: Redo the implementation
-		 */
-		return this.ontology.getEntitiesInSignature(IRI.create(labelText));
+		return labelToEntityMapper.getEntityInLabel(labelText);
 	}
 
-	public Set<OWLEntity> getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(String labelText)
+	public OWLEntity getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(String labelText)
 	{
-		/*
-		 * The current implementation treats labelText the same as the OWL entity ID.
-		 * TODO: Redo the implementation
-		 */
-		return this.ontology.getEntitiesInSignature(IRI.create(labelText));
+		return labelToEntityMapper.getEntityInLabel(labelText);
 	}
 
-	public Set<OWLEntity> getOWLEntityWithRDFSLabelAndLanguage(String labelText, String language)
+	public OWLEntity getOWLEntityWithRDFSLabelAndLanguage(String labelText, String language)
 	{
-		/*
-		 * The current implementation treats labelText the same as the OWL entity ID.
-		 * TODO: Redo the implementation
-		 */
-		return this.ontology.getEntitiesInSignature(IRI.create(labelText));
+		return labelToEntityMapper.getEntityInLabel(labelText, language);
 	}
 
 	public String getPrefixForPrefixLabel(String prefixLabel) throws RendererException
