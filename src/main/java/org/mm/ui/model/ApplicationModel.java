@@ -1,26 +1,24 @@
 package org.mm.ui.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mm.core.MappingExpressionSet;
 import org.mm.renderer.Renderer;
+import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.text.TextRenderer;
 import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ui.Environment;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 public class ApplicationModel implements MMModel
 {
 	private OWLOntology ontology;
-	
+	private SpreadSheetDataSource dataSource;
+
 	private DataSourceModel dataSourceModel;
 	private MappingExpressionModel expressionMappingsModel;
-
-	private Map<String, Renderer> renderers = new HashMap<String, Renderer>();
 
 	public ApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
 	{
 		this.ontology = ontology;
+		this.dataSource = dataSource;
 		dataSourceModel = new DataSourceModel(dataSource);
 		expressionMappingsModel = new MappingExpressionModel(mappings);
 	}
@@ -42,16 +40,16 @@ public class ApplicationModel implements MMModel
 
 	public Renderer getDefaultRenderer()
 	{
-		return getRenderer(Environment.OWLAPI_RENDERER);
+		return getOWLAPIRenderer();
 	}
 
-	public Renderer getRenderer(String label)
+	public OWLAPIRenderer getOWLAPIRenderer()
 	{
-		return renderers.get(label);
+		return new OWLAPIRenderer(ontology, dataSource);
 	}
 
-	public void registerRenderer(String label, Renderer renderer)
+	public TextRenderer getTextRenderer()
 	{
-		renderers.put(label, renderer);
+		return new TextRenderer(dataSource);
 	}
 }

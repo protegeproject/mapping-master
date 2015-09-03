@@ -81,12 +81,14 @@ public class MapExpressionsAction implements ActionListener
 
 					dataSource.setCurrentLocation(currentLocation);
 
-					evaluate(mapping, results);
-					while (!currentLocation.equals(endLocation)) {
+					do {
+						evaluate(mapping, results);
+						if (currentLocation.equals(endLocation)) {
+							break;
+						}
 						currentLocation = incrementLocation(currentLocation, startLocation, endLocation);
 						dataSource.setCurrentLocation(currentLocation);
-						evaluate(mapping, results);
-					}
+					} while (true);
 				}
 			}
 			confirmImport(results);
