@@ -85,6 +85,11 @@ class OWLAPIObjectHandler
 		}
 	}
 
+	public String getDefaultPrefix()
+	{
+		return prefixManager.getDefaultPrefix();
+	}
+
 	public IRI getQualifiedName(String shortName)
 	{
 		return prefixManager.getIRI(shortName);

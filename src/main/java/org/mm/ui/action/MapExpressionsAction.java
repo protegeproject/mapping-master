@@ -3,6 +3,7 @@ package org.mm.ui.action;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.ProtocolException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,11 +21,9 @@ import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
-import org.mm.ui.Environment;
 import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.view.ApplicationView;
-import org.mm.ui.view.MappingControlView;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -83,15 +82,16 @@ public class MapExpressionsAction implements ActionListener
 
 					dataSource.setCurrentLocation(currentLocation);
 
-					evaluate(mapping, results);
-					while (!currentLocation.equals(endLocation)) {
+					do {
+						evaluate(mapping, results);
+						if (currentLocation.equals(endLocation)) {
+							break;
+						}
 						currentLocation = incrementLocation(currentLocation, startLocation, endLocation);
 						dataSource.setCurrentLocation(currentLocation);
-						evaluate(mapping, results);
-					}
+					} while (true);
 				}
 			}
-			printResults(results);
 			confirmImport(results);
 		}
 		catch (Exception ex) {
@@ -99,47 +99,32 @@ public class MapExpressionsAction implements ActionListener
 		}
 	}
 
-	private void printResults(List<Rendering> results)
-	{
-		final MappingControlView view = container.getMappingsControlView();
-		view.messageAreaClear();
-		view.messageAreaAppend("MappingMaster v" + Environment.MAPPINGMASTER_VERSION + "\n\n");
-		view.messageAreaAppend("Successfully rendering " + countAxioms(results) + " axioms.\n");
-		for (Rendering rendering : results) {
-			view.messageAreaAppend(rendering + "\n");
-		}
-	}
-
-	private int countAxioms(List<Rendering> results)
-	{
-		int counter = 0;
-		for (Rendering rendering : results) {
-			if (rendering instanceof OWLAPIRendering) {
-				counter += ((OWLAPIRendering) rendering).getOWLAxioms().size();
-			} else {
-				counter++;
-			}
-		}
-		return counter;
-	}
-
-	private void confirmImport(List<Rendering> results) throws OWLOntologyCreationException, OWLOntologyStorageException
+	private void confirmImport(List<Rendering> results) throws MappingMasterException
 	{
 		int answer = showConfirmImportDialog();
-		switch (answer) {
-			case IMPORT_TO_CURRENT_ONTOLOGY:
-				OWLOntology currentOntology = container.getApplicationModel().getOntology();
-				importResult(currentOntology, results);
-				break;
-			case IMPORT_TO_NEW_ONTOLOGY:
-				File file = container.getApplicationDialogManager().showSaveFileChooser(container, "Save", "owl", "OWL ontology file", true);
-				if (file != null) {
-					OWLOntology newOntology = OWLManager.createOWLOntologyManager().createOntology(IRI.create(file.toURI()));
-					importResult(newOntology, results);
-				}
-				break;
-			default:
-				// NO-OP
+		try {
+			switch (answer) {
+				case IMPORT_TO_CURRENT_ONTOLOGY:
+					OWLOntology currentOntology = container.getApplicationModel().getOntology();
+					importResult(currentOntology, results);
+					break;
+				case IMPORT_TO_NEW_ONTOLOGY:
+					File file = container.getApplicationDialogManager().showSaveFileChooser(container, "Save", "owl", "OWL ontology file", true);
+					if (file != null) {
+						OWLOntology newOntology = OWLManager.createOWLOntologyManager().createOntology(IRI.create(file.toURI()));
+						importResult(newOntology, results);
+					}
+					break;
+				default:
+					// NO-OP
+			}
+		} catch (OWLOntologyCreationException e) {
+			throw new MappingMasterException("Error while creating a new ontology file: " + e.getMessage());
+		} catch (OWLOntologyStorageException e) {
+			if (e.getCause() instanceof ProtocolException) {
+				throw new MappingMasterException("Unable to import the axioms to remote location. Please make sure your ontology was loaded from a local directory.");
+			}
+			throw new MappingMasterException("Error while importing the axioms to target ontology: " + e.getMessage());
 		}
 	}
 
@@ -157,7 +142,7 @@ public class MapExpressionsAction implements ActionListener
 		}
 		IRI ontologyIri = ontology.getOWLOntologyManager().getOntologyDocumentIRI(ontology);
 		ontology.getOWLOntologyManager().saveOntology(ontology, ontologyIri);
-		JOptionPane.showMessageDialog(container, "Cellfie successfully imports " + counter + " axioms to ontology " + ontologyIri);
+		getApplicationDialogManager().showMessageDialog(container, "Cellfie successfully imports " + counter + " axioms to ontology " + ontologyIri);
 	}
 
 	private int showConfirmImportDialog()

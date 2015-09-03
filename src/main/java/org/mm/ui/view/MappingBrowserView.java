@@ -32,6 +32,7 @@ import javax.swing.table.TableColumnModel;
 import org.mm.core.MappingExpression;
 import org.mm.core.MappingExpressionSet;
 import org.mm.core.MappingExpressionSetFactory;
+import org.mm.ui.action.MapExpressionsAction;
 import org.mm.ui.dialog.CreateMappingExpressionDialog;
 import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.MappingExpressionModel;
@@ -42,6 +43,7 @@ public class MappingBrowserView extends JPanel implements MMView
 
 	private ApplicationView container;
 
+	private JButton cmdRunMapping;
 	private JButton cmdAdd;
 	private JButton cmdEdit;
 	private JButton cmdDelete;
@@ -68,6 +70,12 @@ public class MappingBrowserView extends JPanel implements MMView
 		
 		JPanel pnlTop = new JPanel(new BorderLayout());
 		add(pnlTop, BorderLayout.NORTH);
+		
+		cmdRunMapping = new JButton("Run Mapping");
+		cmdRunMapping.setEnabled(false);
+		cmdRunMapping.setPreferredSize(new Dimension(125, 32));
+		cmdRunMapping.addActionListener(new MapExpressionsAction(container));
+		pnlTop.add(cmdRunMapping, BorderLayout.WEST);
 		
 		JPanel pnlCommandButton = new JPanel(new BorderLayout());
 		pnlTop.add(pnlCommandButton, BorderLayout.EAST);
@@ -117,6 +125,8 @@ public class MappingBrowserView extends JPanel implements MMView
 	@Override
 	public void update()
 	{
+		cmdRunMapping.setEnabled(true);
+		
 		tableModel = new MappingExpressionTableModel(getMappingExpressionsModel());
 		tblMappingExpression.setModel(tableModel);
 		setPreferredColumnSize();
