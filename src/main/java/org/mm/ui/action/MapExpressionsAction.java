@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.ProtocolException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -53,7 +53,7 @@ public class MapExpressionsAction implements ActionListener
 			verify();
 			
 			// TODO: Move this business logic inside the renderer
-			List<Rendering> results = new ArrayList<Rendering>();
+			Set<Rendering> results = new HashSet<Rendering>();
 			List<MappingExpression> mappings = getMappingExpressions();
 			SpreadSheetDataSource dataSource = getDataSourceModel().getDataSource();
 			Workbook workbook = dataSource.getWorkbook();
@@ -99,7 +99,7 @@ public class MapExpressionsAction implements ActionListener
 		}
 	}
 
-	private void confirmImport(List<Rendering> results) throws MappingMasterException
+	private void confirmImport(Set<Rendering> results) throws MappingMasterException
 	{
 		int answer = showConfirmImportDialog();
 		try {
@@ -128,7 +128,7 @@ public class MapExpressionsAction implements ActionListener
 		}
 	}
 
-	private void importResult(OWLOntology ontology, List<Rendering> results) throws OWLOntologyStorageException
+	private void importResult(OWLOntology ontology, Set<Rendering> results) throws OWLOntologyStorageException
 	{
 		int counter = 0;
 		for (Rendering rendering : results) {
@@ -168,7 +168,7 @@ public class MapExpressionsAction implements ActionListener
 		}
 	}
 
-	private void evaluate(MappingExpression mapping, List<Rendering> results) throws ParseException
+	private void evaluate(MappingExpression mapping, Set<Rendering> results) throws ParseException
 	{
 		container.evaluate(mapping, container.getDefaultRenderer(), results);
 	}

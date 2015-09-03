@@ -1,7 +1,7 @@
 package org.mm.ui.view;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
+import java.util.Set;
 
 import javax.swing.JSplitPane;
 
@@ -127,7 +127,7 @@ public class ApplicationView extends JSplitPane implements MMView
 		return application.getApplicationModel();
 	}
 
-	public void evaluate(MappingExpression mapping, Renderer renderer, List<Rendering> results) throws ParseException
+	public void evaluate(MappingExpression mapping, Renderer renderer, Set<Rendering> results) throws ParseException
 	{
 		String expression = mapping.getExpressionString();
 		ExpressionNode expressionNode = parseExpression(expression, referenceSettings);
