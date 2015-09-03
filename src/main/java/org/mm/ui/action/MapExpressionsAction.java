@@ -28,6 +28,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 
@@ -135,8 +136,8 @@ public class MapExpressionsAction implements ActionListener
 			if (rendering instanceof OWLAPIRendering) {
 				Set<OWLAxiom> owlAxioms = ((OWLAPIRendering) rendering).getOWLAxioms();
 				for (OWLAxiom axiom : owlAxioms) {
-					ontology.getOWLOntologyManager().addAxiom(ontology, axiom);
-					counter++;
+					List<OWLOntologyChange> changes = ontology.getOWLOntologyManager().addAxiom(ontology, axiom);
+					counter += changes.size();
 				}
 			}
 		}
