@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 
 import org.mm.core.MappingExpression;
 import org.mm.core.MappingExpressionSet;
@@ -33,7 +32,6 @@ public class ApplicationView extends JSplitPane implements MMView
 
 	private MMDialogManager applicationDialogManager;
 	private DataSourceView dataSourceView;
-	private MappingControlView mappingControlView;
 	private MappingBrowserView mappingExpressionView;
 
 	private MMApplication application;
@@ -61,20 +59,11 @@ public class ApplicationView extends JSplitPane implements MMView
 		dataSourceView = new DataSourceView(this);
 		setTopComponent(dataSourceView);
 
-		JTabbedPane tabContainer = new JTabbedPane();
-		setBottomComponent(tabContainer);
-
-		/*
-		 * Mapping Master command control, reference settings
-		 */
-		mappingControlView = new MappingControlView(this);
-		tabContainer.addTab("Mapping Evaluator", null, mappingControlView, "Evaluate mapping expressions");
-
 		/*
 		 * Mapping browser, create, edit, remove panel
 		 */
 		mappingExpressionView = new MappingBrowserView(this);
-		tabContainer.addTab("Mapping Browser", null, mappingExpressionView, "Load, add, edit, remove mapping expressions");
+		setBottomComponent(mappingExpressionView);
 		
 		validate();
 	}
@@ -98,7 +87,6 @@ public class ApplicationView extends JSplitPane implements MMView
 		fireApplicationResourceChanged();
 
 		updateDataSourceView();
-		updateMappingControlView();
 		updateMappingBrowserView();
 	}
 
@@ -118,11 +106,6 @@ public class ApplicationView extends JSplitPane implements MMView
 	private void updateDataSourceView()
 	{
 		dataSourceView.update();
-	}
-
-	private void updateMappingControlView()
-	{
-		mappingControlView.update();
 	}
 
 	private void updateMappingBrowserView()
@@ -187,11 +170,6 @@ public class ApplicationView extends JSplitPane implements MMView
 	public DataSourceView getDataSourceView()
 	{
 		return dataSourceView;
-	}
-
-	public MappingControlView getMappingsControlView()
-	{
-		return mappingControlView;
 	}
 
 	public MappingBrowserView getMappingBrowserView()
