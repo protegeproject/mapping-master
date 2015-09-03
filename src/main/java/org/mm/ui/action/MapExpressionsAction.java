@@ -20,11 +20,9 @@ import org.mm.rendering.owlapi.OWLAPIRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadSheetUtil;
 import org.mm.ss.SpreadsheetLocation;
-import org.mm.ui.Environment;
 import org.mm.ui.dialog.MMDialogManager;
 import org.mm.ui.model.DataSourceModel;
 import org.mm.ui.view.ApplicationView;
-import org.mm.ui.view.MappingControlView;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -91,36 +89,11 @@ public class MapExpressionsAction implements ActionListener
 					}
 				}
 			}
-			printResults(results);
 			confirmImport(results);
 		}
 		catch (Exception ex) {
 			getApplicationDialogManager().showErrorMessageDialog(container, ex.getMessage());
 		}
-	}
-
-	private void printResults(List<Rendering> results)
-	{
-		final MappingControlView view = container.getMappingsControlView();
-		view.messageAreaClear();
-		view.messageAreaAppend("MappingMaster v" + Environment.MAPPINGMASTER_VERSION + "\n\n");
-		view.messageAreaAppend("Successfully rendering " + countAxioms(results) + " axioms.\n");
-		for (Rendering rendering : results) {
-			view.messageAreaAppend(rendering + "\n");
-		}
-	}
-
-	private int countAxioms(List<Rendering> results)
-	{
-		int counter = 0;
-		for (Rendering rendering : results) {
-			if (rendering instanceof OWLAPIRendering) {
-				counter += ((OWLAPIRendering) rendering).getOWLAxioms().size();
-			} else {
-				counter++;
-			}
-		}
-		return counter;
 	}
 
 	private void confirmImport(List<Rendering> results) throws OWLOntologyCreationException, OWLOntologyStorageException
