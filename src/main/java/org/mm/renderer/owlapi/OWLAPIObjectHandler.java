@@ -52,7 +52,6 @@ import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
-import org.semanticweb.owlapi.model.PrefixManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
@@ -65,7 +64,7 @@ class OWLAPIObjectHandler
 
 	private final LabelToEntityMapper labelToEntityMapper;
 
-	private final PrefixManager prefixManager = new DefaultPrefixManager();
+	private final DefaultPrefixManager prefixManager = new DefaultPrefixManager();
 
 	public OWLAPIObjectHandler(OWLOntology ontology)
 	{
@@ -80,6 +79,11 @@ class OWLAPIObjectHandler
 		if (format.isPrefixOWLOntologyFormat()) {
 			prefixManager.copyPrefixesFrom(format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap());
 		}
+	}
+
+	public String getDefaultPrefix()
+	{
+		return prefixManager.getDefaultPrefix();
 	}
 
 	public IRI getQualifiedName(String shortName)

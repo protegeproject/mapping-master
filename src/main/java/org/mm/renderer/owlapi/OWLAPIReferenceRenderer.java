@@ -59,7 +59,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
   private OWLAPILiteralRenderer literalRenderer;
   private OWLAPIClassExpressionRenderer classExpressionRenderer;
 
-  private String defaultNamespace = "";
+  private String defaultPrefix = "";
 
   /*
    * Map of prefix to map of rdfs:label to rdf:ID
@@ -78,6 +78,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
     literalRenderer = new OWLAPILiteralRenderer(ontology);
     entityRenderer = new OWLAPIEntityRenderer(ontology, this);
     classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, entityRenderer);
+    defaultPrefix = handler.getDefaultPrefix();
   }
 
   public void setDataSource(SpreadSheetDataSource dataSource)
@@ -791,7 +792,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 
   public String getDefaultPrefix()
   {
-    return this.defaultNamespace;
+    return defaultPrefix;
   }
 
   private void throwOWLEntityExistsWithLabelException(String label, String language) throws RendererException
