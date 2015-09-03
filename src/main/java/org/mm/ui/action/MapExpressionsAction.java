@@ -122,7 +122,7 @@ public class MapExpressionsAction implements ActionListener
 			throw new MappingMasterException("Error while creating a new ontology file: " + e.getMessage());
 		} catch (OWLOntologyStorageException e) {
 			if (e.getCause() instanceof ProtocolException) {
-				throw new MappingMasterException("Unable to save file to remote location. Please make sure your ontology was loaded from a local directory.");
+				throw new MappingMasterException("Unable to import the axioms to remote location. Please make sure your ontology was loaded from a local directory.");
 			}
 			throw new MappingMasterException("Error while importing the axioms to target ontology: " + e.getMessage());
 		}
