@@ -90,6 +90,11 @@ public class TextRenderer extends ReferenceRendererConfiguration
 		this.dataSource = dataSource;
 	}
 
+	protected SpreadSheetDataSource getDataSource()
+	{
+		return dataSource;
+	}
+
 	@Override
 	public ReferenceRendererConfiguration getReferenceRendererConfiguration()
 	{
@@ -117,7 +122,7 @@ public class TextRenderer extends ReferenceRendererConfiguration
 	}
 
 	// TODO Refactor - too long
-	@Override public Optional<TextReferenceRendering> renderReference(ReferenceNode referenceNode)
+	@Override public Optional<? extends TextReferenceRendering> renderReference(ReferenceNode referenceNode)
 			throws RendererException
 	{
 		SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
@@ -374,8 +379,9 @@ public class TextRenderer extends ReferenceRendererConfiguration
 				if (!annotationFactRendering.isPresent())
 					continue;
 
-				if (isFirst)
+				if (isFirst) {
 					textRepresentation.append(" Annotations: ");
+				}
 				else
 					textRepresentation.append(", ");
 				textRepresentation.append(annotationFactRendering.get().getRendering());
