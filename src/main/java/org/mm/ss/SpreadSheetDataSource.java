@@ -28,7 +28,12 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 
 	private Map<String, Sheet> sheetMap = new HashMap<String, Sheet>();
 
-	public SpreadSheetDataSource(Workbook workbook) throws MappingMasterException
+	public SpreadSheetDataSource()
+	{
+		this(SpreadsheetFactory.createEmptyWorkbook());
+	}
+
+	public SpreadSheetDataSource(Workbook workbook)
 	{
 		this.workbook = workbook;
 		currentLocation = Optional.empty();
