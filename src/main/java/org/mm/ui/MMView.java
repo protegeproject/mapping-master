@@ -1,4 +1,4 @@
-package org.mm.ui.view;
+package org.mm.ui;
 
 public interface MMView
 {

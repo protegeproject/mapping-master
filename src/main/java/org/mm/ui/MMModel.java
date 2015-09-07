@@ -1,4 +1,4 @@
-package org.mm.ui.model;
+package org.mm.ui;
 
 public interface MMModel
 {

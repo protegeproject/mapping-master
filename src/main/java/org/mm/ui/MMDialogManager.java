@@ -1,4 +1,4 @@
-package org.mm.ui.dialog;
+package org.mm.ui;
 
 import java.awt.Component;
 import java.io.File;
