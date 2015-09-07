@@ -3,6 +3,7 @@ package org.mm.core;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
@@ -15,6 +16,15 @@ public class MappingExpressionSet implements Iterable<MappingExpression>
 	public MappingExpressionSet()
 	{
 		mappingExpressions = new HashSet<MappingExpression>();
+	}
+
+	public static MappingExpressionSet create(List<MappingExpression> mappingList)
+	{
+		MappingExpressionSet mappings = new MappingExpressionSet();
+		for (MappingExpression mapping : mappingList) {
+			mappings.add(mapping);
+		}
+		return mappings;
 	}
 
 	public Set<MappingExpression> getMappingExpressions()

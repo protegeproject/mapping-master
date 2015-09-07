@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 import com.google.gson.Gson;
 
@@ -21,9 +22,9 @@ public class MappingExpressionSetFactory
 		return new Gson().fromJson(br, MappingExpressionSet.class);
 	}
 
-	public static void saveMappingExpressionSetToDocument(String location, MappingExpressionSet mappings) throws IOException
+	public static void saveMappingExpressionSetToDocument(String location, List<MappingExpression> mappingList) throws IOException
 	{
-		String json = new Gson().toJson(mappings);
+		String json = new Gson().toJson(MappingExpressionSet.create(mappingList));
 		FileWriter writer = new FileWriter(location);
 		writer.write(json);
 		writer.close();
