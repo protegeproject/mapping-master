@@ -7,7 +7,7 @@ import java.io.File;
  * See https://github.com/protegeproject/swrlapi/blob/master/src/main/java/org/swrlapi/factory/DefaultSWRLAPIDialogManager.java
  * for a potential implementation.
  */
-public interface MMDialogManager
+public interface DialogManager
 {
 	int showConfirmDialog(Component parent, String title, String message);
 

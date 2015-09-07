@@ -1,6 +1,6 @@
 package org.mm.ui;
 
-public interface MMView
+public interface ModelView
 {
 	void update();
 }
