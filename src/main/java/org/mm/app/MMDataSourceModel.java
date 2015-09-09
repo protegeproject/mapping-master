@@ -16,9 +16,6 @@ public class MMDataSourceModel implements DataSourceModel
 
 	public MMDataSourceModel(SpreadSheetDataSource dataSource)
 	{
-		if (dataSource == null) {
-			throw new ApplicationStartupException("Data source can't be null");
-		}
 		this.dataSource = dataSource;
 	}
 
