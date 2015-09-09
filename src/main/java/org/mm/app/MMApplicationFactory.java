@@ -17,6 +17,7 @@ public class MMApplicationFactory
 	private Properties properties;
 
 	private OWLOntology userOntology;
+	private SpreadSheetDataSource userSpreadsheet;
 
 	public MMApplicationFactory()
 	{
@@ -60,6 +61,17 @@ public class MMApplicationFactory
 		userOntology = ontology;
 	}
 
+	/**
+	 * An alternative way to feed source spreadsheet to the system, i.e., to pass the object itself
+	 * rather than the file location.
+	 *
+	 * @param spreadsheet A speadsheet object.
+	 */
+	private void setUserSpreadsheet(SpreadSheetDataSource spreadsheet)
+	{
+		userSpreadsheet = spreadsheet;
+	}
+
 	public String getMappingLocation()
 	{
 		return properties.getProperty(Environment.MAPPING_SOURCE);
@@ -99,12 +111,12 @@ public class MMApplicationFactory
 		resources.setOWLOntology(userOntology);
 		
 		String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
-		Workbook workbook = SpreadsheetFactory.createEmptyWorkbook();
 		if (workbookLocation != null) {
-			workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
+			Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
+			SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
+			setUserSpreadsheet(datasource);
 		}
-		SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
-		resources.setSpreadSheetDataSource(datasource);
+		resources.setSpreadSheetDataSource(userSpreadsheet);
 		
 		String mappingLocation = properties.getProperty(Environment.MAPPING_SOURCE);
 		MappingExpressionSet mappings = MappingExpressionSetFactory.createEmptyMappingExpressionSet();
