@@ -107,6 +107,10 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 					"Invalid source specification @" + location + " - row " + location.getPhysicalRowNumber() + " is out of range");
 		}
 		Cell cell = row.getCell(columnNumber);
+		if (cell == null) {
+			throw new RendererException(
+					"Invalid source specification @" + location + " - column " + location.getColumnName() + " is out of range");
+		}
 		return getStringValue(cell);
 	}
 
