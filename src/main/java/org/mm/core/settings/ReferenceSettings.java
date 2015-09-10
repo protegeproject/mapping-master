@@ -7,7 +7,7 @@ public class ReferenceSettings
 	private String language = "";
 
 	private ReferenceTypeSetting referenceTypeSetting = ReferenceTypeSetting.OWL_CLASS;
-	private ValueEncodingSetting valueEncodingSetting = ValueEncodingSetting.RDFS_LABEL;
+	private ValueEncodingSetting valueEncodingSetting = ValueEncodingSetting.RDF_ID;
 	private PropertyTypeSetting propertyTypeSetting = PropertyTypeSetting.OWL_OBJECT_PROPERTY;
 	private EmptyLocationSetting emptyLocationSetting = EmptyLocationSetting.PROCESS_IF_EMPTY_LOCATION;
 	private EmptyLiteralSetting emptyLiteralSetting = EmptyLiteralSetting.PROCESS_IF_EMPTY_LITERAL;
