@@ -59,7 +59,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
   private OWLAPILiteralRenderer literalRenderer;
   private OWLAPIClassExpressionRenderer classExpressionRenderer;
 
-  private String defaultPrefix = "";
+  private String defaultPrefix;
 
   /*
    * Map of prefix to map of rdfs:label to rdf:ID
@@ -833,7 +833,11 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 
   private void throwOWLEntityExistsWithRDFIDException(String prefix, String identifier) throws RendererException
   {
-    throw new RendererException("an OWL entity already exists in prefix " + prefix + " with the rdf:ID " + identifier);
+    if (prefix == null) {
+      throw new RendererException("an OWL entity already exists with the rdf:ID " + identifier);
+    } else {
+      throw new RendererException("an OWL entity already exists in prefix " + prefix + " with the rdf:ID " + identifier);
+    }
   }
 
   private void warnOWLEntityExistsWithRDFID(String prefix, String identifier)
@@ -843,7 +847,11 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 
   private void throwNoExistingOWLEntityWithRDFIDException(String prefix, String identifier) throws RendererException
   {
-    throw new RendererException("an entity does not exist in prefix '" + prefix + "' with the rdf:ID " + identifier);
+    if (prefix == null) {
+      throw new RendererException("an entity does not exist with the rdf:ID " + identifier);
+    } else {
+      throw new RendererException("an entity does not exist in prefix '" + prefix + "' with the rdf:ID " + identifier);
+    }
   }
 
   private void warnNoExistingOWLEntityWithRDFID(String prefix, String identifier)
