@@ -83,6 +83,15 @@ class OWLAPIObjectHandler
 				prefixManager.setPrefix(prefixName, prefixMap.get(prefixName));
 			}
 		}
+		
+		// Make sure the default prefix is set
+		if (prefixManager.getDefaultPrefix() == null) {
+			String ontologyID = ontology.getOntologyID().getOntologyIRI().toString();
+			if (!ontologyID.endsWith("/") || !ontologyID.endsWith("#")) {
+				ontologyID += "#";
+			}
+			prefixManager.setDefaultPrefix(ontologyID);
+		}
 	}
 
 	public String getDefaultPrefix()
