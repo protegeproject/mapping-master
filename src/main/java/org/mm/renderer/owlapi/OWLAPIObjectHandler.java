@@ -86,11 +86,14 @@ class OWLAPIObjectHandler
 		
 		// Make sure the default prefix is set
 		if (prefixManager.getDefaultPrefix() == null) {
-			String ontologyID = ontology.getOntologyID().getOntologyIRI().toString();
-			if (!ontologyID.endsWith("/") || !ontologyID.endsWith("#")) {
-				ontologyID += "#";
+			IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI();
+			if (ontologyIRI != null) {
+				String iri = ontologyIRI.toString();
+				if (!iri.endsWith("/") || !iri.endsWith("#")) {
+					iri += "#";
+				}
+				prefixManager.setDefaultPrefix(iri);
 			}
-			prefixManager.setDefaultPrefix(ontologyID);
 		}
 	}
 
