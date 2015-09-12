@@ -390,7 +390,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 
 				OWLPropertyAssertionObjectNode propertyAssertionObjectNode = factNode.getOWLPropertyAssertionObjectNode();
 				Optional<OWLPropertyAssertionObjectRendering> propertyAssertionObjectRendering =
-						entityRenderer.renderOWLPropertyAssertionObject(propertyAssertionObjectNode);
+						entityRenderer.renderOWLPropertyAssertion(propertyAssertionObjectNode);
 
 				if (!propertyAssertionObjectRendering.isPresent()) {
 					// logLine("Skipping OWL fact declaration clause [" + factNode + "] because of missing property value");

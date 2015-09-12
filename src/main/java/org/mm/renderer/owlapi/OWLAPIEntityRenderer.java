@@ -241,8 +241,8 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
 	}
 
 	@Override
-	public Optional<OWLPropertyAssertionObjectRendering> renderOWLPropertyAssertionObject(
-			OWLPropertyAssertionObjectNode value) throws RendererException
+	public Optional<OWLPropertyAssertionObjectRendering> renderOWLPropertyAssertion(OWLPropertyAssertionObjectNode value)
+			throws RendererException
 	{
 		if (value.isName()) {
 			return renderNameForPropertyAssertionObject(value.getNameNode());

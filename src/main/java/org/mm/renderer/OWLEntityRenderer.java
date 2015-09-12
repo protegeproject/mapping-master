@@ -24,7 +24,7 @@ public interface OWLEntityRenderer
 
 	Optional<? extends Rendering> renderOWLAnnotationProperty(OWLAnnotationPropertyNode node) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLPropertyAssertionObject(OWLPropertyAssertionObjectNode node) throws RendererException;
+	Optional<? extends Rendering> renderOWLPropertyAssertion(OWLPropertyAssertionObjectNode node) throws RendererException;
 
 	Optional<? extends Rendering> renderOWLAnnotationValue(OWLAnnotationValueNode node) throws RendererException;
 }
