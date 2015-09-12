@@ -191,7 +191,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
           }
           break;
         /*
-         * Has both rdf:identifier and rdfs:label values. Use rdf:ID to resolve resolve possible existing entity.
+         * Has both rdf:ID and rdfs:label values. Use rdf:ID to resolve resolve possible existing entity.
          */
         case 3:
           if (shouldCreateOrResolveOWLEntityWithRDFID(prefix, identifier, directives)
@@ -487,7 +487,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
           axioms.add(axiom);
         } else {
           throw new RendererException(
-              "expecting OWL class as type for individual " + declaredIndividual.getIRI() + ", got " + entity.getIRI());
+              "expecting OWL class as type for individual " + declaredIndividual.getIRI() + ", got " + entity.getClass());
         }
       } else if (obj instanceof OWLClassExpression) {
         OWLClassExpression clsExp = (OWLClassExpression) obj;
