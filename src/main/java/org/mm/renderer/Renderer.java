@@ -8,9 +8,9 @@ import org.mm.ss.SpreadSheetDataSource;
 
 public interface Renderer
 {
-	Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode) throws RendererException;
+   Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode) throws RendererException;
 
-	public void changeDataSource(SpreadSheetDataSource source);
+   public void changeDataSource(SpreadSheetDataSource source);
 
-	public ReferenceRendererConfiguration getReferenceRendererConfiguration();
+   public ReferenceRendererConfiguration getReferenceRendererConfiguration();
 }

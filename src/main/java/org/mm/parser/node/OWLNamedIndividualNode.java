@@ -10,56 +10,54 @@ import org.mm.parser.ParserUtil;
 
 public class OWLNamedIndividualNode implements MMNode
 {
-  private ReferenceNode referenceNode;
-  private NameNode nameNode;
+   private ReferenceNode referenceNode;
+   private NameNode nameNode;
 
-  public OWLNamedIndividualNode(ASTOWLNamedIndividual node) throws ParseException
-  {
-    if (node.jjtGetNumChildren() != 1)
-      throw new InternalParseException("expecting one child node for node " + getNodeName());
-    else {
-      Node child = node.jjtGetChild(0);
-      if (ParserUtil.hasName(child, "Name"))
-        this.nameNode = new NameNode((ASTName)child);
-      else if (ParserUtil.hasName(child, "Reference"))
-        this.referenceNode = new ReferenceNode((ASTReference)child);
-      else
-        throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
-    }
-  }
+   public OWLNamedIndividualNode(ASTOWLNamedIndividual node) throws ParseException
+   {
+      if (node.jjtGetNumChildren() != 1)
+         throw new InternalParseException("expecting one child node for node " + getNodeName());
+      else {
+         Node child = node.jjtGetChild(0);
+         if (ParserUtil.hasName(child, "Name"))
+            this.nameNode = new NameNode((ASTName) child);
+         else if (ParserUtil.hasName(child, "Reference"))
+            this.referenceNode = new ReferenceNode((ASTReference) child);
+         else throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
+      }
+   }
 
-  public String getNodeName()
-  {
-    return "OWLNamedIndividual";
-  }
+   public String getNodeName()
+   {
+      return "OWLNamedIndividual";
+   }
 
-  public ReferenceNode getReferenceNode()
-  {
-    return this.referenceNode;
-  }
+   public ReferenceNode getReferenceNode()
+   {
+      return this.referenceNode;
+   }
 
-  public NameNode getNameNode()
-  {
-    return this.nameNode;
-  }
+   public NameNode getNameNode()
+   {
+      return this.nameNode;
+   }
 
-  public boolean hasNameNode()
-  {
-    return this.nameNode != null;
-  }
+   public boolean hasNameNode()
+   {
+      return this.nameNode != null;
+   }
 
-  public boolean hasReferenceNode()
-  {
-    return this.referenceNode != null;
-  }
+   public boolean hasReferenceNode()
+   {
+      return this.referenceNode != null;
+   }
 
-  public String toString()
-  {
-    if (hasNameNode())
-      return this.nameNode.toString();
-    else if (hasReferenceNode())
-      return this.referenceNode.toString();
-    else
-      return "";
-  }
+   public String toString()
+   {
+      if (hasNameNode())
+         return this.nameNode.toString();
+      else if (hasReferenceNode())
+         return this.referenceNode.toString();
+      else return "";
+   }
 }

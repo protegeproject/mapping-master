@@ -1,4 +1,3 @@
- 
 package org.mm.parser.node;
 
 import org.mm.parser.ASTDefaultLocationValue;
@@ -8,42 +7,42 @@ import org.mm.parser.ParserUtil;
 
 public class DefaultLocationValueDirectiveNode implements MMNode, MappingMasterParserConstants
 {
-  private final String defaultLocationValue;
-  
-  public DefaultLocationValueDirectiveNode(ASTDefaultLocationValue node) throws ParseException
-  { 
-    this.defaultLocationValue = node.defaultLocationValue;
-  }
-  
-  public String getDefaultLocationValue() { return this.defaultLocationValue; }
+   private final String defaultLocationValue;
 
-  @Override public String getNodeName()
-  {
-    return "DefaultLocationValueDirective";
-  }
+   public DefaultLocationValueDirectiveNode(ASTDefaultLocationValue node) throws ParseException
+   {
+      this.defaultLocationValue = node.defaultLocationValue;
+   }
 
-  public String toString()
-  { 
-    String representation = ParserUtil.getTokenName(MM_DEFAULT_LOCATION_VALUE) + "=\"" + this.defaultLocationValue + "\"";
+   public String getDefaultLocationValue()
+   {
+      return this.defaultLocationValue;
+   }
 
-    return representation;
-  } 
+   @Override
+   public String getNodeName()
+   {
+      return "DefaultLocationValueDirective";
+   }
 
-  public boolean equals(Object obj)
-  {
-    if (this == obj) return true;
-    if (obj == null || obj.getClass() != this.getClass()) return false;
-    DefaultLocationValueDirectiveNode dv = (DefaultLocationValueDirectiveNode)obj;
-    return this.defaultLocationValue != null && dv.defaultLocationValue != null && this.defaultLocationValue
-      .equals(dv.defaultLocationValue);
-  } 
+   public String toString()
+   {
+      return ParserUtil.getTokenName(MM_DEFAULT_LOCATION_VALUE) + "=\"" + this.defaultLocationValue + "\"";
+   }
 
-  public int hashCode()
-  {
-    int hash = 14;
+   public boolean equals(Object obj)
+   {
+      if (this == obj) return true;
+      if (obj == null || obj.getClass() != this.getClass()) return false;
+      DefaultLocationValueDirectiveNode dv = (DefaultLocationValueDirectiveNode) obj;
+      return this.defaultLocationValue != null && dv.defaultLocationValue != null
+            && this.defaultLocationValue.equals(dv.defaultLocationValue);
+   }
 
-    hash = hash + (null == this.defaultLocationValue ? 0 : this.defaultLocationValue.hashCode());
-
-    return hash;
-  }
+   public int hashCode()
+   {
+      int hash = 14;
+      hash = hash + (null == this.defaultLocationValue ? 0 : this.defaultLocationValue.hashCode());
+      return hash;
+   }
 }

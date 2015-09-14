@@ -12,53 +12,49 @@ import java.util.List;
 
 public class OWLObjectOneOfNode implements MMNode
 {
-  private final List<OWLNamedIndividualNode> namedIndividualNodes;
+   private final List<OWLNamedIndividualNode> namedIndividualNodes;
 
-  public OWLObjectOneOfNode(ASTOWLObjectOneOf node) throws ParseException
-  {
-    this.namedIndividualNodes = new ArrayList<>();
+   public OWLObjectOneOfNode(ASTOWLObjectOneOf node) throws ParseException
+   {
+      this.namedIndividualNodes = new ArrayList<>();
 
-    for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-      Node child = node.jjtGetChild(i);
-
-      if (ParserUtil.hasName(child, "OWLNamedIndividual")) {
-        OWLNamedIndividualNode namedIndividualNode = new OWLNamedIndividualNode((ASTOWLNamedIndividual)child);
-        this.namedIndividualNodes.add(namedIndividualNode);
-      } else
-        throw new InternalParseException(getNodeName() +
-          " node expecting OWLNamedIndividual child node, got " + child);
-    }
-  }
-
-  public List<OWLNamedIndividualNode> getOWLNamedIndividualNodes()
-  {
-    return this.namedIndividualNodes;
-  }
-
-  @Override public String getNodeName()
-  {
-    return "OWLObjectOneOf";
-  }
-
-  public String toString()
-  {
-    String representation = "";
-
-    if (this.namedIndividualNodes.size() == 1)
-      representation = this.namedIndividualNodes.get(0).toString();
-    else {
-      boolean isFirst = true;
-
-      representation += "{";
-      for (OWLNamedIndividualNode owlIndividual : this.namedIndividualNodes) {
-        if (!isFirst)
-          representation += " ";
-        representation += owlIndividual.toString();
-        isFirst = false;
+      for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+         Node child = node.jjtGetChild(i);
+         if (ParserUtil.hasName(child, "OWLNamedIndividual")) {
+            OWLNamedIndividualNode namedIndividualNode = new OWLNamedIndividualNode((ASTOWLNamedIndividual) child);
+            this.namedIndividualNodes.add(namedIndividualNode);
+         } else {
+            throw new InternalParseException(getNodeName() + " node expecting OWLNamedIndividual child node, got " + child);
+         }
       }
-      representation += "}";
-    }
+   }
 
-    return representation;
-  }
+   public List<OWLNamedIndividualNode> getOWLNamedIndividualNodes()
+   {
+      return this.namedIndividualNodes;
+   }
+
+   @Override
+   public String getNodeName()
+   {
+      return "OWLObjectOneOf";
+   }
+
+   public String toString()
+   {
+      String representation = "";
+      if (this.namedIndividualNodes.size() == 1)
+         representation = this.namedIndividualNodes.get(0).toString();
+      else {
+         boolean isFirst = true;
+         representation += "{";
+         for (OWLNamedIndividualNode owlIndividual : this.namedIndividualNodes) {
+            if (!isFirst) representation += " ";
+            representation += owlIndividual.toString();
+            isFirst = false;
+         }
+         representation += "}";
+      }
+      return representation;
+   }
 }

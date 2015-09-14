@@ -7,28 +7,28 @@ import org.semanticweb.owlapi.model.OWLProperty;
 
 public abstract class OWLPropertyRendering extends OWLAPIRendering
 {
-	private final OWLProperty property;
+   private final OWLProperty property;
 
-	public OWLPropertyRendering(OWLProperty property)
-	{
-		super();
-		this.property = property;
-	}
+   public OWLPropertyRendering(OWLProperty property)
+   {
+      super();
+      this.property = property;
+   }
 
-	public OWLPropertyRendering(OWLProperty property, OWLAxiom axiom)
-	{
-		super(axiom);
-		this.property = property;
-	}
+   public OWLPropertyRendering(OWLProperty property, OWLAxiom axiom)
+   {
+      super(axiom);
+      this.property = property;
+   }
 
-	public OWLPropertyRendering(OWLProperty property, Set<OWLAxiom> axioms)
-	{
-		super(axioms);
-		this.property = property;
-	}
+   public OWLPropertyRendering(OWLProperty property, Set<OWLAxiom> axioms)
+   {
+      super(axioms);
+      this.property = property;
+   }
 
-	public OWLProperty getOWLProperty()
-	{
-		return this.property;
-	}
+   public OWLProperty getOWLProperty()
+   {
+      return this.property;
+   }
 }

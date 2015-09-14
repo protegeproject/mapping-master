@@ -15,90 +15,122 @@ import org.mm.parser.ParserUtil;
 
 public class OWLRestrictionNode implements MMNode
 {
-  private OWLPropertyNode propertyNode;
-  private OWLMaxCardinalityNode maxCardinalityNode;
-  private OWLMinCardinalityNode minCardinalityNode;
-  private OWLExactCardinalityNode exactCardinalityNode;
-  private OWLHasValueNode hasValueNode;
-  private OWLAllValuesFromNode allValuesFromNode;
-  private OWLSomeValuesFromNode someValuesFromNode;
+   private OWLPropertyNode propertyNode;
+   private OWLMaxCardinalityNode maxCardinalityNode;
+   private OWLMinCardinalityNode minCardinalityNode;
+   private OWLExactCardinalityNode exactCardinalityNode;
+   private OWLHasValueNode hasValueNode;
+   private OWLAllValuesFromNode allValuesFromNode;
+   private OWLSomeValuesFromNode someValuesFromNode;
 
-  public OWLRestrictionNode(ASTOWLRestriction node) throws ParseException
-  {
-    for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-      Node child = node.jjtGetChild(i);
+   public OWLRestrictionNode(ASTOWLRestriction node) throws ParseException
+   {
+      for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+         Node child = node.jjtGetChild(i);
+         if (ParserUtil.hasName(child, "OWLProperty"))
+            this.propertyNode = new OWLPropertyNode((ASTOWLProperty) child);
+         else if (ParserUtil.hasName(child, "OWLMaxCardinalityRestriction"))
+            this.maxCardinalityNode = new OWLMaxCardinalityNode((ASTOWLMaxCardinalityRestriction) child);
+         else if (ParserUtil.hasName(child, "OWLMinCardinalityRestriction"))
+            this.minCardinalityNode = new OWLMinCardinalityNode((ASTOWLMinCardinalityRestriction) child);
+         else if (ParserUtil.hasName(child, "OWLExactCardinalityRestriction"))
+            this.exactCardinalityNode = new OWLExactCardinalityNode((ASTOWLExactCardinalityRestriction) child);
+         else if (ParserUtil.hasName(child, "OWLHasValueRestriction"))
+            this.hasValueNode = new OWLHasValueNode((ASTOWLHasValueRestriction) child);
+         else if (ParserUtil.hasName(child, "OWLAllValuesFromRestriction"))
+            this.allValuesFromNode = new OWLAllValuesFromNode((ASTOWLAllValuesFromRestriction) child);
+         else if (ParserUtil.hasName(child, "OWLSomeValuesFromRestriction"))
+            this.someValuesFromNode = new OWLSomeValuesFromNode((ASTOWLSomeValuesFromRestriction) child);
+         else throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
+      }
+   }
 
-      if (ParserUtil.hasName(child, "OWLProperty"))
-        this.propertyNode = new OWLPropertyNode((ASTOWLProperty)child);
-      else if (ParserUtil.hasName(child, "OWLMaxCardinalityRestriction"))
-        this.maxCardinalityNode = new OWLMaxCardinalityNode((ASTOWLMaxCardinalityRestriction)child);
-      else if (ParserUtil.hasName(child, "OWLMinCardinalityRestriction"))
-        this.minCardinalityNode = new OWLMinCardinalityNode((ASTOWLMinCardinalityRestriction)child);
-      else if (ParserUtil.hasName(child, "OWLExactCardinalityRestriction"))
-        this.exactCardinalityNode = new OWLExactCardinalityNode(
-          (ASTOWLExactCardinalityRestriction)child);
-      else if (ParserUtil.hasName(child, "OWLHasValueRestriction"))
-        this.hasValueNode = new OWLHasValueNode((ASTOWLHasValueRestriction)child);
-      else if (ParserUtil.hasName(child, "OWLAllValuesFromRestriction"))
-        this.allValuesFromNode = new OWLAllValuesFromNode((ASTOWLAllValuesFromRestriction)child);
-      else if (ParserUtil.hasName(child, "OWLSomeValuesFromRestriction"))
-        this.someValuesFromNode = new OWLSomeValuesFromNode((ASTOWLSomeValuesFromRestriction)child);
-      else
-        throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
-    }
-  }
+   public OWLPropertyNode getOWLPropertyNode()
+   {
+      return this.propertyNode;
+   }
 
-  public OWLPropertyNode getOWLPropertyNode() { return this.propertyNode; }
+   public OWLMaxCardinalityNode getOWLMaxCardinalityNode()
+   {
+      return this.maxCardinalityNode;
+   }
 
-  public OWLMaxCardinalityNode getOWLMaxCardinalityNode() { return this.maxCardinalityNode; }
+   public OWLMinCardinalityNode getOWLMinCardinalityNode()
+   {
+      return this.minCardinalityNode;
+   }
 
-  public OWLMinCardinalityNode getOWLMinCardinalityNode() { return this.minCardinalityNode; }
+   public OWLExactCardinalityNode getOWLExactCardinalityNode()
+   {
+      return this.exactCardinalityNode;
+   }
 
-  public OWLExactCardinalityNode getOWLExactCardinalityNode() { return this.exactCardinalityNode; }
+   public OWLHasValueNode getOWLHasValueNode()
+   {
+      return this.hasValueNode;
+   }
 
-  public OWLHasValueNode getOWLHasValueNode() { return this.hasValueNode; }
+   public OWLAllValuesFromNode getOWLAllValuesFromNode()
+   {
+      return this.allValuesFromNode;
+   }
 
-  public OWLAllValuesFromNode getOWLAllValuesFromNode() { return this.allValuesFromNode; }
+   public OWLSomeValuesFromNode getOWLSomeValuesFromNode()
+   {
+      return this.someValuesFromNode;
+   }
 
-  public OWLSomeValuesFromNode getOWLSomeValuesFromNode() { return this.someValuesFromNode; }
+   public boolean isOWLMaxCardinality()
+   {
+      return this.maxCardinalityNode != null;
+   }
 
-  public boolean isOWLMaxCardinality() { return this.maxCardinalityNode != null; }
+   public boolean isOWLMinCardinality()
+   {
+      return this.minCardinalityNode != null;
+   }
 
-  public boolean isOWLMinCardinality() { return this.minCardinalityNode != null; }
+   public boolean isOWLExactCardinality()
+   {
+      return this.exactCardinalityNode != null;
+   }
 
-  public boolean isOWLExactCardinality() { return this.exactCardinalityNode != null; }
+   public boolean isOWLHasValue()
+   {
+      return this.hasValueNode != null;
+   }
 
-  public boolean isOWLHasValue() { return this.hasValueNode != null; }
+   public boolean isOWLAllValuesFrom()
+   {
+      return this.allValuesFromNode != null;
+   }
 
-  public boolean isOWLAllValuesFrom() { return this.allValuesFromNode != null; }
+   public boolean isOWLSomeValuesFrom()
+   {
+      return this.someValuesFromNode != null;
+   }
 
-  public boolean isOWLSomeValuesFrom() { return this.someValuesFromNode != null; }
+   @Override
+   public String getNodeName()
+   {
+      return "OWLRestriction";
+   }
 
-  @Override public String getNodeName()
-  {
-    return "OWLRestriction";
-  }
-
-  public String toString()
-  {
-    String representation = "(" + getOWLPropertyNode() + " ";
-
-    if (this.minCardinalityNode != null)
-      representation += this.minCardinalityNode.toString();
-    else if (this.maxCardinalityNode != null)
-      representation += this.maxCardinalityNode.toString();
-    else if (this.exactCardinalityNode != null)
-      representation += this.exactCardinalityNode.toString();
-    else if (this.hasValueNode != null)
-      representation += this.hasValueNode.toString();
-    else if (this.allValuesFromNode != null)
-      representation += this.allValuesFromNode.toString();
-    else if (this.someValuesFromNode != null)
-      representation += this.someValuesFromNode.toString();
-
-    representation += ")";
-
-    return representation;
-  }
-
-} 
+   public String toString()
+   {
+      String representation = "(" + getOWLPropertyNode() + " ";
+      if (this.minCardinalityNode != null)
+         representation += this.minCardinalityNode.toString();
+      else if (this.maxCardinalityNode != null)
+         representation += this.maxCardinalityNode.toString();
+      else if (this.exactCardinalityNode != null)
+         representation += this.exactCardinalityNode.toString();
+      else if (this.hasValueNode != null)
+         representation += this.hasValueNode.toString();
+      else if (this.allValuesFromNode != null)
+         representation += this.allValuesFromNode.toString();
+      else if (this.someValuesFromNode != null) representation += this.someValuesFromNode.toString();
+      representation += ")";
+      return representation;
+   }
+}

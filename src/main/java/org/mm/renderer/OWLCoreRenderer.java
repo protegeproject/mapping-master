@@ -9,9 +9,10 @@ import org.mm.rendering.Rendering;
 
 public interface OWLCoreRenderer
 {
-	Optional<? extends Rendering> renderMMExpression(MMExpressionNode node) throws RendererException;
+   Optional<? extends Rendering> renderMMExpression(MMExpressionNode node) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLClassDeclaration(OWLClassDeclarationNode node) throws RendererException;
+   Optional<? extends Rendering> renderOWLClassDeclaration(OWLClassDeclarationNode node) throws RendererException;
 
-	Optional<? extends Rendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode node) throws RendererException;
+   Optional<? extends Rendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode node)
+         throws RendererException;
 }

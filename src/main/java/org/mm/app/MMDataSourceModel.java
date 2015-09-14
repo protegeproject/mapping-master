@@ -7,30 +7,30 @@ import org.mm.ss.SpreadSheetDataSource;
 
 public class MMDataSourceModel implements DataSourceModel
 {
-	private SpreadSheetDataSource dataSource;
+   private SpreadSheetDataSource dataSource;
 
-	public MMDataSourceModel()
-	{
-		this(new SpreadSheetDataSource());
-	}
+   public MMDataSourceModel()
+   {
+      this(new SpreadSheetDataSource());
+   }
 
-	public MMDataSourceModel(SpreadSheetDataSource dataSource)
-	{
-		this.dataSource = dataSource;
-	}
+   public MMDataSourceModel(SpreadSheetDataSource dataSource)
+   {
+      this.dataSource = dataSource;
+   }
 
-	@Override
-	public SpreadSheetDataSource getDataSource()
-	{
-		return dataSource;
-	}
+   @Override
+   public SpreadSheetDataSource getDataSource()
+   {
+      return dataSource;
+   }
 
-	public List<String> getSheetNames()
-	{
-		List<String> sheetNames = new ArrayList<String>();
-		if (dataSource != null) {
-			sheetNames.addAll(dataSource.getSheetNames());
-		}
-		return sheetNames;
-	}
+   public List<String> getSheetNames()
+   {
+      List<String> sheetNames = new ArrayList<String>();
+      if (dataSource != null) {
+         sheetNames.addAll(dataSource.getSheetNames());
+      }
+      return sheetNames;
+   }
 }

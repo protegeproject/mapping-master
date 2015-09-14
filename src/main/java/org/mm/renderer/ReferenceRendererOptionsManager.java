@@ -9,242 +9,241 @@ import org.mm.renderer.owlapi.OWLAPIRenderer;
 
 public class ReferenceRendererOptionsManager implements MappingMasterParserConstants
 {
-  private final ReferenceRendererConfiguration referenceRenderer;
+   private final ReferenceRendererConfiguration referenceRenderer;
 
-  public ReferenceRendererOptionsManager(ReferenceRendererConfiguration referenceRenderer)
-  {
-    this.referenceRenderer = referenceRenderer;
-  }
+   public ReferenceRendererOptionsManager(ReferenceRendererConfiguration referenceRenderer)
+   {
+      this.referenceRenderer = referenceRenderer;
+   }
 
-  public String getDefaultValueEncoding()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultValueEncoding());
-  }
-
-  public String getDefaultReferenceType()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultReferenceType());
-  }
-
-  public String getDefaultPropertyType()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultOWLPropertyType());
-  }
-
-  public String getDefaultPropertyValueType()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultOWLPropertyValueType());
-  }
-
-  public String getDefaultDataPropertyValueType()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultOWLDataPropertyValueType());
-  }
-
-  public String getDefaultEmptyLocation()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultEmptyLocation());
-  }
-
-  public String getDefaultEmptyRDFSLabel()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultEmptyRDFSLabel());
-  }
-
-  public String getDefaultEmptyRDFID()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultEmptyRDFID());
-  }
-
-  public String getDefaultIfOWLEntityExists()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityExists());
-  }
-
-  public String getDefaultIfOWLEntityDoesNotExist()
-  {
-    return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityDoesNotExist());
-  }
-
-  public String getDefaultValueEncodingOptionName()
-  {
-    return getOptionName(MM_DEFAULT_VALUE_ENCODING);
-  }
-
-  public String getDefaultReferenceTypeOptionName()
-  {
-    return getOptionName(MM_DEFAULT_REFERENCE_TYPE);
-  }
-
-  public String getDefaultPropertyTypeOptionName()
-  {
-    return getOptionName(MM_DEFAULT_PROPERTY_TYPE);
-  }
-
-  public String getDefaultPropertyValueTypeOptionName()
-  {
-    return getOptionName(MM_DEFAULT_PROPERTY_VALUE_TYPE);
-  }
-
-  public String getDefaultDataPropertyValueTypeOptionName()
-  {
-    return getOptionName(MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE);
-  }
-
-  public String getDefaultEmptyLocationOptionName()
-  {
-    return getOptionName(MM_DEFAULT_EMPTY_LOCATION);
-  }
-
-  public String getDefaultEmptyRDFSLabelOptionName()
-  {
-    return getOptionName(MM_DEFAULT_EMPTY_RDFS_LABEL);
-  }
-
-  public String getDefaultEmptyRDFIDOptionName()
-  {
-    return getOptionName(MM_DEFAULT_EMPTY_RDF_ID);
-  }
-
-  public String getDefaultIfOWLEntityExistsOptionName()
-  {
-    return getOptionName(MM_DEFAULT_IF_OWL_ENTITY_EXISTS);
-  }
-
-  public String getDefaultIfOWLEntityDoesNotExistOptionName()
-  {
-    return getOptionName(MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST);
-  }
-
-  public String getMappingConfigurationOption(String optionName)
-  {
-    int optionID = getOptionID(optionName);
-
-    if (optionID == MM_DEFAULT_VALUE_ENCODING)
+   public String getDefaultValueEncoding()
+   {
       return getSettingName(this.referenceRenderer.getDefaultValueEncoding());
-    else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
+   }
+
+   public String getDefaultReferenceType()
+   {
       return getSettingName(this.referenceRenderer.getDefaultReferenceType());
-    else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
+   }
+
+   public String getDefaultPropertyType()
+   {
       return getSettingName(this.referenceRenderer.getDefaultOWLPropertyType());
-    else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
+   }
+
+   public String getDefaultPropertyValueType()
+   {
       return getSettingName(this.referenceRenderer.getDefaultOWLPropertyValueType());
-    else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
+   }
+
+   public String getDefaultDataPropertyValueType()
+   {
       return getSettingName(this.referenceRenderer.getDefaultOWLDataPropertyValueType());
-    else if (optionID == MM_DEFAULT_EMPTY_LOCATION)
+   }
+
+   public String getDefaultEmptyLocation()
+   {
       return getSettingName(this.referenceRenderer.getDefaultEmptyLocation());
-    else if (optionID == MM_DEFAULT_EMPTY_RDF_ID)
-      return getSettingName(this.referenceRenderer.getDefaultEmptyRDFID());
-    else if (optionID == MM_DEFAULT_EMPTY_RDFS_LABEL)
+   }
+
+   public String getDefaultEmptyRDFSLabel()
+   {
       return getSettingName(this.referenceRenderer.getDefaultEmptyRDFSLabel());
-    else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_EXISTS)
+   }
+
+   public String getDefaultEmptyRDFID()
+   {
+      return getSettingName(this.referenceRenderer.getDefaultEmptyRDFID());
+   }
+
+   public String getDefaultIfOWLEntityExists()
+   {
       return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityExists());
-    else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST)
+   }
+
+   public String getDefaultIfOWLEntityDoesNotExist()
+   {
       return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityDoesNotExist());
-    else
-      return "unknown option: " + optionName;
-  }
+   }
 
-  // TODO Test for valid settings for each option
-  public void setMappingConfigurationOption(String optionName, String settingName)
-  {
-    int settingID = getSettingID(settingName);
-    int optionID = getOptionID(optionName);
+   public String getDefaultValueEncodingOptionName()
+   {
+      return getOptionName(MM_DEFAULT_VALUE_ENCODING);
+   }
 
-    if (settingID != -1) {
+   public String getDefaultReferenceTypeOptionName()
+   {
+      return getOptionName(MM_DEFAULT_REFERENCE_TYPE);
+   }
+
+   public String getDefaultPropertyTypeOptionName()
+   {
+      return getOptionName(MM_DEFAULT_PROPERTY_TYPE);
+   }
+
+   public String getDefaultPropertyValueTypeOptionName()
+   {
+      return getOptionName(MM_DEFAULT_PROPERTY_VALUE_TYPE);
+   }
+
+   public String getDefaultDataPropertyValueTypeOptionName()
+   {
+      return getOptionName(MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE);
+   }
+
+   public String getDefaultEmptyLocationOptionName()
+   {
+      return getOptionName(MM_DEFAULT_EMPTY_LOCATION);
+   }
+
+   public String getDefaultEmptyRDFSLabelOptionName()
+   {
+      return getOptionName(MM_DEFAULT_EMPTY_RDFS_LABEL);
+   }
+
+   public String getDefaultEmptyRDFIDOptionName()
+   {
+      return getOptionName(MM_DEFAULT_EMPTY_RDF_ID);
+   }
+
+   public String getDefaultIfOWLEntityExistsOptionName()
+   {
+      return getOptionName(MM_DEFAULT_IF_OWL_ENTITY_EXISTS);
+   }
+
+   public String getDefaultIfOWLEntityDoesNotExistOptionName()
+   {
+      return getOptionName(MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST);
+   }
+
+   public String getMappingConfigurationOption(String optionName)
+   {
+      int optionID = getOptionID(optionName);
+
       if (optionID == MM_DEFAULT_VALUE_ENCODING)
-        this.referenceRenderer.setDefaultValueEncoding(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultValueEncoding());
       else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
-        this.referenceRenderer.setDefaultReferenceType(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultReferenceType());
       else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
-        this.referenceRenderer.setDefaultOWLPropertyType(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultOWLPropertyType());
       else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
-        this.referenceRenderer.setDefaultOWLPropertyValueType(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultOWLPropertyValueType());
       else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
-        this.referenceRenderer.setDefaultOWLDataPropertyValueType(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultOWLDataPropertyValueType());
       else if (optionID == MM_DEFAULT_EMPTY_LOCATION)
-        this.referenceRenderer.setDefaultEmptyLocation(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultEmptyLocation());
       else if (optionID == MM_DEFAULT_EMPTY_RDF_ID)
-        this.referenceRenderer.setDefaultEmptyRDFID(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultEmptyRDFID());
       else if (optionID == MM_DEFAULT_EMPTY_RDFS_LABEL)
-        this.referenceRenderer.setDefaultEmptyRDFSLabel(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultEmptyRDFSLabel());
       else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_EXISTS)
-        this.referenceRenderer.setDefaultIfOWLEntityExists(settingID);
+         return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityExists());
       else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST)
-        this.referenceRenderer.setDefaultIfOWNEntityDoesNotExistDirective(settingID);
-    }
-  }
+         return getSettingName(this.referenceRenderer.getDefaultIfOWLEntityDoesNotExist());
+      else return "unknown option: " + optionName;
+   }
 
-  public Set<String> getNameEncodings()
-  {
-    Set<String> nameEncodings = new HashSet<>();
+   // TODO Test for valid settings for each option
+   public void setMappingConfigurationOption(String optionName, String settingName)
+   {
+      int settingID = getSettingID(settingName);
+      int optionID = getOptionID(optionName);
 
-    for (int i = 0; i < OWLAPIRenderer.NameEncodings.length; i++) {
-      nameEncodings.add(ParserUtil.getTokenName(OWLAPIRenderer.NameEncodings[i]));
-    }
-    return nameEncodings;
-  }
+      if (settingID != -1) {
+         if (optionID == MM_DEFAULT_VALUE_ENCODING)
+            this.referenceRenderer.setDefaultValueEncoding(settingID);
+         else if (optionID == MM_DEFAULT_REFERENCE_TYPE)
+            this.referenceRenderer.setDefaultReferenceType(settingID);
+         else if (optionID == MM_DEFAULT_PROPERTY_TYPE)
+            this.referenceRenderer.setDefaultOWLPropertyType(settingID);
+         else if (optionID == MM_DEFAULT_PROPERTY_VALUE_TYPE)
+            this.referenceRenderer.setDefaultOWLPropertyValueType(settingID);
+         else if (optionID == MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE)
+            this.referenceRenderer.setDefaultOWLDataPropertyValueType(settingID);
+         else if (optionID == MM_DEFAULT_EMPTY_LOCATION)
+            this.referenceRenderer.setDefaultEmptyLocation(settingID);
+         else if (optionID == MM_DEFAULT_EMPTY_RDF_ID)
+            this.referenceRenderer.setDefaultEmptyRDFID(settingID);
+         else if (optionID == MM_DEFAULT_EMPTY_RDFS_LABEL)
+            this.referenceRenderer.setDefaultEmptyRDFSLabel(settingID);
+         else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_EXISTS)
+            this.referenceRenderer.setDefaultIfOWLEntityExists(settingID);
+         else if (optionID == MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST)
+            this.referenceRenderer.setDefaultIfOWNEntityDoesNotExistDirective(settingID);
+      }
+   }
 
-  public Set<String> getReferenceValueTypes()
-  {
-    Set<String> referenceValueTypes = new HashSet<>();
+   public Set<String> getNameEncodings()
+   {
+      Set<String> nameEncodings = new HashSet<>();
 
-    for (int i = 0; i < OWLAPIRenderer.ReferenceValueTypes.length; i++) {
-      referenceValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.ReferenceValueTypes[i]));
-    }
+      for (int i = 0; i < OWLAPIRenderer.NameEncodings.length; i++) {
+         nameEncodings.add(ParserUtil.getTokenName(OWLAPIRenderer.NameEncodings[i]));
+      }
+      return nameEncodings;
+   }
 
-    return referenceValueTypes;
-  }
+   public Set<String> getReferenceValueTypes()
+   {
+      Set<String> referenceValueTypes = new HashSet<>();
 
-  public Set<String> getPropertyTypes()
-  {
-    Set<String> propertyTypes = new HashSet<>();
+      for (int i = 0; i < OWLAPIRenderer.ReferenceValueTypes.length; i++) {
+         referenceValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.ReferenceValueTypes[i]));
+      }
 
-    for (int i = 0; i < OWLAPIRenderer.PropertyTypes.length; i++) {
-      propertyTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.PropertyTypes[i]));
-    }
+      return referenceValueTypes;
+   }
 
-    return propertyTypes;
-  }
+   public Set<String> getPropertyTypes()
+   {
+      Set<String> propertyTypes = new HashSet<>();
 
-  public Set<String> getPropertyValueTypes()
-  {
-    Set<String> propertyValueTypes = new HashSet<>();
+      for (int i = 0; i < OWLAPIRenderer.PropertyTypes.length; i++) {
+         propertyTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.PropertyTypes[i]));
+      }
 
-    for (int i = 0; i < OWLAPIRenderer.PropertyValueTypes.length; i++) {
-      propertyValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.PropertyValueTypes[i]));
-    }
+      return propertyTypes;
+   }
 
-    return propertyValueTypes;
-  }
+   public Set<String> getPropertyValueTypes()
+   {
+      Set<String> propertyValueTypes = new HashSet<>();
 
-  public Set<String> getDataPropertyValueTypes()
-  {
-    Set<String> dataPropertyValueTypes = new HashSet<>();
+      for (int i = 0; i < OWLAPIRenderer.PropertyValueTypes.length; i++) {
+         propertyValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.PropertyValueTypes[i]));
+      }
 
-    for (int i = 0; i < OWLAPIRenderer.DataPropertyValueTypes.length; i++) {
-      dataPropertyValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.DataPropertyValueTypes[i]));
-    }
+      return propertyValueTypes;
+   }
 
-    return dataPropertyValueTypes;
-  }
+   public Set<String> getDataPropertyValueTypes()
+   {
+      Set<String> dataPropertyValueTypes = new HashSet<>();
 
-  private String getOptionName(int optionID)
-  {
-    return ParserUtil.getTokenName(optionID);
-  }
+      for (int i = 0; i < OWLAPIRenderer.DataPropertyValueTypes.length; i++) {
+         dataPropertyValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.DataPropertyValueTypes[i]));
+      }
 
-  private int getSettingID(String settingName)
-  {
-    return ParserUtil.getTokenID(settingName);
-  }
+      return dataPropertyValueTypes;
+   }
 
-  private int getOptionID(String optionName)
-  {
-    return ParserUtil.getTokenID(optionName);
-  }
+   private String getOptionName(int optionID)
+   {
+      return ParserUtil.getTokenName(optionID);
+   }
 
-  private String getSettingName(int settingID)
-  {
-    return ParserUtil.getTokenName(settingID);
-  }
+   private int getSettingID(String settingName)
+   {
+      return ParserUtil.getTokenID(settingName);
+   }
+
+   private int getOptionID(String optionName)
+   {
+      return ParserUtil.getTokenID(optionName);
+   }
+
+   private String getSettingName(int settingID)
+   {
+      return ParserUtil.getTokenName(settingID);
+   }
 }

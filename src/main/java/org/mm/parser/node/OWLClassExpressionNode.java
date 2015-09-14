@@ -1,4 +1,3 @@
-
 package org.mm.parser.node;
 
 import org.mm.parser.ASTOWLClass;
@@ -12,104 +11,107 @@ import org.mm.parser.ParserUtil;
 
 public class OWLClassExpressionNode implements TypeNode, MMNode
 {
-	private OWLClassNode classNode;
-	private OWLUnionClassNode unionClassNode;
-	private OWLRestrictionNode restrictionNode;
-	private final boolean isNegated;
+   private OWLClassNode classNode;
+   private OWLUnionClassNode unionClassNode;
+   private OWLRestrictionNode restrictionNode;
+   private final boolean isNegated;
 
-	public OWLClassExpressionNode(ASTOWLClassExpression node) throws ParseException
-	{
-		super();
-		this.isNegated = node.isNegated;
+   public OWLClassExpressionNode(ASTOWLClassExpression node) throws ParseException
+   {
+      super();
+      this.isNegated = node.isNegated;
 
-		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			Node child = node.jjtGetChild(i);
+      for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+         Node child = node.jjtGetChild(i);
 
-			if (ParserUtil.hasName(child, "OWLUnionClass"))
-				this.unionClassNode = new OWLUnionClassNode((ASTOWLUnionClass)child);
-			else if (ParserUtil.hasName(child, "OWLRestriction"))
-				this.restrictionNode = new OWLRestrictionNode((ASTOWLRestriction)child);
-			else if (ParserUtil.hasName(child, "OWLClass"))
-				this.classNode = new OWLClassNode((ASTOWLClass)child);
-			else
-				throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
-		}
-	}
+         if (ParserUtil.hasName(child, "OWLUnionClass"))
+            this.unionClassNode = new OWLUnionClassNode((ASTOWLUnionClass) child);
+         else if (ParserUtil.hasName(child, "OWLRestriction"))
+            this.restrictionNode = new OWLRestrictionNode((ASTOWLRestriction) child);
+         else if (ParserUtil.hasName(child, "OWLClass"))
+            this.classNode = new OWLClassNode((ASTOWLClass) child);
+         else throw new InternalParseException("invalid child node " + child + " for node " + getNodeName());
+      }
+   }
 
-	@Override public String getNodeName()
-	{
-		return "OWLClassExpression";
-	}
+   @Override
+   public String getNodeName()
+   {
+      return "OWLClassExpression";
+   }
 
-	public OWLUnionClassNode getOWLUnionClassNode()
-	{
-		return this.unionClassNode;
-	}
+   public OWLUnionClassNode getOWLUnionClassNode()
+   {
+      return this.unionClassNode;
+   }
 
-	public OWLRestrictionNode getOWLRestrictionNode()
-	{
-		return this.restrictionNode;
-	}
+   public OWLRestrictionNode getOWLRestrictionNode()
+   {
+      return this.restrictionNode;
+   }
 
-	public OWLClassNode getOWLClassNode()
-	{
-		return this.classNode;
-	}
+   public OWLClassNode getOWLClassNode()
+   {
+      return this.classNode;
+   }
 
-	public boolean getIsNegated()
-	{
-		return this.isNegated;
-	}
+   public boolean getIsNegated()
+   {
+      return this.isNegated;
+   }
 
-	public boolean hasOWLUnionClassNode()
-	{
-		return this.unionClassNode != null;
-	}
+   public boolean hasOWLUnionClassNode()
+   {
+      return this.unionClassNode != null;
+   }
 
-	public boolean hasOWLRestrictionNode()
-	{
-		return this.restrictionNode != null;
-	}
+   public boolean hasOWLRestrictionNode()
+   {
+      return this.restrictionNode != null;
+   }
 
-	public boolean hasOWLClassNode()
-	{
-		return this.classNode != null;
-	}
+   public boolean hasOWLClassNode()
+   {
+      return this.classNode != null;
+   }
 
-	public String toString()
-	{
-		String representation = "";
+   public String toString()
+   {
+      String representation = "";
 
-		if (this.isNegated)
-			representation += "NOT ";
-		
-		else if (this.unionClassNode != null)
-			representation += this.unionClassNode.toString();
-		else if (this.restrictionNode != null)
-			representation += this.restrictionNode.toString();
-		else if (this.classNode != null)
-			representation += this.classNode.toString();
+      if (this.isNegated)
+         representation += "NOT ";
 
-		return representation;
-	}
+      else if (this.unionClassNode != null)
+         representation += this.unionClassNode.toString();
+      else if (this.restrictionNode != null)
+         representation += this.restrictionNode.toString();
+      else if (this.classNode != null) representation += this.classNode.toString();
 
-	@Override public boolean isOWLClassExpressionNode()
-	{
-		return true;
-	}
+      return representation;
+   }
 
-	@Override public boolean isOWLClassNode()
-	{
-		return false;
-	}
+   @Override
+   public boolean isOWLClassExpressionNode()
+   {
+      return true;
+   }
 
-	@Override public boolean isOWLPropertyNode()
-	{
-		return false;
-	}
+   @Override
+   public boolean isOWLClassNode()
+   {
+      return false;
+   }
 
-	@Override public boolean isReferenceNode()
-	{
-		return false;
-	}
+   @Override
+   public boolean isOWLPropertyNode()
+   {
+      return false;
+   }
+
+   @Override
+   public boolean isReferenceNode()
+   {
+      return false;
+   }
 }

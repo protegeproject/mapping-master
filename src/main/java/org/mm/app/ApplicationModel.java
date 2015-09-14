@@ -4,18 +4,18 @@ import org.mm.renderer.Renderer;
 
 public interface ApplicationModel
 {
-	/**
-	 * Returns the data source model
-	 */
-	DataSourceModel getDataSourceModel();
+   /**
+    * Returns the data source model
+    */
+   DataSourceModel getDataSourceModel();
 
-	/**
-	 * Returns the mapping expression model
-	 */
-	MappingExpressionModel getMappingExpressionsModel();
+   /**
+    * Returns the mapping expression model
+    */
+   MappingExpressionModel getMappingExpressionsModel();
 
-	/**
-	 * Returns the default renderer.
-	 */
-	Renderer getDefaultRenderer();
+   /**
+    * Returns the default renderer.
+    */
+   Renderer getDefaultRenderer();
 }

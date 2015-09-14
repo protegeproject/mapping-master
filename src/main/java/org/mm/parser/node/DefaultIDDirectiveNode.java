@@ -1,4 +1,3 @@
- 
 package org.mm.parser.node;
 
 import org.mm.parser.ASTDefaultID;
@@ -8,41 +7,43 @@ import org.mm.parser.ParserUtil;
 
 public class DefaultIDDirectiveNode implements MMNode, MappingMasterParserConstants
 {
-  private final String defaultID;
-  
-  public DefaultIDDirectiveNode(ASTDefaultID node) throws ParseException
-  { 
-    this.defaultID = node.defaultID;
-  } 
+   private final String defaultID;
 
-  public String getDefaultRDFID() { return this.defaultID; }
+   public DefaultIDDirectiveNode(ASTDefaultID node) throws ParseException
+   {
+      this.defaultID = node.defaultID;
+   }
 
-  @Override public String getNodeName()
-  {
-    return "DefaultIDDirective";
-  }
+   public String getDefaultRDFID()
+   {
+      return this.defaultID;
+   }
 
-  public String toString()
-  { 
-    String representation = ParserUtil.getTokenName(MM_DEFAULT_ID) + "=\"" + this.defaultID + "\"";
+   @Override
+   public String getNodeName()
+   {
+      return "DefaultIDDirective";
+   }
 
-    return representation;
-  } 
+   public String toString()
+   {
+      String representation = ParserUtil.getTokenName(MM_DEFAULT_ID) + "=\"" + this.defaultID + "\"";
 
-  public boolean equals(Object obj)
-  {
-    if (this == obj) return true;
-    if (obj == null || obj.getClass() != this.getClass()) return false;
-    DefaultIDDirectiveNode dv = (DefaultIDDirectiveNode)obj;
-    return this.defaultID != null && dv.defaultID != null && this.defaultID.equals(dv.defaultID);
-  } 
+      return representation;
+   }
 
-  public int hashCode()
-  {
-    int hash = 14;
+   public boolean equals(Object obj)
+   {
+      if (this == obj) return true;
+      if (obj == null || obj.getClass() != this.getClass()) return false;
+      DefaultIDDirectiveNode dv = (DefaultIDDirectiveNode) obj;
+      return this.defaultID != null && dv.defaultID != null && this.defaultID.equals(dv.defaultID);
+   }
 
-    hash = hash + (null == this.defaultID ? 0 : this.defaultID.hashCode());
-
-    return hash;
-  }
+   public int hashCode()
+   {
+      int hash = 14;
+      hash = hash + (null == this.defaultID ? 0 : this.defaultID.hashCode());
+      return hash;
+   }
 }

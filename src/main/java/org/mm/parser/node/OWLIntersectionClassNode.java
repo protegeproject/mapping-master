@@ -12,52 +12,51 @@ import java.util.List;
 
 public class OWLIntersectionClassNode implements MMNode
 {
-  private final List<OWLClassExpressionNode> classExpressionNodes;
+   private final List<OWLClassExpressionNode> classExpressionNodes;
 
-  public OWLIntersectionClassNode(ASTOWLIntersectionClass node) throws ParseException
-  {
-    this.classExpressionNodes = new ArrayList<>();
+   public OWLIntersectionClassNode(ASTOWLIntersectionClass node) throws ParseException
+   {
+      this.classExpressionNodes = new ArrayList<>();
 
-    for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-      Node child = node.jjtGetChild(i);
+      for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+         Node child = node.jjtGetChild(i);
 
-      if (ParserUtil.hasName(child, "OWLClassExpression")) {
-        OWLClassExpressionNode owlClassExpression = new OWLClassExpressionNode((ASTOWLClassExpression)child);
-        this.classExpressionNodes.add(owlClassExpression);
-      } else
-        throw new InternalParseException(getNodeName() +
-          " node expecting OWLClassExpression child, got " + child);
-    }
-  }
-
-  public List<OWLClassExpressionNode> getOWLClassExpressionNodes()
-  {
-    return this.classExpressionNodes;
-  }
-
-  @Override public String getNodeName()
-  {
-    return "OWLIntersectionClass";
-  }
-
-  public String toString()
-  {
-    String representation = "";
-
-    if (this.classExpressionNodes.size() == 1)
-      representation = this.classExpressionNodes.get(0).toString();
-    else {
-      boolean isFirst = true;
-
-      representation += "(";
-      for (OWLClassExpressionNode owlClassExpression : this.classExpressionNodes) {
-        if (!isFirst)
-          representation += " AND ";
-        representation += owlClassExpression.toString();
-        isFirst = false;
+         if (ParserUtil.hasName(child, "OWLClassExpression")) {
+            OWLClassExpressionNode owlClassExpression = new OWLClassExpressionNode((ASTOWLClassExpression) child);
+            this.classExpressionNodes.add(owlClassExpression);
+         } else
+            throw new InternalParseException(getNodeName() + " node expecting OWLClassExpression child, got " + child);
       }
-      representation += ")";
-    }
-    return representation;
-  }
+   }
+
+   public List<OWLClassExpressionNode> getOWLClassExpressionNodes()
+   {
+      return this.classExpressionNodes;
+   }
+
+   @Override
+   public String getNodeName()
+   {
+      return "OWLIntersectionClass";
+   }
+
+   public String toString()
+   {
+      String representation = "";
+
+      if (this.classExpressionNodes.size() == 1)
+         representation = this.classExpressionNodes.get(0).toString();
+      else {
+         boolean isFirst = true;
+
+         representation += "(";
+         for (OWLClassExpressionNode owlClassExpression : this.classExpressionNodes) {
+            if (!isFirst) representation += " AND ";
+            representation += owlClassExpression.toString();
+            isFirst = false;
+         }
+         representation += ")";
+      }
+      return representation;
+   }
 }

@@ -5,19 +5,26 @@ import org.mm.parser.ParseException;
 
 public class IntegerLiteralNode implements MMNode
 {
-  private final int value;
+   private final int value;
 
-  IntegerLiteralNode(ASTIntegerLiteral node) throws ParseException
-  {
-    this.value = node.value;
-  }
+   IntegerLiteralNode(ASTIntegerLiteral node) throws ParseException
+   {
+      this.value = node.value;
+   }
 
-  public int getValue() { return this.value; }
+   public int getValue()
+   {
+      return this.value;
+   }
 
-  @Override public String getNodeName()
-  {
-    return "IntegerLiteral";
-  }
+   @Override
+   public String getNodeName()
+   {
+      return "IntegerLiteral";
+   }
 
-  public String toString() { return "" + this.value; }
+   public String toString()
+   {
+      return "" + this.value;
+   }
 }

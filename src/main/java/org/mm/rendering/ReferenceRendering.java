@@ -4,23 +4,23 @@ import org.mm.core.ReferenceType;
 
 public interface ReferenceRendering extends Rendering
 {
-  ReferenceType getReferenceType();
+   ReferenceType getReferenceType();
 
-  String getRawValue();
+   String getRawValue();
 
-  boolean isOWLLiteral();
+   boolean isOWLLiteral();
 
-  boolean isOWLEntity();
+   boolean isOWLEntity();
 
-  boolean isOWLClass();
+   boolean isOWLClass();
 
-  boolean isOWLNamedIndividual();
+   boolean isOWLNamedIndividual();
 
-  boolean isOWLObjectProperty();
+   boolean isOWLObjectProperty();
 
-  boolean isOWLDataProperty();
+   boolean isOWLDataProperty();
 
-  boolean isOWLAnnotationProperty();
+   boolean isOWLAnnotationProperty();
 
-  boolean isOWLDatatype();
+   boolean isOWLDatatype();
 }

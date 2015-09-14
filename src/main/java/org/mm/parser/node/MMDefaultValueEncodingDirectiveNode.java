@@ -6,30 +6,31 @@ import org.mm.parser.ParseException;
 
 public class MMDefaultValueEncodingDirectiveNode implements MMNode, MappingMasterParserConstants
 {
-  private final int valueEncodingType;
+   private final int valueEncodingType;
 
-  public MMDefaultValueEncodingDirectiveNode(ASTMMDefaultValueEncoding node) throws ParseException
-  {
-    this.valueEncodingType = node.encodingType;
-  }
+   public MMDefaultValueEncodingDirectiveNode(ASTMMDefaultValueEncoding node) throws ParseException
+   {
+      this.valueEncodingType = node.encodingType;
+   }
 
-  @Override public String getNodeName()
-  {
-    return "MMDefaultValueEncodingDirective";
-  }
+   @Override
+   public String getNodeName()
+   {
+      return "MMDefaultValueEncodingDirective";
+   }
 
-  public int getValueEncodingType()
-  {
-    return this.valueEncodingType;
-  }
+   public int getValueEncodingType()
+   {
+      return this.valueEncodingType;
+   }
 
-  public String getEncodingTypeName()
-  {
-    return tokenImage[this.valueEncodingType].substring(1, tokenImage[this.valueEncodingType].length() - 1);
-  }
+   public String getEncodingTypeName()
+   {
+      return tokenImage[this.valueEncodingType].substring(1, tokenImage[this.valueEncodingType].length() - 1);
+   }
 
-  public String toString()
-  {
-    return "MM:DefaultValueEncoding " + getEncodingTypeName();
-  }
+   public String toString()
+   {
+      return "MM:DefaultValueEncoding " + getEncodingTypeName();
+   }
 }

@@ -9,43 +9,42 @@ import java.util.Set;
 
 public class OWLAPIRendering implements Rendering
 {
-  private final Set<OWLAxiom> axioms;
+   private final Set<OWLAxiom> axioms;
 
-  public OWLAPIRendering()
-  {
-    this.axioms = new HashSet<>();
-  }
+   public OWLAPIRendering()
+   {
+      this.axioms = new HashSet<>();
+   }
 
-  public OWLAPIRendering(Set<OWLAxiom> axioms)
-  {
-    this.axioms = new HashSet<>(axioms);
-  }
+   public OWLAPIRendering(Set<OWLAxiom> axioms)
+   {
+      this.axioms = new HashSet<>(axioms);
+   }
 
-  public OWLAPIRendering(OWLAxiom axiom)
-  {
-    this.axioms = new HashSet<>();
-    this.axioms.add(axiom);
-  }
+   public OWLAPIRendering(OWLAxiom axiom)
+   {
+      this.axioms = new HashSet<>();
+      this.axioms.add(axiom);
+   }
 
-  public Set<OWLAxiom> getOWLAxioms()
-  {
-    return Collections.unmodifiableSet(this.axioms);
-  }
+   public Set<OWLAxiom> getOWLAxioms()
+   {
+      return Collections.unmodifiableSet(this.axioms);
+   }
 
-  @Override
-  public String toString()
-  {
-    StringBuffer sb = new StringBuffer();
-    
-    boolean newline = false;
-    for (OWLAxiom axiom : getOWLAxioms())
-    {
-      if (newline) {
-        sb.append("\n");
+   @Override
+   public String toString()
+   {
+      StringBuffer sb = new StringBuffer();
+
+      boolean newline = false;
+      for (OWLAxiom axiom : getOWLAxioms()) {
+         if (newline) {
+            sb.append("\n");
+         }
+         sb.append(axiom.getAxiomType() + ": " + axiom.toString());
+         newline = true;
       }
-      sb.append(axiom.getAxiomType() + ": " + axiom.toString());
-      newline = true;
-    }
-    return sb.toString();
-  }
+      return sb.toString();
+   }
 }

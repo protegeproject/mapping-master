@@ -10,11 +10,11 @@ package org.mm.parser.node;
  */
 public interface TypeNode extends MMNode
 {
-	boolean isOWLClassNode();
+   boolean isOWLClassNode();
 
-	boolean isOWLClassExpressionNode();
+   boolean isOWLClassExpressionNode();
 
-	boolean isOWLPropertyNode();
+   boolean isOWLPropertyNode();
 
-	boolean isReferenceNode();
+   boolean isReferenceNode();
 }

@@ -2,5 +2,10 @@ package org.mm.renderer;
 
 public class InternalRendererException extends RendererException
 {
-  public InternalRendererException(String s) { super(s); }
+   private static final long serialVersionUID = 1L;
+
+   public InternalRendererException(String s)
+   {
+      super(s);
+   }
 }

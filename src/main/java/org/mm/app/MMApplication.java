@@ -6,15 +6,16 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MMApplication
 {
-	private MMApplicationModel applicationModel;
+   private MMApplicationModel applicationModel;
 
-	public MMApplication(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
-	{
-		applicationModel = new MMApplicationModel(ontology, dataSource, mappings);
-	}
+   public MMApplication(OWLOntology ontology, SpreadSheetDataSource dataSource,
+         MappingExpressionSet mappings)
+   {
+      applicationModel = new MMApplicationModel(ontology, dataSource, mappings);
+   }
 
-	public MMApplicationModel getApplicationModel()
-	{
-		return applicationModel;
-	}
+   public MMApplicationModel getApplicationModel()
+   {
+      return applicationModel;
+   }
 }

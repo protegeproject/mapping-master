@@ -10,57 +10,53 @@ import org.mm.parser.ParserUtil;
 
 public class OWLSomeValuesFromNode implements MMNode
 {
-	private OWLDataSomeValuesFromNode dataSomeValuesFromNode;
-	private OWLObjectSomeValuesFromNode objectSomeValuesFromNode;
+   private OWLDataSomeValuesFromNode dataSomeValuesFromNode;
+   private OWLObjectSomeValuesFromNode objectSomeValuesFromNode;
 
-	public OWLSomeValuesFromNode(ASTOWLSomeValuesFromRestriction node) throws ParseException
-	{
-		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			Node child = node.jjtGetChild(i);
+   public OWLSomeValuesFromNode(ASTOWLSomeValuesFromRestriction node) throws ParseException
+   {
+      for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+         Node child = node.jjtGetChild(i);
+         if (ParserUtil.hasName(child, "OWLDataSomeValuesFrom"))
+            this.dataSomeValuesFromNode = new OWLDataSomeValuesFromNode((ASTOWLDataSomeValuesFrom) child);
+         else if (ParserUtil.hasName(child, "OWLObjectSomeValuesFrom"))
+            this.objectSomeValuesFromNode = new OWLObjectSomeValuesFromNode((ASTOWLObjectSomeValuesFrom) child);
+         else throw new InternalParseException("invalid child node " + child + " for OWLSomeValuesFrom");
+      }
+   }
 
-			if (ParserUtil.hasName(child, "OWLDataSomeValuesFrom"))
-				this.dataSomeValuesFromNode = new OWLDataSomeValuesFromNode((ASTOWLDataSomeValuesFrom)child);
-			else if (ParserUtil.hasName(child, "OWLObjectSomeValuesFrom"))
-				this.objectSomeValuesFromNode = new OWLObjectSomeValuesFromNode((ASTOWLObjectSomeValuesFrom)child);
-			else
-				throw new InternalParseException("invalid child node " + child + " for OWLSomeValuesFrom");
-		} 
-	}
+   public OWLDataSomeValuesFromNode getOWLDataSomeValuesFromNode()
+   {
+      return this.dataSomeValuesFromNode;
+   }
 
-	public OWLDataSomeValuesFromNode getOWLDataSomeValuesFromNode()
-	{
-		return this.dataSomeValuesFromNode;
-	}
-	
-	public OWLObjectSomeValuesFromNode getOWLObjectSomeValuesFromNode()
-	{
-		return this.objectSomeValuesFromNode;
-	}
+   public OWLObjectSomeValuesFromNode getOWLObjectSomeValuesFromNode()
+   {
+      return this.objectSomeValuesFromNode;
+   }
 
-	public boolean hasOWLDataSomeValuesFromNode()
-	{
-		return this.dataSomeValuesFromNode != null;
-	}
-	
-	public boolean hasOWLObjectSomeValuesFrom()
-	{
-		return this.objectSomeValuesFromNode != null;
-	}
+   public boolean hasOWLDataSomeValuesFromNode()
+   {
+      return this.dataSomeValuesFromNode != null;
+   }
 
-	@Override public String getNodeName()
-	{
-		return "OWLSomeValuesFromRestriction";
-	}
+   public boolean hasOWLObjectSomeValuesFrom()
+   {
+      return this.objectSomeValuesFromNode != null;
+   }
 
-	public String toString()
-	{
-		String representation = "";
+   @Override
+   public String getNodeName()
+   {
+      return "OWLSomeValuesFromRestriction";
+   }
 
-		if (this.dataSomeValuesFromNode != null)
-			representation += this.dataSomeValuesFromNode.toString();
-		else if (this.objectSomeValuesFromNode != null)
-			representation += this.objectSomeValuesFromNode.toString();
-
-		return representation;
-	}
+   public String toString()
+   {
+      String representation = "";
+      if (this.dataSomeValuesFromNode != null)
+         representation += this.dataSomeValuesFromNode.toString();
+      else if (this.objectSomeValuesFromNode != null) representation += this.objectSomeValuesFromNode.toString();
+      return representation;
+   }
 }

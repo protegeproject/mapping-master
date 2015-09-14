@@ -7,28 +7,28 @@ import org.semanticweb.owlapi.model.OWLRestriction;
 
 public class OWLRestrictionRendering extends OWLClassExpressionRendering
 {
-	private final OWLRestriction restriction;
+   private final OWLRestriction restriction;
 
-	public OWLRestrictionRendering(OWLRestriction restriction)
-	{
-		super(restriction);
-		this.restriction = restriction;
-	}
+   public OWLRestrictionRendering(OWLRestriction restriction)
+   {
+      super(restriction);
+      this.restriction = restriction;
+   }
 
-	public OWLRestrictionRendering(OWLRestriction restriction, OWLAxiom axiom)
-	{
-		super(restriction, axiom);
-		this.restriction = restriction;
-	}
+   public OWLRestrictionRendering(OWLRestriction restriction, OWLAxiom axiom)
+   {
+      super(restriction, axiom);
+      this.restriction = restriction;
+   }
 
-	public OWLRestrictionRendering(OWLRestriction restriction, Set<OWLAxiom> axioms)
-	{
-		super(restriction, axioms);
-		this.restriction = restriction;
-	}
+   public OWLRestrictionRendering(OWLRestriction restriction, Set<OWLAxiom> axioms)
+   {
+      super(restriction, axioms);
+      this.restriction = restriction;
+   }
 
-	public OWLRestriction getOWLRestriction()
-	{
-		return this.restriction;
-	}
+   public OWLRestriction getOWLRestriction()
+   {
+      return this.restriction;
+   }
 }

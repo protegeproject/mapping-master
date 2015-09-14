@@ -4,7 +4,7 @@ import org.mm.core.OWLLiteralType;
 
 public interface OWLLiteralRendering extends Rendering
 {
-  String getRawValue();
+   String getRawValue();
 
-  OWLLiteralType getOWLLiteralType();
+   OWLLiteralType getOWLLiteralType();
 }

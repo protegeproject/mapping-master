@@ -9,51 +9,51 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MMApplicationModel implements ApplicationModel
 {
-	private OWLOntology ontology;
-	private SpreadSheetDataSource dataSource;
+   private OWLOntology ontology;
+   private SpreadSheetDataSource dataSource;
 
-	private MMDataSourceModel dataSourceModel;
-	private MMMappingExpressionModel expressionMappingsModel;
+   private MMDataSourceModel dataSourceModel;
+   private MMMappingExpressionModel expressionMappingsModel;
 
-	public MMApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
-	{
-		this.ontology = ontology;
-		this.dataSource = dataSource;
-		
-		dataSourceModel = new MMDataSourceModel(dataSource);
-		expressionMappingsModel = new MMMappingExpressionModel(mappings);
-	}
+   public MMApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
+   {
+      this.ontology = ontology;
+      this.dataSource = dataSource;
 
-	@Override
-	public MMDataSourceModel getDataSourceModel()
-	{
-		return dataSourceModel;
-	}
+      dataSourceModel = new MMDataSourceModel(dataSource);
+      expressionMappingsModel = new MMMappingExpressionModel(mappings);
+   }
 
-	@Override
-	public MMMappingExpressionModel getMappingExpressionsModel()
-	{
-		return expressionMappingsModel;
-	}
+   @Override
+   public MMDataSourceModel getDataSourceModel()
+   {
+      return dataSourceModel;
+   }
 
-	@Override
-	public Renderer getDefaultRenderer()
-	{
-		return getOWLAPIRenderer();
-	}
+   @Override
+   public MMMappingExpressionModel getMappingExpressionsModel()
+   {
+      return expressionMappingsModel;
+   }
 
-	public OWLAPIRenderer getOWLAPIRenderer()
-	{
-		return new OWLAPIRenderer(ontology, dataSource);
-	}
+   @Override
+   public Renderer getDefaultRenderer()
+   {
+      return getOWLAPIRenderer();
+   }
 
-	public TextRenderer getTextRenderer()
-	{
-		return new TextRenderer(dataSource);
-	}
+   public OWLAPIRenderer getOWLAPIRenderer()
+   {
+      return new OWLAPIRenderer(ontology, dataSource);
+   }
 
-	public TextRenderer getLogRenderer()
-	{
-		return new TextRenderer(dataSource);
-	}
+   public TextRenderer getTextRenderer()
+   {
+      return new TextRenderer(dataSource);
+   }
+
+   public TextRenderer getLogRenderer()
+   {
+      return new TextRenderer(dataSource);
+   }
 }

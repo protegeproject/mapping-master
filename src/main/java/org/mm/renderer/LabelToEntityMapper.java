@@ -15,45 +15,47 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 public class LabelToEntityMapper
 {
-	Map<String, OWLEntity> mapper = new HashMap<String, OWLEntity>();
-	
-	public LabelToEntityMapper(OWLOntology ontology)
-	{
-		/*
-		 * A very simple implementation of label-to-entity mapper. It can't handle label duplicates and
-		 * very case sensitive.
-		 */
-		for (OWLEntity entity : ontology.getSignature()) {
-			if (entity instanceof OWLAnnotationProperty || entity instanceof OWLDatatype) { // we skip those
-				continue;
-			}
-			Set<OWLAnnotationAssertionAxiom> axioms = ontology.getAnnotationAssertionAxioms(entity.getIRI());
-			for (OWLAnnotationAssertionAxiom axiom : axioms) {
-				OWLAnnotationValue value = axiom.getValue();
-				if (value instanceof IRI) {
-					IRI iri = (IRI) value;
-					String label = iri.toString();
-					mapper.put(label, entity); // put the IRI string
-				} else if (value instanceof OWLLiteral) {
-					OWLLiteral literal = (OWLLiteral) value;
-					String label = literal.getLiteral();
-					mapper.put(label, entity); // put the Literal string
-					if (literal.hasLang()) {
-						String labelWithLanguage = label + "@" + literal.getLang();
-						mapper.put(labelWithLanguage, entity); // additionally, if the Literal has a language tag we add this too.
-					}
-				}
-			}
-		}
-	}
+   Map<String, OWLEntity> mapper = new HashMap<String, OWLEntity>();
 
-	public OWLEntity getEntityInLabel(String label)
-	{
-		return mapper.get(label);
-	}
+   public LabelToEntityMapper(OWLOntology ontology)
+   {
+      /*
+       * A very simple implementation of label-to-entity mapper. It can't handle
+       * label duplicates and very case sensitive.
+       */
+      for (OWLEntity entity : ontology.getSignature()) {
+         // We skip these
+         if (entity instanceof OWLAnnotationProperty || entity instanceof OWLDatatype) {
+            continue;
+         }
+         Set<OWLAnnotationAssertionAxiom> axioms = ontology.getAnnotationAssertionAxioms(entity.getIRI());
+         for (OWLAnnotationAssertionAxiom axiom : axioms) {
+            OWLAnnotationValue value = axiom.getValue();
+            if (value instanceof IRI) {
+               IRI iri = (IRI) value;
+               String label = iri.toString();
+               mapper.put(label, entity); // put the IRI string
+            } else if (value instanceof OWLLiteral) {
+               OWLLiteral literal = (OWLLiteral) value;
+               String label = literal.getLiteral();
+               mapper.put(label, entity); // put the Literal string
+               if (literal.hasLang()) {
+                  String labelWithLanguage = label + "@" + literal.getLang();
+                  // additionally, if the Literal has a language tag we add this too.
+                  mapper.put(labelWithLanguage, entity); 
+               }
+            }
+         }
+      }
+   }
 
-	public OWLEntity getEntityInLabel(String label, String language)
-	{
-		return mapper.get(label + "@" + language);
-	}
+   public OWLEntity getEntityInLabel(String label)
+   {
+      return mapper.get(label);
+   }
+
+   public OWLEntity getEntityInLabel(String label, String language)
+   {
+      return mapper.get(label + "@" + language);
+   }
 }

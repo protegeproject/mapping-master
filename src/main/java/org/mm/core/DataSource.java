@@ -14,19 +14,19 @@ import java.util.Optional;
  */
 public interface DataSource
 {
-	String getLocationValue(SpreadsheetLocation location, ReferenceNode referenceNode) throws RendererException;
+   String getLocationValue(SpreadsheetLocation location, ReferenceNode node) throws RendererException;
 
-	String getLocationValue(SpreadsheetLocation location) throws RendererException;
+   String getLocationValue(SpreadsheetLocation location) throws RendererException;
 
-	String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode referenceNode) throws RendererException;
+   String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode node) throws RendererException;
 
-	void setCurrentLocation(SpreadsheetLocation location);
+   void setCurrentLocation(SpreadsheetLocation location);
 
-	Optional<SpreadsheetLocation> getCurrentLocation();
+   Optional<SpreadsheetLocation> getCurrentLocation();
 
-	boolean hasCurrentLocation();
+   boolean hasCurrentLocation();
 
-	SpreadsheetLocation resolveLocation(SourceSpecificationNode sourceSpecification) throws RendererException;
+   SpreadsheetLocation resolveLocation(SourceSpecificationNode node) throws RendererException;
 
-	List<String> getSheetNames();
+   List<String> getSheetNames();
 }

@@ -9,7 +9,7 @@ import java.util.Set;
 // TODO We also do not save any global configuration options made by the user.
 public interface MappingExpressionPersistenceLayer
 {
-  Set<MappingExpression> getMappingExpressions(String fileName) throws MappingMasterException;
+   Set<MappingExpression> getMappingExpressions(String fileName) throws MappingMasterException;
 
-  void putMappingExpressions(Set<MappingExpression> mappingExpressions, String fileName) throws MappingMasterException;
+   void putMappingExpressions(Set<MappingExpression> mappingExpressions, String fileName) throws MappingMasterException;
 }

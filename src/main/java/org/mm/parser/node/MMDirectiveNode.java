@@ -11,73 +11,66 @@ import org.mm.parser.ParserUtil;
 
 public class MMDirectiveNode implements MMNode
 {
-  private MMDefaultValueEncodingDirectiveNode defaultValueEncodingNode;
-  private MMDefaultReferenceTypeDirectiveNode defaultReferenceTypeNode;
-  private MMDefaultPropertyValueTypeNode defaultPropertyValueTypeNode;
+   private MMDefaultValueEncodingDirectiveNode defaultValueEncodingNode;
+   private MMDefaultReferenceTypeDirectiveNode defaultReferenceTypeNode;
+   private MMDefaultPropertyValueTypeNode defaultPropertyValueTypeNode;
 
-  public MMDirectiveNode(ASTMMDirective node) throws ParseException
-  {
-    for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-      Node child = node.jjtGetChild(i);
+   public MMDirectiveNode(ASTMMDirective node) throws ParseException
+   {
+      for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+         Node child = node.jjtGetChild(i);
+         if (ParserUtil.hasName(child, "MMDefaultValueEncoding")) {
+            this.defaultValueEncodingNode = new MMDefaultValueEncodingDirectiveNode((ASTMMDefaultValueEncoding) child);
+         } else if (ParserUtil.hasName(child, "MMDefaultReferenceType")) {
+            this.defaultReferenceTypeNode = new MMDefaultReferenceTypeDirectiveNode((ASTMMDefaultReferenceType) child);
+         } else if (ParserUtil.hasName(child, "MMDefaultPropertyValueType")) {
+            this.defaultPropertyValueTypeNode = new MMDefaultPropertyValueTypeNode((ASTMMDefaultPropertyValueType) child);
+         } else throw new InternalParseException("invalid child node " + child + " to MMExpression");
+      }
+   }
 
-      if (ParserUtil.hasName(child, "MMDefaultValueEncoding")) {
-        this.defaultValueEncodingNode = new MMDefaultValueEncodingDirectiveNode((ASTMMDefaultValueEncoding)child);
-      } else if (ParserUtil.hasName(child, "MMDefaultReferenceType")) {
-        this.defaultReferenceTypeNode = new MMDefaultReferenceTypeDirectiveNode((ASTMMDefaultReferenceType)child);
-      } else if (ParserUtil.hasName(child, "MMDefaultPropertyValueType")) {
-        this.defaultPropertyValueTypeNode = new MMDefaultPropertyValueTypeNode((ASTMMDefaultPropertyValueType)child);
-      } else
-        throw new InternalParseException("invalid child node " + child + " to MMExpression");
-    }
-  }
+   public MMDefaultValueEncodingDirectiveNode getDefaultValueEncodingNode()
+   {
+      return this.defaultValueEncodingNode;
+   }
 
-  public MMDefaultValueEncodingDirectiveNode getDefaultValueEncodingNode()
-  {
-    return this.defaultValueEncodingNode;
-  }
+   public MMDefaultReferenceTypeDirectiveNode getDefaultReferenceTypeNode()
+   {
+      return this.defaultReferenceTypeNode;
+   }
 
-  public MMDefaultReferenceTypeDirectiveNode getDefaultReferenceTypeNode()
-  {
-    return this.defaultReferenceTypeNode;
-  }
+   public MMDefaultPropertyValueTypeNode getDefaultPropertyValueTypeNode()
+   {
+      return this.defaultPropertyValueTypeNode;
+   }
 
-  public MMDefaultPropertyValueTypeNode getDefaultPropertyValueTypeNode()
-  {
-    return this.defaultPropertyValueTypeNode;
-  }
+   public boolean hasDefaultValueEncoding()
+   {
+      return this.defaultValueEncodingNode != null;
+   }
 
-  public boolean hasDefaultValueEncoding()
-  {
-    return this.defaultValueEncodingNode != null;
-  }
+   public boolean hasDefaultReferenceType()
+   {
+      return this.defaultReferenceTypeNode != null;
+   }
 
-  public boolean hasDefaultReferenceType()
-  {
-    return this.defaultReferenceTypeNode != null;
-  }
+   public boolean hasDefaultPropertyValueType()
+   {
+      return this.defaultPropertyValueTypeNode != null;
+   }
 
-  public boolean hasDefaultPropertyValueType()
-  {
-    return this.defaultPropertyValueTypeNode != null;
-  }
+   @Override
+   public String getNodeName()
+   {
+      return "MMDirective";
+   }
 
-  @Override public String getNodeName()
-  {
-    return "MMDirective";
-  }
-
-  public String toString()
-  {
-    String representation = "";
-
-    if (hasDefaultValueEncoding())
-      representation += this.defaultValueEncodingNode.toString();
-    if (hasDefaultReferenceType())
-      representation += this.defaultReferenceTypeNode.toString();
-    if (hasDefaultPropertyValueType())
-      representation += this.defaultPropertyValueTypeNode.toString();
-
-    return representation;
-  }
-
+   public String toString()
+   {
+      String representation = "";
+      if (hasDefaultValueEncoding()) representation += this.defaultValueEncodingNode.toString();
+      if (hasDefaultReferenceType()) representation += this.defaultReferenceTypeNode.toString();
+      if (hasDefaultPropertyValueType()) representation += this.defaultPropertyValueTypeNode.toString();
+      return representation;
+   }
 }

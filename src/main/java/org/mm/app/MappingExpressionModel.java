@@ -6,5 +6,5 @@ import org.mm.core.MappingExpression;
 
 public interface MappingExpressionModel
 {
-	List<MappingExpression> getExpressions();
+   List<MappingExpression> getExpressions();
 }
