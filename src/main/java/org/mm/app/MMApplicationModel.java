@@ -54,6 +54,8 @@ public class MMApplicationModel implements ApplicationModel
 
    public TextRenderer getLogRenderer()
    {
-      return new TextRenderer(dataSource);
+      TextRenderer renderer = new TextRenderer(dataSource);
+      renderer.setComment(true);
+      return renderer;
    }
 }

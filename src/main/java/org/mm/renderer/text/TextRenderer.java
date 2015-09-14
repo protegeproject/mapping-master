@@ -77,6 +77,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 {
    private SpreadSheetDataSource dataSource;
 
+   private boolean isCommented = false;
+
    private final static String INDENT = "   ";
    private final static String NEWLINE = "\n";
 
@@ -90,6 +92,11 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    {
       // Logging data source has been updated
       this.dataSource = dataSource;
+   }
+
+   public void setComment(boolean option)
+   {
+      isCommented = option;
    }
 
    protected SpreadSheetDataSource getDataSource()
@@ -137,7 +144,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       if (sourceSpecificationNode.hasLiteral()) {
          String literalValue = sourceSpecificationNode.getLiteral();
          TextReferenceRendering rendering = new TextReferenceRendering(literalValue, referenceType);
-         rendering.addComment(createComment(literalValue, referenceNode));
+         if (isCommented) rendering.addComment(createComment(literalValue, referenceNode));
          return Optional.of(rendering);
 
       } else {
@@ -164,7 +171,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                }
             }
             TextReferenceRendering rendering = new TextReferenceRendering(literalValue, referenceType);
-            rendering.addComment(createComment(literalValue, referenceNode));
+            if (isCommented) rendering.addComment(createComment(literalValue, referenceNode));
             return Optional.of(rendering);
          } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
             // TODO If the rendering uses the ID then we should use it
@@ -189,7 +196,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                }
             }
             TextReferenceRendering rendering = new TextReferenceRendering(rdfsLabel, referenceType);
-            rendering.addComment(createComment(rdfsLabel, referenceNode));
+            if (isCommented) rendering.addComment(createComment(rdfsLabel, referenceNode));
             return Optional.of(rendering);
          }
          throw new InternalRendererException(
@@ -204,8 +211,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       String processedValue = "";
       if (referenceNode.hasLiteralValueEncoding()) {
          if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding()) {
-            processedValue = generateReferenceValue(resolvedValue, referenceNode.getLiteralValueEncodingNode(),
-                  referenceNode);
+            processedValue = generateReferenceValue(resolvedValue, referenceNode.getLiteralValueEncodingNode(), referenceNode);
          } else if (referenceNode.hasValueExtractionFunctionNode()) {
             ValueExtractionFunctionNode valueExtractionFunctionNode = referenceNode.getValueExtractionFunctionNode();
             processedValue = generateReferenceValue(resolvedValue, valueExtractionFunctionNode);
