@@ -103,22 +103,17 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
       Sheet sheet = workbook.getSheet(location.getSheetName());
       Row row = sheet.getRow(rowNumber);
       if (row == null) {
-         throw new RendererException("Invalid source specification @" + location + " - row "
-               + location.getPhysicalRowNumber() + " is out of range");
+         return "";
       }
       Cell cell = row.getCell(columnNumber);
       if (cell == null) {
-         throw new RendererException("Invalid source specification @" + location + " - column "
-               + location.getColumnName() + " is out of range");
+         return "";
       }
       return getStringValue(cell);
    }
 
    private String getStringValue(Cell cell)
    {
-      if (cell == null) {
-         return "";
-      }
       switch (cell.getCellType()) {
          case Cell.CELL_TYPE_BLANK :
             return "";
