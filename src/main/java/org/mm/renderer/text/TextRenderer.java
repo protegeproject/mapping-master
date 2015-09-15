@@ -153,25 +153,30 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
       } else {
          String resolvedValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
+         
+         // Decide what will happen if the resolved value is empty
          if (resolvedValue.isEmpty()) {
-            if (referenceNode.getActualEmptyLocationDirective() == MM_SKIP_IF_EMPTY_LOCATION) {
-               return Optional.empty();
-            }
-            if (referenceNode.getActualEmptyLocationDirective() == MM_WARNING_IF_EMPTY_LOCATION) {
-               // TODO Warn in log files
-               return Optional.empty();
+            switch (referenceNode.getActualEmptyLocationDirective()) {
+               case MM_SKIP_IF_EMPTY_LOCATION:
+                  return Optional.empty();
+               case MM_WARNING_IF_EMPTY_LOCATION:
+                  // TODO Warn in log files
+                  return Optional.empty();
             }
          }
+         // Decide what will happen if the resolved value is not empty based on the entity types
          if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
             SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
             String literalValue = processOWLLiteralReferenceValue(location, resolvedValue, referenceNode);
             if (literalValue.isEmpty()) {
-               if (referenceNode.getActualEmptyLiteralDirective() == MM_SKIP_IF_EMPTY_LITERAL) {
-                  return Optional.empty();
-               }
-               if (referenceNode.getActualEmptyLiteralDirective() == MM_WARNING_IF_EMPTY_LITERAL) {
-                  // TODO Warn in log file
-                  return Optional.empty();
+               switch (referenceNode.getActualEmptyLiteralDirective()) {
+                  case MM_SKIP_IF_EMPTY_LITERAL:
+                     return Optional.empty();
+                  case MM_WARNING_IF_EMPTY_LITERAL:
+                     // TODO Warn in log file
+                     return Optional.empty();
+                  case MM_ERROR_IF_EMPTY_LITERAL:
+                     throw new RendererException("Empty literal in reference " + referenceNode + " at location " + location);
                }
             }
             TextReferenceRendering rendering = new TextReferenceRendering(literalValue, referenceType);
@@ -182,20 +187,21 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
             // String rdfID = getReferenceRDFID(resolvedValue, referenceNode);
             String label = getReferenceRDFSLabel(resolvedValue, referenceNode);
             if (label.isEmpty()) {
-               if (referenceNode.getActualEmptyRDFSLabelDirective() == MM_SKIP_IF_EMPTY_LABEL) {
-                   return Optional.empty();
-               }
-               if (referenceNode.getActualEmptyRDFSLabelDirective() == MM_WARNING_IF_EMPTY_LABEL) {
-                  // TODO Warn in log file
-                  return Optional.empty();
+               switch (referenceNode.getActualEmptyRDFSLabelDirective()) {
+                  case MM_SKIP_IF_EMPTY_LABEL:
+                     return Optional.empty();
+                  case MM_WARNING_IF_EMPTY_LABEL:
+                     // TODO Warn in log file
+                     return Optional.empty();
+                  case MM_ERROR_IF_EMPTY_LABEL:
+                     throw new RendererException("Empty RDFS label in reference " + referenceNode);
                }
             }
             TextReferenceRendering rendering = new TextReferenceRendering(label, referenceType);
             if (isCommented) rendering.addComment(createComment(label, referenceNode));
             return Optional.of(rendering);
          }
-         throw new InternalRendererException(
-               "Unknown reference type '" + referenceType + "' for reference " + referenceNode);
+         throw new InternalRendererException("Unknown reference type '" + referenceType + "' for reference " + referenceNode);
       }
    }
 
@@ -217,9 +223,6 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
       if (processedValue.isEmpty() && !referenceNode.getActualDefaultLiteral().isEmpty()) {
          processedValue = referenceNode.getActualDefaultLiteral();
-      }
-      if (processedValue.isEmpty() && referenceNode.getActualEmptyLiteralDirective() == MM_ERROR_IF_EMPTY_LITERAL) {
-         throw new RendererException("Empty literal in reference " + referenceNode + " at location " + location);
       }
       return processedValue;
    }
@@ -319,9 +322,6 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
       if (label.isEmpty() && !referenceNode.getActualDefaultRDFSLabel().isEmpty()) {
          label = referenceNode.getActualDefaultRDFSLabel();
-      }
-      if (label.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_LABEL) {
-         throw new RendererException("empty RDFS label in reference " + referenceNode);
       }
       if (label.isEmpty() && referenceNode.getReferenceDirectives().usesLocationEncoding()) {
          SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);

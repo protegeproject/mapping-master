@@ -27,19 +27,11 @@ public class ReferenceUtil implements MappingMasterParserConstants
       SpreadsheetLocation location = resolveLocation(dataSource, referenceNode);
 
       String referenceValue = "";
-      // Deals with shifting
       String rawLocationValue = dataSource.getLocationValue(location, referenceNode);
       if (rawLocationValue == null || rawLocationValue.isEmpty()) {
          referenceValue = referenceNode.getActualDefaultLocationValue();
       } else {
          referenceValue = rawLocationValue;
-      }
-      if (referenceValue.isEmpty()) {
-         switch (referenceNode.getActualEmptyLocationDirective()) {
-            case MM_ERROR_IF_EMPTY_LOCATION :
-               throw new RendererException("empty location " + location + " in reference " + referenceNode);
-            case MM_WARNING_IF_EMPTY_LOCATION : // NO-OP
-         }
       }
       return referenceValue;
    }
