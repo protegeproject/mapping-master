@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
@@ -145,8 +146,7 @@ public class ReferenceUtil implements MappingMasterParserConstants
    public static String capture(String value, String regexExpression) throws RendererException
    {
       try {
-         Pattern p = Pattern.compile(regexExpression); // Pull the value out of
-                                                       // the location
+         Pattern p = Pattern.compile(regexExpression); // Pull the value out of the location
          Matcher m = p.matcher(value);
          boolean matchFound = m.find();
          String result = "";
@@ -163,11 +163,12 @@ public class ReferenceUtil implements MappingMasterParserConstants
    public static String produceIdentifierString(SpreadsheetLocation location)
    {
       StringBuffer sb = new StringBuffer();
-      sb.append(location.getSheetName());
+      sb.append(toSnakeCase(location.getSheetName().trim()));
       sb.append("_");
       sb.append(location.getCellLocation());
+      String loc = sb.toString();
       sb.append("_");
-      sb.append(System.currentTimeMillis());
+      sb.append(DigestUtils.sha1Hex(loc).substring(0, 7));
       return sb.toString();
    }
 
@@ -199,5 +200,10 @@ public class ReferenceUtil implements MappingMasterParserConstants
          }
       }
       return sb.toString();
+   }
+
+   private static String toSnakeCase(final String text)
+   {
+      return text.replaceAll("\\s+", "_");
    }
 }
