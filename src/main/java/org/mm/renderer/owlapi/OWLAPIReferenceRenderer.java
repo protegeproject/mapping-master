@@ -112,7 +112,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             if (literalValue.isEmpty() && referenceNode.getActualEmptyLiteralDirective() == MM_SKIP_IF_EMPTY_LITERAL) {
                return Optional.empty();
             }
-            OWLLiteral literal = this.literalRenderer.createOWLLiteral(literalValue, type);
+            OWLLiteral literal = literalRenderer.createOWLLiteral(literalValue, type);
             return Optional.of(new OWLAPIReferenceRendering(literal, type));
 
          } else if (type.isOWLEntity()) { // Reference is an OWL entity
@@ -122,8 +122,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             String language = getReferenceLanguage(referenceNode);
             ReferenceDirectives directives = referenceNode.getReferenceDirectives();
 
-            OWLEntity owlEntity = createOrResolveOWLEntity(prefix, identifier, label, language, type, location,
-                  directives);
+            OWLEntity owlEntity = createOrResolveOWLEntity(prefix, identifier, label, language, type, location, directives);
             if (owlEntity == null) {
                return Optional.empty();
             } else {
@@ -143,9 +142,10 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
          ReferenceType type, SpreadsheetLocation location, ReferenceDirectives directives) throws RendererException
    {
       OWLEntity entity = null;
-      if (directives.usesLocationWithDuplicatesEncoding()) {
-         entity = resolveOWLEntityWithDuplicatesEncoding(prefix, type, location);
-      } else if (directives.usesLocationEncoding()) {
+//      if (directives.usesLocationWithDuplicatesEncoding()) {
+//         entity = resolveOWLEntityWithDuplicatesEncoding(prefix, type, location);
+//      } else 
+      if (directives.usesLocationEncoding()) {
          entity = resolveOWLEntityWithLocationEncoding(prefix, type, location);
       } else {
          // Uses rdf:ID or rdfs:label encoding
@@ -175,8 +175,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
                   entity = null;
                } else {
                   if (shouldCreateOrResolveOWLEntityWithRDFSLabel(label, language, directives)) {
-                     entity = createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(prefix, label, language, type,
-                           location);
+                     entity = createOrResolveOWLEntityWithEmptyIDAndNonEmptyLabel(prefix, label, language, type, location);
                   }
                }
                break;
@@ -588,24 +587,26 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
    private Optional<OWLObject> renderType(TypeNode typeNode) throws RendererException
    {
       if (typeNode.isOWLClassNode()) {
-         Optional<OWLClassRendering> classRendering = this.entityRenderer.renderOWLClass((OWLClassNode) typeNode);
+         OWLClassNode node = (OWLClassNode) typeNode;
+         Optional<OWLClassRendering> classRendering = entityRenderer.renderOWLClass(node);
          if (classRendering.isPresent()) {
             return Optional.of(classRendering.get().getOWLClass());
          }
       } else if (typeNode.isOWLClassExpressionNode()) {
-         Optional<OWLClassExpressionRendering> classExpresssionRendering = this.classExpressionRenderer
-               .renderOWLClassExpression((OWLClassExpressionNode) typeNode);
-         if (classExpresssionRendering.isPresent()) {
-            return Optional.of(classExpresssionRendering.get().getOWLClassExpression());
+         OWLClassExpressionNode node = (OWLClassExpressionNode) typeNode;
+         Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer.renderOWLClassExpression(node);
+         if (classExpressionRendering.isPresent()) {
+            return Optional.of(classExpressionRendering.get().getOWLClassExpression());
          }
       } else if (typeNode.isOWLPropertyNode()) {
-         Optional<? extends OWLPropertyRendering> propertyRendering = this.entityRenderer
-               .renderOWLProperty((OWLPropertyNode) typeNode);
+         OWLPropertyNode node = (OWLPropertyNode) typeNode;
+         Optional<? extends OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(node);
          if (propertyRendering.isPresent()) {
             return Optional.of(propertyRendering.get().getOWLProperty());
          }
       } else if (typeNode.isReferenceNode()) {
-         Optional<OWLAPIReferenceRendering> referenceRendering = renderReference((ReferenceNode) typeNode);
+         ReferenceNode node = (ReferenceNode) typeNode;
+         Optional<OWLAPIReferenceRendering> referenceRendering = renderReference(node);
          if (referenceRendering.isPresent()) {
             if (referenceRendering.get().isOWLEntity()) {
                OWLEntity entity = referenceRendering.get().getOWLEntity().get();
@@ -620,83 +621,82 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       return Optional.empty();
    }
 
-   private String processOWLLiteralReferenceValue(SpreadsheetLocation location, String rawLocationValue,
-         ReferenceNode referenceNode) throws RendererException
+   private String processOWLLiteralReferenceValue(SpreadsheetLocation location, String rawValue, ReferenceNode referenceNode)
+         throws RendererException
    {
-      String sourceValue = rawLocationValue.replace("\"", "\\\"");
-      String processedReferenceValue;
+      String value = rawValue.replace("\"", "\\\"");
+      String literal = "";
 
       if (referenceNode.hasLiteralValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding())
-            processedReferenceValue = generateReferenceValue(sourceValue, referenceNode.getLiteralValueEncodingNode(),
-                  referenceNode);
-         else if (referenceNode.hasValueExtractionFunctionNode()) {
+         if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding()) {
+            literal = generateReferenceValue(value, referenceNode.getLiteralValueEncodingNode(), referenceNode);
+         } else if (referenceNode.hasValueExtractionFunctionNode()) {
             ValueExtractionFunctionNode valueExtractionFunctionNode = referenceNode.getValueExtractionFunctionNode();
-            processedReferenceValue = generateReferenceValue(sourceValue, valueExtractionFunctionNode);
-         } else processedReferenceValue = sourceValue;
-      } else processedReferenceValue = "";
-
-      if (processedReferenceValue.isEmpty() && !referenceNode.getActualDefaultLiteral().isEmpty())
-         processedReferenceValue = referenceNode.getActualDefaultLiteral();
-
-      if (processedReferenceValue.isEmpty()
-            && referenceNode.getActualEmptyLiteralDirective() == MM_ERROR_IF_EMPTY_LITERAL)
+            literal = generateReferenceValue(value, valueExtractionFunctionNode);
+         } else {
+            literal = value;
+         }
+      }
+      if (literal.isEmpty() && !referenceNode.getActualDefaultLiteral().isEmpty()) {
+         literal = referenceNode.getActualDefaultLiteral();
+      }
+      if (literal.isEmpty() && referenceNode.getActualEmptyLiteralDirective() == MM_ERROR_IF_EMPTY_LITERAL) {
          throw new RendererException("empty literal in reference " + referenceNode + " at location " + location);
-
-      return processedReferenceValue;
+      }
+      return literal;
    }
 
-   private String getReferenceRDFID(String sourceValue, ReferenceNode referenceNode) throws RendererException
+   private String getReferenceRDFID(String value, ReferenceNode referenceNode) throws RendererException
    {
-      String rdfIDValue;
-
+      String id = "";
       if (referenceNode.hasRDFIDValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedRDFIDValueEncoding())
-            rdfIDValue = generateReferenceValue(sourceValue, referenceNode.getRDFIDValueEncodingNode(), referenceNode);
-         else if (referenceNode.hasValueExtractionFunctionNode())
-            rdfIDValue = generateReferenceValue(sourceValue, referenceNode.getValueExtractionFunctionNode());
-         else rdfIDValue = sourceValue;
-      } else rdfIDValue = "";
-
-      if (rdfIDValue.isEmpty() && !referenceNode.getActualDefaultRDFID().isEmpty())
-         rdfIDValue = referenceNode.getActualDefaultRDFID();
-
-      if (rdfIDValue.isEmpty() && referenceNode.getActualEmptyRDFIDDirective() == MM_ERROR_IF_EMPTY_ID)
+         if (referenceNode.hasExplicitlySpecifiedRDFIDValueEncoding()) {
+            id = generateReferenceValue(value, referenceNode.getRDFIDValueEncodingNode(), referenceNode);
+         } else if (referenceNode.hasValueExtractionFunctionNode()) {
+            id = generateReferenceValue(value, referenceNode.getValueExtractionFunctionNode());
+         } else {
+            id = value;
+         }
+      }
+      if (id.isEmpty() && !referenceNode.getActualDefaultRDFID().isEmpty()) {
+         id = referenceNode.getActualDefaultRDFID();
+      }
+      if (id.isEmpty() && referenceNode.getActualEmptyRDFIDDirective() == MM_ERROR_IF_EMPTY_ID) {
          throw new RendererException("empty RDF ID in reference " + referenceNode);
-
-      return rdfIDValue;
+      }
+      return id;
    }
 
-   private String getReferenceRDFSLabel(String sourceValue, ReferenceNode referenceNode) throws RendererException
+   private String getReferenceRDFSLabel(String value, ReferenceNode referenceNode) throws RendererException
    {
-      String rdfsLabelText;
-
+      String label = "";
       if (referenceNode.hasRDFSLabelValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedRDFSLabelValueEncoding())
-            rdfsLabelText = generateReferenceValue(sourceValue, referenceNode.getRDFSLabelValueEncodingNode(),
-                  referenceNode);
-         else if (referenceNode.hasValueExtractionFunctionNode())
-            rdfsLabelText = generateReferenceValue(sourceValue, referenceNode.getValueExtractionFunctionNode());
-         else rdfsLabelText = sourceValue;
-      } else rdfsLabelText = "";
-
-      if (rdfsLabelText.isEmpty() && !referenceNode.getActualDefaultRDFSLabel().isEmpty())
-         rdfsLabelText = referenceNode.getActualDefaultRDFSLabel();
-
-      if (rdfsLabelText.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_LABEL)
+         if (referenceNode.hasExplicitlySpecifiedRDFSLabelValueEncoding()) {
+            label = generateReferenceValue(value, referenceNode.getRDFSLabelValueEncodingNode(), referenceNode);
+         } else if (referenceNode.hasValueExtractionFunctionNode()) {
+            label = generateReferenceValue(value, referenceNode.getValueExtractionFunctionNode());
+         } else {
+            label = value;
+         }
+      }
+      if (label.isEmpty() && !referenceNode.getActualDefaultRDFSLabel().isEmpty()) {
+         label = referenceNode.getActualDefaultRDFSLabel();
+      }
+      if (label.isEmpty() && referenceNode.getActualEmptyRDFSLabelDirective() == MM_ERROR_IF_EMPTY_LABEL) {
          throw new RendererException("empty RDFS label in reference " + referenceNode);
-
-      return rdfsLabelText;
+      }
+      return label;
    }
 
    private String generateReferenceValue(String sourceValue, ValueEncodingDirectiveNode valueEncodingDirectiveNode,
          ReferenceNode referenceNode) throws RendererException
    {
       if (valueEncodingDirectiveNode != null) {
-         if (valueEncodingDirectiveNode.hasValueSpecificationNode())
-            return generateReferenceValue(sourceValue, valueEncodingDirectiveNode.getValueSpecificationNode(),
-                  referenceNode);
-         else return sourceValue;
+         if (valueEncodingDirectiveNode.hasValueSpecificationNode()) {
+            return generateReferenceValue(sourceValue, valueEncodingDirectiveNode.getValueSpecificationNode(), referenceNode);
+         } else {
+            return sourceValue;
+         }
       } else return sourceValue;
    }
 
@@ -705,35 +705,30 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
    {
       String processedReferenceValue = "";
 
-      for (ValueSpecificationItemNode valueSpecificationItemNode : valueSpecificationNode
-            .getValueSpecificationItemNodes()) {
-         if (valueSpecificationItemNode.hasStringLiteral())
-            processedReferenceValue += valueSpecificationItemNode.getStringLiteral();
-         else if (valueSpecificationItemNode.hasReferenceNode()) {
-            ReferenceNode valueSpecificationItemReferenceNode = valueSpecificationItemNode.getReferenceNode();
+      for (ValueSpecificationItemNode specificationItemNode : valueSpecificationNode.getValueSpecificationItemNodes()) {
+         if (specificationItemNode.hasStringLiteral()) {
+            processedReferenceValue += specificationItemNode.getStringLiteral();
+         } else if (specificationItemNode.hasReferenceNode()) {
+            ReferenceNode valueSpecificationItemReferenceNode = specificationItemNode.getReferenceNode();
             valueSpecificationItemReferenceNode.setDefaultShiftSetting(referenceNode.getActualShiftDirective());
-            Optional<? extends ReferenceRendering> referenceRendering = renderReference(
-                  valueSpecificationItemReferenceNode);
+            Optional<? extends ReferenceRendering> referenceRendering = renderReference(valueSpecificationItemReferenceNode);
             if (referenceRendering.isPresent()) {
                if (referenceRendering.get().isOWLLiteral()) {
                   processedReferenceValue += referenceRendering.get().getRawValue();
-               } else throw new RendererException(
-                     "expecting OWL literal for value specification, got " + referenceRendering.get());
+               } else {
+                  throw new RendererException("expecting OWL literal for value specification, got " + referenceRendering.get());
+               }
             }
-         } else if (valueSpecificationItemNode.hasValueExtractionFunctionNode()) {
-            ValueExtractionFunctionNode valueExtractionFunction = valueSpecificationItemNode
-                  .getValueExtractionFunctionNode();
+         } else if (specificationItemNode.hasValueExtractionFunctionNode()) {
+            ValueExtractionFunctionNode valueExtractionFunction = specificationItemNode.getValueExtractionFunctionNode();
             processedReferenceValue += generateReferenceValue(sourceValue, valueExtractionFunction);
-         } else if (valueSpecificationItemNode.hasCapturingExpression() && sourceValue != null) {
-            String capturingExpression = valueSpecificationItemNode.getCapturingExpression();
+         } else if (specificationItemNode.hasCapturingExpression() && sourceValue != null) {
+            String capturingExpression = specificationItemNode.getCapturingExpression();
             processedReferenceValue += ReferenceUtil.capture(sourceValue, capturingExpression);
          }
       }
       return processedReferenceValue;
    }
-
-   // Tentative. Need a more principled way of finding and invoking functions.
-   // What about calls to Excel?
 
    private String generateReferenceValue(String sourceValue, ValueExtractionFunctionNode valueExtractionFunctionNode)
          throws RendererException
