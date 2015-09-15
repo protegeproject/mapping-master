@@ -502,6 +502,13 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       else return this.referenceDirectives.isDefaultLiteralEncoding();
    }
 
+   public boolean hasLocationValueEncoding()
+   {
+      if (hasExplicitlySpecifiedValueEncodings()) {
+         return hasExplicitlySpecifiedLocationValueEncoding();
+      } else return this.referenceDirectives.isDefaultLocationValueEncoding();
+   }
+
    public boolean hasExplicitlySpecifiedRDFSLabelValueEncoding()
    {
       if (hasExplicitlySpecifiedValueEncodings()) {
@@ -525,6 +532,15 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       if (hasExplicitlySpecifiedValueEncodings()) {
          for (ValueEncodingDirectiveNode valueEncoding : getValueEncodingNodes())
             if (valueEncoding.hasLiteralEncoding()) return true;
+         return false;
+      } else return false;
+   }
+
+   private boolean hasExplicitlySpecifiedLocationValueEncoding()
+   {
+      if (hasExplicitlySpecifiedValueEncodings()) {
+         for (ValueEncodingDirectiveNode valueEncoding : getValueEncodingNodes())
+            if (valueEncoding.useLocationEncoding()) return true;
          return false;
       } else return false;
    }

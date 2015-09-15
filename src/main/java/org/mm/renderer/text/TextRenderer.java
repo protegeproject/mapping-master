@@ -1336,6 +1336,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          return "IRI encoding";
       } else if (referenceNode.hasLiteralValueEncoding()) {
          return "Literal encoding";
+      } else if (referenceNode.hasLocationValueEncoding()) {
+         return "Location encoding";
       } else {
          return "Unknown encoding";
       }
