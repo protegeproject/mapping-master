@@ -136,8 +136,7 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
       if (this.sourceSpecificationNode == null)
          throw new RendererException("missing source specification in reference " + toString());
 
-      if (this.referenceTypeNode == null) { // No entity type specified by the
-                                            // user - use default type
+      if (this.referenceTypeNode == null) { // No entity type specified by the user - use default type
          this.referenceTypeNode = new ReferenceTypeNode(node.defaultReferenceDirectives.getDefaultReferenceType());
       } else this.referenceDirectives.setExplicitlySpecifiedReferenceType(this.referenceTypeNode.getReferenceType());
 
