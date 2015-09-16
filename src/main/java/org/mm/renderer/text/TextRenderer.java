@@ -110,7 +110,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    }
 
    @Override
-   public Optional<? extends TextRendering> renderMMExpression(MMExpressionNode node) throws RendererException
+   public Optional<? extends TextRendering> renderExpression(MMExpressionNode node) throws RendererException
    {
       if (node.hasOWLClassDeclaration()) {
          return renderOWLClassDeclaration(node.getOWLClassDeclarationNode());

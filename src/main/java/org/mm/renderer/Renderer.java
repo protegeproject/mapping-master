@@ -8,7 +8,7 @@ import org.mm.ss.SpreadSheetDataSource;
 
 public interface Renderer
 {
-   Optional<? extends Rendering> renderMMExpression(MMExpressionNode node) throws RendererException;
+   Optional<? extends Rendering> renderExpression(MMExpressionNode node) throws RendererException;
 
    public SpreadSheetDataSource getDataSource();
 

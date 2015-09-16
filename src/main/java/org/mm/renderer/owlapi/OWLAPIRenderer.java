@@ -99,7 +99,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
    }
 
    @Override
-   public Optional<OWLAPIRendering> renderMMExpression(MMExpressionNode mmExpressionNode) throws RendererException
+   public Optional<OWLAPIRendering> renderExpression(MMExpressionNode mmExpressionNode) throws RendererException
    {
       if (mmExpressionNode.hasOWLClassDeclaration()) {
          return renderOWLClassDeclaration(mmExpressionNode.getOWLClassDeclarationNode());
