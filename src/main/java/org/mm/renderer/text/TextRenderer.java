@@ -866,7 +866,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       Optional<? extends TextRendering> individualRenderingResult = null;
 
       boolean isFirst = true;
-      for (OWLNamedIndividualNode namedIndividualNode : differentFromNode.getNamedIndividualNodes()) {
+      for (OWLNamedIndividualNode namedIndividualNode : differentFromNode.getIndividualNodes()) {
          individualRenderingResult = renderOWLNamedIndividual(namedIndividualNode);
          if (individualRenderingResult.isPresent()) {
             TextRendering individualRendering = individualRenderingResult.get();

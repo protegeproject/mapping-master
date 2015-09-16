@@ -29,7 +29,7 @@ public class OWLDifferentFromNode implements MMNode
       }
    }
 
-   public List<OWLNamedIndividualNode> getNamedIndividualNodes()
+   public List<OWLNamedIndividualNode> getIndividualNodes()
    {
       return this.namedIndividualNodes;
    }
