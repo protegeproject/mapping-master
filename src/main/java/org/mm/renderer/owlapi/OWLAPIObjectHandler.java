@@ -3,6 +3,7 @@ package org.mm.renderer.owlapi;
 import java.util.Map;
 import java.util.Set;
 
+import org.mm.parser.MappingMasterParserConstants;
 import org.mm.renderer.LabelToEntityMapper;
 import org.mm.renderer.RendererException;
 import org.semanticweb.owlapi.model.IRI;
@@ -57,7 +58,7 @@ import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
-class OWLAPIObjectHandler
+class OWLAPIObjectHandler implements MappingMasterParserConstants
 {
    private final OWLOntology ontology;
 
@@ -508,6 +509,36 @@ class OWLAPIObjectHandler
    public boolean isOWLAnnotationProperty(OWLAnnotationProperty property)
    {
       return this.ontology.containsAnnotationPropertyInSignature(property.getIRI());
+   }
+
+   public OWLEntity getOWLEntityWithShortName(String shortName, int entityType)
+   {
+      Set<OWLEntity> entities = ontology.getEntitiesInSignature(getQualifiedName(shortName));
+      for (OWLEntity entity : entities) {
+         switch (entityType) {
+            case OWL_CLASS:
+               if (entity.isOWLClass()) { 
+                  return entity.asOWLClass();
+               }
+            case OWL_OBJECT_PROPERTY:
+               if (entity.isOWLObjectProperty()) {
+                  return entity.asOWLObjectProperty();
+               }
+            case OWL_DATA_PROPERTY:
+               if (entity.isOWLClass()) {
+                  return entity.asOWLDataProperty();
+               }
+            case OWL_ANNOTATION_PROPERTY:
+               if (entity.isOWLAnnotationProperty()) {
+                  return entity.asOWLAnnotationProperty();
+               }
+            case OWL_NAMED_INDIVIDUAL:
+               if (entity.isOWLNamedIndividual()) {
+                  return entity.asOWLNamedIndividual();
+               }
+         }
+      }
+      return null;
    }
 
    public OWLEntity getOWLEntityWithRDFSLabel(String labelText)
