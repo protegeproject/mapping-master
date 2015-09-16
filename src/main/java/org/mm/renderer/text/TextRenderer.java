@@ -52,7 +52,7 @@ import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
 import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.OWLClassExpressionRenderer;
-import org.mm.renderer.OWLCoreRenderer;
+import org.mm.renderer.OWLDeclarationRenderer;
 import org.mm.renderer.OWLEntityRenderer;
 import org.mm.renderer.OWLLiteralRenderer;
 import org.mm.renderer.ReferenceRenderer;
@@ -75,7 +75,8 @@ import org.mm.ss.SpreadsheetLocation;
  * reference values substituted inline.
  */
 public class TextRenderer extends ReferenceRendererConfiguration implements Renderer, ReferenceRenderer,
-      OWLCoreRenderer, OWLEntityRenderer, OWLLiteralRenderer, OWLClassExpressionRenderer, MappingMasterParserConstants
+      OWLDeclarationRenderer, OWLEntityRenderer, OWLLiteralRenderer, OWLClassExpressionRenderer,
+      MappingMasterParserConstants
 {
    private SpreadSheetDataSource dataSource;
 
@@ -106,15 +107,6 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    public ReferenceRendererConfiguration getReferenceRendererConfiguration()
    {
       return this;
-   }
-
-   @Override
-   public Optional<? extends TextRendering> renderExpression(ExpressionNode node) throws RendererException
-   {
-      if (node.hasMMExpression()) {
-         return renderMMExpression(node.getMMExpressionNode());
-      }
-      throw new InternalRendererException("Unknown child for node " + node.getNodeName());
    }
 
    @Override

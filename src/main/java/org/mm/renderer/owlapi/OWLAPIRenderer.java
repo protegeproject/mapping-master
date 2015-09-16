@@ -22,7 +22,7 @@ import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.InternalRendererException;
-import org.mm.renderer.OWLCoreRenderer;
+import org.mm.renderer.OWLDeclarationRenderer;
 import org.mm.renderer.ReferenceRendererConfiguration;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
@@ -58,7 +58,8 @@ import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
-public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Renderer, OWLCoreRenderer, MappingMasterParserConstants
+public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Renderer, OWLDeclarationRenderer,
+      MappingMasterParserConstants
 {
    public static final int NameEncodings[] = { MM_LOCATION, MM_LITERAL, RDF_ID, RDFS_LABEL };
    public static final int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY,
@@ -95,15 +96,6 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
    public ReferenceRendererConfiguration getReferenceRendererConfiguration()
    {
       return this;
-   }
-
-   public Optional<OWLAPIRendering> renderExpression(ExpressionNode expressionNode) throws RendererException
-   {
-      if (expressionNode.hasMMExpression()) {
-         return renderMMExpression(expressionNode.getMMExpressionNode());
-      } else {
-         throw new InternalRendererException("unknown child for node " + expressionNode.getNodeName());
-      }
    }
 
    @Override
