@@ -136,8 +136,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
    // TODO Refactor - too long
    @Override
-   public Optional<? extends TextReferenceRendering> renderReference(ReferenceNode referenceNode)
-         throws RendererException
+   public Optional<? extends TextReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException
    {
       ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
       if (referenceType.isUntyped()) {
@@ -167,8 +166,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          // Decide what will happen if the resolved value is not empty based on the entity types
          if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
             SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-            String literalValue = processOWLLiteralReferenceValue(location, resolvedValue, referenceNode);
-            if (literalValue.isEmpty()) {
+            String literal = processOWLLiteralReferenceValue(location, resolvedValue, referenceNode);
+            if (literal.isEmpty()) {
                switch (referenceNode.getActualEmptyLiteralDirective()) {
                   case MM_SKIP_IF_EMPTY_LITERAL:
                      return Optional.empty();
@@ -179,12 +178,12 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                      throw new RendererException("Empty literal in reference " + referenceNode + " at location " + location);
                }
             }
-            TextReferenceRendering rendering = new TextReferenceRendering(literalValue, referenceType);
-            if (isCommented) rendering.addComment(createComment(literalValue, referenceNode));
+            TextReferenceRendering rendering = new TextReferenceRendering(literal, referenceType);
+            if (isCommented) rendering.addComment(createComment(literal, referenceNode));
             return Optional.of(rendering);
          } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
             // TODO If the rendering uses the ID then we should use it
-            // String rdfID = getReferenceRDFID(resolvedValue, referenceNode);
+            // String localName = getReferenceRDFID(resolvedValue, referenceNode);
             String label = getReferenceRDFSLabel(resolvedValue, referenceNode);
             if (label.isEmpty()) {
                switch (referenceNode.getActualEmptyRDFSLabelDirective()) {
@@ -209,22 +208,22 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          ReferenceNode referenceNode) throws RendererException
    {
       resolvedValue = resolvedValue.replace("\"", "\\\"");
-      String processedValue = "";
+      String literal = "";
       if (referenceNode.hasLiteralValueEncoding()) {
          if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding()) {
-            processedValue = generateReferenceValue(resolvedValue, referenceNode.getLiteralValueEncodingNode(), referenceNode);
+            literal = generateReferenceValue(resolvedValue, referenceNode.getLiteralValueEncodingNode(), referenceNode);
          } else if (referenceNode.hasValueExtractionFunctionNode()) {
             ValueExtractionFunctionNode valueExtractionFunctionNode = referenceNode.getValueExtractionFunctionNode();
-            processedValue = generateReferenceValue(resolvedValue, valueExtractionFunctionNode);
+            literal = generateReferenceValue(resolvedValue, valueExtractionFunctionNode);
          } else {
-            processedValue = resolvedValue;
+            literal = resolvedValue;
          }
       }
 
-      if (processedValue.isEmpty() && !referenceNode.getActualDefaultLiteral().isEmpty()) {
-         processedValue = referenceNode.getActualDefaultLiteral();
+      if (literal.isEmpty() && !referenceNode.getActualDefaultLiteral().isEmpty()) {
+         literal = referenceNode.getActualDefaultLiteral();
       }
-      return processedValue;
+      return literal;
    }
 
    private String generateReferenceValue(String resolvedValue, ValueEncodingDirectiveNode valueEncoding,
@@ -297,12 +296,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
             id = resolvedValue;
          }
       }
-
       if (id.isEmpty() && !referenceNode.getActualDefaultRDFID().isEmpty()) {
          id = referenceNode.getActualDefaultRDFID();
-      }
-      if (id.isEmpty() && referenceNode.getActualEmptyRDFIDDirective() == MM_ERROR_IF_EMPTY_ID) {
-         throw new RendererException("empty RDF ID in reference " + referenceNode);
       }
       return id;
    }
@@ -319,7 +314,6 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
             label = resolvedValue;
          }
       }
-
       if (label.isEmpty() && !referenceNode.getActualDefaultRDFSLabel().isEmpty()) {
          label = referenceNode.getActualDefaultRDFSLabel();
       }
