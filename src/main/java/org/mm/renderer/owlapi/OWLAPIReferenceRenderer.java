@@ -65,17 +65,12 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 
    public OWLAPIReferenceRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
    {
-      setDataSource(dataSource);
+      this.dataSource = dataSource;
       handler = new OWLAPIObjectHandler(ontology);
       literalRenderer = new OWLAPILiteralRenderer(ontology);
       entityRenderer = new OWLAPIEntityRenderer(ontology, this);
       classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, entityRenderer);
       defaultPrefix = handler.getDefaultPrefix();
-   }
-
-   public void setDataSource(SpreadSheetDataSource dataSource)
-   {
-      this.dataSource = dataSource;
    }
 
    public String getDefaultPrefix()

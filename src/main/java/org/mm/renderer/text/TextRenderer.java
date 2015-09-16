@@ -91,19 +91,13 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       this.dataSource = dataSource;
    }
 
-   @Override
-   public void changeDataSource(SpreadSheetDataSource dataSource)
-   {
-      // Logging data source has been updated
-      this.dataSource = dataSource;
-   }
-
    public void setComment(boolean option)
    {
       isCommented = option;
    }
 
-   protected SpreadSheetDataSource getDataSource()
+   @Override
+   public SpreadSheetDataSource getDataSource()
    {
       return dataSource;
    }

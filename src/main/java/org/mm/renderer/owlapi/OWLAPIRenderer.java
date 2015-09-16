@@ -58,8 +58,7 @@ import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
-public class OWLAPIRenderer extends ReferenceRendererConfiguration
-      implements Renderer, OWLCoreRenderer, MappingMasterParserConstants
+public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Renderer, OWLCoreRenderer, MappingMasterParserConstants
 {
    public static final int NameEncodings[] = { MM_LOCATION, MM_LITERAL, RDF_ID, RDFS_LABEL };
    public static final int ReferenceValueTypes[] = { OWL_CLASS, OWL_NAMED_INDIVIDUAL, OWL_OBJECT_PROPERTY,
@@ -70,6 +69,8 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration
    public static final int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INT, XSD_FLOAT, XSD_DOUBLE,
          XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DATE, XSD_DURATION };
 
+   private SpreadSheetDataSource dataSource;
+
    private final OWLAPIObjectHandler handler;
    private final OWLAPIEntityRenderer entityRenderer;
    private final OWLAPIClassExpressionRenderer classExpressionRenderer;
@@ -77,6 +78,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration
 
    public OWLAPIRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
    {
+      this.dataSource = dataSource;
       handler = new OWLAPIObjectHandler(ontology);
       referenceRenderer = new OWLAPIReferenceRenderer(ontology, dataSource);
       entityRenderer = new OWLAPIEntityRenderer(ontology, referenceRenderer);
@@ -84,10 +86,9 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration
    }
 
    @Override
-   public void changeDataSource(SpreadSheetDataSource dataSource)
+   public SpreadSheetDataSource getDataSource()
    {
-      // logging data source has been updated
-      referenceRenderer.setDataSource(dataSource);
+      return dataSource;
    }
 
    @Override

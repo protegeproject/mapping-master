@@ -10,7 +10,7 @@ public interface Renderer
 {
    Optional<? extends Rendering> renderExpression(ExpressionNode expressionNode) throws RendererException;
 
-   public void changeDataSource(SpreadSheetDataSource source);
+   public SpreadSheetDataSource getDataSource();
 
    public ReferenceRendererConfiguration getReferenceRendererConfiguration();
 }
