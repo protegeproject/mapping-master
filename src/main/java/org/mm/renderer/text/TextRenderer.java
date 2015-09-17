@@ -1298,9 +1298,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       sb.append(referenceNode);
       sb.append(" ");
       sb.append("at location ");
-      sb.append("[");
       sb.append(ReferenceUtil.resolveLocation(getDataSource(), referenceNode));
-      sb.append("] ");
+      sb.append(" ");
       sb.append("with cell value ");
       sb.append("\"").append(rawValue).append("\"");
       sb.append(" ");
@@ -1332,6 +1331,6 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
    private static String comment(String text)
    {
-      return " # " + text;
+      return "   # " + text;
    }
 }
