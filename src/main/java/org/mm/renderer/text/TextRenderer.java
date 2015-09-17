@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.mm.core.ReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.AnnotationFactNode;
-import org.mm.parser.node.ExpressionNode;
 import org.mm.parser.node.FactNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
@@ -86,6 +85,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
    private final static String INDENT = "   ";
    private final static String NEWLINE = "\n";
+
+   public final static String COMMENT_HEADER = "   # ";
 
    public TextRenderer(SpreadSheetDataSource dataSource)
    {
@@ -1331,6 +1332,6 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
    private static String comment(String text)
    {
-      return "   # " + text;
+      return COMMENT_HEADER + text;
    }
 }
