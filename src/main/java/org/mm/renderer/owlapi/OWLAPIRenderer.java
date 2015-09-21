@@ -137,12 +137,13 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
       if (node.hasOWLSubclassOfNodes()) {
          for (OWLSubclassOfNode subclassOfNode : node.getOWLSubclassOfNodes()) {
             for (OWLClassExpressionNode classExpressionNode : subclassOfNode.getClassExpressionNodes()) {
-               Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer
-                     .renderOWLClassExpression(classExpressionNode);
+               Optional<OWLClassExpressionRendering> classExpressionRendering =
+                     classExpressionRenderer.renderOWLClassExpression(classExpressionNode);
                if (classExpressionRendering.isPresent()) {
                   OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
                   OWLSubClassOfAxiom axiom = handler.getOWLSubClassOfAxiom(declaredClass, classExpression);
                   axioms.add(axiom);
+                  axioms.addAll(classExpressionRendering.get().getOWLAxioms()); // add any existing axioms
                }
             }
          }
@@ -153,12 +154,13 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
       if (node.hasOWLEquivalentClassesNode()) {
          for (OWLEquivalentClassesNode equivalentClassesNode : node.getOWLEquivalentClassesNodes()) {
             for (OWLClassExpressionNode classExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
-               Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer
-                     .renderOWLClassExpression(classExpressionNode);
+               Optional<OWLClassExpressionRendering> classExpressionRendering =
+                     classExpressionRenderer.renderOWLClassExpression(classExpressionNode);
                if (classExpressionRendering.isPresent()) {
                   OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
                   OWLEquivalentClassesAxiom axiom = handler.getOWLEquivalentClassesAxiom(declaredClass, classExpression);
                   axioms.add(axiom);
+                  axioms.addAll(classExpressionRendering.get().getOWLAxioms()); // add any existing axioms
                }
             }
          }
@@ -168,11 +170,11 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
        */
       if (node.hasAnnotationFactNodes()) {
          for (AnnotationFactNode annotationFactNode : node.getAnnotationFactNodes()) {
-            Optional<OWLAnnotationPropertyRendering> propertyRendering = entityRenderer
-                  .renderOWLAnnotationProperty(annotationFactNode.getOWLAnnotationPropertyNode());
+            Optional<OWLAnnotationPropertyRendering> propertyRendering =
+                  entityRenderer.renderOWLAnnotationProperty(annotationFactNode.getOWLAnnotationPropertyNode());
             OWLAnnotationValueNode annotationValueNode = annotationFactNode.getOWLAnnotationValueNode();
-            Optional<OWLAnnotationValueRendering> annotationValueRendering = entityRenderer
-                  .renderOWLAnnotationValue(annotationValueNode);
+            Optional<OWLAnnotationValueRendering> annotationValueRendering =
+                  entityRenderer.renderOWLAnnotationValue(annotationValueNode);
             if (propertyRendering.isPresent() && annotationValueRendering.isPresent()) {
                IRI classIri = declaredClass.getIRI();
                OWLAnnotationProperty property = propertyRendering.get().getOWLAnnotationProperty();

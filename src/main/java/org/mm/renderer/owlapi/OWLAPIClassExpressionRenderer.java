@@ -37,6 +37,7 @@ import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.mm.rendering.owlapi.OWLRestrictionRendering;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataAllValuesFrom;
@@ -86,20 +87,23 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
    {
       Optional<? extends OWLClassExpressionRendering> classExpressionRendering;
 
-      if (classExpressionNode.hasOWLUnionClassNode())
+      if (classExpressionNode.hasOWLUnionClassNode()) {
          classExpressionRendering = renderOWLUnionClass(classExpressionNode.getOWLUnionClassNode());
-      else if (classExpressionNode.hasOWLRestrictionNode())
+      } else if (classExpressionNode.hasOWLRestrictionNode()) {
          classExpressionRendering = renderOWLRestriction(classExpressionNode.getOWLRestrictionNode());
-      else if (classExpressionNode.hasOWLClassNode())
-         classExpressionRendering = this.entityRenderer.renderOWLClass(classExpressionNode.getOWLClassNode());
-      else throw new InternalRendererException("unknown child for node " + classExpressionNode.getNodeName());
+      } else if (classExpressionNode.hasOWLClassNode()) {
+         classExpressionRendering = entityRenderer.renderOWLClass(classExpressionNode.getOWLClassNode());
+      } else throw new InternalRendererException("Unknown child for node " + classExpressionNode.getNodeName());
 
       if (classExpressionRendering.isPresent()) {
          OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
+         Set<OWLAxiom> axioms = classExpressionRendering.get().getOWLAxioms();
          if (classExpressionNode.getIsNegated()) {
             OWLObjectComplementOf restriction = handler.getOWLObjectComplementOf(classExpression);
-            return Optional.of(new OWLClassExpressionRendering(restriction));
-         } else return Optional.of(new OWLClassExpressionRendering(classExpression));
+            return Optional.of(new OWLClassExpressionRendering(restriction, axioms));
+         } else {
+            return Optional.of(new OWLClassExpressionRendering(classExpression, axioms));
+         }
       } else return Optional.empty();
    }
 
@@ -108,18 +112,19 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
          throws RendererException
    {
       Set<OWLClassExpression> classExpressions = new HashSet<>();
+      Set<OWLAxiom> axioms = new HashSet<>();
       for (OWLIntersectionClassNode intersectionNode : unionNode.getOWLIntersectionClassNodes()) {
          Optional<OWLClassExpressionRendering> rendering = renderOWLIntersectionClass(intersectionNode);
          if (rendering.isPresent()) {
-            OWLClassExpression classExpression = rendering.get().getOWLClassExpression();
-            classExpressions.add(classExpression);
+            classExpressions.add(rendering.get().getOWLClassExpression());
+            axioms.addAll(rendering.get().getOWLAxioms());
          }
       }
       if (classExpressions.size() == 1) {
-         return Optional.of(new OWLClassExpressionRendering(classExpressions.iterator().next()));
+         return Optional.of(new OWLClassExpressionRendering(classExpressions.iterator().next(), axioms));
       } else if (classExpressions.size() > 1) {
          OWLObjectUnionOf restriction = handler.getOWLObjectUnionOf(classExpressions);
-         return Optional.of(new OWLClassExpressionRendering(restriction));
+         return Optional.of(new OWLClassExpressionRendering(restriction, axioms));
       }
       return Optional.empty();
    }
@@ -130,8 +135,8 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
    {
       Set<OWLNamedIndividual> namedIndividuals = new HashSet<>();
       for (OWLNamedIndividualNode namedIndividualNode : objectOneOfNode.getOWLNamedIndividualNodes()) {
-         Optional<OWLNamedIndividualRendering> namedIndividualRendering = this.entityRenderer
-               .renderOWLNamedIndividual(namedIndividualNode);
+         Optional<OWLNamedIndividualRendering> namedIndividualRendering = 
+               entityRenderer.renderOWLNamedIndividual(namedIndividualNode);
          if (namedIndividualRendering.isPresent()) {
             OWLNamedIndividual namedIndividual = namedIndividualRendering.get().getOWLNamedIndividual();
             namedIndividuals.add(namedIndividual);
@@ -149,19 +154,19 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
          throws RendererException
    {
       Set<OWLClassExpression> classExpressions = new HashSet<>();
+      Set<OWLAxiom> axioms = new HashSet<>();
       for (OWLClassExpressionNode classExpressionNode : intersectionNode.getOWLClassExpressionNodes()) {
          Optional<OWLClassExpressionRendering> rendering = renderOWLClassExpression(classExpressionNode);
          if (rendering.isPresent()) {
-            OWLClassExpression classExpression = rendering.get().getOWLClassExpression();
-            classExpressions.add(classExpression);
+            classExpressions.add(rendering.get().getOWLClassExpression());
+            axioms.addAll(rendering.get().getOWLAxioms());
          }
       }
       if (classExpressions.size() == 1) {
-         return Optional.of(new OWLClassExpressionRendering(classExpressions.iterator().next()));
+         return Optional.of(new OWLClassExpressionRendering(classExpressions.iterator().next(), axioms));
       } else if (classExpressions.size() > 1) {
          OWLObjectIntersectionOf restriction = handler.getOWLObjectIntersectionOf(classExpressions);
-         OWLClassExpressionRendering classExpressionRendering = new OWLClassExpressionRendering(restriction);
-         return Optional.of(classExpressionRendering);
+         return Optional.of(new OWLClassExpressionRendering(restriction, axioms));
       }
       return Optional.empty();
    }
@@ -170,25 +175,26 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
    public Optional<OWLAPIRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
          OWLEquivalentClassesNode equivalentClassesNode) throws RendererException
    {
-      Optional<OWLClassRendering> declaredClassRendering = this.entityRenderer.renderOWLClass(declaredClassNode);
+      Optional<OWLClassRendering> declaredClassRendering = entityRenderer.renderOWLClass(declaredClassNode);
       if (declaredClassRendering.isPresent()) {
          OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
-         Set<OWLClassExpression> classExpressions = new HashSet<>();
-
-         for (OWLClassExpressionNode classExpressionNode : equivalentClassesNode.getClassExpressionNodes()) {
-            Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLClassExpression(
-                  classExpressionNode);
+         Set<OWLClassExpression> equivalentClassExpressions = new HashSet<>();
+         Set<OWLAxiom> axioms = new HashSet<>();
+         for (OWLClassExpressionNode equivalentClassNode : equivalentClassesNode.getClassExpressionNodes()) {
+            Optional<OWLClassExpressionRendering> classExpressionRendering = renderOWLClassExpression(equivalentClassNode);
             if (classExpressionRendering.isPresent()) {
-               classExpressions.add(classExpressionRendering.get().getOWLClassExpression());
+               equivalentClassExpressions.add(classExpressionRendering.get().getOWLClassExpression());
+               axioms.addAll(classExpressionRendering.get().getOWLAxioms());
             }
          }
-         if (!classExpressions.isEmpty()) {
-            classExpressions.add(declaredClass);
-            OWLEquivalentClassesAxiom axiom = handler.getOWLEquivalentClassesAxiom(classExpressions);
-            OWLAPIRendering rendering = new OWLAPIRendering(axiom);
-            return Optional.of(rendering);
-         } else return Optional.empty();
-      } else return Optional.empty();
+         if (!equivalentClassExpressions.isEmpty()) {
+            equivalentClassExpressions.add(declaredClass);
+            OWLEquivalentClassesAxiom equivalentClassesAxiom = handler.getOWLEquivalentClassesAxiom(equivalentClassExpressions);
+            axioms.add(equivalentClassesAxiom);
+            return Optional.of(new OWLAPIRendering(axioms));
+         }
+      }
+      return Optional.empty();
    }
 
    @Override
