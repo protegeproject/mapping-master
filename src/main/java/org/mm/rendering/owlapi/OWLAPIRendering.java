@@ -27,16 +27,10 @@ public class OWLAPIRendering implements Rendering
       this.axioms.add(axiom);
    }
 
-   public Set<OWLAxiom> getOWLAxioms()
-   {
-      return Collections.unmodifiableSet(this.axioms);
-   }
-
    @Override
-   public String toString()
+   public String getRendering()
    {
-      StringBuffer sb = new StringBuffer();
-
+      final StringBuffer sb = new StringBuffer();
       boolean newline = false;
       for (OWLAxiom axiom : getOWLAxioms()) {
          if (newline) {
@@ -46,5 +40,16 @@ public class OWLAPIRendering implements Rendering
          newline = true;
       }
       return sb.toString();
+   }
+
+   public Set<OWLAxiom> getOWLAxioms()
+   {
+      return Collections.unmodifiableSet(this.axioms);
+   }
+
+   @Override
+   public String toString()
+   {
+      return getRendering();
    }
 }

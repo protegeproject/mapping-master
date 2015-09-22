@@ -12,6 +12,7 @@ public class TextRendering implements Rendering
       this.rendering = rendering;
    }
 
+   @Override
    public String getRendering()
    {
       return rendering;
