@@ -16,9 +16,6 @@ public class MMApplicationFactory
 {
    private Properties properties;
 
-   private OWLOntology userOntology;
-   private SpreadSheetDataSource userSpreadsheet;
-
    public MMApplicationFactory()
    {
       properties = new Properties();
@@ -50,30 +47,6 @@ public class MMApplicationFactory
       properties.setProperty(Environment.ONTOLOGY_SOURCE, path);
    }
 
-   /**
-    * An alternative way to feed ontology to the system, i.e., to pass the
-    * OWLOntology object itself rather than the file location.
-    *
-    * @param ontology
-    *           An OWLOntology object.
-    */
-   public void setUserOntology(OWLOntology ontology)
-   {
-      userOntology = ontology;
-   }
-
-   /**
-    * An alternative way to feed source spreadsheet to the system, i.e., to pass
-    * the object itself rather than the file location.
-    *
-    * @param spreadsheet
-    *           A speadsheet object.
-    */
-   private void setUserSpreadsheet(SpreadSheetDataSource spreadsheet)
-   {
-      userSpreadsheet = spreadsheet;
-   }
-
    public String getMappingLocation()
    {
       return properties.getProperty(Environment.MAPPING_SOURCE);
@@ -93,8 +66,21 @@ public class MMApplicationFactory
    {
       Properties copy = new Properties();
       copy.putAll(properties);
+      validate (copy, null);
       Resources resources = buildResources(copy);
-      return new MMApplication(resources.getOntology(), resources.getSpreadSheetDataSource(),
+      return new MMApplication(resources.getOntology(),
+            resources.getSpreadSheetDataSource(),
+            resources.getMappingExpressionSet());
+   }
+
+   public MMApplication createApplication(OWLOntology ontology) throws Exception
+   {
+      Properties copy = new Properties();
+      copy.putAll(properties);
+      validate(copy, ontology);
+      Resources resources = buildResources(copy, ontology);
+      return new MMApplication(resources.getOntology(),
+            resources.getSpreadSheetDataSource(),
             resources.getMappingExpressionSet());
    }
 
@@ -103,20 +89,14 @@ public class MMApplicationFactory
       Resources resources = new Resources();
 
       String ontologyLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
-      if (ontologyLocation != null) {
-         OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
-         OWLOntology ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologyLocation));
-         setUserOntology(ontology);
-      }
-      resources.setOWLOntology(userOntology);
+      OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
+      OWLOntology ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologyLocation));
+      resources.setOWLOntology(ontology);
 
       String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
-      if (workbookLocation != null) {
-         Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
-         SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
-         setUserSpreadsheet(datasource);
-      }
-      resources.setSpreadSheetDataSource(userSpreadsheet);
+      Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
+      SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
+      resources.setSpreadSheetDataSource(datasource);
 
       String mappingLocation = properties.getProperty(Environment.MAPPING_SOURCE);
       MappingExpressionSet mappings = MappingExpressionSetFactory.createEmptyMappingExpressionSet();
@@ -126,6 +106,39 @@ public class MMApplicationFactory
       resources.setMappingExpressionSet(mappings);
 
       return resources;
+   }
+
+   private Resources buildResources(Properties properties, OWLOntology ontology) throws Exception
+   {
+      Resources resources = new Resources();
+
+      resources.setOWLOntology(ontology);
+
+      String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
+      Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
+      SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
+      resources.setSpreadSheetDataSource(datasource);
+
+      String mappingLocation = properties.getProperty(Environment.MAPPING_SOURCE);
+      MappingExpressionSet mappings = MappingExpressionSetFactory.createEmptyMappingExpressionSet();
+      if (mappingLocation != null) {
+         mappings = MappingExpressionSetFactory.loadMapppingExpressionSetFromDocument(mappingLocation);
+      }
+      resources.setMappingExpressionSet(mappings);
+
+      return resources;
+   }
+
+   private void validate(Properties properties, OWLOntology ontology)
+   {
+      if (ontology == null) {
+         if (properties.getProperty(Environment.ONTOLOGY_SOURCE) == null) {
+            throw new ApplicationStartupException("Missing ontology source parameter");
+         }
+      }
+      if (properties.getProperty(Environment.WORKBOOK_SOURCE) == null) {
+         throw new ApplicationStartupException("Missing workbook source parameter");
+      }
    }
 
    class Resources
