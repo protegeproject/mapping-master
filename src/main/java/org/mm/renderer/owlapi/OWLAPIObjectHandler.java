@@ -520,22 +520,27 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
                if (entity.isOWLClass()) { 
                   return entity.asOWLClass();
                }
+               break;
             case OWL_OBJECT_PROPERTY:
                if (entity.isOWLObjectProperty()) {
                   return entity.asOWLObjectProperty();
                }
+               break;
             case OWL_DATA_PROPERTY:
                if (entity.isOWLClass()) {
                   return entity.asOWLDataProperty();
                }
+               break;
             case OWL_ANNOTATION_PROPERTY:
                if (entity.isOWLAnnotationProperty()) {
                   return entity.asOWLAnnotationProperty();
                }
+               break;
             case OWL_NAMED_INDIVIDUAL:
                if (entity.isOWLNamedIndividual()) {
                   return entity.asOWLNamedIndividual();
                }
+               break;
          }
       }
       return null;
