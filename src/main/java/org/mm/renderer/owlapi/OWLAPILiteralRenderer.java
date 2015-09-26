@@ -47,6 +47,8 @@ public class OWLAPILiteralRenderer implements OWLLiteralRenderer
          return handler.getOWLLiteralBoolean(value);
       else if (type.isXSDString())
          return handler.getOWLLiteralString(value);
+      else if (type.isXSDDecimal())
+         return handler.getOWLLiteralDecimal(value);
       else if (type.isXSDByte())
          return handler.getOWLLiteralByte(value);
       else if (type.isXSDShort())

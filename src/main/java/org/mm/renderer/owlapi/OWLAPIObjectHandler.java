@@ -253,6 +253,11 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_BYTE);
    }
 
+   public OWLLiteral getOWLLiteralDecimal(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DECIMAL);
+   }
+
    public OWLLiteral getOWLLiteralDateTime(String value)
    {
       return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DATE_TIME);

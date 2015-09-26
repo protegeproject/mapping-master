@@ -64,13 +64,18 @@ public class ReferenceType implements MappingMasterParserConstants
 
    public boolean isOWLLiteral()
    {
-      return isXSDString() || isXSDByte() || isXSDShort() || isXSDFloat() || isXSDInt() || isXSDLong() || isXSDFloat()
-            || isXSDDouble() || isXSDBoolean() || isXSDTime() || isXSDDate() || isXSDDateTime() | isXSDDuration();
+      return isXSDString() || isXSDDecimal() || isXSDByte() || isXSDShort() || isXSDFloat() || isXSDInt() || isXSDLong()
+            || isXSDFloat() || isXSDDouble() || isXSDBoolean() || isXSDTime() || isXSDDate() || isXSDDateTime() | isXSDDuration();
    }
 
    public boolean isXSDString()
    {
       return this.type == XSD_STRING;
+   }
+
+   public boolean isXSDDecimal()
+   {
+      return this.type == XSD_DECIMAL;
    }
 
    public boolean isXSDByte()
@@ -130,7 +135,7 @@ public class ReferenceType implements MappingMasterParserConstants
 
    public boolean isQuotedOWLLiteral()
    {
-      return !(isXSDBoolean() || isXSDByte() || isXSDShort() || isXSDInt() || isXSDFloat() || isXSDDouble());
+      return !(isXSDBoolean() || isXSDDecimal() || isXSDByte() || isXSDShort() || isXSDInt() || isXSDFloat() || isXSDDouble());
    }
 
    public String toString()

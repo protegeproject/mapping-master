@@ -154,6 +154,7 @@ TOKEN: {<TRUE: "true" | "TRUE">}
 TOKEN: {<FALSE: "false" | "FALSE">}
 
 TOKEN: { <XSD_STRING: "xsd:string" > }
+TOKEN: { <XSD_DECIMAL: "xsd:decimal" > }
 TOKEN: { <XSD_BYTE: "xsd:byte" > }
 TOKEN: { <XSD_SHORT: "xsd:short" > }
 TOKEN: { <XSD_INT: "xsd:int" > }
@@ -195,7 +196,6 @@ TOKEN: { <XSD_GYEAR: "xsd:gYear" > }
 TOKEN: { <XSD_NCNAME: "xsd:NCName" > }
 TOKEN: { <XSD_BYTE: "xsd:byte" > }
 TOKEN: { <XSD_GMONTH: "xsd:gMonth" > }
-TOKEN: { <XSD_DECIMAL: "xsd:decimal" > }
 TOKEN: { <XSD_UNSIGNEDSHORT: "xsd:unsignedShort" > }
 TOKEN: { <XSD_NMTOKEN: "xsd:NMTOKEN" > }
 */
@@ -988,6 +988,7 @@ int datatype() :
 {
  (
      t = <XSD_STRING>
+   | t = <XSD_DECIMAL>
    | t = <XSD_BYTE>
    | t = <XSD_SHORT> 
    | t = <XSD_INT>
