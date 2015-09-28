@@ -176,8 +176,10 @@ public class ReferenceUtil implements MappingMasterParserConstants
 
    private static String toCamelCase(final String text)
    {
+      String cleanText = text.replaceAll("[^\\s^\\p{L}\\p{Nd}]+", ""); // clean non word-characters
+      
       final StringBuilder sb = new StringBuilder();
-      for (final String word : text.split("\\s+")) {
+      for (final String word : cleanText.split("\\s+")) {
          if (!word.isEmpty()) {
             if (word.matches("\\p{javaLowerCase}*")) {
                /*
