@@ -2,7 +2,7 @@ package org.mm.ss;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.mm.core.MappingExpression;
+import org.mm.core.TransformationRule;
 import org.mm.exceptions.MappingMasterException;
 
 public class SpreadSheetUtil
@@ -11,7 +11,7 @@ public class SpreadSheetUtil
    {
       if (columnSpecification.isEmpty()) throw new MappingMasterException("empty column specification");
 
-      if (!columnSpecification.equals(MappingExpression.EndWildcard)) {
+      if (!columnSpecification.equals(TransformationRule.EndWildcard)) {
          for (int i = 0; i < columnSpecification.length(); i++) {
             char c = columnSpecification.charAt(i);
             if (!isAlpha(c)) throw new MappingMasterException("invalid column specification " + columnSpecification);
@@ -23,7 +23,7 @@ public class SpreadSheetUtil
    {
       if (rowSpecification.isEmpty()) throw new MappingMasterException("empty row specification");
 
-      if (!rowSpecification.equals(MappingExpression.EndWildcard)) {
+      if (!rowSpecification.equals(TransformationRule.EndWildcard)) {
          for (int i = 0; i < rowSpecification.length(); i++) {
             char c = rowSpecification.charAt(i);
             if (!isNumeric(c)) throw new MappingMasterException("invalid row specification " + rowSpecification);

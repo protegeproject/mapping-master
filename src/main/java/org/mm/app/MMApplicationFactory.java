@@ -4,8 +4,8 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 import org.apache.poi.ss.usermodel.Workbook;
-import org.mm.core.MappingExpressionSet;
-import org.mm.core.MappingExpressionSetFactory;
+import org.mm.core.TransformationRuleSet;
+import org.mm.core.TransformationRuleSetFactory;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -49,12 +49,12 @@ public class MMApplicationFactory
 
    public String getMappingLocation()
    {
-      return properties.getProperty(Environment.MAPPING_SOURCE);
+      return properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
    }
 
    public void setMappingLocation(String path)
    {
-      properties.setProperty(Environment.MAPPING_SOURCE, path);
+      properties.setProperty(Environment.TRANSFORMATION_RULES_SOURCE, path);
    }
 
    public Properties getProperties()
@@ -70,7 +70,7 @@ public class MMApplicationFactory
       Resources resources = buildResources(copy);
       return new MMApplication(resources.getOntology(),
             resources.getSpreadSheetDataSource(),
-            resources.getMappingExpressionSet());
+            resources.getTransformationRuleSet());
    }
 
    public MMApplication createApplication(OWLOntology ontology) throws Exception
@@ -81,29 +81,29 @@ public class MMApplicationFactory
       Resources resources = buildResources(copy, ontology);
       return new MMApplication(resources.getOntology(),
             resources.getSpreadSheetDataSource(),
-            resources.getMappingExpressionSet());
+            resources.getTransformationRuleSet());
    }
 
    private Resources buildResources(Properties properties) throws Exception
    {
       Resources resources = new Resources();
 
-      String ontologyLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
+      String ontologySourceLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
       OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
-      OWLOntology ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologyLocation));
+      OWLOntology ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologySourceLocation));
       resources.setOWLOntology(ontology);
 
-      String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
-      Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
+      String workbookSourceLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
+      Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookSourceLocation);
       SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
       resources.setSpreadSheetDataSource(datasource);
 
-      String mappingLocation = properties.getProperty(Environment.MAPPING_SOURCE);
-      MappingExpressionSet mappings = MappingExpressionSetFactory.createEmptyMappingExpressionSet();
-      if (mappingLocation != null) {
-         mappings = MappingExpressionSetFactory.loadMapppingExpressionSetFromDocument(mappingLocation);
+      String ruleSourceLocation = properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
+      TransformationRuleSet rules = TransformationRuleSetFactory.createEmptyTransformationRuleSet();
+      if (ruleSourceLocation != null) {
+         rules = TransformationRuleSetFactory.loadTransformationRulesFromDocument(ruleSourceLocation);
       }
-      resources.setMappingExpressionSet(mappings);
+      resources.setTransformationRuleSet(rules);
 
       return resources;
    }
@@ -114,17 +114,17 @@ public class MMApplicationFactory
 
       resources.setOWLOntology(ontology);
 
-      String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
-      Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookLocation);
+      String workbookSourceLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
+      Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookSourceLocation);
       SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
       resources.setSpreadSheetDataSource(datasource);
 
-      String mappingLocation = properties.getProperty(Environment.MAPPING_SOURCE);
-      MappingExpressionSet mappings = MappingExpressionSetFactory.createEmptyMappingExpressionSet();
-      if (mappingLocation != null) {
-         mappings = MappingExpressionSetFactory.loadMapppingExpressionSetFromDocument(mappingLocation);
+      String ruleSourceLocation = properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
+      TransformationRuleSet ruleSet = TransformationRuleSetFactory.createEmptyTransformationRuleSet();
+      if (ruleSourceLocation != null) {
+         ruleSet = TransformationRuleSetFactory.loadTransformationRulesFromDocument(ruleSourceLocation);
       }
-      resources.setMappingExpressionSet(mappings);
+      resources.setTransformationRuleSet(ruleSet);
 
       return resources;
    }
@@ -145,7 +145,7 @@ public class MMApplicationFactory
    {
       private SpreadSheetDataSource spreadsheet;
       private OWLOntology ontology;
-      private MappingExpressionSet mappings;
+      private TransformationRuleSet ruleSet;
 
       public SpreadSheetDataSource getSpreadSheetDataSource()
       {
@@ -167,14 +167,14 @@ public class MMApplicationFactory
          this.ontology = ontology;
       }
 
-      public MappingExpressionSet getMappingExpressionSet()
+      public TransformationRuleSet getTransformationRuleSet()
       {
-         return mappings;
+         return ruleSet;
       }
 
-      public void setMappingExpressionSet(MappingExpressionSet mappings)
+      public void setTransformationRuleSet(TransformationRuleSet ruleSet)
       {
-         this.mappings = mappings;
+         this.ruleSet = ruleSet;
       }
    }
 }

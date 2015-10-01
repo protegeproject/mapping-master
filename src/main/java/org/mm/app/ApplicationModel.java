@@ -12,7 +12,7 @@ public interface ApplicationModel
    /**
     * Returns the mapping expression model
     */
-   MappingExpressionModel getMappingExpressionsModel();
+   TransformationRuleModel getTransformationRuleModel();
 
    /**
     * Returns the default renderer.

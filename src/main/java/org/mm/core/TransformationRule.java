@@ -1,6 +1,6 @@
 package org.mm.core;
 
-public class MappingExpression
+public class TransformationRule
 {
    public static final String EndWildcard = "+";
 
@@ -10,11 +10,11 @@ public class MappingExpression
    private String startRow;
    private String endRow;
    private String comment;
-   private String expression;
+   private String rule;
    private boolean active;
 
-   public MappingExpression(String sheetName, String startColumn, String endColumn, String startRow, String endRow,
-         String comment, String expression)
+   public TransformationRule(String sheetName, String startColumn, String endColumn, String startRow, String endRow,
+         String comment, String rule)
    {
       this.active = true;
       this.sheetName = sheetName;
@@ -23,7 +23,7 @@ public class MappingExpression
       this.startRow = startRow;
       this.endRow = endRow;
       this.comment = comment;
-      this.expression = expression;
+      this.rule = rule;
    }
 
    public void setActive(boolean active)
@@ -36,9 +36,9 @@ public class MappingExpression
       return active;
    }
 
-   public String getExpressionString()
+   public String getRuleString()
    {
-      return expression;
+      return rule;
    }
 
    public String getComment()
@@ -83,8 +83,8 @@ public class MappingExpression
 
    public String toString()
    {
-      return "MappingExpression [" + "sheetName=" + sheetName + ", " + "startColumn=" + startColumn + ", "
+      return "TransformationRule [" + "sheetName=" + sheetName + ", " + "startColumn=" + startColumn + ", "
             + "endColumn=" + endColumn + ", " + "startRow=" + startRow + ", " + "endRow=" + endRow + ", "
-            + "expression=" + expression + ", " + "comment=" + comment + ", " + "active=" + active + "]";
+            + "expression=" + rule + ", " + "comment=" + comment + ", " + "active=" + active + "]";
    }
 }

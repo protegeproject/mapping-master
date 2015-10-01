@@ -20,7 +20,7 @@ public class Environment
    /**
     * Mapping resource location
     */
-   public static final String MAPPING_SOURCE = "mapping-source-path";
+   public static final String TRANSFORMATION_RULES_SOURCE = "transformation-rule-source-path";
 
    /**
     * Text renderer

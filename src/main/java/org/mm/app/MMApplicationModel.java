@@ -1,6 +1,6 @@
 package org.mm.app;
 
-import org.mm.core.MappingExpressionSet;
+import org.mm.core.TransformationRuleSet;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.owlapi.OWLAPIRenderer;
 import org.mm.renderer.text.TextRenderer;
@@ -13,15 +13,15 @@ public class MMApplicationModel implements ApplicationModel
    private SpreadSheetDataSource dataSource;
 
    private MMDataSourceModel dataSourceModel;
-   private MMMappingExpressionModel expressionMappingsModel;
+   private MMTransformationRuleModel expressionMappingsModel;
 
-   public MMApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, MappingExpressionSet mappings)
+   public MMApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, TransformationRuleSet ruleSet)
    {
       this.ontology = ontology;
       this.dataSource = dataSource;
 
       dataSourceModel = new MMDataSourceModel(dataSource);
-      expressionMappingsModel = new MMMappingExpressionModel(mappings);
+      expressionMappingsModel = new MMTransformationRuleModel(ruleSet);
    }
 
    @Override
@@ -31,7 +31,7 @@ public class MMApplicationModel implements ApplicationModel
    }
 
    @Override
-   public MMMappingExpressionModel getMappingExpressionsModel()
+   public MMTransformationRuleModel getTransformationRuleModel()
    {
       return expressionMappingsModel;
    }
