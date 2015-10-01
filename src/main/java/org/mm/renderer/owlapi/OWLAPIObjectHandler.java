@@ -124,9 +124,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       }
    }
 
-   public OWLClass getOWLClass(String namespace, String localName)
+   public OWLClass getOWLClass(String prefix, String localName)
    {
-      return getOWLClass(IRI.create(namespace, localName));
+      return getOWLClass(IRI.create(prefix, localName));
    }
 
    public OWLClass getOWLClass(IRI iri)
@@ -143,9 +143,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       }
    }
 
-   public OWLNamedIndividual getOWLNamedIndividual(String namespace, String localName)
+   public OWLNamedIndividual getOWLNamedIndividual(String prefix, String localName)
    {
-      return getOWLNamedIndividual(IRI.create(namespace, localName));
+      return getOWLNamedIndividual(IRI.create(prefix, localName));
    }
 
    public OWLNamedIndividual getOWLNamedIndividual(IRI iri)
@@ -162,9 +162,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       }
    }
 
-   public OWLObjectProperty getOWLObjectProperty(String namespace, String localName)
+   public OWLObjectProperty getOWLObjectProperty(String prefix, String localName)
    {
-      return getOWLObjectProperty(IRI.create(namespace, localName));
+      return getOWLObjectProperty(IRI.create(prefix, localName));
    }
 
    public OWLObjectProperty getOWLObjectProperty(IRI iri)
@@ -181,9 +181,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       }
    }
 
-   public OWLDataProperty getOWLDataProperty(String namespace, String localName)
+   public OWLDataProperty getOWLDataProperty(String prefix, String localName)
    {
-      return getOWLDataProperty(IRI.create(namespace, localName));
+      return getOWLDataProperty(IRI.create(prefix, localName));
    }
 
    public OWLDataProperty getOWLDataProperty(IRI iri)
@@ -200,9 +200,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       }
    }
 
-   public OWLAnnotationProperty getOWLAnnotationProperty(String namespace, String localName)
+   public OWLAnnotationProperty getOWLAnnotationProperty(String prefix, String localName)
    {
-      return getOWLAnnotationProperty(IRI.create(namespace, localName));
+      return getOWLAnnotationProperty(IRI.create(prefix, localName));
    }
 
    public OWLAnnotationProperty getOWLAnnotationProperty(IRI iri)
