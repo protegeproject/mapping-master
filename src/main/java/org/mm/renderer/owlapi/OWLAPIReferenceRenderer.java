@@ -332,7 +332,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
        * value is already a short name, e.g., 'ex:Car'.
        */
       String shortName = localName;
-      return handler.getOWLEntityWithShortName(shortName, referenceType.getType());
+      return handler.getOWLEntities(shortName, referenceType.getType());
    }
 
    private OWLEntity getOWLEntityFromOntology(String labelText, String language) throws RendererException

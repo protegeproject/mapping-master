@@ -579,9 +579,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       }
    }
 
-   public OWLEntity getOWLEntityWithShortName(String shortName, int entityType)
+   public OWLEntity getOWLEntities(String givenName, int entityType)
    {
-      Set<OWLEntity> entities = getOWLEntities(shortName);
+      Set<OWLEntity> entities = getOWLEntities(givenName);
       for (OWLEntity entity : entities) {
          switch (entityType) {
             case OWL_CLASS:
