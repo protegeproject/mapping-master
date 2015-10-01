@@ -91,7 +91,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
          if (ontologyIRI != null) {
             String iri = ontologyIRI.toString();
             if (!iri.endsWith("/") || !iri.endsWith("#")) {
-               iri += "#";
+               iri += "/";
             }
             prefixManager.setDefaultPrefix(iri);
          }
