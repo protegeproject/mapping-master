@@ -1,5 +1,7 @@
 package org.mm.renderer.owlapi;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Set;
 
@@ -113,9 +115,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLDeclarationAxiom(entity);
    }
 
-   public OWLClass getOWLClass(String shortName)
+   public OWLClass getOWLClass(String givenName)
    {
-      return getOWLClass(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return getOWLClass(IRI.create(givenName));
+      } else {
+         return getOWLClass(getQualifiedName(givenName));
+      }
    }
 
    public OWLClass getOWLClass(String namespace, String localName)
@@ -128,9 +134,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLClass(iri);
    }
 
-   public OWLNamedIndividual getOWLNamedIndividual(String shortName) throws RendererException
+   public OWLNamedIndividual getOWLNamedIndividual(String givenName) throws RendererException
    {
-      return getOWLNamedIndividual(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return getOWLNamedIndividual(IRI.create(givenName));
+      } else {
+         return getOWLNamedIndividual(getQualifiedName(givenName));
+      }
    }
 
    public OWLNamedIndividual getOWLNamedIndividual(String namespace, String localName)
@@ -143,9 +153,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLNamedIndividual(iri);
    }
 
-   public OWLObjectProperty getOWLObjectProperty(String shortName)
+   public OWLObjectProperty getOWLObjectProperty(String givenName)
    {
-      return getOWLObjectProperty(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return getOWLObjectProperty(IRI.create(givenName));
+      } else {
+         return getOWLObjectProperty(getQualifiedName(givenName));
+      }
    }
 
    public OWLObjectProperty getOWLObjectProperty(String namespace, String localName)
@@ -158,9 +172,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLObjectProperty(iri);
    }
 
-   public OWLDataProperty getOWLDataProperty(String shortName)
+   public OWLDataProperty getOWLDataProperty(String givenName)
    {
-      return getOWLDataProperty(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return getOWLDataProperty(IRI.create(givenName));
+      } else {
+         return getOWLDataProperty(getQualifiedName(givenName));
+      }
    }
 
    public OWLDataProperty getOWLDataProperty(String namespace, String localName)
@@ -173,9 +191,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLDataProperty(iri);
    }
 
-   public OWLAnnotationProperty getOWLAnnotationProperty(String shortName)
+   public OWLAnnotationProperty getOWLAnnotationProperty(String givenName)
    {
-      return getOWLAnnotationProperty(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return getOWLAnnotationProperty(IRI.create(givenName));
+      } else {
+         return getOWLAnnotationProperty(getQualifiedName(givenName));
+      }
    }
 
    public OWLAnnotationProperty getOWLAnnotationProperty(String namespace, String localName)
@@ -208,9 +230,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLLiteral(value);
    }
 
-   public OWLDatatype getOWLDatatype(String shortName)
+   public OWLDatatype getOWLDatatype(String givenName)
    {
-      return owlDataFactory.getOWLDatatype(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return owlDataFactory.getOWLDatatype(IRI.create(givenName));
+      } else {
+         return owlDataFactory.getOWLDatatype(getQualifiedName(givenName));
+      }
    }
 
    public OWLLiteral getOWLLiteralString(String value)
@@ -436,9 +462,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return this.ontology.containsEntityInSignature(iri);
    }
 
-   public boolean isOWLEntity(String shortName)
+   public boolean isOWLEntity(String givenName)
    {
-      return isOWLEntity(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return isOWLEntity(IRI.create(givenName));
+      } else {
+         return isOWLEntity(getQualifiedName(givenName));
+      }
    }
 
    public boolean isOWLClass(IRI iri)
@@ -446,9 +476,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return this.ontology.containsClassInSignature(iri);
    }
 
-   public boolean isOWLClass(String shortName)
+   public boolean isOWLClass(String givenName)
    {
-      return isOWLClass(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return isOWLClass(IRI.create(givenName));
+      } else {
+         return isOWLClass(getQualifiedName(givenName));
+      }
    }
 
    public boolean isOWLNamedIndividual(IRI iri)
@@ -456,9 +490,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return this.ontology.containsIndividualInSignature(iri);
    }
 
-   public boolean isOWLNamedIndividual(String shortName)
+   public boolean isOWLNamedIndividual(String givenName)
    {
-      return isOWLNamedIndividual(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return isOWLNamedIndividual(IRI.create(givenName));
+      } else {
+         return isOWLNamedIndividual(getQualifiedName(givenName));
+      }
    }
 
    public boolean isOWLObjectProperty(IRI iri)
@@ -466,9 +504,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return this.ontology.containsObjectPropertyInSignature(iri);
    }
 
-   public boolean isOWLObjectProperty(String shortName)
+   public boolean isOWLObjectProperty(String givenName)
    {
-      return isOWLObjectProperty(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return isOWLObjectProperty(IRI.create(givenName));
+      } else {
+         return isOWLObjectProperty(getQualifiedName(givenName));
+      }
    }
 
    public boolean isOWLDataProperty(IRI iri)
@@ -476,9 +518,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return this.ontology.containsDataPropertyInSignature(iri);
    }
 
-   public boolean isOWLDataProperty(String shortName)
+   public boolean isOWLDataProperty(String givenName)
    {
-      return isOWLDataProperty(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return isOWLDataProperty(IRI.create(givenName));
+      } else {
+         return isOWLDataProperty(getQualifiedName(givenName));
+      }
    }
 
    public boolean isOWLAnnotationProperty(IRI iri)
@@ -486,9 +532,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return this.ontology.containsAnnotationPropertyInSignature(iri);
    }
 
-   public boolean isOWLAnnotationProperty(String shortName)
+   public boolean isOWLAnnotationProperty(String givenName)
    {
-      return isOWLAnnotationProperty(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return isOWLAnnotationProperty(IRI.create(givenName));
+      } else {
+         return isOWLAnnotationProperty(getQualifiedName(givenName));
+      }
    }
 
    public boolean isOWLDatatype(IRI iri)
@@ -496,9 +546,13 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return this.ontology.containsDatatypeInSignature(iri);
    }
 
-   public boolean isOWLDatatype(String shortName)
+   public boolean isOWLDatatype(String givenName)
    {
-      return isOWLDatatype(getQualifiedName(shortName));
+      if (isValidIri(givenName)) {
+         return isOWLDatatype(IRI.create(givenName));
+      } else {
+         return isOWLDatatype(getQualifiedName(givenName));
+      }
    }
 
    public boolean isOWLObjectProperty(OWLProperty property)
@@ -516,9 +570,18 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return this.ontology.containsAnnotationPropertyInSignature(property.getIRI());
    }
 
+   public Set<OWLEntity> getOWLEntities(String givenName)
+   {
+      if (isValidIri(givenName)) {
+         return ontology.getEntitiesInSignature(IRI.create(givenName));
+      } else {
+         return ontology.getEntitiesInSignature(getQualifiedName(givenName));
+      }
+   }
+
    public OWLEntity getOWLEntityWithShortName(String shortName, int entityType)
    {
-      Set<OWLEntity> entities = ontology.getEntitiesInSignature(getQualifiedName(shortName));
+      Set<OWLEntity> entities = getOWLEntities(shortName);
       for (OWLEntity entity : entities) {
          switch (entityType) {
             case OWL_CLASS:
@@ -573,5 +636,16 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
          return iri.toString();
       }
       throw new RendererException("Prefix for prefix label '" + prefixLabel + "' cannot be found!");
+   }
+
+   private boolean isValidIri(String input)
+   {
+      try {
+         // Check string by parsing it using URI constructor
+         new URI(input);
+      } catch (URISyntaxException e) {
+         return false;
+      }
+      return true;
    }
 }
