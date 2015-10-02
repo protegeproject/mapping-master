@@ -1,12 +1,11 @@
 package org.mm.renderer.owlapi;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Set;
 
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.renderer.LabelToEntityMapper;
+import org.mm.renderer.NameUtil;
 import org.mm.renderer.RendererException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -117,7 +116,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public OWLClass getOWLClass(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return getOWLClass(IRI.create(givenName));
       } else {
          return getOWLClass(getQualifiedName(givenName));
@@ -136,7 +135,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public OWLNamedIndividual getOWLNamedIndividual(String givenName) throws RendererException
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return getOWLNamedIndividual(IRI.create(givenName));
       } else {
          return getOWLNamedIndividual(getQualifiedName(givenName));
@@ -155,7 +154,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public OWLObjectProperty getOWLObjectProperty(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return getOWLObjectProperty(IRI.create(givenName));
       } else {
          return getOWLObjectProperty(getQualifiedName(givenName));
@@ -174,7 +173,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public OWLDataProperty getOWLDataProperty(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return getOWLDataProperty(IRI.create(givenName));
       } else {
          return getOWLDataProperty(getQualifiedName(givenName));
@@ -193,7 +192,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public OWLAnnotationProperty getOWLAnnotationProperty(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return getOWLAnnotationProperty(IRI.create(givenName));
       } else {
          return getOWLAnnotationProperty(getQualifiedName(givenName));
@@ -232,7 +231,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public OWLDatatype getOWLDatatype(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return owlDataFactory.getOWLDatatype(IRI.create(givenName));
       } else {
          return owlDataFactory.getOWLDatatype(getQualifiedName(givenName));
@@ -464,7 +463,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLEntity(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return isOWLEntity(IRI.create(givenName));
       } else {
          return isOWLEntity(getQualifiedName(givenName));
@@ -478,7 +477,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLClass(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return isOWLClass(IRI.create(givenName));
       } else {
          return isOWLClass(getQualifiedName(givenName));
@@ -492,7 +491,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLNamedIndividual(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return isOWLNamedIndividual(IRI.create(givenName));
       } else {
          return isOWLNamedIndividual(getQualifiedName(givenName));
@@ -506,7 +505,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLObjectProperty(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return isOWLObjectProperty(IRI.create(givenName));
       } else {
          return isOWLObjectProperty(getQualifiedName(givenName));
@@ -520,7 +519,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLDataProperty(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return isOWLDataProperty(IRI.create(givenName));
       } else {
          return isOWLDataProperty(getQualifiedName(givenName));
@@ -534,7 +533,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLAnnotationProperty(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return isOWLAnnotationProperty(IRI.create(givenName));
       } else {
          return isOWLAnnotationProperty(getQualifiedName(givenName));
@@ -548,7 +547,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLDatatype(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return isOWLDatatype(IRI.create(givenName));
       } else {
          return isOWLDatatype(getQualifiedName(givenName));
@@ -572,7 +571,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public Set<OWLEntity> getOWLEntities(String givenName)
    {
-      if (isValidIri(givenName)) {
+      if (NameUtil.isValidIriString(givenName)) {
          return ontology.getEntitiesInSignature(IRI.create(givenName));
       } else {
          return ontology.getEntitiesInSignature(getQualifiedName(givenName));
@@ -636,16 +635,5 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
          return iri.toString();
       }
       throw new RendererException("Prefix for prefix label '" + prefixLabel + "' cannot be found!");
-   }
-
-   private boolean isValidIri(String input)
-   {
-      try {
-         // Check string by parsing it using URI constructor
-         new URI(input);
-      } catch (URISyntaxException e) {
-         return false;
-      }
-      return true;
    }
 }
