@@ -319,7 +319,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       if (hasLabelBeenCreatedAtLocation(location)) {
          label = getLabelAtLocation(location);
       } else {
-         label = ReferenceUtil.produceIdentifierString(location);
+         label = ReferenceUtil.createNameUsingCellLocation(location);
          recordLabelAtLocation(location, label);
       }
       return label;

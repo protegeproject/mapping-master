@@ -197,7 +197,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       
       OWLEntity entity = findOWLEntityByLocation(location, prefix);
       if (entity == null) {
-         String localName = ReferenceUtil.produceIdentifierString(location);
+         String localName = ReferenceUtil.createNameUsingCellLocation(location);
          entity = createOWLEntity(prefix, localName, referenceType);
          cacheOWLEntityByLocation(location, entity, prefix);
       }

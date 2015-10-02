@@ -5,7 +5,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
@@ -152,15 +151,11 @@ public class ReferenceUtil implements MappingMasterParserConstants
       }
    }
 
-   public static String produceIdentifierString(SpreadsheetLocation location)
+   public static String createNameUsingCellLocation(SpreadsheetLocation location)
    {
       StringBuffer sb = new StringBuffer();
-      sb.append(NameUtil.toSnakeCase(location.getSheetName().trim()));
-      sb.append("_");
+      sb.append(NameUtil.toUpperCamel(location.getSheetName().trim()));
       sb.append(location.getCellLocation());
-      String loc = sb.toString();
-      sb.append("_");
-      sb.append(DigestUtils.sha1Hex(loc).substring(0, 7));
       return sb.toString();
    }
 }
