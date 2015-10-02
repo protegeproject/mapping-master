@@ -27,32 +27,32 @@ public class MMApplicationFactory
       return this;
    }
 
-   public String getWorkbookLocation()
+   public String getWorkbookFileLocation()
    {
       return properties.getProperty(Environment.WORKBOOK_SOURCE);
    }
 
-   public void setWorkbookLocation(String path)
+   public void setWorkbookFileLocation(String path)
    {
       properties.setProperty(Environment.WORKBOOK_SOURCE, path);
    }
 
-   public String getOntologyLocation()
+   public String getOntologyFileLocation()
    {
       return properties.getProperty(Environment.ONTOLOGY_SOURCE);
    }
 
-   public void setOntologyLocation(String path)
+   public void setOntologyFileLocation(String path)
    {
       properties.setProperty(Environment.ONTOLOGY_SOURCE, path);
    }
 
-   public String getMappingLocation()
+   public String getRuleFileLocation()
    {
       return properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
    }
 
-   public void setMappingLocation(String path)
+   public void setRuleFileLocation(String path)
    {
       properties.setProperty(Environment.TRANSFORMATION_RULES_SOURCE, path);
    }
