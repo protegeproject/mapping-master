@@ -155,49 +155,12 @@ public class ReferenceUtil implements MappingMasterParserConstants
    public static String produceIdentifierString(SpreadsheetLocation location)
    {
       StringBuffer sb = new StringBuffer();
-      sb.append(toSnakeCase(location.getSheetName().trim()));
+      sb.append(NameUtil.toSnakeCase(location.getSheetName().trim()));
       sb.append("_");
       sb.append(location.getCellLocation());
       String loc = sb.toString();
       sb.append("_");
       sb.append(DigestUtils.sha1Hex(loc).substring(0, 7));
       return sb.toString();
-   }
-
-   public static String produceIdentifierString(String text)
-   {
-      return toCamelCase(text);
-   }
-
-   public static String produceIdentifierString()
-   {
-      return "MM_" + System.currentTimeMillis();
-   }
-
-   private static String toCamelCase(final String text)
-   {
-      String cleanText = text.replaceAll("[^\\s^\\p{L}\\p{Nd}]+", ""); // clean non word-characters
-      
-      final StringBuilder sb = new StringBuilder();
-      for (final String word : cleanText.split("\\s+")) {
-         if (!word.isEmpty()) {
-            if (word.matches("\\p{javaLowerCase}*")) {
-               /*
-                * If all the characters are lower-case then upper-case the first
-                * letter to conform with CamelCasing.
-                */
-               sb.append(word.substring(0, 1).toUpperCase());
-               sb.append(word.substring(1).toLowerCase());
-            } else {
-               sb.append(word);
-            }
-         }
-      }
-      return sb.toString();
-   }
-
-   private static String toSnakeCase(final String text)
-   {
-      return text.replaceAll("\\s+", "_");
    }
 }

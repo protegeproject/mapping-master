@@ -222,12 +222,11 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
                if (NameUtil.isValidIriString(entityName)) {
                   entity = createOWLEntity(IRI.create(entityName), referenceType);
                } else {
-                  String localName = entityName; // let's assume the given entity name is the entity's local name
-                  entity = findOWLEntityByName(localName, getUserDefinedPrefix(referenceNode));
+                  entity = findOWLEntityByName(entityName, getUserDefinedPrefix(referenceNode));
                   if (entity == null) {
                      String prefix = getUserDefinedPrefix(referenceNode);
-                     entity = createOWLEntity(prefix, localName, referenceType);
-                     cacheOWLEntityByName(localName, entity, prefix);
+                     entity = createOWLEntity(prefix, entityName, referenceType);
+                     cacheOWLEntityByName(entityName, entity, prefix);
                   }
                   break;
                }
@@ -254,8 +253,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
                entity = findOWLEntityByLabel(label, language, getUserDefinedPrefix(referenceNode));
                if (entity == null) {
                   String prefix = getUserDefinedPrefix(referenceNode);
-                  String localName = ReferenceUtil.produceIdentifierString(label);
-                  entity = createOWLEntity(prefix, localName, referenceType);
+                  entity = createOWLEntity(prefix, label, referenceType);
                   cacheOWLEntityByLabel(label, language, entity, prefix);
                }
                break;
@@ -284,17 +282,17 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
          throws RendererException
    {
       if (referenceType.isOWLClass()) {
-         return handler.getOWLClass(prefix, localName);
+         return handler.getOWLClass(prefix, NameUtil.toUpperCamel(localName));
       } else if (referenceType.isOWLNamedIndividual()) {
-         return handler.getOWLNamedIndividual(prefix, localName);
+         return handler.getOWLNamedIndividual(prefix, NameUtil.toUpperCamel(localName));
       } else if (referenceType.isOWLObjectProperty()) {
-         return handler.getOWLObjectProperty(prefix, localName);
+         return handler.getOWLObjectProperty(prefix, NameUtil.toLowerCamel(localName));
       } else if (referenceType.isOWLDataProperty()) {
-         return handler.getOWLDataProperty(prefix, localName);
+         return handler.getOWLDataProperty(prefix, NameUtil.toLowerCamel(localName));
       } else if (referenceType.isOWLAnnotationProperty()) {
-         return handler.getOWLAnnotationProperty(prefix, localName);
+         return handler.getOWLAnnotationProperty(prefix, NameUtil.toLowerCamel(localName));
       }
-      throw new RendererException("Unsupported entity type '" + referenceType + "' for name '" + prefix + localName + "'");
+      throw new RendererException("Unsupported entity type '" + referenceType + "' for name '" + localName + "'");
    }
 
    private OWLEntity findOWLEntityByLocation(SpreadsheetLocation location, String group)
