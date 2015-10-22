@@ -458,12 +458,12 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean checkInOntology(OWLEntity entity)
    {
-      return this.ontology.containsEntityInSignature(entity.getIRI());
+      return ontology.containsEntityInSignature(entity.getIRI());
    }
 
    public boolean isOWLClass(IRI iri)
    {
-      return this.ontology.containsClassInSignature(iri);
+      return ontology.containsClassInSignature(iri);
    }
 
    public boolean isOWLClass(String givenName)
@@ -477,7 +477,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLNamedIndividual(IRI iri)
    {
-      return this.ontology.containsIndividualInSignature(iri);
+      return ontology.containsIndividualInSignature(iri);
    }
 
    public boolean isOWLNamedIndividual(String givenName)
@@ -491,7 +491,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLObjectProperty(IRI iri)
    {
-      return this.ontology.containsObjectPropertyInSignature(iri);
+      return ontology.containsObjectPropertyInSignature(iri);
    }
 
    public boolean isOWLObjectProperty(String givenName)
@@ -505,7 +505,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLDataProperty(IRI iri)
    {
-      return this.ontology.containsDataPropertyInSignature(iri);
+      return ontology.containsDataPropertyInSignature(iri);
    }
 
    public boolean isOWLDataProperty(String givenName)
@@ -519,7 +519,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLAnnotationProperty(IRI iri)
    {
-      return this.ontology.containsAnnotationPropertyInSignature(iri);
+      return ontology.containsAnnotationPropertyInSignature(iri);
    }
 
    public boolean isOWLAnnotationProperty(String givenName)
@@ -533,7 +533,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLDatatype(IRI iri)
    {
-      return this.ontology.containsDatatypeInSignature(iri);
+      return ontology.containsDatatypeInSignature(iri);
    }
 
    public boolean isOWLDatatype(String givenName)
@@ -547,17 +547,17 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public boolean isOWLObjectProperty(OWLProperty property)
    {
-      return this.ontology.containsObjectPropertyInSignature(property.getIRI());
+      return ontology.containsObjectPropertyInSignature(property.getIRI());
    }
 
    public boolean isOWLDataProperty(OWLProperty property)
    {
-      return this.ontology.containsDataPropertyInSignature(property.getIRI());
+      return ontology.containsDataPropertyInSignature(property.getIRI());
    }
 
    public boolean isOWLAnnotationProperty(OWLAnnotationProperty property)
    {
-      return this.ontology.containsAnnotationPropertyInSignature(property.getIRI());
+      return ontology.containsAnnotationPropertyInSignature(property.getIRI());
    }
 
    public Set<OWLEntity> getOWLEntities(String givenName)
