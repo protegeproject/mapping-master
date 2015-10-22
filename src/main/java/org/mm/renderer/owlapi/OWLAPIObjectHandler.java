@@ -456,18 +456,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLAnnotationAssertionAxiom(owlEntity.getIRI(), labelAnno);
    }
 
-   public boolean isOWLEntity(IRI iri)
+   public boolean checkInOntology(OWLEntity entity)
    {
-      return this.ontology.containsEntityInSignature(iri);
-   }
-
-   public boolean isOWLEntity(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return isOWLEntity(IRI.create(givenName));
-      } else {
-         return isOWLEntity(getQualifiedName(givenName));
-      }
+      return this.ontology.containsEntityInSignature(entity.getIRI());
    }
 
    public boolean isOWLClass(IRI iri)
