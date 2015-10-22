@@ -454,7 +454,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
    {
       if (typeNode.isOWLClassNode()) {
          OWLClassNode node = (OWLClassNode) typeNode;
-         Optional<OWLClassRendering> classRendering = entityRenderer.renderOWLClass(node);
+         Optional<OWLClassRendering> classRendering = entityRenderer.renderOWLClass(node, false);
          if (classRendering.isPresent()) {
             return Optional.of(classRendering.get().getOWLClass());
          }

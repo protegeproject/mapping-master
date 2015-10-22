@@ -12,9 +12,9 @@ import org.mm.rendering.Rendering;
 
 public interface OWLEntityRenderer
 {
-   Optional<? extends Rendering> renderOWLClass(OWLClassNode node) throws RendererException;
+   Optional<? extends Rendering> renderOWLClass(OWLClassNode node, boolean isDeclaration) throws RendererException;
 
-   Optional<? extends Rendering> renderOWLNamedIndividual(OWLNamedIndividualNode node) throws RendererException;
+   Optional<? extends Rendering> renderOWLNamedIndividual(OWLNamedIndividualNode node, boolean isDeclaration) throws RendererException;
 
    Optional<? extends Rendering> renderOWLProperty(OWLPropertyNode node) throws RendererException;
 

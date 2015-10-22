@@ -351,7 +351,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       /*
        * Rendering OWL Class
        */
-      textRenderingResult = renderOWLClass(declaredClassNode);
+      textRenderingResult = renderOWLClass(declaredClassNode, true);
       if (!textRenderingResult.isPresent()) {
          return Optional.empty();
       }
@@ -458,7 +458,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       /*
        * Rendering OWL Individual.
        */
-      textRenderingResult = renderOWLNamedIndividual(individualDeclarationNode.getOWLIndividualNode());
+      textRenderingResult = renderOWLNamedIndividual(individualDeclarationNode.getOWLIndividualNode(), true);
       if (!textRenderingResult.isPresent()) {
          return Optional.empty();
       }
@@ -578,7 +578,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
             textRepresentation.append(restrictionRendering.getRendering());
          }
       } else if (classExpressionNode.hasOWLClassNode()) {
-         expressionRenderingResult = renderOWLClass(classExpressionNode.getOWLClassNode());
+         expressionRenderingResult = renderOWLClass(classExpressionNode.getOWLClassNode(), false);
          if (expressionRenderingResult.isPresent()) {
             TextRendering classRendering = expressionRenderingResult.get();
             textRepresentation.append(classRendering.getRendering());
@@ -789,7 +789,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          OWLObjectSomeValuesFromNode objectSomeValuesFromNode) throws RendererException
    {
       if (objectSomeValuesFromNode.hasOWLClassNode()) {
-         return renderOWLClass(objectSomeValuesFromNode.getOWLClassNode());
+         return renderOWLClass(objectSomeValuesFromNode.getOWLClassNode(), false);
       } else if (objectSomeValuesFromNode.hasOWLClassExpressionNode()) {
          return renderOWLClassExpression(objectSomeValuesFromNode.getOWLClassExpressionNode());
       }
@@ -841,7 +841,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
       boolean isFirst = true;
       for (OWLNamedIndividualNode owlNamedIndividualNode : OWLSameAsNode.getIndividualNodes()) {
-         individualRenderingResult = renderOWLNamedIndividual(owlNamedIndividualNode);
+         individualRenderingResult = renderOWLNamedIndividual(owlNamedIndividualNode, false);
          if (individualRenderingResult.isPresent()) {
             TextRendering individualRendering = individualRenderingResult.get();
             if (isFirst) {
@@ -868,7 +868,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
       boolean isFirst = true;
       for (OWLNamedIndividualNode namedIndividualNode : differentFromNode.getIndividualNodes()) {
-         individualRenderingResult = renderOWLNamedIndividual(namedIndividualNode);
+         individualRenderingResult = renderOWLNamedIndividual(namedIndividualNode, false);
          if (individualRenderingResult.isPresent()) {
             TextRendering individualRendering = individualRenderingResult.get();
             if (isFirst) {
@@ -957,7 +957,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
       boolean isFirst = true;
       for (OWLNamedIndividualNode owlNamedIndividualNode : objectOneOfNode.getOWLNamedIndividualNodes()) {
-         individualRenderingResult = renderOWLNamedIndividual(owlNamedIndividualNode);
+         individualRenderingResult = renderOWLNamedIndividual(owlNamedIndividualNode, false);
          if (individualRenderingResult.isPresent()) {
             TextRendering individualRendering = individualRenderingResult.get();
             if (isFirst) {
@@ -1081,7 +1081,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    {
       Optional<? extends TextRendering> classRendering = null;
       if (objectAllValuesFromNode.hasOWLClass()) {
-         classRendering = renderOWLClass(objectAllValuesFromNode.getOWLClassNode());
+         classRendering = renderOWLClass(objectAllValuesFromNode.getOWLClassNode(), false);
       } else if (objectAllValuesFromNode.hasOWLClassExpression()) {
          classRendering = renderOWLClassExpression(objectAllValuesFromNode.getOWLClassExpressionNode());
       } else if (objectAllValuesFromNode.hasOWLObjectOneOfNode()) {
@@ -1097,7 +1097,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    }
 
    @Override
-   public Optional<? extends TextRendering> renderOWLClass(OWLClassNode classNode) throws RendererException
+   public Optional<? extends TextRendering> renderOWLClass(OWLClassNode classNode, boolean isDeclaration) throws RendererException
    {
       if (classNode.hasReferenceNode()) {
          return renderReference(classNode.getReferenceNode());
@@ -1131,8 +1131,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    }
 
    @Override
-   public Optional<? extends TextRendering> renderOWLNamedIndividual(OWLNamedIndividualNode individualNode)
-         throws RendererException
+   public Optional<? extends TextRendering> renderOWLNamedIndividual(OWLNamedIndividualNode individualNode,
+         boolean isDeclaration) throws RendererException
    {
       if (individualNode.hasReferenceNode()) {
          return renderReference(individualNode.getReferenceNode());
@@ -1261,7 +1261,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       } else if (typeNode instanceof OWLClassExpressionNode) {
          return renderOWLClassExpression((OWLClassExpressionNode) typeNode);
       } else if (typeNode instanceof OWLClassNode) {
-         return renderOWLClass((OWLClassNode) typeNode);
+         return renderOWLClass((OWLClassNode) typeNode, false);
       }
       throw new InternalRendererException("Unknown type node: " + typeNode.getNodeName());
    }

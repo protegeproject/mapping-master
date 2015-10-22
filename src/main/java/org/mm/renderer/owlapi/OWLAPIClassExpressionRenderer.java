@@ -92,7 +92,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
       } else if (classExpressionNode.hasOWLRestrictionNode()) {
          classExpressionRendering = renderOWLRestriction(classExpressionNode.getOWLRestrictionNode());
       } else if (classExpressionNode.hasOWLClassNode()) {
-         classExpressionRendering = entityRenderer.renderOWLClass(classExpressionNode.getOWLClassNode());
+         classExpressionRendering = entityRenderer.renderOWLClass(classExpressionNode.getOWLClassNode(), false);
       } else throw new InternalRendererException("Unknown child for node " + classExpressionNode.getNodeName());
 
       if (classExpressionRendering.isPresent()) {
@@ -136,7 +136,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
       Set<OWLNamedIndividual> namedIndividuals = new HashSet<>();
       for (OWLNamedIndividualNode namedIndividualNode : objectOneOfNode.getOWLNamedIndividualNodes()) {
          Optional<OWLNamedIndividualRendering> namedIndividualRendering = 
-               entityRenderer.renderOWLNamedIndividual(namedIndividualNode);
+               entityRenderer.renderOWLNamedIndividual(namedIndividualNode, false);
          if (namedIndividualRendering.isPresent()) {
             OWLNamedIndividual namedIndividual = namedIndividualRendering.get().getOWLNamedIndividual();
             namedIndividuals.add(namedIndividual);
@@ -175,7 +175,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
    public Optional<OWLAPIRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
          OWLEquivalentClassesNode equivalentClassesNode) throws RendererException
    {
-      Optional<OWLClassRendering> declaredClassRendering = entityRenderer.renderOWLClass(declaredClassNode);
+      Optional<OWLClassRendering> declaredClassRendering = entityRenderer.renderOWLClass(declaredClassNode, false);
       if (declaredClassRendering.isPresent()) {
          OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
          Set<OWLClassExpression> equivalentClassExpressions = new HashSet<>();
@@ -451,8 +451,8 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
                   return Optional.of(new OWLRestrictionRendering(objectSomeValuesFromRestriction));
                } else return Optional.empty();
             } else if (objectSomeValuesFromNode.hasOWLClassNode()) {
-               Optional<OWLClassRendering> classRendering = entityRenderer
-                     .renderOWLClass(objectSomeValuesFromNode.getOWLClassNode());
+               Optional<OWLClassRendering> classRendering =
+                     entityRenderer.renderOWLClass(objectSomeValuesFromNode.getOWLClassNode(), false);
                if (classRendering.isPresent()) {
                   OWLClassExpression cls = classRendering.get().getOWLClass();
                   OWLObjectSomeValuesFrom objectSomeValuesFromRestriction = handler
@@ -502,7 +502,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
                   return Optional.of(new OWLRestrictionRendering(objectAllValuesFromRestriction));
                }
             } else if (onlyNode.hasOWLClass()) {
-               Optional<OWLClassRendering> rendering = entityRenderer.renderOWLClass(onlyNode.getOWLClassNode());
+               Optional<OWLClassRendering> rendering = entityRenderer.renderOWLClass(onlyNode.getOWLClassNode(), false);
                if (rendering.isPresent()) {
                   OWLClassExpression ce = rendering.get().getOWLClass();
                   OWLObjectAllValuesFrom objectAllValuesFromRestriction = handler.getOWLObjectAllValuesFrom(op, ce);
