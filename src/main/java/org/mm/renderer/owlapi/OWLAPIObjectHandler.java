@@ -30,6 +30,7 @@ import org.semanticweb.owlapi.model.OWLDataSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLDeclarationAxiom;
 import org.semanticweb.owlapi.model.OWLDifferentIndividualsAxiom;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLIndividual;
@@ -49,7 +50,6 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyFormat;
 import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
@@ -58,6 +58,8 @@ import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
+
+import com.google.common.base.Optional;
 
 class OWLAPIObjectHandler implements MappingMasterParserConstants
 {
@@ -78,7 +80,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
 
       // Assemble the prefix manager for the given ontology
-      OWLOntologyFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
+      OWLDocumentFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
       if (format.isPrefixOWLOntologyFormat()) {
          Map<String, String> prefixMap = format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap();
          for (String prefixName : prefixMap.keySet()) {
@@ -88,9 +90,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
       // Make sure the default prefix is set
       if (prefixManager.getDefaultPrefix() == null) {
-         IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI();
-         if (ontologyIRI != null) {
-            String iri = ontologyIRI.toString();
+         Optional<IRI> ontologyIRI = ontology.getOntologyID().getOntologyIRI();
+         if (ontologyIRI.isPresent()) {
+            String iri = ontologyIRI.get().toString();
             if (!iri.endsWith("/") || !iri.endsWith("#")) {
                iri += "/";
             }
