@@ -2,46 +2,85 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
-   <groupId>org.mm</groupId>
+   <parent>
+      <groupId>org.sonatype.oss</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>7</version>
+   </parent>
+
+   <groupId>edu.stanford.protege</groupId>
    <artifactId>mapping-master</artifactId>
-   <version>1.2</version>
-   <packaging>jar</packaging>
-   <name>Mapping Master</name>
+   <version>1.3-SNAPSHOT</version>
+   <packaging>bundle</packaging>
 
    <properties>
-      <javacc.version>6.1.2</javacc.version>
-      <owlapi.version>4.1.3</owlapi.version>
-      <poi.version>3.13</poi.version>
-      <gson.version>2.3.1</gson.version>
-      
-      <java.version>1.8</java.version>
-      
-      <javacc.maven.plugin.version>2.6</javacc.maven.plugin.version>
-      <maven.compiler.plugin.version>2.3.2</maven.compiler.plugin.version>
-      <maven.assembly.plugin.version>2.5.2</maven.assembly.plugin.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    </properties>
+
+   <name>Mapping Master</name>
+   <description>MappingMaster is an open source library that can be used to transform the content of
+      spreadsheets to OWL ontologies.</description>
+   <url>https://github.com/protegeproject/mapping-master/wiki</url>
+   <licenses>
+      <license>
+         <name>GNU Lesser General Public License</name>
+         <url>http://www.gnu.org/copyleft/lesser.html</url>
+      </license>
+   </licenses>
+
+   <mailingLists>
+      <!-- For end users with questions about how to use the DL Query tab. -->
+      <mailingList>
+         <name>protege-user</name>
+         <subscribe>https://mailman.stanford.edu/mailman/listinfo/protege-user</subscribe>
+         <unsubscribe>https://mailman.stanford.edu/mailman/listinfo/protege-user</unsubscribe>
+         <post>protege-user@lists.stanford.edu</post>
+         <archive>http://protege-project.136.n4.nabble.com/</archive>
+         <otherArchives>
+            <otherArchive>https://mailman.stanford.edu/pipermail/protege-user/</otherArchive>
+         </otherArchives>
+      </mailingList>
+
+      <!-- For developers. -->
+      <mailingList>
+         <name>protege-dev</name>
+         <subscribe>https://mailman.stanford.edu/mailman/listinfo/protege-dev</subscribe>
+         <unsubscribe>https://mailman.stanford.edu/mailman/listinfo/protege-dev</unsubscribe>
+         <post>protege-dev@lists.stanford.edu</post>
+         <archive>http://protege-project.136.n4.nabble.com/</archive>
+         <otherArchives>
+            <otherArchive>https://mailman.stanford.edu/pipermail/protege-dev/</otherArchive>
+         </otherArchives>
+      </mailingList>
+   </mailingLists>
+
+   <scm>
+      <connection>scm:git:git@github.com:protegeproject/mapping-master.git</connection>
+      <developerConnection>scm:git:git@github.com:protegeproject/mapping-master.git</developerConnection>
+      <url>https://github.com/protegeproject/mapping-master</url>
+      <tag>HEAD</tag>
+   </scm>
 
    <dependencies>
       <dependency>
          <groupId>net.sourceforge.owlapi</groupId>
          <artifactId>owlapi-distribution</artifactId>
-         <version>${owlapi.version}</version>
+         <version>4.1.3</version>
       </dependency>
       <dependency>
          <groupId>org.apache.poi</groupId>
          <artifactId>poi</artifactId>
-         <version>${poi.version}</version>
+         <version>3.13</version>
       </dependency>
       <dependency>
          <groupId>org.apache.poi</groupId>
          <artifactId>poi-ooxml</artifactId>
-         <version>${poi.version}</version>
+         <version>3.13</version>
       </dependency>
       <dependency>
          <groupId>com.google.code.gson</groupId>
          <artifactId>gson</artifactId>
-         <version>${gson.version}</version>
+         <version>2.3.1</version>
       </dependency>
    </dependencies>
 
@@ -49,39 +88,43 @@
       <plugins>
          <plugin>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven.compiler.plugin.version}</version>
+            <version>3.3</version>
             <configuration>
-               <source>${java.version}</source>
-               <target>${java.version}</target>
+               <source>1.8</source>
+               <target>1.8</target>
             </configuration>
          </plugin>
          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>${maven.assembly.plugin.version}</version>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.5.3</version>
+            <extensions>true</extensions>
             <configuration>
-               <archive>
-                  <manifest>
-                     <mainClass>org.mappingmaster</mainClass>
-                  </manifest>
-               </archive>
-               <descriptorRefs>
-                  <descriptorRef>jar-with-dependencies</descriptorRef>
-               </descriptorRefs>
+               <instructions>
+                  <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                  <Bundle-ClassPath>.</Bundle-ClassPath>
+                  <Embed-Transitive>true</Embed-Transitive>
+                  <Import-Package>
+                     org.semanticweb.owlapi.*;version="[4.1.3,5.0.0)",
+                     *
+                  </Import-Package>
+                  <Include-Resource>{maven-resources}</Include-Resource>
+               </instructions>
+               <executions>
+                  <execution>
+                     <id>bundle-manifest</id>
+                     <phase>process-classes</phase>
+                     <goals>
+                        <goal>manifest</goal>
+                     </goals>
+                  </execution>
+               </executions>
             </configuration>
-            <executions>
-               <execution>
-                  <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                  <phase>package</phase> <!-- bind to the packaging phase -->
-                  <goals>
-                     <goal>single</goal>
-                  </goals>
-               </execution>
-            </executions>
          </plugin>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>javacc-maven-plugin</artifactId>
-            <version>${javacc.maven.plugin.version}</version>
+            <version>2.6</version>
             <executions>
                <execution>
                   <id>jjtree-javacc</id>
@@ -94,11 +137,80 @@
                <dependency>
                   <groupId>net.java.dev.javacc</groupId>
                   <artifactId>javacc</artifactId>
-                  <version>${javacc.version}</version>
+                  <version>6.1.2</version>
+               </dependency>
+            </dependencies>
+         </plugin>
+         <plugin>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.5</version>
+            <dependencies>
+               <dependency>
+                  <groupId>org.apache.maven.scm</groupId>
+                  <artifactId>maven-scm-provider-gitexe</artifactId>
+                  <version>1.9</version>
                </dependency>
             </dependencies>
          </plugin>
       </plugins>
    </build>
 
+   <!-- Generate source and Javadoc JAR files, and sign artifacts. Required 
+      by Sonatype OSSRH for deployment. -->
+   <profiles>
+      <profile>
+         <id>release</id>
+         <activation>
+            <activeByDefault>false</activeByDefault>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-source-plugin</artifactId>
+                  <version>2.2.1</version>
+                  <executions>
+                     <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                           <goal>jar</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-javadoc-plugin</artifactId>
+                  <version>2.10.3</version>
+                  <executions>
+                     <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                           <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                           <failOnError>false</failOnError>
+                           <quiet>true</quiet>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-gpg-plugin</artifactId>
+                  <version>1.6</version>
+                  <executions>
+                     <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                           <goal>sign</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
+   </profiles>
 </project>
