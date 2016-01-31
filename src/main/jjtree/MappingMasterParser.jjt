@@ -244,6 +244,8 @@ TOKEN: { <OWL_DATATYPE: "Datatype"> }
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
 TOKEN: { <MM_TO_LOWER_CASE: "mm:toLowerCase"> }
 TOKEN: { <MM_TRIM: "mm:trim"> }
+TOKEN: { <MM_PRINTF: "mm:printf"> }
+TOKEN: { <MM_DECIMAL_FORMAT: "mm:decimalFormat"> }
 TOKEN: { <MM_CAPTURING: "mm:capturing"> }
 TOKEN: { <MM_REVERSE: "mm:reverse"> }
 TOKEN: { <MM_REPLACE: "mm:replace"> }
@@ -1335,6 +1337,8 @@ void value_extraction_function() #ValueExtractionFunction:
        t = <MM_TO_UPPER_CASE> { functionID = t.kind; }
      | t = <MM_TO_LOWER_CASE> { functionID = t.kind; }
      | t = <MM_TRIM> { functionID = t.kind; }
+     | t = <MM_PRINTF> { functionID = t.kind; }
+     | t = <MM_DECIMAL_FORMAT> { functionID = t.kind; }
      | t = <MM_REVERSE> { functionID = t.kind; }
      | t = <MM_CAPTURING> { functionID = t.kind; }
      | t = <MM_REPLACE> { functionID = t.kind; }
