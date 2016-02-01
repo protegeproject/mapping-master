@@ -7,6 +7,7 @@ import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -106,38 +107,23 @@ public class ReferenceUtil implements MappingMasterParserConstants
             "function " + functionName + " expecting one or two arguments, got " + arguments.size());
       break;
     case MM_PRINTF:
-      if (arguments.size() < 2) {
+      if (arguments.size() == 0) {
         throw new RendererException(
-            "function " + functionName + " expecting two or more arguments, got " + arguments.size());
-      } else {
-        String format = arguments.get(0);
-        Object[] args = arguments.subList(1, arguments.size()).toArray();
-        try {
-          processedReferenceValue = String.format(format, args);
-        } catch (IllegalFormatException e) {
-          throw new RendererException("function " + functionName + " supplied with illegal format " + format);
-        }
+            "function " + functionName + " expecting one or more arguments, got " + arguments.size());
+      } else if(arguments.size() == 1) {
+        processedReferenceValue = printf(functionName, arguments.get(0), Collections.singletonList(defaultValue));
+      } else  {
+        processedReferenceValue = printf(functionName, arguments.get(0), arguments.subList(1, arguments.size()));
       }
       break;
     case MM_DECIMAL_FORMAT:
-      if (arguments.size() != 2) {
-        throw new RendererException("function " + functionName + " expecting two arguments, got " + arguments.size());
-      } else {
-        String pattern = arguments.get(0);
-        try {
-          Double value = Double.parseDouble(arguments.get(1));
-          DecimalFormat formatter = new DecimalFormat(pattern);
-          processedReferenceValue = formatter.format(value);
-        } catch (NumberFormatException e) {
-          throw new RendererException("invalid double " + arguments.get(1) + " supplied to function " + functionName);
-        } catch (IllegalFormatException e) {
-          throw new RendererException(
-              "function " + functionName + " cannot format value " + arguments.get(1) + " with pattern " + pattern
-                  + ": " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-          throw new RendererException("function " + functionName + " supplied with illegal pattern " + pattern);
-        }
-      }
+      if (arguments.size() == 1) {
+        processedReferenceValue = decimalFormat(functionName, arguments.get(0), defaultValue);
+      } else if (arguments.size() == 2) {
+        processedReferenceValue = decimalFormat(functionName, arguments.get(0), arguments.get(1));
+      } else
+        throw new RendererException(
+            "function " + functionName + " expecting one to two arguments, got " + arguments.size());
       break;
     case MM_REPLACE:
       if (arguments.size() == 2) {
@@ -206,5 +192,32 @@ public class ReferenceUtil implements MappingMasterParserConstants
     sb.append(NameUtil.toUpperCamel(location.getSheetName().trim()));
     sb.append(location.getCellLocation());
     return sb.toString();
+  }
+
+  private static String decimalFormat(String functionName, String pattern, String rawValue) throws RendererException
+  {
+    try {
+      Double value = Double.parseDouble(rawValue);
+      DecimalFormat formatter = new DecimalFormat(pattern);
+      return formatter.format(value);
+    } catch (NumberFormatException e) {
+      throw new RendererException("invalid double " + rawValue + " supplied to function " + functionName);
+    } catch (IllegalFormatException e) {
+      throw new RendererException(
+          "function " + functionName + " cannot format value " + rawValue + " with pattern " + pattern + ": " + e
+              .getMessage());
+    } catch (IllegalArgumentException e) {
+      throw new RendererException("function " + functionName + " supplied with illegal pattern " + pattern);
+    }
+  }
+
+  private static String printf(String functionName, String format, List<String> arguments) throws RendererException
+  {
+    Object[] args = arguments.toArray();
+    try {
+      return String.format(format, args);
+    } catch (IllegalFormatException e) {
+      throw new RendererException("function " + functionName + " supplied with illegal format " + format);
+    }
   }
 }
