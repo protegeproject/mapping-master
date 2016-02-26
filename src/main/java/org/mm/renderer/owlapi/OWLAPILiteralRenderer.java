@@ -28,13 +28,13 @@ public class OWLAPILiteralRenderer implements OWLLiteralRenderer
    private OWLLiteral createOWLLiteral(OWLLiteralNode node) throws RendererException
    {
       if (node.isString()) {
-         return objectFactory.getOWLLiteralString(node.getStringLiteralNode().getValue());
+         return objectFactory.createOWLLiteralString(node.getStringLiteralNode().getValue());
       } else if (node.isInt()) {
-         return objectFactory.getOWLLiteralInteger(node.getIntLiteralNode().getValue() + "");
+         return objectFactory.createOWLLiteralInteger(node.getIntLiteralNode().getValue() + "");
       } else if (node.isFloat()) {
-         return objectFactory.getOWLLiteralFloat(node.getFloatLiteralNode().getValue() + "");
+         return objectFactory.createOWLLiteralFloat(node.getFloatLiteralNode().getValue() + "");
       } else if (node.isBoolean()) {
-         return objectFactory.getOWLLiteralBoolean(node.getBooleanLiteralNode().getValue() + "");
+         return objectFactory.createOWLLiteralBoolean(node.getBooleanLiteralNode().getValue() + "");
       } else {
          throw new InternalRendererException("Unsupported datatype for node " + node);
       }

@@ -49,7 +49,7 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
    private Optional<OWLAnnotationValueRendering> renderNameNode(NameNode nameNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
-      OWLAnnotationValue anno = objectFactory.getOWLAnnotationValue(nameNode.getName(), false);
+      OWLAnnotationValue anno = objectFactory.createOWLAnnotationValue(nameNode.getName(), true);
       return Optional.of(new OWLAnnotationValueRendering(anno));
    }
 
@@ -83,17 +83,17 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
          OWLLiteral lit = rendering.get().getOWLLiteral();
          OWLAnnotationValue av;
          if (lit.isFloat()) {
-            av = objectFactory.getOWLAnnotationValue(lit.parseFloat());
+            av = objectFactory.createOWLAnnotationValue(lit.parseFloat());
          } else if (lit.isDouble()) {
-            av = objectFactory.getOWLAnnotationValue(lit.parseDouble());
+            av = objectFactory.createOWLAnnotationValue(lit.parseDouble());
          } else if (lit.isInteger()) {
-            av = objectFactory.getOWLAnnotationValue(lit.parseInteger());
+            av = objectFactory.createOWLAnnotationValue(lit.parseInteger());
          } else if (lit.isBoolean()) {
-            av = objectFactory.getOWLAnnotationValue(lit.parseBoolean());
+            av = objectFactory.createOWLAnnotationValue(lit.parseBoolean());
          } else if (lit.isRDFPlainLiteral()) {
-            av = objectFactory.getOWLAnnotationValue(lit.getLiteral(), lit.getLang());
+            av = objectFactory.createOWLAnnotationValue(lit.getLiteral(), lit.getLang());
          } else {
-            av = objectFactory.getOWLAnnotationValue(lit.getLiteral(), true);
+            av = objectFactory.createOWLAnnotationValue(lit.getLiteral(), false);
          }
          valueRendering = new OWLAnnotationValueRendering(av);
       }

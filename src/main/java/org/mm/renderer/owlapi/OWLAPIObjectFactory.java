@@ -133,58 +133,396 @@ public class OWLAPIObjectFactory implements MappingMasterParserConstants
       }
    }
 
-   /*
-    * Handles the creation of OWL entities, i.e., class, property and individual
-    */
-
-   public OWLClass getOWLClass(String inputName) throws RendererException
+   public String getPrefix(String prefixLabel) throws RendererException
    {
-      return getOWLClass(getIri(inputName));
+      IRI iri = prefixManager.getIRI(prefixLabel);
+      if (iri != null) {
+         return iri.toString();
+      }
+      throw new RendererException("No prefix found for '" + prefixLabel);
    }
 
-   public OWLClass getOWLClass(IRI iri)
+   /*
+    * Handles the creation of OWL entities, i.e., class, property and individual.
+    */
+
+   public OWLEntity createOWLEntity(String inputName, int type) throws RendererException
+   {
+      switch (type) {
+         case OWL_CLASS:
+            return createOWLClass(inputName);
+         case OWL_NAMED_INDIVIDUAL:
+            return createOWLNamedIndividual(inputName);
+         case OWL_OBJECT_PROPERTY:
+            return createOWLObjectProperty(inputName);
+         case OWL_DATA_PROPERTY:
+            return createOWLDataProperty(inputName);
+         case OWL_ANNOTATION_PROPERTY:
+            return createOWLAnnotationProperty(inputName);
+      }
+      throw new RendererException("Failed to create entity: " + inputName);
+   }
+
+   public OWLClass createOWLClass(String inputName) throws RendererException
+   {
+      return createOWLClass(getIri(inputName));
+   }
+
+   public OWLClass createOWLClass(IRI iri)
    {
       return owlDataFactory.getOWLClass(iri);
    }
 
-   public OWLNamedIndividual getOWLNamedIndividual(String inputName) throws RendererException
+   public OWLNamedIndividual createOWLNamedIndividual(String inputName) throws RendererException
    {
-      return getOWLNamedIndividual(getIri(inputName));
+      return createOWLNamedIndividual(getIri(inputName));
    }
 
-   public OWLNamedIndividual getOWLNamedIndividual(IRI iri)
+   public OWLNamedIndividual createOWLNamedIndividual(IRI iri)
    {
       return owlDataFactory.getOWLNamedIndividual(iri);
    }
 
-   public OWLObjectProperty getOWLObjectProperty(String inputName) throws RendererException
+   public OWLObjectProperty createOWLObjectProperty(String inputName) throws RendererException
    {
-      return getOWLObjectProperty(getIri(inputName));
+      return createOWLObjectProperty(getIri(inputName));
    }
 
-   public OWLObjectProperty getOWLObjectProperty(IRI iri)
+   public OWLObjectProperty createOWLObjectProperty(IRI iri)
    {
       return owlDataFactory.getOWLObjectProperty(iri);
    }
 
-   public OWLDataProperty getOWLDataProperty(String inputName) throws RendererException
+   public OWLDataProperty createOWLDataProperty(String inputName) throws RendererException
    {
-      return getOWLDataProperty(getIri(inputName));
+      return createOWLDataProperty(getIri(inputName));
    }
 
-   public OWLDataProperty getOWLDataProperty(IRI iri)
+   public OWLDataProperty createOWLDataProperty(IRI iri)
    {
       return owlDataFactory.getOWLDataProperty(iri);
    }
 
-   public OWLAnnotationProperty getOWLAnnotationProperty(String inputName) throws RendererException
+   public OWLAnnotationProperty createOWLAnnotationProperty(String inputName) throws RendererException
    {
-      return getOWLAnnotationProperty(getIri(inputName));
+      return createOWLAnnotationProperty(getIri(inputName));
    }
 
-   public OWLAnnotationProperty getOWLAnnotationProperty(IRI iri)
+   public OWLAnnotationProperty createOWLAnnotationProperty(IRI iri)
    {
       return owlDataFactory.getOWLAnnotationProperty(iri);
+   }
+
+   /*
+    * Handles the creation of OWL annotation values
+    */
+
+   public OWLAnnotationValue createOWLAnnotationValue(String value, boolean asIri) throws RendererException
+   {
+      if (asIri) {
+         return getIri(value);
+      } else {
+         return owlDataFactory.getOWLLiteral(value);
+      }
+   }
+
+   public OWLAnnotationValue createOWLAnnotationValue(String value, String lang) throws RendererException
+   {
+      return owlDataFactory.getOWLLiteral(value, lang);
+   }
+
+   public OWLAnnotationValue createOWLAnnotationValue(float value)
+   {
+      return owlDataFactory.getOWLLiteral(value);
+   }
+
+   public OWLAnnotationValue createOWLAnnotationValue(double value)
+   {
+      return owlDataFactory.getOWLLiteral(value);
+   }
+
+   public OWLAnnotationValue createOWLAnnotationValue(int value)
+   {
+      return owlDataFactory.getOWLLiteral(value);
+   }
+
+   public OWLAnnotationValue createOWLAnnotationValue(boolean value)
+   {
+      return owlDataFactory.getOWLLiteral(value);
+   }
+
+   /*
+    *  Handles the creation of OWL typed literals
+    */
+
+   public OWLLiteral createOWLLiteral(String value, int type) throws RendererException
+   {
+      switch (type) {
+         case XSD_STRING:
+            return createOWLLiteralString(value);
+         case XSD_BOOLEAN:
+            return createOWLLiteralBoolean(value);
+         case XSD_DOUBLE:
+            return createOWLLiteralDouble(value);
+         case XSD_FLOAT:
+            return createOWLLiteralFloat(value);
+         case XSD_LONG:
+            return createOWLLiteralLong(value);
+         case XSD_INT:
+            return createOWLLiteralInteger(value);
+         case XSD_SHORT:
+            return createOWLLiteralShort(value);
+         case XSD_BYTE:
+            return createOWLLiteralByte(value);
+         case XSD_DECIMAL:
+            return createOWLLiteralDecimal(value);
+         case XSD_DATETIME:
+            return createOWLLiteralDateTime(value);
+         case XSD_DATE:
+            return createOWLLiteralDate(value);
+         case XSD_TIME:
+            return createOWLLiteralTime(value);
+         case XSD_DURATION:
+            return createOWLLiteralDuration(value);
+      }
+      throw new RendererException("Unknown datatype");
+   }
+
+   public OWLLiteral createOWLLiteralString(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_STRING);
+   }
+
+   public OWLLiteral createOWLLiteralBoolean(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_BOOLEAN);
+   }
+
+   public OWLLiteral createOWLLiteralDouble(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DOUBLE);
+   }
+
+   public OWLLiteral createOWLLiteralFloat(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_FLOAT);
+   }
+
+   public OWLLiteral createOWLLiteralLong(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_LONG);
+   }
+
+   public OWLLiteral createOWLLiteralInteger(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_INTEGER);
+   }
+
+   public OWLLiteral createOWLLiteralShort(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_SHORT);
+   }
+
+   public OWLLiteral createOWLLiteralByte(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_BYTE);
+   }
+
+   public OWLLiteral createOWLLiteralDecimal(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DECIMAL);
+   }
+
+   public OWLLiteral createOWLLiteralDateTime(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DATE_TIME);
+   }
+
+   public OWLLiteral createOWLLiteralDate(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.DATE.getIRI()));
+   }
+
+   public OWLLiteral createOWLLiteralTime(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.TIME.getIRI()));
+   }
+
+   public OWLLiteral createOWLLiteralDuration(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.DURATION.getIRI()));
+   }
+
+   public OWLDatatype createOWLDatatype(String typeName) throws RendererException
+   {
+      return owlDataFactory.getOWLDatatype(getIri(typeName));
+   }
+
+   /*
+    * Handlers the creation of OWL complex expressions
+    */
+
+   public OWLDeclarationAxiom createOWLDeclarationAxiom(OWLEntity entity)
+   {
+      return owlDataFactory.getOWLDeclarationAxiom(entity);
+   }
+
+   public OWLObjectComplementOf createOWLObjectComplementOf(OWLClassExpression ce)
+   {
+      return owlDataFactory.getOWLObjectComplementOf(ce);
+   }
+
+   public OWLObjectIntersectionOf createOWLObjectIntersectionOf(Set<OWLClassExpression> ces)
+   {
+      return owlDataFactory.getOWLObjectIntersectionOf(ces);
+   }
+
+   public OWLObjectUnionOf createOWLObjectUnionOf(Set<OWLClassExpression> ces)
+   {
+      return owlDataFactory.getOWLObjectUnionOf(ces);
+   }
+
+   public OWLObjectOneOf createOWLObjectOneOf(Set<OWLNamedIndividual> inds)
+   {
+      return owlDataFactory.getOWLObjectOneOf(inds);
+   }
+
+   public OWLSubClassOfAxiom createOWLSubClassOfAxiom(OWLClassExpression child, OWLClassExpression parent)
+   {
+      return owlDataFactory.getOWLSubClassOfAxiom(child, parent);
+   }
+
+   public OWLSubObjectPropertyOfAxiom createOWLSubObjectPropertyOfAxiom(OWLObjectPropertyExpression child,
+         OWLObjectPropertyExpression parent)
+   {
+      return owlDataFactory.getOWLSubObjectPropertyOfAxiom(child, parent);
+   }
+
+   public OWLSubDataPropertyOfAxiom createOWLSubDataPropertyOfAxiom(OWLDataPropertyExpression child,
+         OWLDataPropertyExpression parent)
+   {
+      return owlDataFactory.getOWLSubDataPropertyOfAxiom(child, parent);
+   }
+
+   public OWLEquivalentClassesAxiom createOWLEquivalentClassesAxiom(Set<OWLClassExpression> ces)
+   {
+      return owlDataFactory.getOWLEquivalentClassesAxiom(ces);
+   }
+
+   public OWLEquivalentClassesAxiom createOWLEquivalentClassesAxiom(OWLClassExpression ce1, OWLClassExpression ce2)
+   {
+      return owlDataFactory.getOWLEquivalentClassesAxiom(ce1, ce2);
+   }
+
+   public OWLAnnotationAssertionAxiom createWLAnnotationAssertionAxiom(OWLAnnotationProperty ap, OWLEntity entity,
+         OWLLiteral value)
+   {
+      return createOWLAnnotationAssertionAxiom(ap, entity.getIRI(), value);
+   }
+
+   public OWLAnnotationAssertionAxiom createOWLAnnotationAssertionAxiom(OWLAnnotationProperty ap, OWLAnnotationSubject as,
+         OWLAnnotationValue value)
+   {
+      return owlDataFactory.getOWLAnnotationAssertionAxiom(ap, as, value);
+   }
+
+   public OWLClassAssertionAxiom createOWLClassAssertionAxiom(OWLClassExpression ce, OWLNamedIndividual ind)
+   {
+      return owlDataFactory.getOWLClassAssertionAxiom(ce, ind);
+   }
+
+   public OWLObjectPropertyAssertionAxiom createOWLObjectPropertyAssertionAxiom(OWLObjectProperty op, OWLIndividual source,
+         OWLIndividual target)
+   {
+      return owlDataFactory.getOWLObjectPropertyAssertionAxiom(op, source, target);
+   }
+
+   public OWLDataPropertyAssertionAxiom createOWLDataPropertyAssertionAxiom(OWLDataProperty dp, OWLIndividual source,
+         OWLLiteral target)
+   {
+      return owlDataFactory.getOWLDataPropertyAssertionAxiom(dp, source, target);
+   }
+
+   public OWLSameIndividualAxiom createOWLSameIndividualAxiom(OWLIndividual ind1, OWLIndividual ind2)
+   {
+      return owlDataFactory.getOWLSameIndividualAxiom(ind1, ind2);
+   }
+
+   public OWLDifferentIndividualsAxiom createOWLDifferentIndividualsAxiom(OWLIndividual ind1, OWLIndividual ind2)
+   {
+      return owlDataFactory.getOWLDifferentIndividualsAxiom(ind1, ind2);
+   }
+
+   public OWLObjectAllValuesFrom createOWLObjectAllValuesFrom(OWLObjectProperty op, OWLClassExpression ce)
+   {
+      return owlDataFactory.getOWLObjectAllValuesFrom(op, ce);
+   }
+
+   public OWLObjectSomeValuesFrom createOWLObjectSomeValuesFrom(OWLObjectProperty op, OWLClassExpression ce)
+   {
+      return owlDataFactory.getOWLObjectSomeValuesFrom(op, ce);
+   }
+
+   public OWLDataAllValuesFrom createOWLDataAllValuesFrom(OWLDataProperty dp, OWLDatatype dt)
+   {
+      return owlDataFactory.getOWLDataAllValuesFrom(dp, dt);
+   }
+
+   public OWLDataSomeValuesFrom createOWLDataSomeValuesFrom(OWLDataProperty dp, OWLDatatype dt)
+   {
+      return owlDataFactory.getOWLDataSomeValuesFrom(dp, dt);
+   }
+
+   public OWLObjectExactCardinality createOWLObjectExactCardinality(int cardinality, OWLObjectProperty op)
+   {
+      return owlDataFactory.getOWLObjectExactCardinality(cardinality, op);
+   }
+
+   public OWLDataExactCardinality createOWLDataExactCardinality(int cardinality, OWLDataProperty dp)
+   {
+      return owlDataFactory.getOWLDataExactCardinality(cardinality, dp);
+   }
+
+   public OWLObjectMaxCardinality createOWLObjectMaxCardinality(int cardinality, OWLObjectProperty op)
+   {
+      return owlDataFactory.getOWLObjectMaxCardinality(cardinality, op);
+   }
+
+   public OWLDataMaxCardinality createOWLDataMaxCardinality(int cardinality, OWLDataProperty dp)
+   {
+      return owlDataFactory.getOWLDataMaxCardinality(cardinality, dp);
+   }
+
+   public OWLObjectMinCardinality createOWLObjectMinCardinality(int cardinality, OWLObjectProperty op)
+   {
+      return owlDataFactory.getOWLObjectMinCardinality(cardinality, op);
+   }
+
+   public OWLDataMinCardinality createOWLDataMinCardinality(int cardinality, OWLDataProperty dp)
+   {
+      return owlDataFactory.getOWLDataMinCardinality(cardinality, dp);
+   }
+
+   public OWLObjectHasValue createOWLObjectHasValue(OWLObjectProperty op, OWLNamedIndividual ind)
+   {
+      return owlDataFactory.getOWLObjectHasValue(op, ind);
+   }
+
+   public OWLDataHasValue createOWLDataHasValue(OWLDataProperty dp, OWLLiteral lit)
+   {
+      return owlDataFactory.getOWLDataHasValue(dp, lit);
+   }
+
+   public OWLAxiom createLabelAnnotationAxiom(OWLEntity entity, String label, Optional<String> languageTag)
+   {
+      OWLLiteral value;
+      if (languageTag.isPresent()) {
+         value = owlDataFactory.getOWLLiteral(label, languageTag.get());
+      } else {
+         value = owlDataFactory.getOWLLiteral(label);
+      }
+      OWLAnnotation labelAnno = owlDataFactory.getOWLAnnotation(owlDataFactory.getRDFSLabel(), value);
+      return owlDataFactory.getOWLAnnotationAssertionAxiom(entity.getIRI(), labelAnno);
    }
 
    /*
@@ -327,289 +665,5 @@ public class OWLAPIObjectFactory implements MappingMasterParserConstants
    public Optional<OWLEntity> getOWLEntityFromDisplayName(String displayName, Optional<String> languageTag) throws RendererException
    {
       return labelToEntityMapper.getEntityInLabel(displayName, languageTag);
-   }
-
-   /*
-    * Handles the creation of typed literal values
-    */
-
-   public OWLAnnotationValue getOWLAnnotationValue(String value, boolean isLiteral) throws RendererException
-   {
-      if (isLiteral) {
-         return owlDataFactory.getOWLLiteral(value);
-      } else {
-         return getIri(value);
-      }
-   }
-
-   public OWLAnnotationValue getOWLAnnotationValue(String value, String lang) throws RendererException
-   {
-      return owlDataFactory.getOWLLiteral(value, lang);
-   }
-
-   public OWLAnnotationValue getOWLAnnotationValue(float value)
-   {
-      return owlDataFactory.getOWLLiteral(value);
-   }
-
-   public OWLAnnotationValue getOWLAnnotationValue(double value)
-   {
-      return owlDataFactory.getOWLLiteral(value);
-   }
-
-   public OWLAnnotationValue getOWLAnnotationValue(int value)
-   {
-      return owlDataFactory.getOWLLiteral(value);
-   }
-
-   public OWLAnnotationValue getOWLAnnotationValue(boolean value)
-   {
-      return owlDataFactory.getOWLLiteral(value);
-   }
-
-   public OWLDatatype getOWLDatatype(String inputName) throws RendererException
-   {
-      return owlDataFactory.getOWLDatatype(getIri(inputName));
-   }
-
-   public OWLLiteral getOWLLiteralString(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_STRING);
-   }
-
-   public OWLLiteral getOWLLiteralBoolean(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_BOOLEAN);
-   }
-
-   public OWLLiteral getOWLLiteralDouble(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DOUBLE);
-   }
-
-   public OWLLiteral getOWLLiteralFloat(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_FLOAT);
-   }
-
-   public OWLLiteral getOWLLiteralLong(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_LONG);
-   }
-
-   public OWLLiteral getOWLLiteralInteger(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_INTEGER);
-   }
-
-   public OWLLiteral getOWLLiteralShort(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_SHORT);
-   }
-
-   public OWLLiteral getOWLLiteralByte(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_BYTE);
-   }
-
-   public OWLLiteral getOWLLiteralDecimal(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DECIMAL);
-   }
-
-   public OWLLiteral getOWLLiteralDateTime(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_DATE_TIME);
-   }
-
-   public OWLLiteral getOWLLiteralDate(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.DATE.getIRI()));
-   }
-
-   public OWLLiteral getOWLLiteralTime(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.TIME.getIRI()));
-   }
-
-   public OWLLiteral getOWLLiteralDuration(String value)
-   {
-      return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.DURATION.getIRI()));
-   }
-
-   /*
-    * Handlers the creation of OWL complex expressions
-    */
-
-   public OWLDeclarationAxiom getOWLDeclarationAxiom(OWLEntity entity)
-   {
-      return owlDataFactory.getOWLDeclarationAxiom(entity);
-   }
-
-   public OWLObjectComplementOf getOWLObjectComplementOf(OWLClassExpression ce)
-   {
-      return owlDataFactory.getOWLObjectComplementOf(ce);
-   }
-
-   public OWLObjectIntersectionOf getOWLObjectIntersectionOf(Set<OWLClassExpression> ces)
-   {
-      return owlDataFactory.getOWLObjectIntersectionOf(ces);
-   }
-
-   public OWLObjectUnionOf getOWLObjectUnionOf(Set<OWLClassExpression> ces)
-   {
-      return owlDataFactory.getOWLObjectUnionOf(ces);
-   }
-
-   public OWLObjectOneOf getOWLObjectOneOf(Set<OWLNamedIndividual> inds)
-   {
-      return owlDataFactory.getOWLObjectOneOf(inds);
-   }
-
-   public OWLSubClassOfAxiom getOWLSubClassOfAxiom(OWLClassExpression child, OWLClassExpression parent)
-   {
-      return owlDataFactory.getOWLSubClassOfAxiom(child, parent);
-   }
-
-   public OWLSubObjectPropertyOfAxiom getOWLSubObjectPropertyOfAxiom(OWLObjectPropertyExpression child,
-         OWLObjectPropertyExpression parent)
-   {
-      return owlDataFactory.getOWLSubObjectPropertyOfAxiom(child, parent);
-   }
-
-   public OWLSubDataPropertyOfAxiom getOWLSubDataPropertyOfAxiom(OWLDataPropertyExpression child,
-         OWLDataPropertyExpression parent)
-   {
-      return owlDataFactory.getOWLSubDataPropertyOfAxiom(child, parent);
-   }
-
-   public OWLEquivalentClassesAxiom getOWLEquivalentClassesAxiom(Set<OWLClassExpression> ces)
-   {
-      return owlDataFactory.getOWLEquivalentClassesAxiom(ces);
-   }
-
-   public OWLEquivalentClassesAxiom getOWLEquivalentClassesAxiom(OWLClassExpression ce1, OWLClassExpression ce2)
-   {
-      return owlDataFactory.getOWLEquivalentClassesAxiom(ce1, ce2);
-   }
-
-   public OWLAnnotationAssertionAxiom getOWLAnnotationAssertionAxiom(OWLAnnotationProperty ap, OWLEntity entity,
-         OWLLiteral value)
-   {
-      return getOWLAnnotationAssertionAxiom(ap, entity.getIRI(), value);
-   }
-
-   public OWLAnnotationAssertionAxiom getOWLAnnotationAssertionAxiom(OWLAnnotationProperty ap, OWLAnnotationSubject as,
-         OWLAnnotationValue value)
-   {
-      return owlDataFactory.getOWLAnnotationAssertionAxiom(ap, as, value);
-   }
-
-   public OWLClassAssertionAxiom getOWLClassAssertionAxiom(OWLClassExpression ce, OWLNamedIndividual ind)
-   {
-      return owlDataFactory.getOWLClassAssertionAxiom(ce, ind);
-   }
-
-   public OWLObjectPropertyAssertionAxiom getOWLObjectPropertyAssertionAxiom(OWLObjectProperty op, OWLIndividual source,
-         OWLIndividual target)
-   {
-      return owlDataFactory.getOWLObjectPropertyAssertionAxiom(op, source, target);
-   }
-
-   public OWLDataPropertyAssertionAxiom getOWLDataPropertyAssertionAxiom(OWLDataProperty dp, OWLIndividual source,
-         OWLLiteral target)
-   {
-      return owlDataFactory.getOWLDataPropertyAssertionAxiom(dp, source, target);
-   }
-
-   public OWLSameIndividualAxiom getOWLSameIndividualAxiom(OWLIndividual ind1, OWLIndividual ind2)
-   {
-      return owlDataFactory.getOWLSameIndividualAxiom(ind1, ind2);
-   }
-
-   public OWLDifferentIndividualsAxiom getOWLDifferentIndividualsAxiom(OWLIndividual ind1, OWLIndividual ind2)
-   {
-      return owlDataFactory.getOWLDifferentIndividualsAxiom(ind1, ind2);
-   }
-
-   public OWLObjectAllValuesFrom getOWLObjectAllValuesFrom(OWLObjectProperty op, OWLClassExpression ce)
-   {
-      return owlDataFactory.getOWLObjectAllValuesFrom(op, ce);
-   }
-
-   public OWLObjectSomeValuesFrom getOWLObjectSomeValuesFrom(OWLObjectProperty op, OWLClassExpression ce)
-   {
-      return owlDataFactory.getOWLObjectSomeValuesFrom(op, ce);
-   }
-
-   public OWLDataAllValuesFrom getOWLDataAllValuesFrom(OWLDataProperty dp, OWLDatatype dt)
-   {
-      return owlDataFactory.getOWLDataAllValuesFrom(dp, dt);
-   }
-
-   public OWLDataSomeValuesFrom getOWLDataSomeValuesFrom(OWLDataProperty dp, OWLDatatype dt)
-   {
-      return owlDataFactory.getOWLDataSomeValuesFrom(dp, dt);
-   }
-
-   public OWLObjectExactCardinality getOWLObjectExactCardinality(int cardinality, OWLObjectProperty op)
-   {
-      return owlDataFactory.getOWLObjectExactCardinality(cardinality, op);
-   }
-
-   public OWLDataExactCardinality getOWLDataExactCardinality(int cardinality, OWLDataProperty dp)
-   {
-      return owlDataFactory.getOWLDataExactCardinality(cardinality, dp);
-   }
-
-   public OWLObjectMaxCardinality getOWLObjectMaxCardinality(int cardinality, OWLObjectProperty op)
-   {
-      return owlDataFactory.getOWLObjectMaxCardinality(cardinality, op);
-   }
-
-   public OWLDataMaxCardinality getOWLDataMaxCardinality(int cardinality, OWLDataProperty dp)
-   {
-      return owlDataFactory.getOWLDataMaxCardinality(cardinality, dp);
-   }
-
-   public OWLObjectMinCardinality getOWLObjectMinCardinality(int cardinality, OWLObjectProperty op)
-   {
-      return owlDataFactory.getOWLObjectMinCardinality(cardinality, op);
-   }
-
-   public OWLDataMinCardinality getOWLDataMinCardinality(int cardinality, OWLDataProperty dp)
-   {
-      return owlDataFactory.getOWLDataMinCardinality(cardinality, dp);
-   }
-
-   public OWLObjectHasValue getOWLObjectHasValue(OWLObjectProperty op, OWLNamedIndividual ind)
-   {
-      return owlDataFactory.getOWLObjectHasValue(op, ind);
-   }
-
-   public OWLDataHasValue getOWLDataHasValue(OWLDataProperty dp, OWLLiteral lit)
-   {
-      return owlDataFactory.getOWLDataHasValue(dp, lit);
-   }
-
-   public OWLAxiom getLabelAnnotationAxiom(OWLEntity entity, String label, Optional<String> languageTag)
-   {
-      OWLLiteral value;
-      if (languageTag.isPresent()) {
-         value = owlDataFactory.getOWLLiteral(label, languageTag.get());
-      } else {
-         value = owlDataFactory.getOWLLiteral(label);
-      }
-      OWLAnnotation labelAnno = owlDataFactory.getOWLAnnotation(owlDataFactory.getRDFSLabel(), value);
-      return owlDataFactory.getOWLAnnotationAssertionAxiom(entity.getIRI(), labelAnno);
-   }
-
-   public String getPrefixForPrefixLabel(String prefixLabel) throws RendererException
-   {
-      IRI iri = prefixManager.getIRI(prefixLabel);
-      if (iri != null) {
-         return iri.toString();
-      }
-      throw new RendererException("Prefix for prefix label '" + prefixLabel + "' cannot be found!");
    }
 }

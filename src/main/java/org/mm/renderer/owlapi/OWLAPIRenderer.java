@@ -122,7 +122,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
       /*
        * By default, the class declaration node will produce one OWL class declaration axiom
        */
-      OWLDeclarationAxiom declaredAxiom = objectFactory.getOWLDeclarationAxiom(declaredClass);
+      OWLDeclarationAxiom declaredAxiom = objectFactory.createOWLDeclarationAxiom(declaredClass);
       axioms.add(declaredAxiom);
 
       /*
@@ -142,7 +142,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
                   continue; // just ignore it
                }
                OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-               OWLSubClassOfAxiom axiom = objectFactory.getOWLSubClassOfAxiom(declaredClass, classExpression);
+               OWLSubClassOfAxiom axiom = objectFactory.createOWLSubClassOfAxiom(declaredClass, classExpression);
                axioms.add(axiom);
                axioms.addAll(classExpressionRendering.get().getOWLAxioms()); // add any existing axioms
             }
@@ -157,7 +157,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
                Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer.renderOWLClassExpression(node);
                if (classExpressionRendering.isPresent()) {
                   OWLClassExpression classExpression = classExpressionRendering.get().getOWLClassExpression();
-                  OWLEquivalentClassesAxiom axiom = objectFactory.getOWLEquivalentClassesAxiom(declaredClass, classExpression);
+                  OWLEquivalentClassesAxiom axiom = objectFactory.createOWLEquivalentClassesAxiom(declaredClass, classExpression);
                   axioms.add(axiom);
                   axioms.addAll(classExpressionRendering.get().getOWLAxioms()); // add any existing axioms
                }
@@ -177,7 +177,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
                IRI classIri = declaredClass.getIRI();
                OWLAnnotationProperty property = (OWLAnnotationProperty) propertyRendering.get().getOWLProperty();
                OWLAnnotationValue annotationValue = annotationValueRendering.get().getOWLAnnotationValue();
-               OWLAnnotationAssertionAxiom axiom = objectFactory.getOWLAnnotationAssertionAxiom(property, classIri, annotationValue);
+               OWLAnnotationAssertionAxiom axiom = objectFactory.createOWLAnnotationAssertionAxiom(property, classIri, annotationValue);
                axioms.add(axiom);
             }
          }
@@ -202,7 +202,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
        * By default, the individual declaration node will produce one OWL named
        * individual declaration axiom
        */
-      OWLDeclarationAxiom declaredAxiom = objectFactory.getOWLDeclarationAxiom(declaredIndividual);
+      OWLDeclarationAxiom declaredAxiom = objectFactory.createOWLDeclarationAxiom(declaredIndividual);
       axioms.add(declaredAxiom);
 
       /*
@@ -260,14 +260,14 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
             if (propertyAssertionRendering.isPresent()) {
                OWLPropertyAssertionObject propertyAssertion = propertyAssertionRendering.get().getOWLPropertyAssertionObject();
                if (property instanceof OWLObjectProperty) {
-                  OWLObjectProperty op = objectFactory.getOWLObjectProperty(property.getIRI());
+                  OWLObjectProperty op = objectFactory.createOWLObjectProperty(property.getIRI());
                   OWLIndividual value = (OWLNamedIndividual) propertyAssertion;
-                  OWLObjectPropertyAssertionAxiom axiom = objectFactory.getOWLObjectPropertyAssertionAxiom(op, individual, value);
+                  OWLObjectPropertyAssertionAxiom axiom = objectFactory.createOWLObjectPropertyAssertionAxiom(op, individual, value);
                   axioms.add(axiom);
                } else if (property instanceof OWLDataProperty) {
-                  OWLDataProperty dp = objectFactory.getOWLDataProperty(property.getIRI());
+                  OWLDataProperty dp = objectFactory.createOWLDataProperty(property.getIRI());
                   OWLLiteral value = (OWLLiteral) propertyAssertion;
-                  OWLDataPropertyAssertionAxiom axiom = objectFactory.getOWLDataPropertyAssertionAxiom(dp, individual, value);
+                  OWLDataPropertyAssertionAxiom axiom = objectFactory.createOWLDataPropertyAssertionAxiom(dp, individual, value);
                   axioms.add(axiom);
                }
             }
@@ -302,7 +302,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
             if (annotationValueRendering.isPresent()) {
                IRI individualIri = individual.getIRI();
                OWLAnnotationValue value = annotationValueRendering.get().getOWLAnnotationValue();
-               OWLAnnotationAssertionAxiom axiom = objectFactory.getOWLAnnotationAssertionAxiom(property, individualIri, value);
+               OWLAnnotationAssertionAxiom axiom = objectFactory.createOWLAnnotationAssertionAxiom(property, individualIri, value);
                axioms.add(axiom);
             }
          }
@@ -321,7 +321,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
          Optional<OWLNamedIndividualRendering> otherIndividual = entityRenderer.renderOWLNamedIndividual(individualNode, false);
          if (otherIndividual.isPresent()) {
             OWLNamedIndividual sameIndividual = otherIndividual.get().getOWLNamedIndividual();
-            OWLSameIndividualAxiom axiom = objectFactory.getOWLSameIndividualAxiom(individual, sameIndividual);
+            OWLSameIndividualAxiom axiom = objectFactory.createOWLSameIndividualAxiom(individual, sameIndividual);
             axioms.add(axiom);
          }
       }
@@ -339,7 +339,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
          Optional<OWLNamedIndividualRendering> otherIndividual = entityRenderer.renderOWLNamedIndividual(individualNode, false);
          if (otherIndividual.isPresent()) {
             OWLNamedIndividual differentIndividual = otherIndividual.get().getOWLNamedIndividual();
-            OWLDifferentIndividualsAxiom axiom = objectFactory.getOWLDifferentIndividualsAxiom(individual, differentIndividual);
+            OWLDifferentIndividualsAxiom axiom = objectFactory.createOWLDifferentIndividualsAxiom(individual, differentIndividual);
             axioms.add(axiom);
          }
       }

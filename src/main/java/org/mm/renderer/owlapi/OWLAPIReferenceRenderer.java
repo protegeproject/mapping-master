@@ -366,18 +366,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
 
    private OWLEntity createOWLEntity(String entityName, ReferenceType referenceType) throws RendererException
    {
-      if (referenceType.isOWLClass()) {
-         return objectFactory.getOWLClass(entityName);
-      } else if (referenceType.isOWLNamedIndividual()) {
-         return objectFactory.getOWLNamedIndividual(entityName);
-      } else if (referenceType.isOWLObjectProperty()) {
-         return objectFactory.getOWLObjectProperty(entityName);
-      } else if (referenceType.isOWLDataProperty()) {
-         return objectFactory.getOWLDataProperty(entityName);
-      } else if (referenceType.isOWLAnnotationProperty()) {
-         return objectFactory.getOWLAnnotationProperty(entityName);
-      }
-      throw new RendererException("Failed to create entity: " + entityName);
+      return objectFactory.createOWLEntity(entityName, referenceType.getType());
    }
 
    private Optional<OWLEntity> getOWLEntityFromOntology(String displayName, Optional<String> languageTag) throws RendererException
@@ -417,7 +406,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
          if (obj instanceof OWLEntity) {
             OWLEntity entity = (OWLEntity) obj;
             if (entity.isOWLClass()) {
-               OWLClassAssertionAxiom axiom = objectFactory.getOWLClassAssertionAxiom(entity.asOWLClass(), individual);
+               OWLClassAssertionAxiom axiom = objectFactory.createOWLClassAssertionAxiom(entity.asOWLClass(), individual);
                axioms.add(axiom);
             } else {
                IRI identifier = individual.getIRI();
@@ -425,7 +414,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             }
          } else if (obj instanceof OWLClassExpression) {
             OWLClassExpression clsExp = (OWLClassExpression) obj;
-            OWLClassAssertionAxiom axiom = objectFactory.getOWLClassAssertionAxiom(clsExp, individual);
+            OWLClassAssertionAxiom axiom = objectFactory.createOWLClassAssertionAxiom(clsExp, individual);
             axioms.add(axiom);
          } else {
             IRI identifier = individual.getIRI();
@@ -440,7 +429,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       // A reference will not have both a prefix and a prefix specified
       if (referenceNode.hasExplicitlySpecifiedPrefix()) {
          String prefixLabel = referenceNode.getPrefixDirectiveNode().getPrefix();
-         return objectFactory.getPrefixForPrefixLabel(prefixLabel);
+         return objectFactory.getPrefix(prefixLabel);
       } else if (referenceNode.hasExplicitlySpecifiedNamespace()) {
          return referenceNode.getNamespaceDirectiveNode().getNamespace();
       }
@@ -469,16 +458,16 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             if (typeObject instanceof OWLEntity) {
                OWLEntity typeEntity = (OWLEntity) typeObject;
                if (referenceType.isOWLClass() && typeEntity instanceof OWLClass) {
-                  OWLAxiom axiom = objectFactory.getOWLSubClassOfAxiom(typeEntity.asOWLClass(), entity.asOWLClass());
+                  OWLAxiom axiom = objectFactory.createOWLSubClassOfAxiom(typeEntity.asOWLClass(), entity.asOWLClass());
                   axioms.add(axiom);
                } else if (referenceType.isOWLNamedIndividual() && typeEntity instanceof OWLClass) {
-                  OWLAxiom axiom = objectFactory.getOWLClassAssertionAxiom(typeEntity.asOWLClass(), entity.asOWLNamedIndividual());
+                  OWLAxiom axiom = objectFactory.createOWLClassAssertionAxiom(typeEntity.asOWLClass(), entity.asOWLNamedIndividual());
                   axioms.add(axiom);
                } else if (referenceType.isOWLObjectProperty() && typeEntity instanceof OWLObjectProperty) {
-                  OWLAxiom axiom = objectFactory.getOWLSubObjectPropertyOfAxiom(typeEntity.asOWLObjectProperty(), entity.asOWLObjectProperty());
+                  OWLAxiom axiom = objectFactory.createOWLSubObjectPropertyOfAxiom(typeEntity.asOWLObjectProperty(), entity.asOWLObjectProperty());
                   axioms.add(axiom);
                } else if (referenceType.isOWLDataProperty() && typeEntity instanceof OWLDataProperty) {
-                  OWLAxiom axiom = objectFactory.getOWLSubDataPropertyOfAxiom(typeEntity.asOWLDataProperty(), entity.asOWLDataProperty());
+                  OWLAxiom axiom = objectFactory.createOWLSubDataPropertyOfAxiom(typeEntity.asOWLDataProperty(), entity.asOWLDataProperty());
                   axioms.add(axiom);
                } else throw new InternalRendererException("Unsupported entity type " + referenceType);
             } else {
@@ -491,7 +480,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
    private void addOWLAnnotationAxiom(OWLEntity entity, Optional<String> label, Optional<String> language, Set<OWLAxiom> axioms)
    {
       if (label.isPresent()) {
-         OWLAxiom labelAnnotation = objectFactory.getLabelAnnotationAxiom(entity, label.get(), language);
+         OWLAxiom labelAnnotation = objectFactory.createLabelAnnotationAxiom(entity, label.get(), language);
          axioms.add(labelAnnotation);
       }
    }
@@ -712,35 +701,9 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       return Optional.ofNullable(languageTag);
    }
 
-   private OWLLiteral createOWLLiteral(String value, ReferenceType type) throws RendererException
+   private OWLLiteral createOWLLiteral(String value, ReferenceType referenceType) throws RendererException
    {
-      if (type.isXSDBoolean())
-         return objectFactory.getOWLLiteralBoolean(value);
-      else if (type.isXSDString())
-         return objectFactory.getOWLLiteralString(value);
-      else if (type.isXSDDecimal())
-         return objectFactory.getOWLLiteralDecimal(value);
-      else if (type.isXSDByte())
-         return objectFactory.getOWLLiteralByte(value);
-      else if (type.isXSDShort())
-         return objectFactory.getOWLLiteralShort(value);
-      else if (type.isXSDInt())
-         return objectFactory.getOWLLiteralInteger(value);
-      else if (type.isXSDLong())
-         return objectFactory.getOWLLiteralLong(value);
-      else if (type.isXSDFloat())
-         return objectFactory.getOWLLiteralFloat(value);
-      else if (type.isXSDDouble())
-         return objectFactory.getOWLLiteralDouble(value);
-      else if (type.isXSDDateTime())
-         return objectFactory.getOWLLiteralDateTime(value);
-      else if (type.isXSDDate())
-         return objectFactory.getOWLLiteralDate(value);
-      else if (type.isXSDTime())
-         return objectFactory.getOWLLiteralTime(value);
-      else if (type.isXSDDuration())
-         return objectFactory.getOWLLiteralDuration(value);
-      else throw new RendererException("Unknown type " + type.getTypeName() + " for literal " + value);
+      return objectFactory.createOWLLiteral(value, referenceType.getType());
    }
 
    class LocationEncodingCache
