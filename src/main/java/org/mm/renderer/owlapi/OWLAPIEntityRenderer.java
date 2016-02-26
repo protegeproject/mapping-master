@@ -24,7 +24,7 @@ import org.mm.rendering.owlapi.OWLPropertyRendering;
 
 public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterParserConstants
 {
-   private OWLAPIObjectHandler objectFactory;
+   private OWLAPIObjectFactory objectFactory;
 
    private ClassRendererDelegator classRendererDelegator;
    private NamedIndividualRendererDelegator namedIndividualRendererDelegator;
@@ -32,7 +32,7 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
    private PropertyAssertionRendererDelegator propertyAssertionRendererDelegator;
    private AnnotationValueRendererDelegator annotationValueRendererDelegator;
 
-   public OWLAPIEntityRenderer(OWLAPIReferenceRenderer referenceRenderer, OWLAPIObjectHandler objectFactory)
+   public OWLAPIEntityRenderer(OWLAPIReferenceRenderer referenceRenderer, OWLAPIObjectFactory objectFactory)
    {
       this.objectFactory = objectFactory;
 

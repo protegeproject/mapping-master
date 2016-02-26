@@ -71,9 +71,9 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
    private final OWLAPIEntityRenderer entityRenderer;
    private final OWLAPIReferenceRenderer referenceRenderer;
    private final OWLAPILiteralRenderer literalRenderer;
-   private final OWLAPIObjectHandler objectFactory;
+   private final OWLAPIObjectFactory objectFactory;
 
-   public OWLAPIClassExpressionRenderer(OWLAPIReferenceRenderer referenceRenderer, OWLAPIObjectHandler objectFactory)
+   public OWLAPIClassExpressionRenderer(OWLAPIReferenceRenderer referenceRenderer, OWLAPIObjectFactory objectFactory)
    {
       this.referenceRenderer = referenceRenderer;
       this.entityRenderer = referenceRenderer.getEntityRenderer();

@@ -62,7 +62,7 @@ import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
-public class OWLAPIObjectHandler implements MappingMasterParserConstants
+public class OWLAPIObjectFactory implements MappingMasterParserConstants
 {
    private final OWLOntology ontology;
 
@@ -72,7 +72,7 @@ public class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    private final DefaultPrefixManager prefixManager = new DefaultPrefixManager();
 
-   public OWLAPIObjectHandler(OWLOntology ontology)
+   public OWLAPIObjectFactory(OWLOntology ontology)
    {
       this.ontology = ontology;
 

@@ -7,7 +7,7 @@ import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.RendererException;
-import org.mm.renderer.owlapi.OWLAPIObjectHandler;
+import org.mm.renderer.owlapi.OWLAPIObjectFactory;
 import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
 import org.mm.rendering.owlapi.OWLAPIEntityReferenceRendering;
 import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
@@ -25,7 +25,7 @@ public class ClassRendererDelegator implements RendererDelegator<OWLClassRenderi
    }
 
    @Override
-   public Optional<OWLClassRendering> render(TypeNode typeNode, OWLAPIObjectHandler objectFactory)
+   public Optional<OWLClassRendering> render(TypeNode typeNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
       if (typeNode instanceof OWLClassNode) {
@@ -39,7 +39,7 @@ public class ClassRendererDelegator implements RendererDelegator<OWLClassRenderi
       throw new RendererException("Node " + typeNode + " is not an OWL class");
    }
 
-   private Optional<OWLClassRendering> renderNameNode(NameNode nameNode, OWLAPIObjectHandler objectFactory)
+   private Optional<OWLClassRendering> renderNameNode(NameNode nameNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
       OWLClass cls = objectFactory.getAndCheckOWLClass(nameNode.getName());
@@ -47,7 +47,7 @@ public class ClassRendererDelegator implements RendererDelegator<OWLClassRenderi
    }
 
    private Optional<OWLClassRendering> renderReferenceNode(ReferenceNode referenceNode,
-         OWLAPIObjectHandler objectFactory) throws RendererException
+         OWLAPIObjectFactory objectFactory) throws RendererException
    {
       OWLClassRendering classRendering = null;
       Optional<? extends OWLAPIReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);

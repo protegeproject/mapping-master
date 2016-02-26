@@ -9,7 +9,7 @@ import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.RendererException;
 import org.mm.renderer.owlapi.OWLAPILiteralRenderer;
-import org.mm.renderer.owlapi.OWLAPIObjectHandler;
+import org.mm.renderer.owlapi.OWLAPIObjectFactory;
 import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
 import org.mm.rendering.owlapi.OWLAPIEntityReferenceRendering;
 import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
@@ -31,7 +31,7 @@ public class PropertyAssertionRendererDelegator implements RendererDelegator<OWL
    }
 
    @Override
-   public Optional<OWLPropertyAssertionRendering> render(TypeNode typeNode, OWLAPIObjectHandler objectFactory)
+   public Optional<OWLPropertyAssertionRendering> render(TypeNode typeNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
       if (typeNode instanceof OWLPropertyAssertionNode) {
@@ -48,14 +48,14 @@ public class PropertyAssertionRendererDelegator implements RendererDelegator<OWL
    }
 
    private Optional<OWLPropertyAssertionRendering> renderNameNode(NameNode nameNode,
-         OWLAPIObjectHandler objectFactory) throws RendererException
+         OWLAPIObjectFactory objectFactory) throws RendererException
    {
       OWLNamedIndividual ind = objectFactory.getAndCheckOWLNamedIndividual(nameNode.getName());
       return Optional.of(new OWLPropertyAssertionRendering(ind));
    }
 
    private Optional<OWLPropertyAssertionRendering> renderReferenceNode(ReferenceNode referenceNode,
-         OWLAPIObjectHandler objectFactory) throws RendererException
+         OWLAPIObjectFactory objectFactory) throws RendererException
    {
       OWLPropertyAssertionRendering assertionRendering = null;
       Optional<OWLAPIReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);
@@ -83,7 +83,7 @@ public class PropertyAssertionRendererDelegator implements RendererDelegator<OWL
    }
 
    private Optional<OWLPropertyAssertionRendering> renderLiteralNode(OWLLiteralNode literalNode,
-         OWLAPIObjectHandler objectFactory) throws RendererException
+         OWLAPIObjectFactory objectFactory) throws RendererException
    {
       OWLPropertyAssertionRendering assertionRendering = null;
       Optional<OWLAPILiteralRendering> rendering = literalRenderer.renderOWLLiteral(literalNode);

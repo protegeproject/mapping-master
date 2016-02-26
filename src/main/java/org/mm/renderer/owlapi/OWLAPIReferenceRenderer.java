@@ -61,14 +61,14 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
    private final Logger logger = LoggerFactory.getLogger(OWLAPIReferenceRenderer.class);
 
    private SpreadSheetDataSource dataSource;
-   private OWLAPIObjectHandler objectFactory;
+   private OWLAPIObjectFactory objectFactory;
    private OWLAPIEntityRenderer entityRenderer;
    private OWLAPILiteralRenderer literalRenderer;
    private OWLAPIClassExpressionRenderer classExpressionRenderer;
 
    private LocationEncodingCache locationEncodingCache = new LocationEncodingCache();
 
-   public OWLAPIReferenceRenderer(SpreadSheetDataSource dataSource, OWLAPIObjectHandler objectFactory)
+   public OWLAPIReferenceRenderer(SpreadSheetDataSource dataSource, OWLAPIObjectFactory objectFactory)
    {
       this.dataSource = dataSource;
       this.objectFactory = objectFactory;

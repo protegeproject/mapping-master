@@ -11,9 +11,9 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 
 public class OWLAPILiteralRenderer implements OWLLiteralRenderer
 {
-   private final OWLAPIObjectHandler objectFactory;
+   private final OWLAPIObjectFactory objectFactory;
 
-   public OWLAPILiteralRenderer(OWLAPIObjectHandler objectFactory)
+   public OWLAPILiteralRenderer(OWLAPIObjectFactory objectFactory)
    {
       this.objectFactory = objectFactory;
    }

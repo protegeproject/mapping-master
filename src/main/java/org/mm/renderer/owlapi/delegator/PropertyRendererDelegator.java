@@ -7,7 +7,7 @@ import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.RendererException;
-import org.mm.renderer.owlapi.OWLAPIObjectHandler;
+import org.mm.renderer.owlapi.OWLAPIObjectFactory;
 import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
 import org.mm.rendering.owlapi.OWLAPIEntityReferenceRendering;
 import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
@@ -31,7 +31,7 @@ public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyR
    }
 
    @Override
-   public Optional<OWLPropertyRendering> render(TypeNode typeNode, OWLAPIObjectHandler objectFactory)
+   public Optional<OWLPropertyRendering> render(TypeNode typeNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
       if (typeNode instanceof OWLPropertyNode) {
@@ -45,7 +45,7 @@ public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyR
       throw new RendererException("Node " + typeNode + " is not an OWL property");
    }
 
-   private Optional<OWLPropertyRendering> renderNameNode(NameNode nameNode, OWLAPIObjectHandler objectFactory)
+   private Optional<OWLPropertyRendering> renderNameNode(NameNode nameNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
       OWLPropertyRendering propertyRendering = null;
@@ -60,7 +60,7 @@ public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyR
       return Optional.ofNullable(propertyRendering);
    }
 
-   private Optional<OWLPropertyRendering> renderReferenceNode(ReferenceNode referenceNode, OWLAPIObjectHandler objectFactory)
+   private Optional<OWLPropertyRendering> renderReferenceNode(ReferenceNode referenceNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
       OWLPropertyRendering propertyRendering = null;

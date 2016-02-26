@@ -9,7 +9,7 @@ import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.RendererException;
 import org.mm.renderer.owlapi.OWLAPILiteralRenderer;
-import org.mm.renderer.owlapi.OWLAPIObjectHandler;
+import org.mm.renderer.owlapi.OWLAPIObjectFactory;
 import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
 import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
 import org.mm.rendering.owlapi.OWLAPILiteralRendering;
@@ -30,7 +30,7 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
    }
 
    @Override
-   public Optional<OWLAnnotationValueRendering> render(TypeNode typeNode, OWLAPIObjectHandler objectFactory)
+   public Optional<OWLAnnotationValueRendering> render(TypeNode typeNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
       if (typeNode instanceof OWLAnnotationValueNode) {
@@ -46,7 +46,7 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
       throw new RendererException("Node " + typeNode + " is not an OWL annotation value");
    }
 
-   private Optional<OWLAnnotationValueRendering> renderNameNode(NameNode nameNode, OWLAPIObjectHandler objectFactory)
+   private Optional<OWLAnnotationValueRendering> renderNameNode(NameNode nameNode, OWLAPIObjectFactory objectFactory)
          throws RendererException
    {
       OWLAnnotationValue anno = objectFactory.getOWLAnnotationValue(nameNode.getName(), false);
@@ -54,7 +54,7 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
    }
 
    private Optional<OWLAnnotationValueRendering> renderReferenceNode(ReferenceNode referenceNode,
-         OWLAPIObjectHandler objectFactory) throws RendererException
+         OWLAPIObjectFactory objectFactory) throws RendererException
    {
       OWLAnnotationValueRendering valueRendering = null;
       Optional<OWLAPIReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);
@@ -75,7 +75,7 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
    }
 
    private Optional<OWLAnnotationValueRendering> renderLiteralNode(OWLLiteralNode literalNode,
-         OWLAPIObjectHandler objectFactory) throws RendererException
+         OWLAPIObjectFactory objectFactory) throws RendererException
    {
       OWLAnnotationValueRendering valueRendering = null;
       Optional<OWLAPILiteralRendering> rendering = literalRenderer.renderOWLLiteral(literalNode);

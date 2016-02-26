@@ -70,7 +70,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 
    private SpreadSheetDataSource dataSource;
 
-   private final OWLAPIObjectHandler objectFactory;
+   private final OWLAPIObjectFactory objectFactory;
    private final OWLAPIEntityRenderer entityRenderer;
    private final OWLAPIClassExpressionRenderer classExpressionRenderer;
    private final OWLAPIReferenceRenderer referenceRenderer;
@@ -78,7 +78,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
    public OWLAPIRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
    {
       this.dataSource = dataSource;
-      objectFactory = new OWLAPIObjectHandler(ontology);
+      objectFactory = new OWLAPIObjectFactory(ontology);
       referenceRenderer = new OWLAPIReferenceRenderer(dataSource, objectFactory);
       entityRenderer = new OWLAPIEntityRenderer(referenceRenderer, objectFactory);
       classExpressionRenderer = new OWLAPIClassExpressionRenderer(referenceRenderer, objectFactory);
