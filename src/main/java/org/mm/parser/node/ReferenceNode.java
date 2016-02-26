@@ -32,7 +32,7 @@ import org.mm.ss.SpreadsheetLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReferenceNode implements TypeNode, MappingMasterParserConstants
+public class ReferenceNode implements MMNode, MappingMasterParserConstants
 {
    private SourceSpecificationNode sourceSpecificationNode;
    private ReferenceTypeNode referenceTypeNode;
@@ -567,30 +567,6 @@ public class ReferenceNode implements TypeNode, MappingMasterParserConstants
          if (valueEncoding.hasLiteralEncoding()) return valueEncoding;
 
       return null;
-   }
-
-   @Override
-   public boolean isReferenceNode()
-   {
-      return true;
-   }
-
-   @Override
-   public boolean isOWLClassNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isOWLClassExpressionNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isOWLPropertyNode()
-   {
-      return false;
    }
 
    @Override

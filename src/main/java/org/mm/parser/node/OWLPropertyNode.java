@@ -1,19 +1,19 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTName;
-import org.mm.parser.ASTOWLProperty;
 import org.mm.parser.ASTReference;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
+import org.mm.parser.SimpleNode;
 
 public class OWLPropertyNode implements TypeNode
 {
    private ReferenceNode referenceNode;
    private NameNode nameNode;
 
-   public OWLPropertyNode(ASTOWLProperty node) throws ParseException
+   public OWLPropertyNode(SimpleNode node) throws ParseException
    {
       if (node.jjtGetNumChildren() != 1)
          throw new InternalParseException("expecting one child node for node " + getNodeName());
@@ -50,30 +50,6 @@ public class OWLPropertyNode implements TypeNode
    public boolean hasReferenceNode()
    {
       return this.referenceNode != null;
-   }
-
-   @Override
-   public boolean isOWLClassNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isOWLClassExpressionNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isOWLPropertyNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isReferenceNode()
-   {
-      return false;
    }
 
    public String toString()

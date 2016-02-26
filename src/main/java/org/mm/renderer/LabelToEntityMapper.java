@@ -2,6 +2,7 @@ package org.mm.renderer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.semanticweb.owlapi.model.IRI;
@@ -49,13 +50,12 @@ public class LabelToEntityMapper
       }
    }
 
-   public OWLEntity getEntityInLabel(String label)
+   public Optional<OWLEntity> getEntityInLabel(String label, Optional<String> languageTag)
    {
-      return mapper.get(label);
-   }
-
-   public OWLEntity getEntityInLabel(String label, String language)
-   {
-      return mapper.get(label + "@" + language);
+      String key = label;
+      if (languageTag.isPresent()) {
+         key += "@" + languageTag;
+      }
+      return Optional.ofNullable(mapper.get(key));
    }
 }

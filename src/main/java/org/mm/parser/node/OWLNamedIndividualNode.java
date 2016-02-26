@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLNamedIndividualNode implements MMNode
+public class OWLNamedIndividualNode implements TypeNode
 {
    private ReferenceNode referenceNode;
    private NameNode nameNode;

@@ -1,15 +1,15 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLLiteral;
-import org.mm.parser.ASTOWLAnnotationValue;
-import org.mm.parser.ParseException;
 import org.mm.parser.ASTName;
+import org.mm.parser.ASTOWLAnnotationValue;
+import org.mm.parser.ASTOWLLiteral;
 import org.mm.parser.ASTReference;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLAnnotationValueNode implements MMNode
+public class OWLAnnotationValueNode implements TypeNode
 {
    private ReferenceNode referenceNode;
    private NameNode nameNode;
@@ -51,28 +51,28 @@ public class OWLAnnotationValueNode implements MMNode
       return this.literalNode;
    }
 
-   public boolean isReference()
+   public boolean hasReferenceNode()
    {
       return this.referenceNode != null;
    }
 
-   public boolean isName()
+   public boolean hasNameNode()
    {
       return this.nameNode != null;
    }
 
-   public boolean isLiteral()
+   public boolean hasLiteralNode()
    {
       return this.literalNode != null;
    }
 
    public String toString()
    {
-      if (isReference())
+      if (hasReferenceNode())
          return this.referenceNode.toString();
-      else if (isName())
+      else if (hasNameNode())
          return this.nameNode.toString();
-      else if (isLiteral())
+      else if (hasLiteralNode())
          return this.literalNode.toString();
       else return "";
    }

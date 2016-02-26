@@ -3,6 +3,11 @@ package org.mm.exceptions;
 @SuppressWarnings("serial")
 public class MappingMasterException extends Exception
 {
+   public MappingMasterException()
+   {
+      super();
+   }
+
    public MappingMasterException(String message)
    {
       super(message);

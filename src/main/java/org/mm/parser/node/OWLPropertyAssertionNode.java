@@ -9,13 +9,13 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLPropertyAssertionObjectNode implements MMNode
+public class OWLPropertyAssertionNode implements TypeNode
 {
    private ReferenceNode referenceNode;
    private NameNode nameNode;
    private OWLLiteralNode literalNode;
 
-   public OWLPropertyAssertionObjectNode(ASTOWLPropertyAssertionObject node) throws ParseException
+   public OWLPropertyAssertionNode(ASTOWLPropertyAssertionObject node) throws ParseException
    {
       if (node.jjtGetNumChildren() != 1)
          throw new InternalParseException("expecting one child of node " + getNodeName());
@@ -51,28 +51,28 @@ public class OWLPropertyAssertionObjectNode implements MMNode
       return this.literalNode;
    }
 
-   public boolean isReference()
+   public boolean hasReferenceNode()
    {
       return this.referenceNode != null;
    }
 
-   public boolean isName()
+   public boolean hasNameNode()
    {
       return this.nameNode != null;
    }
 
-   public boolean isLiteral()
+   public boolean hasLiteralNode()
    {
       return this.literalNode != null;
    }
 
    public String toString()
    {
-      if (isReference())
+      if (hasReferenceNode())
          return this.referenceNode.toString();
-      else if (isName())
+      else if (hasNameNode())
          return this.nameNode.toString();
-      else if (isLiteral())
+      else if (hasLiteralNode())
          return this.literalNode.toString();
       else return "";
    }

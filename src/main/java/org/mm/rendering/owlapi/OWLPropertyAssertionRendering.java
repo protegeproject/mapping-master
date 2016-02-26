@@ -2,11 +2,11 @@ package org.mm.rendering.owlapi;
 
 import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 
-public class OWLPropertyAssertionObjectRendering extends OWLAPIRendering
+public class OWLPropertyAssertionRendering extends OWLAPIRendering
 {
    private final OWLPropertyAssertionObject property;
 
-   public OWLPropertyAssertionObjectRendering(OWLPropertyAssertionObject propertyAssertionObject)
+   public OWLPropertyAssertionRendering(OWLPropertyAssertionObject propertyAssertionObject)
    {
       super();
       this.property = propertyAssertionObject;

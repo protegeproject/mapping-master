@@ -10,6 +10,7 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.IllegalFormatException;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -23,19 +24,17 @@ public class ReferenceUtil implements MappingMasterParserConstants
     return dataSource.resolveLocation(sourceSpecificationNode);
   }
 
-  public static String resolveReferenceValue(SpreadSheetDataSource dataSource, ReferenceNode referenceNode)
+  public static Optional<String> resolveReferenceValue(SpreadSheetDataSource dataSource, ReferenceNode referenceNode)
       throws RendererException
   {
     SpreadsheetLocation location = resolveLocation(dataSource, referenceNode);
 
-    String referenceValue = "";
+    String referenceValue = null;
     String rawLocationValue = dataSource.getLocationValue(location, referenceNode);
-    if (rawLocationValue == null || rawLocationValue.isEmpty()) {
-      referenceValue = referenceNode.getActualDefaultLocationValue();
-    } else {
+    if (rawLocationValue != null && !rawLocationValue.isEmpty()) {
       referenceValue = rawLocationValue;
     }
-    return referenceValue;
+    return Optional.ofNullable(referenceValue);
   }
 
   public static String evaluateReferenceValue(String functionName, int functionID, List<String> arguments,

@@ -55,10 +55,11 @@ public class SourceSpecificationNode implements MMNode
    {
       String representation = "@";
       if (hasSource()) representation += "'" + this.source + "'!";
-      if (hasLocation())
+      if (hasLocation()) {
          representation += this.location;
-      else // literal
+      } else { // literal
          representation += "\"" + this.literal + "\"";
+      }
       return representation;
    }
 }

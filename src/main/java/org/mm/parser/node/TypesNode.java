@@ -1,16 +1,15 @@
 package org.mm.parser.node;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mm.parser.ASTOWLClass;
 import org.mm.parser.ASTOWLClassExpression;
 import org.mm.parser.ASTTypes;
-import org.mm.parser.ParseException;
-import org.mm.parser.ASTReference;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TypesNode implements MMNode
 {
@@ -28,10 +27,12 @@ public class TypesNode implements MMNode
          } else if (ParserUtil.hasName(child, "OWLClassExpression")) {
             OWLClassExpressionNode classNode = new OWLClassExpressionNode((ASTOWLClassExpression) child);
             this.typeNodes.add(classNode);
-         } else if (ParserUtil.hasName(child, "Reference")) {
-            ReferenceNode referenceNode = new ReferenceNode((ASTReference) child);
-            this.typeNodes.add(referenceNode);
-         } else throw new InternalParseException("unexpected child node  " + child + " for node " + getNodeName());
+         }
+//         else if (ParserUtil.hasName(child, "Reference")) {
+//            ReferenceNode referenceNode = new ReferenceNode((ASTReference) child);
+//            this.typeNodes.add(referenceNode);
+//         }
+         else throw new InternalParseException("unexpected child node  " + child + " for node " + getNodeName());
       }
    }
 

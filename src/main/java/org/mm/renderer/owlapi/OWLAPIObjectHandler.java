@@ -1,6 +1,9 @@
 package org.mm.renderer.owlapi;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.mm.parser.MappingMasterParserConstants;
@@ -59,9 +62,7 @@ import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
-import com.google.common.base.Optional;
-
-class OWLAPIObjectHandler implements MappingMasterParserConstants
+public class OWLAPIObjectHandler implements MappingMasterParserConstants
 {
    private final OWLOntology ontology;
 
@@ -90,10 +91,10 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
       // Make sure the default prefix is set
       if (prefixManager.getDefaultPrefix() == null) {
-         Optional<IRI> ontologyIRI = ontology.getOntologyID().getOntologyIRI();
+         com.google.common.base.Optional<IRI> ontologyIRI = ontology.getOntologyID().getOntologyIRI();
          if (ontologyIRI.isPresent()) {
             String iri = ontologyIRI.get().toString();
-            if (!iri.endsWith("/") || !iri.endsWith("#")) {
+            if (!iri.endsWith("/") && !iri.endsWith("#")) {
                iri += "/";
             }
             prefixManager.setDefaultPrefix(iri);
@@ -101,33 +102,44 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       }
    }
 
+   /*
+    * Handles IRI string resolutions and IRI creation
+    */
+
    public String getDefaultPrefix()
    {
       return prefixManager.getDefaultPrefix();
    }
 
-   public IRI getQualifiedName(String shortName)
+   public IRI getIri(String inputName) throws RendererException
    {
-      return prefixManager.getIRI(shortName);
-   }
-
-   public OWLDeclarationAxiom getOWLDeclarationAxiom(OWLEntity entity)
-   {
-      return owlDataFactory.getOWLDeclarationAxiom(entity);
-   }
-
-   public OWLClass getOWLClass(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return getOWLClass(IRI.create(givenName));
-      } else {
-         return getOWLClass(getQualifiedName(givenName));
+      try {
+         if (NameUtil.isValidUriConstruct(inputName)) {
+            /*
+             * Handles if the input name is already in a valid URI construct, e.g., http://example.org/someName
+             */
+            return IRI.create(inputName);
+         }
+         else {
+            /*
+             * There are two cases where the input name falls into this handler:
+             * - the input name has "<...>" enclosed, e.g., <http://example.org/someName>, or
+             * - the input name is an abbreviated IRI, e.g., abc:someName, :someName, someName
+             */
+            return prefixManager.getIRI(inputName);
+         }
+      } catch (RuntimeException e) {
+         throw new RendererException(e.getMessage());
       }
    }
 
-   public OWLClass getOWLClass(String prefix, String localName)
+   /*
+    * Handles the creation of OWL entities, i.e., class, property and individual
+    */
+
+   public OWLClass getOWLClass(String inputName) throws RendererException
    {
-      return getOWLClass(IRI.create(prefix, localName));
+      return getOWLClass(getIri(inputName));
    }
 
    public OWLClass getOWLClass(IRI iri)
@@ -135,18 +147,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLClass(iri);
    }
 
-   public OWLNamedIndividual getOWLNamedIndividual(String givenName) throws RendererException
+   public OWLNamedIndividual getOWLNamedIndividual(String inputName) throws RendererException
    {
-      if (NameUtil.isValidIriString(givenName)) {
-         return getOWLNamedIndividual(IRI.create(givenName));
-      } else {
-         return getOWLNamedIndividual(getQualifiedName(givenName));
-      }
-   }
-
-   public OWLNamedIndividual getOWLNamedIndividual(String prefix, String localName)
-   {
-      return getOWLNamedIndividual(IRI.create(prefix, localName));
+      return getOWLNamedIndividual(getIri(inputName));
    }
 
    public OWLNamedIndividual getOWLNamedIndividual(IRI iri)
@@ -154,18 +157,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLNamedIndividual(iri);
    }
 
-   public OWLObjectProperty getOWLObjectProperty(String givenName)
+   public OWLObjectProperty getOWLObjectProperty(String inputName) throws RendererException
    {
-      if (NameUtil.isValidIriString(givenName)) {
-         return getOWLObjectProperty(IRI.create(givenName));
-      } else {
-         return getOWLObjectProperty(getQualifiedName(givenName));
-      }
-   }
-
-   public OWLObjectProperty getOWLObjectProperty(String prefix, String localName)
-   {
-      return getOWLObjectProperty(IRI.create(prefix, localName));
+      return getOWLObjectProperty(getIri(inputName));
    }
 
    public OWLObjectProperty getOWLObjectProperty(IRI iri)
@@ -173,18 +167,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLObjectProperty(iri);
    }
 
-   public OWLDataProperty getOWLDataProperty(String givenName)
+   public OWLDataProperty getOWLDataProperty(String inputName) throws RendererException
    {
-      if (NameUtil.isValidIriString(givenName)) {
-         return getOWLDataProperty(IRI.create(givenName));
-      } else {
-         return getOWLDataProperty(getQualifiedName(givenName));
-      }
-   }
-
-   public OWLDataProperty getOWLDataProperty(String prefix, String localName)
-   {
-      return getOWLDataProperty(IRI.create(prefix, localName));
+      return getOWLDataProperty(getIri(inputName));
    }
 
    public OWLDataProperty getOWLDataProperty(IRI iri)
@@ -192,18 +177,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLDataProperty(iri);
    }
 
-   public OWLAnnotationProperty getOWLAnnotationProperty(String givenName)
+   public OWLAnnotationProperty getOWLAnnotationProperty(String inputName) throws RendererException
    {
-      if (NameUtil.isValidIriString(givenName)) {
-         return getOWLAnnotationProperty(IRI.create(givenName));
-      } else {
-         return getOWLAnnotationProperty(getQualifiedName(givenName));
-      }
-   }
-
-   public OWLAnnotationProperty getOWLAnnotationProperty(String prefix, String localName)
-   {
-      return getOWLAnnotationProperty(IRI.create(prefix, localName));
+      return getOWLAnnotationProperty(getIri(inputName));
    }
 
    public OWLAnnotationProperty getOWLAnnotationProperty(IRI iri)
@@ -211,9 +187,164 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLAnnotationProperty(iri);
    }
 
-   public OWLAnnotationValue getOWLAnnotationValue(String value)
+   /*
+    * Handles the retrieval of OWL entities from the input ontology given its name. All these methods below will
+    * throw an exception if the input entity name doesn't exist in the ontology.
+    */
+
+   public OWLClass getAndCheckOWLClass(String inputName) throws RendererException {
+      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_CLASS);
+      if (!foundEntity.isPresent()) {
+         throwEntityNotFoundException(inputName, "class");
+      }
+      return foundEntity.get().asOWLClass();
+   }
+
+   public OWLObjectProperty getAndCheckOWLObjectProperty(String inputName) throws RendererException {
+      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_OBJECT_PROPERTY);
+      if (!foundEntity.isPresent()) {
+         throwEntityNotFoundException(inputName, "object property");
+      }
+      return foundEntity.get().asOWLObjectProperty();
+   }
+
+   public OWLDataProperty getAndCheckOWLDataProperty(String inputName) throws RendererException {
+      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_DATA_PROPERTY);
+      if (!foundEntity.isPresent()) {
+         throwEntityNotFoundException(inputName, "data property");
+      }
+      return foundEntity.get().asOWLDataProperty();
+   }
+
+   public OWLAnnotationProperty getAndCheckOWLAnnotationProperty(String inputName) throws RendererException {
+      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_ANNOTATION_PROPERTY);
+      if (!foundEntity.isPresent()) {
+         throwEntityNotFoundException(inputName, "annotation property");
+      }
+      return foundEntity.get().asOWLAnnotationProperty();
+   }
+
+   public OWLNamedIndividual getAndCheckOWLNamedIndividual(String inputName) throws RendererException {
+      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_NAMED_INDIVIDUAL);
+      if (!foundEntity.isPresent()) {
+         throwEntityNotFoundException(inputName, "named individual");
+      }
+      return foundEntity.get().asOWLNamedIndividual();
+   }
+
+   public OWLProperty getAndCheckOWLProperty(String inputName) throws RendererException {
+      List<RendererException> exceptions = new ArrayList<>();
+      /*
+       * Try to find first if the given input name is a data property
+       */
+      try {
+         return getAndCheckOWLObjectProperty(inputName);
+      } catch (RendererException e) {
+         exceptions.add(e);
+      }
+      /*
+       * If not, try to check if it is an object property
+       */
+      try {
+         return getAndCheckOWLDataProperty(inputName);
+      } catch (RendererException e) {
+         exceptions.add(e);
+      }
+      /*
+       * Perhaps, it is an annotation property...
+       */
+      try {
+         return getAndCheckOWLAnnotationProperty(inputName);
+      } catch (RendererException e) {
+         exceptions.add(e);
+      }
+      /*
+       * OK, give up!
+       */
+      throwPropertyNotFoundException(exceptions);
+      return null;
+   }
+
+   public Optional<OWLEntity> getOWLEntity(String inputName, int entityType) throws RendererException
    {
-      return owlDataFactory.getOWLLiteral(value);
+      OWLEntity foundEntity = null;
+      Set<OWLEntity> entities = getOWLEntities(inputName);
+      for (OWLEntity entity : entities) {
+         switch (entityType) {
+            case OWL_CLASS:
+               if (entity.isOWLClass()) { foundEntity = entity; }
+               break;
+            case OWL_OBJECT_PROPERTY:
+               if (entity.isOWLObjectProperty()) { foundEntity = entity; }
+               break;
+            case OWL_DATA_PROPERTY:
+               if (entity.isOWLDataProperty()) { foundEntity = entity; }
+               break;
+            case OWL_ANNOTATION_PROPERTY:
+               if (entity.isOWLAnnotationProperty()) { foundEntity = entity; }
+               break;
+            case OWL_NAMED_INDIVIDUAL:
+               if (entity.isOWLNamedIndividual()) { foundEntity = entity; }
+               break;
+         }
+         if (foundEntity != null) { break; }
+      }
+      return Optional.ofNullable(foundEntity);
+   }
+
+   private Set<OWLEntity> getOWLEntities(String inputName) throws RendererException
+   {
+      return ontology.getEntitiesInSignature(getIri(inputName));
+   }
+
+   private void throwEntityNotFoundException(String inputName, String entityType) throws RendererException
+   {
+      String msg = String.format("The expected %s (%s) does not exist in the ontology", entityType, inputName);
+      throw new RendererException(msg);
+   }
+
+   private void throwPropertyNotFoundException(List<RendererException> exceptions) throws RendererException
+   {
+      StringBuilder sb = new StringBuilder();
+      boolean needNewline = false;
+      for (RendererException e : exceptions) {
+         if (needNewline) {
+            sb.append("\n");
+         }
+         sb.append(e.getMessage());
+         needNewline = true;
+      }
+      throw new RendererException(sb.toString());
+   }
+
+   /*
+    * Handles the retrieval of OWL entities from the input ontology given its label name (or display name).
+    * The retrieval uses a simple mapping created at initial where each entity's display name is mapped to its
+    * OWLEntity object. All these methods below will throw an exception if the input label name doesn't exist in
+    * the map.
+    */
+
+   public Optional<OWLEntity> getOWLEntityFromDisplayName(String displayName, Optional<String> languageTag) throws RendererException
+   {
+      return labelToEntityMapper.getEntityInLabel(displayName, languageTag);
+   }
+
+   /*
+    * Handles the creation of typed literal values
+    */
+
+   public OWLAnnotationValue getOWLAnnotationValue(String value, boolean isLiteral) throws RendererException
+   {
+      if (isLiteral) {
+         return owlDataFactory.getOWLLiteral(value);
+      } else {
+         return getIri(value);
+      }
+   }
+
+   public OWLAnnotationValue getOWLAnnotationValue(String value, String lang) throws RendererException
+   {
+      return owlDataFactory.getOWLLiteral(value, lang);
    }
 
    public OWLAnnotationValue getOWLAnnotationValue(float value)
@@ -221,9 +352,14 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLLiteral(value);
    }
 
+   public OWLAnnotationValue getOWLAnnotationValue(double value)
+   {
+      return owlDataFactory.getOWLLiteral(value);
+   }
+
    public OWLAnnotationValue getOWLAnnotationValue(int value)
    {
-      return owlDataFactory.getOWLLiteral(value + "", OWL2Datatype.XSD_INT);
+      return owlDataFactory.getOWLLiteral(value);
    }
 
    public OWLAnnotationValue getOWLAnnotationValue(boolean value)
@@ -231,13 +367,9 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLLiteral(value);
    }
 
-   public OWLDatatype getOWLDatatype(String givenName)
+   public OWLDatatype getOWLDatatype(String inputName) throws RendererException
    {
-      if (NameUtil.isValidIriString(givenName)) {
-         return owlDataFactory.getOWLDatatype(IRI.create(givenName));
-      } else {
-         return owlDataFactory.getOWLDatatype(getQualifiedName(givenName));
-      }
+      return owlDataFactory.getOWLDatatype(getIri(inputName));
    }
 
    public OWLLiteral getOWLLiteralString(String value)
@@ -267,7 +399,7 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
 
    public OWLLiteral getOWLLiteralInteger(String value)
    {
-      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_INT);
+      return owlDataFactory.getOWLLiteral(value, OWL2Datatype.XSD_INTEGER);
    }
 
    public OWLLiteral getOWLLiteralShort(String value)
@@ -303,6 +435,15 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
    public OWLLiteral getOWLLiteralDuration(String value)
    {
       return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.DURATION.getIRI()));
+   }
+
+   /*
+    * Handlers the creation of OWL complex expressions
+    */
+
+   public OWLDeclarationAxiom getOWLDeclarationAxiom(OWLEntity entity)
+   {
+      return owlDataFactory.getOWLDeclarationAxiom(entity);
    }
 
    public OWLObjectComplementOf getOWLObjectComplementOf(OWLClassExpression ce)
@@ -451,174 +592,16 @@ class OWLAPIObjectHandler implements MappingMasterParserConstants
       return owlDataFactory.getOWLDataHasValue(dp, lit);
    }
 
-   public OWLAxiom getLabelAnnotationAxiom(OWLEntity owlEntity, String label, String language)
+   public OWLAxiom getLabelAnnotationAxiom(OWLEntity entity, String label, Optional<String> languageTag)
    {
-      OWLLiteral value = owlDataFactory.getOWLLiteral(label, language);
+      OWLLiteral value;
+      if (languageTag.isPresent()) {
+         value = owlDataFactory.getOWLLiteral(label, languageTag.get());
+      } else {
+         value = owlDataFactory.getOWLLiteral(label);
+      }
       OWLAnnotation labelAnno = owlDataFactory.getOWLAnnotation(owlDataFactory.getRDFSLabel(), value);
-      return owlDataFactory.getOWLAnnotationAssertionAxiom(owlEntity.getIRI(), labelAnno);
-   }
-
-   public boolean checkInOntology(OWLEntity entity)
-   {
-      return ontology.containsEntityInSignature(entity.getIRI());
-   }
-
-   public boolean isOWLClass(IRI iri)
-   {
-      return ontology.containsClassInSignature(iri);
-   }
-
-   public boolean isOWLClass(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return isOWLClass(IRI.create(givenName));
-      } else {
-         return isOWLClass(getQualifiedName(givenName));
-      }
-   }
-
-   public boolean isOWLNamedIndividual(IRI iri)
-   {
-      return ontology.containsIndividualInSignature(iri);
-   }
-
-   public boolean isOWLNamedIndividual(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return isOWLNamedIndividual(IRI.create(givenName));
-      } else {
-         return isOWLNamedIndividual(getQualifiedName(givenName));
-      }
-   }
-
-   public boolean isOWLObjectProperty(IRI iri)
-   {
-      return ontology.containsObjectPropertyInSignature(iri);
-   }
-
-   public boolean isOWLObjectProperty(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return isOWLObjectProperty(IRI.create(givenName));
-      } else {
-         return isOWLObjectProperty(getQualifiedName(givenName));
-      }
-   }
-
-   public boolean isOWLDataProperty(IRI iri)
-   {
-      return ontology.containsDataPropertyInSignature(iri);
-   }
-
-   public boolean isOWLDataProperty(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return isOWLDataProperty(IRI.create(givenName));
-      } else {
-         return isOWLDataProperty(getQualifiedName(givenName));
-      }
-   }
-
-   public boolean isOWLAnnotationProperty(IRI iri)
-   {
-      return ontology.containsAnnotationPropertyInSignature(iri);
-   }
-
-   public boolean isOWLAnnotationProperty(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return isOWLAnnotationProperty(IRI.create(givenName));
-      } else {
-         return isOWLAnnotationProperty(getQualifiedName(givenName));
-      }
-   }
-
-   public boolean isOWLDatatype(IRI iri)
-   {
-      return ontology.containsDatatypeInSignature(iri);
-   }
-
-   public boolean isOWLDatatype(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return isOWLDatatype(IRI.create(givenName));
-      } else {
-         return isOWLDatatype(getQualifiedName(givenName));
-      }
-   }
-
-   public boolean isOWLObjectProperty(OWLProperty property)
-   {
-      return ontology.containsObjectPropertyInSignature(property.getIRI());
-   }
-
-   public boolean isOWLDataProperty(OWLProperty property)
-   {
-      return ontology.containsDataPropertyInSignature(property.getIRI());
-   }
-
-   public boolean isOWLAnnotationProperty(OWLAnnotationProperty property)
-   {
-      return ontology.containsAnnotationPropertyInSignature(property.getIRI());
-   }
-
-   public Set<OWLEntity> getOWLEntities(String givenName)
-   {
-      if (NameUtil.isValidIriString(givenName)) {
-         return ontology.getEntitiesInSignature(IRI.create(givenName));
-      } else {
-         return ontology.getEntitiesInSignature(getQualifiedName(givenName));
-      }
-   }
-
-   public OWLEntity getOWLEntities(String givenName, int entityType)
-   {
-      Set<OWLEntity> entities = getOWLEntities(givenName);
-      for (OWLEntity entity : entities) {
-         switch (entityType) {
-            case OWL_CLASS:
-               if (entity.isOWLClass()) { 
-                  return entity.asOWLClass();
-               }
-               break;
-            case OWL_OBJECT_PROPERTY:
-               if (entity.isOWLObjectProperty()) {
-                  return entity.asOWLObjectProperty();
-               }
-               break;
-            case OWL_DATA_PROPERTY:
-               if (entity.isOWLClass()) {
-                  return entity.asOWLDataProperty();
-               }
-               break;
-            case OWL_ANNOTATION_PROPERTY:
-               if (entity.isOWLAnnotationProperty()) {
-                  return entity.asOWLAnnotationProperty();
-               }
-               break;
-            case OWL_NAMED_INDIVIDUAL:
-               if (entity.isOWLNamedIndividual()) {
-                  return entity.asOWLNamedIndividual();
-               }
-               break;
-         }
-      }
-      return null;
-   }
-
-   public OWLEntity getOWLEntityWithRDFSLabel(String labelText)
-   {
-      return labelToEntityMapper.getEntityInLabel(labelText);
-   }
-
-   public OWLEntity getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(String labelText)
-   {
-      return labelToEntityMapper.getEntityInLabel(labelText);
-   }
-
-   public OWLEntity getOWLEntityWithRDFSLabelAndLanguage(String labelText, String language)
-   {
-      return labelToEntityMapper.getEntityInLabel(labelText, language);
+      return owlDataFactory.getOWLAnnotationAssertionAxiom(entity.getIRI(), labelAnno);
    }
 
    public String getPrefixForPrefixLabel(String prefixLabel) throws RendererException

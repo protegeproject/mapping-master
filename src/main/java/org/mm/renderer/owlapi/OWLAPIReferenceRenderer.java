@@ -8,12 +8,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.mm.core.ReferenceDirectives;
 import org.mm.core.ReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.OWLClassExpressionNode;
 import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLLiteralNode;
+import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
@@ -23,16 +26,19 @@ import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
-import org.mm.renderer.NameUtil;
 import org.mm.renderer.InternalRendererException;
+import org.mm.renderer.NameUtil;
 import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.ReferenceUtil;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.OWLLiteralRendering;
 import org.mm.rendering.ReferenceRendering;
+import org.mm.rendering.owlapi.OWLAPIEntityReferenceRendering;
+import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
 import org.mm.rendering.owlapi.OWLAPIReferenceRendering;
 import org.mm.rendering.owlapi.OWLClassExpressionRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
+import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
@@ -47,320 +53,351 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObject;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMasterParserConstants
 {
+   private final Logger logger = LoggerFactory.getLogger(OWLAPIReferenceRenderer.class);
+
    private SpreadSheetDataSource dataSource;
-   private OWLAPIObjectHandler handler;
+   private OWLAPIObjectHandler objectFactory;
    private OWLAPIEntityRenderer entityRenderer;
    private OWLAPILiteralRenderer literalRenderer;
    private OWLAPIClassExpressionRenderer classExpressionRenderer;
 
-   private String defaultPrefix;
+   private LocationEncodingCache locationEncodingCache = new LocationEncodingCache();
 
-   // The outer map uses a grouping key before getting to the inner map.
-   private final Map<String, Map<String, OWLEntity>> entityLabel2OWLEntityMap = new HashMap<>();
-   private final Map<String, Map<String, OWLEntity>> entityName2OWLEntityMap = new HashMap<>();
-   private final Map<String, Map<SpreadsheetLocation, OWLEntity>> entityLocation2OWLEntityMap = new HashMap<>();
-
-   public OWLAPIReferenceRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
+   public OWLAPIReferenceRenderer(SpreadSheetDataSource dataSource, OWLAPIObjectHandler objectFactory)
    {
       this.dataSource = dataSource;
-      handler = new OWLAPIObjectHandler(ontology);
-      literalRenderer = new OWLAPILiteralRenderer(ontology);
-      entityRenderer = new OWLAPIEntityRenderer(ontology, this);
-      classExpressionRenderer = new OWLAPIClassExpressionRenderer(ontology, entityRenderer);
-      defaultPrefix = handler.getDefaultPrefix();
+      this.objectFactory = objectFactory;
+      
+      literalRenderer = new OWLAPILiteralRenderer(objectFactory);
+      entityRenderer = new OWLAPIEntityRenderer(this, objectFactory);
+      classExpressionRenderer = new OWLAPIClassExpressionRenderer(this, objectFactory);
+   }
+
+   public OWLAPIEntityRenderer getEntityRenderer()
+   {
+      return entityRenderer;
+   }
+
+   public OWLAPILiteralRenderer getLiteralRenderer()
+   {
+      return literalRenderer;
    }
 
    public String getDefaultPrefix()
    {
-      return defaultPrefix;
+      return objectFactory.getDefaultPrefix();
    }
 
    @Override
    public Optional<OWLAPIReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException
    {
-      ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
-      if (referenceType.isUntyped()) {
-         throw new RendererException("untyped reference " + referenceNode);
-      }
-
+      ReferenceType referenceType = getReferenceType(referenceNode);
       SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
+
       if (sourceSpecificationNode.hasLiteral()) {
          String literalValue = sourceSpecificationNode.getLiteral();
-         OWLLiteral literal = literalRenderer.createOWLLiteral(literalValue);
-         return Optional.of(new OWLAPIReferenceRendering(literal, referenceType));
-
-      } else {
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-         String resolvedValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
-         
-         // Decide what will happen if the resolved value is empty
-         if (resolvedValue.isEmpty()) {
-            switch (referenceNode.getActualEmptyLocationDirective()) {
-               case MM_SKIP_IF_EMPTY_LOCATION:
-                  return Optional.empty();
-               case MM_WARNING_IF_EMPTY_LOCATION:
-                  // TODO Warn in log files
-                  return Optional.empty();
-               case MM_ERROR_IF_EMPTY_LOCATION:
-                  throw new RendererException("Empty cell values for " + referenceNode + " at location " + location);
-            }
-         }
-         // Decide what will happen if the resolved value is not empty based on the entity types
-         if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
-            String literalValue = processOWLLiteralReferenceValue(location, resolvedValue, referenceNode);
-            if (literalValue.isEmpty()) {
-               switch (referenceNode.getActualEmptyLiteralDirective()) {
-                  case MM_SKIP_IF_EMPTY_LITERAL:
-                     return Optional.empty();
-                  case MM_WARNING_IF_EMPTY_LITERAL:
-                     // TODO Warn in log file
-                     return Optional.empty();
-                  case MM_ERROR_IF_EMPTY_LITERAL:
-                     throw new RendererException("Empty literal for " + referenceNode + " at location " + location);
-               }
-            }
-            OWLLiteral literal = literalRenderer.createOWLLiteral(literalValue, referenceType);
-            return Optional.of(new OWLAPIReferenceRendering(literal, referenceType));
-
-         } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
-            String entityName = getReferenceRDFID(resolvedValue, referenceNode);
-            if (entityName.isEmpty()) {
-               switch (referenceNode.getActualEmptyRDFIDDirective()) {
-                  case MM_SKIP_IF_EMPTY_ID:
-                     return Optional.empty();
-                  case MM_WARNING_IF_EMPTY_ID:
-                     // TODO Warn in log file
-                     return Optional.empty();
-                  case MM_ERROR_IF_EMPTY_ID:
-                     throw new RendererException("Empty rdf:ID for " + referenceNode + " at location " + location);
-               }
-            }
-            String label = getReferenceRDFSLabel(resolvedValue, referenceNode);
-            if (label.isEmpty()) {
-               switch (referenceNode.getActualEmptyRDFSLabelDirective()) {
-                  case MM_SKIP_IF_EMPTY_LABEL:
-                     return Optional.empty();
-                  case MM_WARNING_IF_EMPTY_LABEL:
-                     // TODO Warn in log file
-                     return Optional.empty();
-                  case MM_ERROR_IF_EMPTY_LABEL:
-                     throw new RendererException("Empty rdfs:label for " + referenceNode + " at location " + location);
-               }
-            }
-            String language = getReferenceLanguage(referenceNode);
+         if (referenceType.isOWLLiteral()) {
+            OWLLiteral literal = createOWLLiteral(literalValue, referenceType);
+            return Optional.of(new OWLAPILiteralReferenceRendering(literal, referenceType));
+         } else if (referenceType.isOWLEntity()) {
+            /*
+             * If the source specification node is written as a literal value without datatype, e.g., @"XYZ", then
+             * MM will assume it is an OWL entity. The assignments below assume that the entity name and its label are
+             * equal to the literal value.
+             */
+            Optional<String> entityName = Optional.of(literalValue);
+            Optional<String> entityLabel = Optional.of(literalValue);
+            Optional<String> languageTag = getLanguage(referenceNode);
             
-            Optional<OWLEntity> createdEntity = resolveOWLEntity(entityName, label, language, referenceType, referenceNode);
+            /*
+             * Create the OWL entity based on the inputs of its name, label and language tag. The method createOWLEntity
+             * will check first if the name (or label) exists in the ontology.
+             */
+            OWLAPIEntityReferenceRendering entityRendering = null;
+            Optional<OWLEntity> createdEntity = createOWLEntity(entityName, entityLabel, languageTag, referenceType, referenceNode);
             if (createdEntity.isPresent()) {
                OWLEntity entity = createdEntity.get();
-               Set<OWLAxiom> axioms = new HashSet<>();
-               addOWLAxiom(entity, referenceType, referenceNode, axioms);
-               addOWLAnnotationAxiom(entity, label, language, axioms);
-               return Optional.of(new OWLAPIReferenceRendering(entity, axioms, referenceType));
+               Set<OWLAxiom> axioms = createOWLAxioms(entity, entityLabel, languageTag, referenceType, referenceNode);
+               entityRendering = new OWLAPIEntityReferenceRendering(entity, axioms, referenceType);
             }
-            return Optional.empty();
+            return Optional.ofNullable(entityRendering);
          }
+      } else if (sourceSpecificationNode.hasLocation()) {
+         /*
+          * Resolve the value given a location reference to an input spreadsheet
+          */
+         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
+         Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
+         resolvedValue = processResolvedValue(resolvedValue, location, referenceNode.getReferenceDirectives());
+         
+         if (referenceType.isOWLLiteral()) {
+            Optional<String> literalValue = getLiteral(resolvedValue, referenceNode);
+            literalValue = processLiteral(literalValue, location, referenceNode.getReferenceDirectives());
+            /*
+             * Create the OWL literal if the literal value is not null
+             */
+            OWLAPILiteralReferenceRendering literalRendering = null;
+            if (literalValue.isPresent()) {
+               OWLLiteral literal = createOWLLiteral(literalValue.get(), referenceType);
+               literalRendering = new OWLAPILiteralReferenceRendering(literal, referenceType);
+            }
+            return Optional.ofNullable(literalRendering);
+         } else if (referenceType.isOWLEntity()) {
+            /*
+             * Setup the entity name, label and language tag based on user's input. There are validation process
+             * for the entity name and label to decide if an empty value will throw a warning, an error or just
+             * simply ignore it.
+             */
+            Optional<String> entityName = getEntityName(resolvedValue, referenceNode);
+            entityName = processIdentifier(entityName, location, referenceNode.getReferenceDirectives());
+            Optional<String> entityLabel = getEntityLabel(resolvedValue, referenceNode);
+            entityLabel = validateLabel(entityLabel, location, referenceNode.getReferenceDirectives());
+            Optional<String> languageTag = getLanguage(referenceNode);
+            
+            /*
+             * Create the OWL entity based on the input of its name, label and language tag. The method createOWLEntity
+             * will check first if the name (or label) exists in the ontology.
+             */
+            OWLAPIEntityReferenceRendering entityRendering = null;
+            Optional<OWLEntity> createdEntity = createOWLEntity(entityName, entityLabel, languageTag, referenceType, referenceNode);
+            if (createdEntity.isPresent()) {
+               OWLEntity entity = createdEntity.get();
+               Set<OWLAxiom> axioms = createOWLAxioms(entity, entityLabel, languageTag, referenceType, referenceNode);
+               entityRendering = new OWLAPIEntityReferenceRendering(entity, axioms, referenceType);
+            }
+            return Optional.ofNullable(entityRendering);
+         }
+         throw new InternalRendererException("Unknown type (" + referenceType + ") for reference node: " + referenceNode);
       }
-      throw new InternalRendererException("Unknown reference type " + referenceType + " for " + referenceNode);
+      throw new InternalRendererException("Unknown definition for reference node: " + referenceNode);
    }
 
-   public Optional<OWLEntity> resolveOWLEntity(String entityName, String label, String language, ReferenceType referenceType,
-         ReferenceNode referenceNode) throws RendererException
+   private Optional<String> processResolvedValue(Optional<String> resolvedValue, SpreadsheetLocation location, ReferenceDirectives directives)
+         throws RendererException
    {
+      Optional<String> finalValue = resolvedValue;
+      if (!resolvedValue.isPresent()) {
+         switch (directives.getActualEmptyLocationDirective()) {
+            case MM_PROCESS_IF_EMPTY_LOCATION:
+               finalValue = Optional.of("");
+               break;
+            case MM_SKIP_IF_EMPTY_LOCATION:
+               break;
+            case MM_WARNING_IF_EMPTY_LOCATION:
+               logger.warn("The cell location {} has an empty value", location);
+               break;
+            case MM_ERROR_IF_EMPTY_LOCATION:
+               throw new RendererException("The cell location " + location + " has an empty value");
+         }
+      }
+      return finalValue;
+   }
+
+   private Optional<String> processLiteral(Optional<String> literalValue, SpreadsheetLocation location, ReferenceDirectives directives)
+         throws RendererException
+   {
+      Optional<String> finalLiteral = literalValue;
+      if (!literalValue.isPresent()) {
+         switch (directives.getActualEmptyLiteralDirective()) {
+            case MM_PROCESS_IF_EMPTY_LITERAL:
+               finalLiteral = Optional.of("");
+               break;
+            case MM_SKIP_IF_EMPTY_LITERAL:
+               break;
+            case MM_WARNING_IF_EMPTY_LITERAL:
+               logger.warn("The cell location {} has an empty value", location);
+               break;
+            case MM_ERROR_IF_EMPTY_LITERAL:
+               throw new RendererException("The cell location " + location + " has an empty value");
+         }
+      }
+      return finalLiteral;
+   }
+
+   private Optional<String> processIdentifier(Optional<String> entityName, SpreadsheetLocation location, ReferenceDirectives directives)
+         throws RendererException
+   {
+      Optional<String> finalName = entityName;
+      if (!entityName.isPresent()) {
+         switch (directives.getActualEmptyRDFIDDirective()) {
+            case MM_PROCESS_IF_EMPTY_ID:
+               finalName = Optional.of("");
+               break;
+            case MM_SKIP_IF_EMPTY_ID:
+               break;
+            case MM_WARNING_IF_EMPTY_ID:
+               logger.warn("The cell location {} has an empty value", location);
+               break;
+            case MM_ERROR_IF_EMPTY_ID:
+               throw new RendererException("The cell location " + location + " has an empty value");
+         }
+      }
+      return finalName;
+   }
+
+   private Optional<String> validateLabel(Optional<String> entityLabel, SpreadsheetLocation location, ReferenceDirectives directives)
+         throws RendererException
+   {
+      Optional<String> finalLabel = entityLabel;
+      if (!entityLabel.isPresent()) {
+         switch (directives.getActualEmptyRDFSLabelDirective()) {
+            case MM_PROCESS_IF_EMPTY_LABEL:
+               finalLabel = Optional.of("");
+            case MM_SKIP_IF_EMPTY_LABEL:
+               break;
+            case MM_WARNING_IF_EMPTY_LABEL:
+               logger.warn("The cell location {} has an empty value", location);
+               break;
+            case MM_ERROR_IF_EMPTY_LABEL:
+               throw new RendererException("The cell location " + location + " has an empty value");
+         }
+      }
+      return finalLabel;
+   }
+
+   private ReferenceType getReferenceType(ReferenceNode referenceNode) throws RendererException
+   {
+      ReferenceType referenceType = referenceNode.getReferenceTypeNode().getReferenceType();
+      if (referenceType.isUntyped()) {
+         throw new RendererException("Untyped reference " + referenceNode);
+      }
+      return referenceType;
+   }
+
+   public Optional<OWLEntity> createOWLEntity(Optional<String> entityName, Optional<String> label, Optional<String> language,
+         ReferenceType referenceType, ReferenceNode referenceNode) throws RendererException
+   {
+      OWLEntity entity = null;
       ReferenceDirectives directives = referenceNode.getReferenceDirectives();
       if (directives.usesLocationEncoding()) {
          SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-         return createOWLEntityUsingLocationEncoding(location, referenceType, referenceNode);
-      } else if (entityName.isEmpty() && label.isEmpty()) {
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-         return createOWLEntityUsingLocationEncoding(location, referenceType, referenceNode);
-      } else if (entityName.isEmpty() && !label.isEmpty()) {
+         entity = createOWLEntityUsingLocationEncoding(location, referenceType, referenceNode);
+      } else if (!entityName.isPresent() && label.isPresent()) {
          int creationSettings = directives.getActualIfOWLEntityDoesNotExistDirective();
-         return createOWLEntityUsingEntityLabel(label, language, referenceType, referenceNode, creationSettings);
-      } else if (!entityName.isEmpty() && label.isEmpty()) {
+         entity = createOWLEntityUsingEntityLabel(label.get(), language, referenceType, referenceNode, creationSettings);
+      } else if (entityName.isPresent() && !label.isPresent()) {
          int creationSettings = directives.getActualIfOWLEntityDoesNotExistDirective();
-         return createOWLEntityUsingEntityName(entityName, referenceType, referenceNode, creationSettings);
-      } else if (!entityName.isEmpty() && !label.isEmpty()) {
+         entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, referenceNode, creationSettings);
+      } else if (entityName.isPresent() && label.isPresent()) {
          int creationSettings = directives.getActualIfOWLEntityDoesNotExistDirective();
-         return createOWLEntityUsingEntityName(entityName, referenceType, referenceNode, creationSettings);
+         entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, referenceNode, creationSettings);
       }
-      return Optional.empty();
+      return Optional.ofNullable(entity);
    }
 
-   private Optional<OWLEntity> createOWLEntityUsingLocationEncoding(SpreadsheetLocation location, ReferenceType referenceType,
+   private OWLEntity createOWLEntityUsingLocationEncoding(SpreadsheetLocation location, ReferenceType referenceType,
          ReferenceNode referenceNode) throws RendererException
    {
       final String prefix = getUserDefinedPrefix(referenceNode);
-      
-      OWLEntity entity = findOWLEntityByLocation(location, prefix);
-      if (entity == null) {
+      Optional<OWLEntity> foundEntity = getOWLEntityFromLocationCache(prefix, location);
+      if (!foundEntity.isPresent()) {
          String localName = ReferenceUtil.createNameUsingCellLocation(location);
-         entity = createOWLEntity(prefix, localName, referenceType);
-         cacheOWLEntityByLocation(location, entity, prefix);
+         OWLEntity newEntity = createOWLEntity(prefix, localName, referenceType);
+         putOWLEntityToLocationCache(prefix, location, newEntity);
+         return newEntity;
+      } else {
+         return foundEntity.get();
       }
-      return Optional.of(entity);
    }
 
-   private Optional<OWLEntity> createOWLEntityUsingEntityName(String entityName, ReferenceType referenceType,
+   private OWLEntity createOWLEntityUsingEntityName(String entityName, ReferenceType referenceType,
          ReferenceNode referenceNode, int creationSettings) throws RendererException
    {
-      OWLEntity entity = getOWLEntityFromOntology(entityName, referenceType);
-      if (entity == null) {
+      Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(entityName, referenceType);
+      if (!foundEntity.isPresent()) {
+         OWLEntity newEntity = null;
          switch (creationSettings) {
             case MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST:
                break;
             case MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               // TODO Log warning message
+               logger.warn("An entity with identifier '" + entityName + "' does not exist in the ontology");
                break;
             case MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               throw new RendererException(
-                     "Entity with name '" + entityName + "' cannot be found in the ontology. Please provide it first.");
+               throw new RendererException("An entity with identifier '" + entityName + "' does not exist in the ontology.\n"
+                     + "Please provide it first with the proper IRI identifier.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               if (NameUtil.isValidIriString(entityName)) {
-                  entity = createOWLEntity(IRI.create(entityName), referenceType);
-               } else {
-                  entity = findOWLEntityByName(entityName, getUserDefinedPrefix(referenceNode));
-                  if (entity == null) {
-                     String prefix = getUserDefinedPrefix(referenceNode);
-                     entity = createOWLEntity(prefix, entityName, referenceType);
-                     cacheOWLEntityByName(entityName, entity, prefix);
-                  }
-                  break;
-               }
+               newEntity = createOWLEntity(NameUtil.toSnakeCase(entityName), referenceType);
          }
+         return newEntity;
+      } else {
+         return foundEntity.get();
       }
-      return Optional.ofNullable(entity);
    }
 
-   private Optional<OWLEntity> createOWLEntityUsingEntityLabel(String label, String language, ReferenceType referenceType,
-         ReferenceNode referenceNode, int creationSettings) throws RendererException
+   private OWLEntity createOWLEntityUsingEntityLabel(String entityLabel, Optional<String> languageTag,
+         ReferenceType referenceType, ReferenceNode referenceNode, int creationSettings) throws RendererException
    {
-      OWLEntity entity = getOWLEntityFromOntology(label, language);
-      if (entity == null) {
+      Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(entityLabel, languageTag);
+      if (!foundEntity.isPresent()) {
+         OWLEntity newEntity = null;
          switch (creationSettings) {
             case MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST:
                break;
             case MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               // TODO Log warning message
+               logger.warn("An entity with display name '" + entityLabel + "' does not exist in the ontology");
                break;
             case MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               throw new RendererException(
-                     "Entity with label '" + label + "' cannot be found in the ontology. Please provide it first.");
+               throw new RendererException("An entity with display name '" + entityLabel + "' does not exist in the ontology.\n"
+                     + "Please provide it first with the proper rdfs:label annotation.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               entity = findOWLEntityByLabel(label, language, getUserDefinedPrefix(referenceNode));
-               if (entity == null) {
-                  String prefix = getUserDefinedPrefix(referenceNode);
-                  entity = createOWLEntity(prefix, label, referenceType);
-                  cacheOWLEntityByLabel(label, language, entity, prefix);
-               }
-               break;
+               final String prefix = getUserDefinedPrefix(referenceNode);
+               newEntity = createOWLEntity(prefix, NameUtil.toSnakeCase(entityLabel), referenceType);
          }
+         return newEntity;
+      } else {
+         return foundEntity.get();
       }
-      return Optional.ofNullable(entity);
-   }
-
-   private OWLEntity createOWLEntity(IRI iri, ReferenceType referenceType) throws RendererException
-   {
-      if (referenceType.isOWLClass()) {
-         return handler.getOWLClass(iri);
-      } else if (referenceType.isOWLNamedIndividual()) {
-         return handler.getOWLNamedIndividual(iri);
-      } else if (referenceType.isOWLObjectProperty()) {
-         return handler.getOWLObjectProperty(iri);
-      } else if (referenceType.isOWLDataProperty()) {
-         return handler.getOWLDataProperty(iri);
-      } else if (referenceType.isOWLAnnotationProperty()) {
-         return handler.getOWLAnnotationProperty(iri);
-      }
-      throw new RendererException("Unsupported entity type '" + referenceType + "' for name '" + iri + "'");
    }
 
    private OWLEntity createOWLEntity(String prefix, String localName, ReferenceType referenceType)
          throws RendererException
    {
+      String entityName = prefix + localName;
+      if (!NameUtil.isValidUriConstruct(entityName)) {
+         throw new RendererException("Failed to construct valid IRI using cell value: " + localName);
+      }
+      return createOWLEntity(entityName, referenceType);
+   }
+
+   private OWLEntity createOWLEntity(String entityName, ReferenceType referenceType) throws RendererException
+   {
       if (referenceType.isOWLClass()) {
-         return handler.getOWLClass(prefix, NameUtil.toUpperCamel(localName));
+         return objectFactory.getOWLClass(entityName);
       } else if (referenceType.isOWLNamedIndividual()) {
-         return handler.getOWLNamedIndividual(prefix, NameUtil.toUpperCamel(localName));
+         return objectFactory.getOWLNamedIndividual(entityName);
       } else if (referenceType.isOWLObjectProperty()) {
-         return handler.getOWLObjectProperty(prefix, NameUtil.toLowerCamel(localName));
+         return objectFactory.getOWLObjectProperty(entityName);
       } else if (referenceType.isOWLDataProperty()) {
-         return handler.getOWLDataProperty(prefix, NameUtil.toLowerCamel(localName));
+         return objectFactory.getOWLDataProperty(entityName);
       } else if (referenceType.isOWLAnnotationProperty()) {
-         return handler.getOWLAnnotationProperty(prefix, NameUtil.toLowerCamel(localName));
+         return objectFactory.getOWLAnnotationProperty(entityName);
       }
-      throw new RendererException("Unsupported entity type '" + referenceType + "' for name '" + localName + "'");
+      throw new RendererException("Failed to create entity: " + entityName);
    }
 
-   private OWLEntity findOWLEntityByLocation(SpreadsheetLocation location, String group)
+   private Optional<OWLEntity> getOWLEntityFromOntology(String displayName, Optional<String> languageTag) throws RendererException
    {
-      try {
-         return entityLocation2OWLEntityMap.get(group).get(location);
-      } catch (NullPointerException e) {
-         return null;
-      }
+      return objectFactory.getOWLEntityFromDisplayName(displayName, languageTag);
    }
 
-   private OWLEntity findOWLEntityByName(String entityName, String group)
+   private Optional<OWLEntity> getOWLEntityFromOntology(String entityName, ReferenceType referenceType) throws RendererException
    {
-      try {
-         return entityName2OWLEntityMap.get(group).get(entityName);
-      } catch (NullPointerException e) {
-         return null;
-      }
+      return objectFactory.getOWLEntity(entityName, referenceType.getType());
    }
 
-   private OWLEntity findOWLEntityByLabel(String label, String language, String group)
+   private Optional<OWLEntity> getOWLEntityFromLocationCache(String prefix, SpreadsheetLocation location)
    {
-      try {
-         label = (language == null || language.isEmpty()) ? label : label + "@" + language;
-         return entityLabel2OWLEntityMap.get(group).get(label);
-      } catch (NullPointerException e) {
-         return null;
-      }
+      return locationEncodingCache.get(prefix, location);
    }
 
-   private void cacheOWLEntityByLocation(SpreadsheetLocation location, OWLEntity entity, String group)
+   private void putOWLEntityToLocationCache(String prefix, SpreadsheetLocation location, OWLEntity newEntity)
    {
-       entityLocation2OWLEntityMap.put(group, new HashMap<>());
-       entityLocation2OWLEntityMap.get(group).put(location, entity);
-   }
-
-   private void cacheOWLEntityByName(String entityName, OWLEntity entity, String group)
-   {
-       entityName2OWLEntityMap.put(group, new HashMap<>());
-       entityName2OWLEntityMap.get(group).put(entityName, entity);
-   }
-
-   private void cacheOWLEntityByLabel(String label, String language, OWLEntity entity, String group)
-   {
-      label = (language == null || language.isEmpty()) ? label : label + "@" + language;
-      entityLabel2OWLEntityMap.put(group, new HashMap<>());
-      entityLabel2OWLEntityMap.get(group).put(label, entity);
-   }
-
-   private OWLEntity getOWLEntityFromOntology(String entityName, ReferenceType referenceType)
-   {
-      return handler.getOWLEntities(entityName, referenceType.getType());
-   }
-
-   private OWLEntity getOWLEntityFromOntology(String labelText, String language) throws RendererException
-   {
-      if (language != null) {
-         if ("*".equals(language)) { // Match on any language or none
-            return handler.getOWLEntityWithRDFSLabel(labelText);
-         } else if ("+".equals(language)) { // Match on at least one language
-            // TODO Need better implementation for this case
-            return handler.getOWLEntityWithRDFSLabelAndAtLeastOneLanguage(labelText);
-         } else { // Match on a specific language
-            return handler.getOWLEntityWithRDFSLabelAndLanguage(labelText, language);
-         }
-      } else { // Match on any language or none
-         return handler.getOWLEntityWithRDFSLabel(labelText);
-      }
+      locationEncodingCache.put(prefix, location, newEntity);
    }
 
    public Optional<? extends OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
@@ -380,7 +417,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
          if (obj instanceof OWLEntity) {
             OWLEntity entity = (OWLEntity) obj;
             if (entity.isOWLClass()) {
-               OWLClassAssertionAxiom axiom = handler.getOWLClassAssertionAxiom(entity.asOWLClass(), individual);
+               OWLClassAssertionAxiom axiom = objectFactory.getOWLClassAssertionAxiom(entity.asOWLClass(), individual);
                axioms.add(axiom);
             } else {
                IRI identifier = individual.getIRI();
@@ -388,7 +425,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             }
          } else if (obj instanceof OWLClassExpression) {
             OWLClassExpression clsExp = (OWLClassExpression) obj;
-            OWLClassAssertionAxiom axiom = handler.getOWLClassAssertionAxiom(clsExp, individual);
+            OWLClassAssertionAxiom axiom = objectFactory.getOWLClassAssertionAxiom(clsExp, individual);
             axioms.add(axiom);
          } else {
             IRI identifier = individual.getIRI();
@@ -403,14 +440,23 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       // A reference will not have both a prefix and a prefix specified
       if (referenceNode.hasExplicitlySpecifiedPrefix()) {
          String prefixLabel = referenceNode.getPrefixDirectiveNode().getPrefix();
-         return handler.getPrefixForPrefixLabel(prefixLabel);
+         return objectFactory.getPrefixForPrefixLabel(prefixLabel);
       } else if (referenceNode.hasExplicitlySpecifiedNamespace()) {
          return referenceNode.getNamespaceDirectiveNode().getNamespace();
       }
       return getDefaultPrefix(); // If there is no user defined prefix then use the default ontology prefix
    }
 
-   private void addOWLAxiom(OWLEntity entity, ReferenceType referenceType, ReferenceNode referenceNode, Set<OWLAxiom> axioms)
+   private Set<OWLAxiom> createOWLAxioms(OWLEntity entity, Optional<String> entityLabel, Optional<String> languageTag,
+         ReferenceType referenceType, ReferenceNode referenceNode) throws RendererException
+   {
+      Set<OWLAxiom> axioms = new HashSet<>();
+      addOWLEntityAxiom(entity, referenceType, referenceNode, axioms);
+      addOWLAnnotationAxiom(entity, entityLabel, languageTag, axioms);
+      return axioms;
+   }
+
+   private void addOWLEntityAxiom(OWLEntity entity, ReferenceType referenceType, ReferenceNode referenceNode, Set<OWLAxiom> axioms)
          throws RendererException
    {
       if (!referenceNode.hasExplicitlySpecifiedTypes()) {
@@ -423,16 +469,16 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             if (typeObject instanceof OWLEntity) {
                OWLEntity typeEntity = (OWLEntity) typeObject;
                if (referenceType.isOWLClass() && typeEntity instanceof OWLClass) {
-                  OWLAxiom axiom = handler.getOWLSubClassOfAxiom(typeEntity.asOWLClass(), entity.asOWLClass());
+                  OWLAxiom axiom = objectFactory.getOWLSubClassOfAxiom(typeEntity.asOWLClass(), entity.asOWLClass());
                   axioms.add(axiom);
                } else if (referenceType.isOWLNamedIndividual() && typeEntity instanceof OWLClass) {
-                  OWLAxiom axiom = handler.getOWLClassAssertionAxiom(typeEntity.asOWLClass(), entity.asOWLNamedIndividual());
+                  OWLAxiom axiom = objectFactory.getOWLClassAssertionAxiom(typeEntity.asOWLClass(), entity.asOWLNamedIndividual());
                   axioms.add(axiom);
                } else if (referenceType.isOWLObjectProperty() && typeEntity instanceof OWLObjectProperty) {
-                  OWLAxiom axiom = handler.getOWLSubObjectPropertyOfAxiom(typeEntity.asOWLObjectProperty(), entity.asOWLObjectProperty());
+                  OWLAxiom axiom = objectFactory.getOWLSubObjectPropertyOfAxiom(typeEntity.asOWLObjectProperty(), entity.asOWLObjectProperty());
                   axioms.add(axiom);
                } else if (referenceType.isOWLDataProperty() && typeEntity instanceof OWLDataProperty) {
-                  OWLAxiom axiom = handler.getOWLSubDataPropertyOfAxiom(typeEntity.asOWLDataProperty(), entity.asOWLDataProperty());
+                  OWLAxiom axiom = objectFactory.getOWLSubDataPropertyOfAxiom(typeEntity.asOWLDataProperty(), entity.asOWLDataProperty());
                   axioms.add(axiom);
                } else throw new InternalRendererException("Unsupported entity type " + referenceType);
             } else {
@@ -442,44 +488,51 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       }
    }
 
-   private void addOWLAnnotationAxiom(OWLEntity entity, String label, String language, Set<OWLAxiom> axioms)
+   private void addOWLAnnotationAxiom(OWLEntity entity, Optional<String> label, Optional<String> language, Set<OWLAxiom> axioms)
    {
-      if (!label.isEmpty()) {
-         OWLAxiom labelAnnotation = handler.getLabelAnnotationAxiom(entity, label, language);
+      if (label.isPresent()) {
+         OWLAxiom labelAnnotation = objectFactory.getLabelAnnotationAxiom(entity, label.get(), language);
          axioms.add(labelAnnotation);
       }
    }
 
    private Optional<OWLObject> renderType(TypeNode typeNode) throws RendererException
    {
-      if (typeNode.isOWLClassNode()) {
+      if (typeNode instanceof OWLClassNode) {
          OWLClassNode node = (OWLClassNode) typeNode;
-         Optional<OWLClassRendering> classRendering = entityRenderer.renderOWLClass(node, false);
-         if (classRendering.isPresent()) {
-            return Optional.of(classRendering.get().getOWLClass());
+         Optional<OWLClassRendering> rendering = entityRenderer.renderOWLClass(node, false);
+         if (rendering.isPresent()) {
+            return Optional.of(rendering.get().getOWLClass());
          }
-      } else if (typeNode.isOWLClassExpressionNode()) {
-         OWLClassExpressionNode node = (OWLClassExpressionNode) typeNode;
-         Optional<OWLClassExpressionRendering> classExpressionRendering = classExpressionRenderer.renderOWLClassExpression(node);
-         if (classExpressionRendering.isPresent()) {
-            return Optional.of(classExpressionRendering.get().getOWLClassExpression());
-         }
-      } else if (typeNode.isOWLPropertyNode()) {
+      } else if (typeNode instanceof OWLPropertyNode) {
          OWLPropertyNode node = (OWLPropertyNode) typeNode;
-         Optional<? extends OWLPropertyRendering> propertyRendering = entityRenderer.renderOWLProperty(node);
-         if (propertyRendering.isPresent()) {
-            return Optional.of(propertyRendering.get().getOWLProperty());
+         Optional<? extends OWLPropertyRendering> rendering = entityRenderer.renderOWLProperty(node);
+         if (rendering.isPresent()) {
+            return Optional.of(rendering.get().getOWLProperty());
          }
-      } else if (typeNode.isReferenceNode()) {
-         ReferenceNode node = (ReferenceNode) typeNode;
-         Optional<OWLAPIReferenceRendering> referenceRendering = renderReference(node);
-         if (referenceRendering.isPresent()) {
-            if (referenceRendering.get().isOWLEntity()) {
-               OWLEntity entity = referenceRendering.get().getOWLEntity().get();
-               return Optional.of(entity);
-            } else {
-               throw new RendererException("Expecting OWL entity for node " + typeNode.getNodeName());
-            }
+      } else if (typeNode instanceof OWLNamedIndividualNode) {
+         OWLNamedIndividualNode node = (OWLNamedIndividualNode) typeNode;
+         Optional<OWLNamedIndividualRendering> rendering = entityRenderer.renderOWLNamedIndividual(node, false);
+         if (rendering.isPresent()) {
+            return Optional.of(rendering.get().getOWLNamedIndividual());
+         }
+      } else if (typeNode instanceof OWLPropertyNode) {
+         OWLPropertyNode node = (OWLPropertyNode) typeNode;
+         Optional<? extends OWLPropertyRendering> rendering = entityRenderer.renderOWLProperty(node);
+         if (rendering.isPresent()) {
+            return Optional.of(rendering.get().getOWLProperty());
+         }
+      } else if (typeNode instanceof OWLNamedIndividualNode) {
+         OWLNamedIndividualNode node = (OWLNamedIndividualNode) typeNode;
+         Optional<OWLNamedIndividualRendering> rendering = entityRenderer.renderOWLNamedIndividual(node, false);
+         if (rendering.isPresent()) {
+            return Optional.of(rendering.get().getOWLNamedIndividual());
+         }
+      } else if (typeNode instanceof OWLClassExpressionNode) {
+         OWLClassExpressionNode node = (OWLClassExpressionNode) typeNode;
+         Optional<OWLClassExpressionRendering> rendering = classExpressionRenderer.renderOWLClassExpression(node);
+         if (rendering.isPresent()) {
+            return Optional.of(rendering.get().getOWLClassExpression());
          }
       } else {
          throw new InternalRendererException("Unknown type '" + typeNode + "' for node " + typeNode.getNodeName());
@@ -487,80 +540,102 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       return Optional.empty();
    }
 
-   private String processOWLLiteralReferenceValue(SpreadsheetLocation location, String resolvedValue,
-         ReferenceNode referenceNode) throws RendererException
+   private Optional<String> getLiteral(Optional<String> value, ReferenceNode referenceNode) throws RendererException
    {
-      resolvedValue = resolvedValue.replace("\"", "\\\"");
-      String literal = "";
-      if (referenceNode.hasLiteralValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding()) {
-            literal = generateReferenceValue(resolvedValue, referenceNode.getLiteralValueEncodingNode(), referenceNode);
-         } else if (referenceNode.hasValueExtractionFunctionNode()) {
-            ValueExtractionFunctionNode valueExtractionFunctionNode = referenceNode.getValueExtractionFunctionNode();
-            literal = generateReferenceValue(resolvedValue, valueExtractionFunctionNode);
-         } else {
-            literal = resolvedValue;
+      String finalValue = null;
+      if (value.isPresent()) {
+         String inputValue = value.get();
+         /*
+          * Apply any extraction function that would apply to the given value string
+          */
+         if (referenceNode.hasLiteralValueEncoding()) {
+            if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding()) {
+               finalValue = generateReferenceValue(inputValue, referenceNode.getLiteralValueEncodingNode(), referenceNode);
+            } else if (referenceNode.hasValueExtractionFunctionNode()) {
+               finalValue = generateReferenceValue(inputValue, referenceNode.getValueExtractionFunctionNode());
+            } else {
+               finalValue = inputValue;
+            }
          }
       }
-      if (literal.isEmpty() && !referenceNode.getActualDefaultLiteral().isEmpty()) {
-         literal = referenceNode.getActualDefaultLiteral();
+      /*
+       * Override the current final value if there is a default literal string
+       */
+      if (referenceNode.hasExplicitlySpecifiedDefaultLiteral()) {
+         finalValue = referenceNode.getActualDefaultLiteral();
       }
-      return literal;
+      return Optional.ofNullable(finalValue);
    }
 
-   private String getReferenceRDFID(String value, ReferenceNode referenceNode) throws RendererException
+   private Optional<String> getEntityName(Optional<String> value, ReferenceNode referenceNode) throws RendererException
    {
-      String id = "";
-      if (referenceNode.hasRDFIDValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedRDFIDValueEncoding()) {
-            id = generateReferenceValue(value, referenceNode.getRDFIDValueEncodingNode(), referenceNode);
-         } else if (referenceNode.hasValueExtractionFunctionNode()) {
-            id = generateReferenceValue(value, referenceNode.getValueExtractionFunctionNode());
-         } else {
-            id = value;
+      String finalName = null;
+      if (value.isPresent()) {
+         String inputValue = value.get();
+         /*
+          * Apply any extraction function that would apply to the given value string
+          */
+         if (referenceNode.hasRDFIDValueEncoding()) {
+            if (referenceNode.hasExplicitlySpecifiedRDFIDValueEncoding()) {
+               finalName = generateReferenceValue(inputValue, referenceNode.getRDFIDValueEncodingNode(), referenceNode);
+            } else if (referenceNode.hasValueExtractionFunctionNode()) {
+               finalName = generateReferenceValue(inputValue, referenceNode.getValueExtractionFunctionNode());
+            } else {
+               finalName = inputValue;
+            }
          }
       }
-      if (id.isEmpty() && !referenceNode.getActualDefaultRDFID().isEmpty()) {
-         id = referenceNode.getActualDefaultRDFID();
+      /*
+       * Override the current final label if there is a default rdf:ID string
+       */
+      if (referenceNode.hasExplicitlySpecifiedDefaultRDFID()) {
+         finalName = referenceNode.getActualDefaultRDFID();
       }
-      return id;
+      return Optional.ofNullable(finalName);
    }
 
-   private String getReferenceRDFSLabel(String value, ReferenceNode referenceNode) throws RendererException
+   private Optional<String> getEntityLabel(Optional<String> value, ReferenceNode referenceNode) throws RendererException
    {
-      String label = "";
-      if (referenceNode.hasRDFSLabelValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedRDFSLabelValueEncoding()) {
-            label = generateReferenceValue(value, referenceNode.getRDFSLabelValueEncodingNode(), referenceNode);
-         } else if (referenceNode.hasValueExtractionFunctionNode()) {
-            label = generateReferenceValue(value, referenceNode.getValueExtractionFunctionNode());
-         } else {
-            label = value;
+      String finalLabel = null;
+      if (value.isPresent()) {
+         String inputValue = value.get();
+         /*
+          * Apply any extraction function that would apply to the given value string
+          */
+         if (referenceNode.hasRDFSLabelValueEncoding()) {
+            if (referenceNode.hasExplicitlySpecifiedRDFSLabelValueEncoding()) {
+               finalLabel = generateReferenceValue(inputValue, referenceNode.getRDFSLabelValueEncodingNode(), referenceNode);
+            } else if (referenceNode.hasValueExtractionFunctionNode()) {
+               finalLabel = generateReferenceValue(inputValue, referenceNode.getValueExtractionFunctionNode());
+            } else {
+               finalLabel = inputValue;
+            }
          }
       }
-      if (label.isEmpty() && !referenceNode.getActualDefaultRDFSLabel().isEmpty()) {
-         label = referenceNode.getActualDefaultRDFSLabel();
+      /*
+       * Override the current final label if there is a default rdfs:label string
+       */
+      if (referenceNode.hasExplicitlySpecifiedDefaultRDFSLabel()) {
+         finalLabel = referenceNode.getActualDefaultRDFSLabel();
       }
-      return label;
+      return Optional.ofNullable(finalLabel);
    }
 
-   private String generateReferenceValue(String sourceValue, ValueEncodingDirectiveNode valueEncodingDirectiveNode,
+   private String generateReferenceValue(@Nonnull String value, ValueEncodingDirectiveNode valueEncodingDirectiveNode,
          ReferenceNode referenceNode) throws RendererException
    {
       if (valueEncodingDirectiveNode != null) {
          if (valueEncodingDirectiveNode.hasValueSpecificationNode()) {
-            return generateReferenceValue(sourceValue, valueEncodingDirectiveNode.getValueSpecificationNode(), referenceNode);
-         } else {
-            return sourceValue;
+            return generateReferenceValue(value, valueEncodingDirectiveNode.getValueSpecificationNode(), referenceNode);
          }
-      } else return sourceValue;
+      }
+      return value;
    }
 
-   private String generateReferenceValue(String sourceValue, ValueSpecificationNode valueSpecificationNode,
+   private String generateReferenceValue(@Nonnull String value, ValueSpecificationNode valueSpecificationNode,
          ReferenceNode referenceNode) throws RendererException
    {
       String processedReferenceValue = "";
-
       for (ValueSpecificationItemNode specificationItemNode : valueSpecificationNode.getValueSpecificationItemNodes()) {
          if (specificationItemNode.hasStringLiteral()) {
             processedReferenceValue += specificationItemNode.getStringLiteral();
@@ -569,24 +644,20 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             valueSpecificationItemReferenceNode.setDefaultShiftSetting(referenceNode.getActualShiftDirective());
             Optional<? extends ReferenceRendering> referenceRendering = renderReference(valueSpecificationItemReferenceNode);
             if (referenceRendering.isPresent()) {
-               if (referenceRendering.get().isOWLLiteral()) {
-                  processedReferenceValue += referenceRendering.get().getRawValue();
-               } else {
-                  throw new RendererException("expecting OWL literal for value specification, got " + referenceRendering.get());
-               }
+               processedReferenceValue += referenceRendering.get().getRawValue();
             }
          } else if (specificationItemNode.hasValueExtractionFunctionNode()) {
             ValueExtractionFunctionNode valueExtractionFunction = specificationItemNode.getValueExtractionFunctionNode();
-            processedReferenceValue += generateReferenceValue(sourceValue, valueExtractionFunction);
-         } else if (specificationItemNode.hasCapturingExpression() && sourceValue != null) {
+            processedReferenceValue += generateReferenceValue(value, valueExtractionFunction);
+         } else if (specificationItemNode.hasCapturingExpression() && value != null) {
             String capturingExpression = specificationItemNode.getCapturingExpression();
-            processedReferenceValue += ReferenceUtil.capture(sourceValue, capturingExpression);
+            processedReferenceValue += ReferenceUtil.capture(value, capturingExpression);
          }
       }
       return processedReferenceValue;
    }
 
-   private String generateReferenceValue(String sourceValue, ValueExtractionFunctionNode valueExtractionFunctionNode)
+   private String generateReferenceValue(@Nonnull String value, ValueExtractionFunctionNode valueExtractionFunctionNode)
          throws RendererException
    {
       List<String> arguments = new ArrayList<>();
@@ -597,7 +668,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
          }
       }
       return ReferenceUtil.evaluateReferenceValue(valueExtractionFunctionNode.getFunctionName(),
-            valueExtractionFunctionNode.getFunctionID(), arguments, sourceValue,
+            valueExtractionFunctionNode.getFunctionID(), arguments, value,
             valueExtractionFunctionNode.hasArguments());
    }
 
@@ -632,11 +703,63 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       }
    }
 
-   private String getReferenceLanguage(ReferenceNode referenceNode) throws RendererException
+   private Optional<String> getLanguage(ReferenceNode referenceNode) throws RendererException
    {
+      String languageTag = null;
       if (referenceNode.hasExplicitlySpecifiedLanguage()) {
-         return referenceNode.getActualLanguage();
+         languageTag = referenceNode.getActualLanguage();
       }
-      return null;
+      return Optional.ofNullable(languageTag);
+   }
+
+   private OWLLiteral createOWLLiteral(String value, ReferenceType type) throws RendererException
+   {
+      if (type.isXSDBoolean())
+         return objectFactory.getOWLLiteralBoolean(value);
+      else if (type.isXSDString())
+         return objectFactory.getOWLLiteralString(value);
+      else if (type.isXSDDecimal())
+         return objectFactory.getOWLLiteralDecimal(value);
+      else if (type.isXSDByte())
+         return objectFactory.getOWLLiteralByte(value);
+      else if (type.isXSDShort())
+         return objectFactory.getOWLLiteralShort(value);
+      else if (type.isXSDInt())
+         return objectFactory.getOWLLiteralInteger(value);
+      else if (type.isXSDLong())
+         return objectFactory.getOWLLiteralLong(value);
+      else if (type.isXSDFloat())
+         return objectFactory.getOWLLiteralFloat(value);
+      else if (type.isXSDDouble())
+         return objectFactory.getOWLLiteralDouble(value);
+      else if (type.isXSDDateTime())
+         return objectFactory.getOWLLiteralDateTime(value);
+      else if (type.isXSDDate())
+         return objectFactory.getOWLLiteralDate(value);
+      else if (type.isXSDTime())
+         return objectFactory.getOWLLiteralTime(value);
+      else if (type.isXSDDuration())
+         return objectFactory.getOWLLiteralDuration(value);
+      else throw new RendererException("Unknown type " + type.getTypeName() + " for literal " + value);
+   }
+
+   class LocationEncodingCache
+   {
+      private final Map<String, Map<SpreadsheetLocation, OWLEntity>> cache = new HashMap<>();
+
+      public Optional<OWLEntity> get(String prefix, SpreadsheetLocation location)
+      {
+         OWLEntity entity = cache.get(prefix).get(location);
+         return Optional.ofNullable(entity);
+      }
+
+      public void put(String prefix, SpreadsheetLocation location, OWLEntity entity)
+      {
+         Map<SpreadsheetLocation, OWLEntity> innerMap = cache.get(prefix);
+         if (innerMap == null) {
+            innerMap = new HashMap<>();
+         }
+         innerMap.put(location, entity);
+      }
    }
 }

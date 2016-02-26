@@ -11,7 +11,7 @@ import org.mm.parser.ParserUtil;
 public class FactNode implements MMNode
 {
    private OWLPropertyNode propertyNode;
-   private OWLPropertyAssertionObjectNode propertyAssertionObjectNode;
+   private OWLPropertyAssertionNode propertyAssertionObjectNode;
 
    public FactNode(ASTFact node) throws ParseException
    {
@@ -20,7 +20,7 @@ public class FactNode implements MMNode
          if (ParserUtil.hasName(child, "OWLProperty"))
             this.propertyNode = new OWLPropertyNode((ASTOWLProperty) child);
          else if (ParserUtil.hasName(child, "OWLPropertyAssertionObject"))
-            this.propertyAssertionObjectNode = new OWLPropertyAssertionObjectNode(
+            this.propertyAssertionObjectNode = new OWLPropertyAssertionNode(
                   (ASTOWLPropertyAssertionObject) child);
          else throw new InternalParseException("unexpected child node " + child + " for node " + getNodeName());
       }
@@ -31,7 +31,7 @@ public class FactNode implements MMNode
       return this.propertyNode;
    }
 
-   public OWLPropertyAssertionObjectNode getOWLPropertyAssertionObjectNode()
+   public OWLPropertyAssertionNode getOWLPropertyAssertionObjectNode()
    {
       return this.propertyAssertionObjectNode;
    }

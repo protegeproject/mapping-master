@@ -90,28 +90,4 @@ public class OWLClassExpressionNode implements TypeNode, MMNode
 
       return representation;
    }
-
-   @Override
-   public boolean isOWLClassExpressionNode()
-   {
-      return true;
-   }
-
-   @Override
-   public boolean isOWLClassNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isOWLPropertyNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isReferenceNode()
-   {
-      return false;
-   }
 }

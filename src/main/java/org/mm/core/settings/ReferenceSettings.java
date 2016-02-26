@@ -7,12 +7,12 @@ public class ReferenceSettings
    private String language = "";
 
    private ReferenceTypeSetting referenceTypeSetting = ReferenceTypeSetting.OWL_CLASS;
+   private PropertyTypeSetting propertyTypeSetting = PropertyTypeSetting.OWL_DATA_PROPERTY;
    private ValueEncodingSetting valueEncodingSetting = ValueEncodingSetting.RDF_ID;
-   private PropertyTypeSetting propertyTypeSetting = PropertyTypeSetting.OWL_OBJECT_PROPERTY;
-   private EmptyLocationSetting emptyLocationSetting = EmptyLocationSetting.PROCESS_IF_EMPTY_LOCATION;
-   private EmptyLiteralSetting emptyLiteralSetting = EmptyLiteralSetting.PROCESS_IF_EMPTY_LITERAL;
-   private EmptyRDFIDSetting emptyRDFIDSetting = EmptyRDFIDSetting.PROCESS_IF_EMPTY_ID;
-   private EmptyRDFSLabelSetting emptyRDFSLabelSetting = EmptyRDFSLabelSetting.PROCESS_IF_EMPTY_LABEL;
+   private EmptyLocationSetting emptyLocationSetting = EmptyLocationSetting.WARNING_IF_EMPTY_LOCATION;
+   private EmptyLiteralSetting emptyLiteralSetting = EmptyLiteralSetting.WARNING_IF_EMPTY_LITERAL;
+   private EmptyRDFIDSetting emptyRDFIDSetting = EmptyRDFIDSetting.WARNING_IF_EMPTY_ID;
+   private EmptyRDFSLabelSetting emptyRDFSLabelSetting = EmptyRDFSLabelSetting.WARNING_IF_EMPTY_LABEL;
    private IfOWLEntityDoesNotExistSetting ifOWLEntityDoesNotExistSetting = IfOWLEntityDoesNotExistSetting.CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST;
    private IfOWLEntityExistsSetting ifOWLEntityExistsSetting = IfOWLEntityExistsSetting.RESOLVE_IF_OWL_ENTITY_EXISTS;
    private ShiftSetting shiftSetting = ShiftSetting.NO_SHIFT;

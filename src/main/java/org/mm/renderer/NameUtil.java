@@ -6,7 +6,7 @@ import java.net.URL;
 
 public class NameUtil
 {
-   public static boolean isValidIriString(String input)
+   public static boolean isValidUriConstruct(String input)
    {
       URL u = null;
 

@@ -61,28 +61,4 @@ public class OWLClassNode implements TypeNode
          return this.referenceNode.toString();
       else return "";
    }
-
-   @Override
-   public boolean isOWLClassNode()
-   {
-      return true;
-   }
-
-   @Override
-   public boolean isOWLClassExpressionNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isOWLPropertyNode()
-   {
-      return false;
-   }
-
-   @Override
-   public boolean isReferenceNode()
-   {
-      return false;
-   }
 }
