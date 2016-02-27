@@ -1,6 +1,10 @@
 package org.mm.parser.node;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mm.core.ReferenceDirectives;
+import org.mm.core.ReferenceType;
 import org.mm.parser.ASTDefaultID;
 import org.mm.parser.ASTDefaultLabel;
 import org.mm.parser.ASTDefaultLiteral;
@@ -28,9 +32,6 @@ import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 import org.mm.renderer.RendererException;
 import org.mm.ss.SpreadsheetLocation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReferenceNode implements MMNode, MappingMasterParserConstants
 {
@@ -207,6 +208,21 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
    public String getNodeName()
    {
       return "Reference";
+   }
+
+   public boolean hasLiteralType()
+   {
+      return getReferenceType().isOWLLiteral();
+   }
+
+   public boolean hasEntityType()
+   {
+      return getReferenceType().isOWLEntity();
+   }
+
+   public ReferenceType getReferenceType()
+   {
+      return getReferenceTypeNode().getReferenceType();
    }
 
    public ReferenceDirectives getReferenceDirectives()
