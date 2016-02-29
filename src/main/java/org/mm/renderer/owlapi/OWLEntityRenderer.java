@@ -9,7 +9,7 @@ import org.mm.parser.node.OWLClassNode;
 import org.mm.parser.node.OWLNamedIndividualNode;
 import org.mm.parser.node.OWLPropertyAssertionNode;
 import org.mm.parser.node.OWLPropertyNode;
-import org.mm.renderer.OWLEntityRenderer;
+import org.mm.renderer.EntityRenderer;
 import org.mm.renderer.RendererException;
 import org.mm.renderer.owlapi.delegator.AnnotationValueRendererDelegator;
 import org.mm.renderer.owlapi.delegator.ClassRendererDelegator;
@@ -22,9 +22,9 @@ import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyAssertionRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 
-public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterParserConstants
+public class OWLEntityRenderer implements EntityRenderer, MappingMasterParserConstants
 {
-   private OWLAPIObjectFactory objectFactory;
+   private OWLObjectFactory objectFactory;
 
    private ClassRendererDelegator classRendererDelegator;
    private NamedIndividualRendererDelegator namedIndividualRendererDelegator;
@@ -32,7 +32,7 @@ public class OWLAPIEntityRenderer implements OWLEntityRenderer, MappingMasterPar
    private PropertyAssertionRendererDelegator propertyAssertionRendererDelegator;
    private AnnotationValueRendererDelegator annotationValueRendererDelegator;
 
-   public OWLAPIEntityRenderer(OWLAPIReferenceRenderer referenceRenderer, OWLAPIObjectFactory objectFactory)
+   public OWLEntityRenderer(OWLReferenceRenderer referenceRenderer, OWLObjectFactory objectFactory)
    {
       this.objectFactory = objectFactory;
 

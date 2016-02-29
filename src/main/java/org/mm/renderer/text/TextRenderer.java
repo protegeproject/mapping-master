@@ -50,16 +50,16 @@ import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
 import org.mm.renderer.InternalRendererException;
-import org.mm.renderer.OWLClassExpressionRenderer;
-import org.mm.renderer.OWLDeclarationRenderer;
-import org.mm.renderer.OWLEntityRenderer;
-import org.mm.renderer.OWLLiteralRenderer;
+import org.mm.renderer.ClassExpressionRenderer;
+import org.mm.renderer.DeclarationRenderer;
+import org.mm.renderer.EntityRenderer;
+import org.mm.renderer.LiteralRenderer;
 import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.ReferenceRendererConfiguration;
 import org.mm.renderer.ReferenceUtil;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
-import org.mm.rendering.OWLLiteralRendering;
+import org.mm.rendering.LiteralRendering;
 import org.mm.rendering.ReferenceRendering;
 import org.mm.rendering.text.TextLiteralRendering;
 import org.mm.rendering.text.TextReferenceRendering;
@@ -74,7 +74,7 @@ import org.mm.ss.SpreadsheetLocation;
  * reference values substituted inline.
  */
 public class TextRenderer extends ReferenceRendererConfiguration implements Renderer, ReferenceRenderer,
-      OWLDeclarationRenderer, OWLEntityRenderer, OWLLiteralRenderer, OWLClassExpressionRenderer,
+      DeclarationRenderer, EntityRenderer, LiteralRenderer, ClassExpressionRenderer,
       MappingMasterParserConstants
 {
    private SpreadSheetDataSource dataSource;
@@ -426,7 +426,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          throws RendererException
    {
       if (functionArgumentNode.isOWLLiteralNode()) {
-         Optional<? extends OWLLiteralRendering> literalRendering = renderOWLLiteral(
+         Optional<? extends LiteralRendering> literalRendering = renderOWLLiteral(
                functionArgumentNode.getOWLLiteralNode());
          if (literalRendering.isPresent()) {
             return literalRendering.get().getRawValue();

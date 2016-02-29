@@ -8,29 +8,29 @@ import org.mm.parser.node.OWLLiteralNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.RendererException;
-import org.mm.renderer.owlapi.OWLAPILiteralRenderer;
-import org.mm.renderer.owlapi.OWLAPIObjectFactory;
-import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
-import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPILiteralRendering;
-import org.mm.rendering.owlapi.OWLAPIReferenceRendering;
+import org.mm.renderer.owlapi.OWLLiteralRenderer;
+import org.mm.renderer.owlapi.OWLObjectFactory;
+import org.mm.renderer.owlapi.OWLReferenceRenderer;
+import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
+import org.mm.rendering.owlapi.OWLLiteralRendering;
+import org.mm.rendering.owlapi.OWLReferenceRendering;
 import org.mm.rendering.owlapi.OWLAnnotationValueRendering;
 import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLLiteral;
 
 public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAnnotationValueRendering>
 {
-   private OWLAPIReferenceRenderer referenceRenderer;
-   private OWLAPILiteralRenderer literalRenderer;
+   private OWLReferenceRenderer referenceRenderer;
+   private OWLLiteralRenderer literalRenderer;
 
-   public AnnotationValueRendererDelegator(OWLAPIReferenceRenderer referenceRenderer)
+   public AnnotationValueRendererDelegator(OWLReferenceRenderer referenceRenderer)
    {
       this.referenceRenderer = referenceRenderer;
       this.literalRenderer = referenceRenderer.getLiteralRenderer();
    }
 
    @Override
-   public Optional<OWLAnnotationValueRendering> render(TypeNode typeNode, OWLAPIObjectFactory objectFactory)
+   public Optional<OWLAnnotationValueRendering> render(TypeNode typeNode, OWLObjectFactory objectFactory)
          throws RendererException
    {
       if (typeNode instanceof OWLAnnotationValueNode) {
@@ -46,7 +46,7 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
       throw new RendererException("Node " + typeNode + " is not an OWL annotation value");
    }
 
-   private Optional<OWLAnnotationValueRendering> renderNameNode(NameNode nameNode, OWLAPIObjectFactory objectFactory)
+   private Optional<OWLAnnotationValueRendering> renderNameNode(NameNode nameNode, OWLObjectFactory objectFactory)
          throws RendererException
    {
       OWLAnnotationValue anno = objectFactory.createOWLAnnotationValue(nameNode.getName(), true);
@@ -54,14 +54,14 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
    }
 
    private Optional<OWLAnnotationValueRendering> renderReferenceNode(ReferenceNode referenceNode,
-         OWLAPIObjectFactory objectFactory) throws RendererException
+         OWLObjectFactory objectFactory) throws RendererException
    {
       OWLAnnotationValueRendering valueRendering = null;
-      Optional<OWLAPIReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);
+      Optional<OWLReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);
       if (rendering.isPresent()) {
-         OWLAPIReferenceRendering referenceRendering = rendering.get();
-         if (referenceRendering instanceof OWLAPILiteralReferenceRendering) {
-            OWLAPILiteralReferenceRendering literalRendering = (OWLAPILiteralReferenceRendering) referenceRendering;
+         OWLReferenceRendering referenceRendering = rendering.get();
+         if (referenceRendering instanceof OWLLiteralReferenceRendering) {
+            OWLLiteralReferenceRendering literalRendering = (OWLLiteralReferenceRendering) referenceRendering;
             OWLLiteral lit = literalRendering.getOWLLiteral();
             valueRendering = new OWLAnnotationValueRendering(lit);
          } else {
@@ -75,10 +75,10 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
    }
 
    private Optional<OWLAnnotationValueRendering> renderLiteralNode(OWLLiteralNode literalNode,
-         OWLAPIObjectFactory objectFactory) throws RendererException
+         OWLObjectFactory objectFactory) throws RendererException
    {
       OWLAnnotationValueRendering valueRendering = null;
-      Optional<OWLAPILiteralRendering> rendering = literalRenderer.renderOWLLiteral(literalNode);
+      Optional<OWLLiteralRendering> rendering = literalRenderer.renderOWLLiteral(literalNode);
       if (rendering.isPresent()) {
          OWLLiteral lit = rendering.get().getOWLLiteral();
          OWLAnnotationValue av;

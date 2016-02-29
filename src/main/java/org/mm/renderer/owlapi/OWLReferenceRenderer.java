@@ -31,11 +31,11 @@ import org.mm.renderer.NameUtil;
 import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.ReferenceUtil;
 import org.mm.renderer.RendererException;
-import org.mm.rendering.OWLLiteralRendering;
+import org.mm.rendering.LiteralRendering;
 import org.mm.rendering.ReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPIEntityReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPIReferenceRendering;
+import org.mm.rendering.owlapi.OWLEntityReferenceRendering;
+import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
+import org.mm.rendering.owlapi.OWLReferenceRendering;
 import org.mm.rendering.owlapi.OWLClassExpressionRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
 import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
@@ -56,34 +56,34 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMasterParserConstants
+public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterParserConstants
 {
-   private final Logger logger = LoggerFactory.getLogger(OWLAPIReferenceRenderer.class);
+   private final Logger logger = LoggerFactory.getLogger(OWLReferenceRenderer.class);
 
    private SpreadSheetDataSource dataSource;
-   private OWLAPIObjectFactory objectFactory;
-   private OWLAPIEntityRenderer entityRenderer;
-   private OWLAPILiteralRenderer literalRenderer;
-   private OWLAPIClassExpressionRenderer classExpressionRenderer;
+   private OWLObjectFactory objectFactory;
+   private OWLEntityRenderer entityRenderer;
+   private OWLLiteralRenderer literalRenderer;
+   private OWLClassExpressionRenderer classExpressionRenderer;
 
    private LocationEncodingCache locationEncodingCache = new LocationEncodingCache();
 
-   public OWLAPIReferenceRenderer(SpreadSheetDataSource dataSource, OWLAPIObjectFactory objectFactory)
+   public OWLReferenceRenderer(SpreadSheetDataSource dataSource, OWLObjectFactory objectFactory)
    {
       this.dataSource = dataSource;
       this.objectFactory = objectFactory;
       
-      literalRenderer = new OWLAPILiteralRenderer(objectFactory);
-      entityRenderer = new OWLAPIEntityRenderer(this, objectFactory);
-      classExpressionRenderer = new OWLAPIClassExpressionRenderer(this, objectFactory);
+      literalRenderer = new OWLLiteralRenderer(objectFactory);
+      entityRenderer = new OWLEntityRenderer(this, objectFactory);
+      classExpressionRenderer = new OWLClassExpressionRenderer(this, objectFactory);
    }
 
-   public OWLAPIEntityRenderer getEntityRenderer()
+   public OWLEntityRenderer getEntityRenderer()
    {
       return entityRenderer;
    }
 
-   public OWLAPILiteralRenderer getLiteralRenderer()
+   public OWLLiteralRenderer getLiteralRenderer()
    {
       return literalRenderer;
    }
@@ -94,7 +94,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
    }
 
    @Override
-   public Optional<OWLAPIReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException
+   public Optional<OWLReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException
    {
       ReferenceType referenceType = getReferenceType(referenceNode);
       SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
@@ -103,7 +103,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
          String literalValue = sourceSpecificationNode.getLiteral();
          if (referenceNode.hasLiteralType()) {
             OWLLiteral literal = createOWLLiteral(literalValue, referenceType);
-            return Optional.of(new OWLAPILiteralReferenceRendering(literal, referenceType));
+            return Optional.of(new OWLLiteralReferenceRendering(literal, referenceType));
          } else if (referenceNode.hasEntityType()) {
             /*
              * If the source specification node is written as a literal value without datatype, e.g., @"XYZ", then
@@ -118,12 +118,12 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
              * Create the OWL entity based on the inputs of its name, label and language tag. The method createOWLEntity
              * will check first if the name (or label) exists in the ontology.
              */
-            OWLAPIEntityReferenceRendering entityRendering = null;
+            OWLEntityReferenceRendering entityRendering = null;
             Optional<OWLEntity> createdEntity = createOWLEntity(entityName, entityLabel, languageTag, referenceNode);
             if (createdEntity.isPresent()) {
                OWLEntity entity = createdEntity.get();
                Set<OWLAxiom> axioms = createOWLAxioms(entity, entityLabel, languageTag, referenceType, referenceNode);
-               entityRendering = new OWLAPIEntityReferenceRendering(entity, axioms, referenceType);
+               entityRendering = new OWLEntityReferenceRendering(entity, axioms, referenceType);
             }
             return Optional.ofNullable(entityRendering);
          }
@@ -141,10 +141,10 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
             /*
              * Create the OWL literal if the literal value is not null
              */
-            OWLAPILiteralReferenceRendering literalRendering = null;
+            OWLLiteralReferenceRendering literalRendering = null;
             if (literalValue.isPresent()) {
                OWLLiteral literal = createOWLLiteral(literalValue.get(), referenceType);
-               literalRendering = new OWLAPILiteralReferenceRendering(literal, referenceType);
+               literalRendering = new OWLLiteralReferenceRendering(literal, referenceType);
             }
             return Optional.ofNullable(literalRendering);
          } else if (referenceNode.hasEntityType()) {
@@ -163,12 +163,12 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
              * Create the OWL entity based on the input of its name, label and language tag. The method createOWLEntity
              * will check first if the name (or label) exists in the ontology.
              */
-            OWLAPIEntityReferenceRendering entityRendering = null;
+            OWLEntityReferenceRendering entityRendering = null;
             Optional<OWLEntity> createdEntity = createOWLEntity(entityName, entityLabel, languageTag, referenceNode);
             if (createdEntity.isPresent()) {
                OWLEntity entity = createdEntity.get();
                Set<OWLAxiom> axioms = createOWLAxioms(entity, entityLabel, languageTag, referenceType, referenceNode);
-               entityRendering = new OWLAPIEntityReferenceRendering(entity, axioms, referenceType);
+               entityRendering = new OWLEntityReferenceRendering(entity, axioms, referenceType);
             }
             return Optional.ofNullable(entityRendering);
          }
@@ -391,7 +391,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
       locationEncodingCache.put(prefix, location, newEntity);
    }
 
-   public Optional<? extends OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
+   public Optional<? extends LiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
    {
       return literalRenderer.renderOWLLiteral(literalNode);
    }
@@ -672,7 +672,7 @@ public class OWLAPIReferenceRenderer implements ReferenceRenderer, MappingMaster
    {
       if (argumentNode.isOWLLiteralNode()) {
          OWLLiteralNode literalNode = argumentNode.getOWLLiteralNode();
-         Optional<? extends OWLLiteralRendering> literalRendering = renderOWLLiteral(literalNode);
+         Optional<? extends LiteralRendering> literalRendering = renderOWLLiteral(literalNode);
          if (literalRendering.isPresent()) {
             return literalRendering.get().getRawValue();
          } else {

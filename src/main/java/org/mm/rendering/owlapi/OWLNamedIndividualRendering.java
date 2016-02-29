@@ -5,7 +5,7 @@ import java.util.Set;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
-public class OWLNamedIndividualRendering extends OWLAPIRendering
+public class OWLNamedIndividualRendering extends OWLRendering
 {
    private final OWLNamedIndividual individual;
 

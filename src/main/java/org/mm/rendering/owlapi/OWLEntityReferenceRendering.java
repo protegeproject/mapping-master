@@ -6,20 +6,20 @@ import org.mm.core.ReferenceType;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 
-public class OWLAPIEntityReferenceRendering extends OWLAPIReferenceRendering
+public class OWLEntityReferenceRendering extends OWLReferenceRendering
 {
    private final OWLEntity entity;
 
    private final String rawRendering;
 
-   public OWLAPIEntityReferenceRendering(OWLEntity entity, ReferenceType referenceType)
+   public OWLEntityReferenceRendering(OWLEntity entity, ReferenceType referenceType)
    {
       super(referenceType);
       this.entity = entity;
       this.rawRendering = entity.getIRI().toString();
    }
 
-   public OWLAPIEntityReferenceRendering(OWLEntity entity, Set<OWLAxiom> axioms, ReferenceType referenceType)
+   public OWLEntityReferenceRendering(OWLEntity entity, Set<OWLAxiom> axioms, ReferenceType referenceType)
    {
       super(axioms, referenceType);
       this.entity = entity;

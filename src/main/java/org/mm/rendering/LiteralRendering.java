@@ -2,7 +2,7 @@ package org.mm.rendering;
 
 import org.mm.core.OWLLiteralType;
 
-public interface OWLLiteralRendering extends Rendering
+public interface LiteralRendering extends Rendering
 {
    String getRawValue();
 

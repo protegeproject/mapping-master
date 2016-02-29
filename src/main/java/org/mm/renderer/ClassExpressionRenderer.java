@@ -20,7 +20,7 @@ import org.mm.rendering.Rendering;
 
 import java.util.Optional;
 
-public interface OWLClassExpressionRenderer
+public interface ClassExpressionRenderer
 {
    Optional<? extends Rendering> renderOWLClassExpression(OWLClassExpressionNode node) throws RendererException;
 

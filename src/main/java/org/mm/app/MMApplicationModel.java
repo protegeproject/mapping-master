@@ -2,7 +2,7 @@ package org.mm.app;
 
 import org.mm.core.TransformationRuleSet;
 import org.mm.renderer.Renderer;
-import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
 import org.mm.ss.SpreadSheetDataSource;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -42,9 +42,9 @@ public class MMApplicationModel implements ApplicationModel
       return getOWLAPIRenderer();
    }
 
-   public OWLAPIRenderer getOWLAPIRenderer()
+   public OWLRenderer getOWLAPIRenderer()
    {
-      return new OWLAPIRenderer(ontology, dataSource);
+      return new OWLRenderer(ontology, dataSource);
    }
 
    public TextRenderer getTextRenderer()

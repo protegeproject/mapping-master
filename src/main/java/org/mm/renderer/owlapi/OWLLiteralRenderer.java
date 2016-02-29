@@ -4,25 +4,25 @@ import java.util.Optional;
 
 import org.mm.parser.node.OWLLiteralNode;
 import org.mm.renderer.InternalRendererException;
-import org.mm.renderer.OWLLiteralRenderer;
+import org.mm.renderer.LiteralRenderer;
 import org.mm.renderer.RendererException;
-import org.mm.rendering.owlapi.OWLAPILiteralRendering;
+import org.mm.rendering.owlapi.OWLLiteralRendering;
 import org.semanticweb.owlapi.model.OWLLiteral;
 
-public class OWLAPILiteralRenderer implements OWLLiteralRenderer
+public class OWLLiteralRenderer implements LiteralRenderer
 {
-   private final OWLAPIObjectFactory objectFactory;
+   private final OWLObjectFactory objectFactory;
 
-   public OWLAPILiteralRenderer(OWLAPIObjectFactory objectFactory)
+   public OWLLiteralRenderer(OWLObjectFactory objectFactory)
    {
       this.objectFactory = objectFactory;
    }
 
    @Override
-   public Optional<OWLAPILiteralRendering> renderOWLLiteral(OWLLiteralNode node) throws RendererException
+   public Optional<OWLLiteralRendering> renderOWLLiteral(OWLLiteralNode node) throws RendererException
    {
       OWLLiteral lit = createOWLLiteral(node);
-      return Optional.of(new OWLAPILiteralRendering(lit));
+      return Optional.of(new OWLLiteralRendering(lit));
    }
 
    private OWLLiteral createOWLLiteral(OWLLiteralNode node) throws RendererException

@@ -7,11 +7,11 @@ import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.RendererException;
-import org.mm.renderer.owlapi.OWLAPIObjectFactory;
-import org.mm.renderer.owlapi.OWLAPIReferenceRenderer;
-import org.mm.rendering.owlapi.OWLAPIEntityReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPIReferenceRendering;
+import org.mm.renderer.owlapi.OWLObjectFactory;
+import org.mm.renderer.owlapi.OWLReferenceRenderer;
+import org.mm.rendering.owlapi.OWLEntityReferenceRendering;
+import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
+import org.mm.rendering.owlapi.OWLReferenceRendering;
 import org.mm.rendering.owlapi.OWLAnnotationPropertyRendering;
 import org.mm.rendering.owlapi.OWLDataPropertyRendering;
 import org.mm.rendering.owlapi.OWLObjectPropertyRendering;
@@ -23,15 +23,15 @@ import org.semanticweb.owlapi.model.OWLProperty;
 
 public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyRendering>
 {
-   private OWLAPIReferenceRenderer referenceRenderer;
+   private OWLReferenceRenderer referenceRenderer;
 
-   public PropertyRendererDelegator(OWLAPIReferenceRenderer referenceRenderer)
+   public PropertyRendererDelegator(OWLReferenceRenderer referenceRenderer)
    {
       this.referenceRenderer = referenceRenderer;
    }
 
    @Override
-   public Optional<OWLPropertyRendering> render(TypeNode typeNode, OWLAPIObjectFactory objectFactory)
+   public Optional<OWLPropertyRendering> render(TypeNode typeNode, OWLObjectFactory objectFactory)
          throws RendererException
    {
       if (typeNode instanceof OWLPropertyNode) {
@@ -45,7 +45,7 @@ public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyR
       throw new RendererException("Node " + typeNode + " is not an OWL property");
    }
 
-   private Optional<OWLPropertyRendering> renderNameNode(NameNode nameNode, OWLAPIObjectFactory objectFactory)
+   private Optional<OWLPropertyRendering> renderNameNode(NameNode nameNode, OWLObjectFactory objectFactory)
          throws RendererException
    {
       OWLPropertyRendering propertyRendering = null;
@@ -60,15 +60,15 @@ public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyR
       return Optional.ofNullable(propertyRendering);
    }
 
-   private Optional<OWLPropertyRendering> renderReferenceNode(ReferenceNode referenceNode, OWLAPIObjectFactory objectFactory)
+   private Optional<OWLPropertyRendering> renderReferenceNode(ReferenceNode referenceNode, OWLObjectFactory objectFactory)
          throws RendererException
    {
       OWLPropertyRendering propertyRendering = null;
-      Optional<OWLAPIReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);
+      Optional<OWLReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);
       if (rendering.isPresent()) {
-         OWLAPIReferenceRendering referenceRendering = rendering.get();
-         if (referenceRendering instanceof OWLAPILiteralReferenceRendering) {
-            OWLAPILiteralReferenceRendering literalRendering = (OWLAPILiteralReferenceRendering) referenceRendering;
+         OWLReferenceRendering referenceRendering = rendering.get();
+         if (referenceRendering instanceof OWLLiteralReferenceRendering) {
+            OWLLiteralReferenceRendering literalRendering = (OWLLiteralReferenceRendering) referenceRendering;
             if (literalRendering.isOWLObjectProperty()) {
                OWLObjectProperty op = objectFactory.getAndCheckOWLObjectProperty(literalRendering.getRawValue());
                propertyRendering = new OWLObjectPropertyRendering(op, literalRendering.getOWLAxioms());
@@ -85,8 +85,8 @@ public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyR
                OWLObjectProperty op = objectFactory.getAndCheckOWLObjectProperty(literalRendering.getRawValue());
                propertyRendering = new OWLObjectPropertyRendering(op, literalRendering.getOWLAxioms());
             }
-         } else if (referenceRendering instanceof OWLAPIEntityReferenceRendering) {
-            OWLAPIEntityReferenceRendering entityRendering = (OWLAPIEntityReferenceRendering) referenceRendering;
+         } else if (referenceRendering instanceof OWLEntityReferenceRendering) {
+            OWLEntityReferenceRendering entityRendering = (OWLEntityReferenceRendering) referenceRendering;
             if (entityRendering.isOWLObjectProperty()) {
                OWLObjectProperty op = entityRendering.getOWLEntity().asOWLObjectProperty();
                propertyRendering = new OWLObjectPropertyRendering(op, entityRendering.getOWLAxioms());

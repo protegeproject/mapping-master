@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParserUtil;
-import org.mm.renderer.owlapi.OWLAPIRenderer;
+import org.mm.renderer.owlapi.OWLRenderer;
 
 public class ReferenceRendererOptionsManager implements MappingMasterParserConstants
 {
@@ -177,8 +177,8 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
    {
       Set<String> nameEncodings = new HashSet<>();
 
-      for (int i = 0; i < OWLAPIRenderer.NameEncodings.length; i++) {
-         nameEncodings.add(ParserUtil.getTokenName(OWLAPIRenderer.NameEncodings[i]));
+      for (int i = 0; i < OWLRenderer.NameEncodings.length; i++) {
+         nameEncodings.add(ParserUtil.getTokenName(OWLRenderer.NameEncodings[i]));
       }
       return nameEncodings;
    }
@@ -187,8 +187,8 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
    {
       Set<String> referenceValueTypes = new HashSet<>();
 
-      for (int i = 0; i < OWLAPIRenderer.ReferenceValueTypes.length; i++) {
-         referenceValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.ReferenceValueTypes[i]));
+      for (int i = 0; i < OWLRenderer.ReferenceValueTypes.length; i++) {
+         referenceValueTypes.add(ParserUtil.getTokenName(OWLRenderer.ReferenceValueTypes[i]));
       }
 
       return referenceValueTypes;
@@ -198,8 +198,8 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
    {
       Set<String> propertyTypes = new HashSet<>();
 
-      for (int i = 0; i < OWLAPIRenderer.PropertyTypes.length; i++) {
-         propertyTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.PropertyTypes[i]));
+      for (int i = 0; i < OWLRenderer.PropertyTypes.length; i++) {
+         propertyTypes.add(ParserUtil.getTokenName(OWLRenderer.PropertyTypes[i]));
       }
 
       return propertyTypes;
@@ -209,8 +209,8 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
    {
       Set<String> propertyValueTypes = new HashSet<>();
 
-      for (int i = 0; i < OWLAPIRenderer.PropertyValueTypes.length; i++) {
-         propertyValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.PropertyValueTypes[i]));
+      for (int i = 0; i < OWLRenderer.PropertyValueTypes.length; i++) {
+         propertyValueTypes.add(ParserUtil.getTokenName(OWLRenderer.PropertyValueTypes[i]));
       }
 
       return propertyValueTypes;
@@ -220,8 +220,8 @@ public class ReferenceRendererOptionsManager implements MappingMasterParserConst
    {
       Set<String> dataPropertyValueTypes = new HashSet<>();
 
-      for (int i = 0; i < OWLAPIRenderer.DataPropertyValueTypes.length; i++) {
-         dataPropertyValueTypes.add(ParserUtil.getTokenName(OWLAPIRenderer.DataPropertyValueTypes[i]));
+      for (int i = 0; i < OWLRenderer.DataPropertyValueTypes.length; i++) {
+         dataPropertyValueTypes.add(ParserUtil.getTokenName(OWLRenderer.DataPropertyValueTypes[i]));
       }
 
       return dataPropertyValueTypes;

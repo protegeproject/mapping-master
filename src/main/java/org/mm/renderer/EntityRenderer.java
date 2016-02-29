@@ -10,7 +10,7 @@ import org.mm.parser.node.OWLPropertyAssertionNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.rendering.Rendering;
 
-public interface OWLEntityRenderer
+public interface EntityRenderer
 {
    Optional<? extends Rendering> renderOWLClass(OWLClassNode node, boolean isDeclaration) throws RendererException;
 

@@ -7,21 +7,21 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class OWLAPIRendering implements Rendering
+public class OWLRendering implements Rendering
 {
    private final Set<OWLAxiom> axioms;
 
-   public OWLAPIRendering()
+   public OWLRendering()
    {
       this.axioms = new HashSet<>();
    }
 
-   public OWLAPIRendering(Set<OWLAxiom> axioms)
+   public OWLRendering(Set<OWLAxiom> axioms)
    {
       this.axioms = new HashSet<>(axioms);
    }
 
-   public OWLAPIRendering(OWLAxiom axiom)
+   public OWLRendering(OWLAxiom axiom)
    {
       this.axioms = new HashSet<>();
       this.axioms.add(axiom);

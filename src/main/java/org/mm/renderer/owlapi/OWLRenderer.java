@@ -21,11 +21,11 @@ import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.TypeNode;
 import org.mm.renderer.InternalRendererException;
-import org.mm.renderer.OWLDeclarationRenderer;
+import org.mm.renderer.DeclarationRenderer;
 import org.mm.renderer.ReferenceRendererConfiguration;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
-import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.mm.rendering.owlapi.OWLRendering;
 import org.mm.rendering.owlapi.OWLAnnotationValueRendering;
 import org.mm.rendering.owlapi.OWLClassExpressionRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
@@ -56,7 +56,7 @@ import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 
-public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Renderer, OWLDeclarationRenderer,
+public class OWLRenderer extends ReferenceRendererConfiguration implements Renderer, DeclarationRenderer,
       MappingMasterParserConstants
 {
    public static final int NameEncodings[] = { MM_LOCATION, MM_LITERAL, RDF_ID, RDFS_LABEL };
@@ -70,18 +70,18 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
 
    private SpreadSheetDataSource dataSource;
 
-   private final OWLAPIObjectFactory objectFactory;
-   private final OWLAPIEntityRenderer entityRenderer;
-   private final OWLAPIClassExpressionRenderer classExpressionRenderer;
-   private final OWLAPIReferenceRenderer referenceRenderer;
+   private final OWLObjectFactory objectFactory;
+   private final OWLEntityRenderer entityRenderer;
+   private final OWLClassExpressionRenderer classExpressionRenderer;
+   private final OWLReferenceRenderer referenceRenderer;
 
-   public OWLAPIRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
+   public OWLRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
    {
       this.dataSource = dataSource;
-      objectFactory = new OWLAPIObjectFactory(ontology);
-      referenceRenderer = new OWLAPIReferenceRenderer(dataSource, objectFactory);
-      entityRenderer = new OWLAPIEntityRenderer(referenceRenderer, objectFactory);
-      classExpressionRenderer = new OWLAPIClassExpressionRenderer(referenceRenderer, objectFactory);
+      objectFactory = new OWLObjectFactory(ontology);
+      referenceRenderer = new OWLReferenceRenderer(dataSource, objectFactory);
+      entityRenderer = new OWLEntityRenderer(referenceRenderer, objectFactory);
+      classExpressionRenderer = new OWLClassExpressionRenderer(referenceRenderer, objectFactory);
    }
 
    @Override
@@ -97,7 +97,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
    }
 
    @Override
-   public Optional<OWLAPIRendering> render(MMExpressionNode mmExpressionNode) throws RendererException
+   public Optional<OWLRendering> render(MMExpressionNode mmExpressionNode) throws RendererException
    {
       if (mmExpressionNode.hasOWLClassDeclaration()) {
          return renderOWLClassDeclaration(mmExpressionNode.getOWLClassDeclarationNode());
@@ -109,7 +109,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
    }
 
    @Override
-   public Optional<OWLAPIRendering> renderOWLClassDeclaration(OWLClassDeclarationNode declarationNode)
+   public Optional<OWLRendering> renderOWLClassDeclaration(OWLClassDeclarationNode declarationNode)
          throws RendererException
    {
       Set<OWLAxiom> axioms = new HashSet<>();
@@ -182,11 +182,11 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
             }
          }
       }
-      return Optional.of(new OWLAPIRendering(axioms));
+      return Optional.of(new OWLRendering(axioms));
    }
 
    @Override
-   public Optional<OWLAPIRendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode individualDeclarationNode)
+   public Optional<OWLRendering> renderOWLIndividualDeclaration(OWLIndividualDeclarationNode individualDeclarationNode)
          throws RendererException
    {
       Set<OWLAxiom> axioms = new HashSet<>();
@@ -239,7 +239,7 @@ public class OWLAPIRenderer extends ReferenceRendererConfiguration implements Re
          Set<OWLAxiom> typesAxioms = referenceRenderer.processTypesClause(declaredIndividual, typesNode);
          axioms.addAll(typesAxioms);
       }
-      return Optional.of(new OWLAPIRendering(axioms));
+      return Optional.of(new OWLRendering(axioms));
    }
 
    /**

@@ -1,9 +1,9 @@
 package org.mm.rendering.text;
 
 import org.mm.core.OWLLiteralType;
-import org.mm.rendering.OWLLiteralRendering;
+import org.mm.rendering.LiteralRendering;
 
-public class TextLiteralRendering extends TextRendering implements OWLLiteralRendering
+public class TextLiteralRendering extends TextRendering implements LiteralRendering
 {
    private final OWLLiteralType literalType;
 

@@ -5,7 +5,7 @@ import java.util.Set;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLProperty;
 
-public abstract class OWLPropertyRendering extends OWLAPIRendering
+public abstract class OWLPropertyRendering extends OWLRendering
 {
    private final OWLProperty property;
 

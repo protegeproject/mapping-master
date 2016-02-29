@@ -26,13 +26,13 @@ import org.mm.parser.node.OWLSomeValuesFromNode;
 import org.mm.parser.node.OWLUnionClassNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.renderer.InternalRendererException;
-import org.mm.renderer.OWLClassExpressionRenderer;
+import org.mm.renderer.ClassExpressionRenderer;
 import org.mm.renderer.RendererException;
-import org.mm.rendering.owlapi.OWLAPIEntityReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPILiteralReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPILiteralRendering;
-import org.mm.rendering.owlapi.OWLAPIReferenceRendering;
-import org.mm.rendering.owlapi.OWLAPIRendering;
+import org.mm.rendering.owlapi.OWLEntityReferenceRendering;
+import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
+import org.mm.rendering.owlapi.OWLLiteralRendering;
+import org.mm.rendering.owlapi.OWLReferenceRendering;
+import org.mm.rendering.owlapi.OWLRendering;
 import org.mm.rendering.owlapi.OWLClassExpressionRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
 import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
@@ -66,14 +66,14 @@ import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
 import org.semanticweb.owlapi.model.OWLProperty;
 
-public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
+public class OWLClassExpressionRenderer implements ClassExpressionRenderer
 {
-   private final OWLAPIEntityRenderer entityRenderer;
-   private final OWLAPIReferenceRenderer referenceRenderer;
-   private final OWLAPILiteralRenderer literalRenderer;
-   private final OWLAPIObjectFactory objectFactory;
+   private final OWLEntityRenderer entityRenderer;
+   private final OWLReferenceRenderer referenceRenderer;
+   private final OWLLiteralRenderer literalRenderer;
+   private final OWLObjectFactory objectFactory;
 
-   public OWLAPIClassExpressionRenderer(OWLAPIReferenceRenderer referenceRenderer, OWLAPIObjectFactory objectFactory)
+   public OWLClassExpressionRenderer(OWLReferenceRenderer referenceRenderer, OWLObjectFactory objectFactory)
    {
       this.referenceRenderer = referenceRenderer;
       this.entityRenderer = referenceRenderer.getEntityRenderer();
@@ -192,10 +192,10 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
    }
 
    @Override
-   public Optional<OWLAPIRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
+   public Optional<OWLRendering> renderOWLEquivalentClasses(OWLClassNode declaredClassNode,
          OWLEquivalentClassesNode equivalentClassesNode) throws RendererException
    {
-      OWLAPIRendering finalRendering = null;
+      OWLRendering finalRendering = null;
       Optional<OWLClassRendering> declaredClassRendering = entityRenderer.renderOWLClass(declaredClassNode, false);
       if (declaredClassRendering.isPresent()) {
          OWLClass declaredClass = declaredClassRendering.get().getOWLClass();
@@ -212,7 +212,7 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
             equivalentClassExpressions.add(declaredClass);
             OWLEquivalentClassesAxiom equivalentClassesAxiom = objectFactory.createOWLEquivalentClassesAxiom(equivalentClassExpressions);
             axioms.add(equivalentClassesAxiom);
-            finalRendering = new OWLAPIRendering(axioms);
+            finalRendering = new OWLRendering(axioms);
          }
       }
       return Optional.ofNullable(finalRendering);
@@ -395,11 +395,11 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
                return Optional.of(new OWLRestrictionRendering(objectHasValueRestriction));
             } else if (objectHasValueNode.hasReferenceNode()) {
                ReferenceNode referenceNode = objectHasValueNode.getReferenceNode();
-               Optional<OWLAPIReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);
+               Optional<OWLReferenceRendering> rendering = referenceRenderer.renderReference(referenceNode);
                if (rendering.isPresent()) {
-                  OWLAPIReferenceRendering referenceRendering = rendering.get();
-                  if (referenceRendering instanceof OWLAPIEntityReferenceRendering) {
-                     OWLAPIEntityReferenceRendering entityRendering = (OWLAPIEntityReferenceRendering) referenceRendering;
+                  OWLReferenceRendering referenceRendering = rendering.get();
+                  if (referenceRendering instanceof OWLEntityReferenceRendering) {
+                     OWLEntityReferenceRendering entityRendering = (OWLEntityReferenceRendering) referenceRendering;
                      if (entityRendering.isOWLNamedIndividual()) {
                         OWLNamedIndividual individual = entityRendering.getOWLEntity().asOWLNamedIndividual();
                         OWLObjectHasValue objectHasValueRestriction = objectFactory.createOWLObjectHasValue(objectProperty, individual);
@@ -427,18 +427,18 @@ public class OWLAPIClassExpressionRenderer implements OWLClassExpressionRenderer
          if (property instanceof OWLDataProperty) {
             OWLDataProperty dataProperty = objectFactory.createOWLDataProperty(property.getIRI());
             if (hasValueNode.hasLiteralNode()) {
-               Optional<OWLAPILiteralRendering> literalRendering = literalRenderer.renderOWLLiteral(hasValueNode.getOWLLiteralNode());
+               Optional<OWLLiteralRendering> literalRendering = literalRenderer.renderOWLLiteral(hasValueNode.getOWLLiteralNode());
                if (literalRendering.isPresent()) {
                   OWLLiteral literal = literalRendering.get().getOWLLiteral();
                   OWLDataHasValue dataHasValue = objectFactory.createOWLDataHasValue(dataProperty, literal);
                   return Optional.of(new OWLRestrictionRendering(dataHasValue));
                } else return Optional.empty();
             } else if (hasValueNode.hasReferenceNode()) {
-               Optional<OWLAPIReferenceRendering> rendering = referenceRenderer.renderReference(hasValueNode.getReferenceNode());
+               Optional<OWLReferenceRendering> rendering = referenceRenderer.renderReference(hasValueNode.getReferenceNode());
                if (rendering.isPresent()) {
-                  OWLAPIReferenceRendering referenceRendering = rendering.get();
-                  if (referenceRendering instanceof OWLAPILiteralReferenceRendering) {
-                     OWLAPILiteralReferenceRendering literalRendering = (OWLAPILiteralReferenceRendering) referenceRendering;
+                  OWLReferenceRendering referenceRendering = rendering.get();
+                  if (referenceRendering instanceof OWLLiteralReferenceRendering) {
+                     OWLLiteralReferenceRendering literalRendering = (OWLLiteralReferenceRendering) referenceRendering;
                      if (literalRendering.isOWLLiteral()) {
                         OWLLiteral literal = literalRendering.getOWLLiteral();
                         OWLDataHasValue dataHasValue = objectFactory.createOWLDataHasValue(dataProperty, literal);

@@ -2,16 +2,16 @@ package org.mm.rendering.owlapi;
 
 import org.mm.core.OWLLiteralType;
 import org.mm.parser.MappingMasterParserConstants;
-import org.mm.rendering.OWLLiteralRendering;
+import org.mm.rendering.LiteralRendering;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
-public class OWLAPILiteralRendering extends OWLAPIRendering implements OWLLiteralRendering, MappingMasterParserConstants
+public class OWLLiteralRendering extends OWLRendering implements LiteralRendering, MappingMasterParserConstants
 {
    private final OWLLiteralType literalType;
    private final OWLLiteral literal;
 
-   public OWLAPILiteralRendering(OWLLiteral literal)
+   public OWLLiteralRendering(OWLLiteral literal)
    {
       super();
       this.literal = literal;

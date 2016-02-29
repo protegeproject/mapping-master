@@ -6,7 +6,7 @@ import org.mm.parser.node.OWLClassDeclarationNode;
 import org.mm.parser.node.OWLIndividualDeclarationNode;
 import org.mm.rendering.Rendering;
 
-public interface OWLDeclarationRenderer
+public interface DeclarationRenderer
 {
    Optional<? extends Rendering> renderOWLClassDeclaration(OWLClassDeclarationNode node) throws RendererException;
 

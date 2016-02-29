@@ -5,7 +5,7 @@ import java.util.Set;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
-public class OWLClassExpressionRendering extends OWLAPIRendering
+public class OWLClassExpressionRendering extends OWLRendering
 {
    private final OWLClassExpression classExpression;
 

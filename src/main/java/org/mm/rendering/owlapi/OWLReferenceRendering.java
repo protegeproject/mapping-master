@@ -6,21 +6,21 @@ import org.mm.core.ReferenceType;
 import org.mm.rendering.ReferenceRendering;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
-public abstract class OWLAPIReferenceRendering extends OWLAPIRendering implements ReferenceRendering
+public abstract class OWLReferenceRendering extends OWLRendering implements ReferenceRendering
 {
    private ReferenceType type;
 
-   public OWLAPIReferenceRendering(ReferenceType type) {
+   public OWLReferenceRendering(ReferenceType type) {
       super();
       this.type = type;
    }
    
-   public OWLAPIReferenceRendering(Set<OWLAxiom> axioms, ReferenceType type) {
+   public OWLReferenceRendering(Set<OWLAxiom> axioms, ReferenceType type) {
       super(axioms);
       this.type = type;
    }
    
-   public OWLAPIReferenceRendering(OWLAxiom axiom, ReferenceType type) {
+   public OWLReferenceRendering(OWLAxiom axiom, ReferenceType type) {
       super(axiom);
       this.type = type;
    }
