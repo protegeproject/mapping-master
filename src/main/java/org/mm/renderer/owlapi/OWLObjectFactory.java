@@ -1,7 +1,5 @@
 package org.mm.renderer.owlapi;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -571,14 +569,13 @@ public class OWLObjectFactory implements MappingMasterParserConstants
    }
 
    public OWLProperty getAndCheckOWLProperty(String inputName) throws RendererException {
-      List<RendererException> exceptions = new ArrayList<>();
       /*
        * Try to find first if the given input name is a data property
        */
       try {
          return getAndCheckOWLObjectProperty(inputName);
       } catch (RendererException e) {
-         exceptions.add(e);
+         // NO-OP
       }
       /*
        * If not, try to check if it is an object property
@@ -586,7 +583,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
       try {
          return getAndCheckOWLDataProperty(inputName);
       } catch (RendererException e) {
-         exceptions.add(e);
+         // NO-OP
       }
       /*
        * Perhaps, it is an annotation property...
@@ -594,12 +591,12 @@ public class OWLObjectFactory implements MappingMasterParserConstants
       try {
          return getAndCheckOWLAnnotationProperty(inputName);
       } catch (RendererException e) {
-         exceptions.add(e);
+         // NO-OP
       }
       /*
        * OK, give up!
        */
-      throwPropertyNotFoundException(exceptions);
+      throwEntityNotFoundException(inputName, "data/object/annotation property");
       return null;
    }
 
@@ -639,20 +636,6 @@ public class OWLObjectFactory implements MappingMasterParserConstants
    {
       String msg = String.format("The expected %s (%s) does not exist in the ontology", entityType, inputName);
       throw new RendererException(msg);
-   }
-
-   private void throwPropertyNotFoundException(List<RendererException> exceptions) throws RendererException
-   {
-      StringBuilder sb = new StringBuilder();
-      boolean needNewline = false;
-      for (RendererException e : exceptions) {
-         if (needNewline) {
-            sb.append("\n");
-         }
-         sb.append(e.getMessage());
-         needNewline = true;
-      }
-      throw new RendererException(sb.toString());
    }
 
    /*
