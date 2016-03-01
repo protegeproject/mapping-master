@@ -253,7 +253,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
     *  Handles the creation of OWL typed literals
     */
 
-   public OWLLiteral createOWLLiteral(String value, int type) throws RendererException
+   public OWLLiteral createTypedLiteral(String value, int type) throws RendererException
    {
       switch (type) {
          case XSD_STRING:
@@ -284,6 +284,15 @@ public class OWLObjectFactory implements MappingMasterParserConstants
             return createOWLLiteralDuration(value);
       }
       throw new RendererException("Unknown datatype");
+   }
+
+   public OWLLiteral createPlainLiteral(String value, Optional<String> lang)
+   {
+      if (lang.isPresent()) {
+         return owlDataFactory.getOWLLiteral(value, lang.get());
+      } else {
+         return owlDataFactory.getOWLLiteral(value, "");
+      }
    }
 
    public OWLLiteral createOWLLiteralString(String value)

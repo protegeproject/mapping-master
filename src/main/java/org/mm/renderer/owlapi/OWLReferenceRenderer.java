@@ -100,11 +100,17 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
 
       if (sourceSpecificationNode.hasLiteral()) {
+         /*
+          * Get the literal value from the source node.
+          */
          String literalValue = sourceSpecificationNode.getLiteral();
+         Optional<String> languageTag = getLanguage(referenceNode);
+         
          if (referenceNode.hasLiteralType()) {
-            OWLLiteral literal = createOWLLiteral(literalValue, referenceType);
+            OWLLiteral literal = createOWLLiteral(literalValue, languageTag, referenceType);
             return Optional.of(new OWLLiteralReferenceRendering(literal, referenceType));
-         } else if (referenceNode.hasEntityType()) {
+         }
+         else if (referenceNode.hasEntityType()) {
             /*
              * If the source specification node is written as a literal value without datatype, e.g., @"XYZ", then
              * MM will assume it is an OWL entity. The assignments below assume that the entity name and its label are
@@ -112,7 +118,6 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
              */
             Optional<String> entityName = Optional.of(literalValue);
             Optional<String> entityLabel = Optional.of(literalValue);
-            Optional<String> languageTag = getLanguage(referenceNode);
             
             /*
              * Create the OWL entity based on the inputs of its name, label and language tag. The method createOWLEntity
@@ -129,12 +134,13 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
          }
       } else if (sourceSpecificationNode.hasLocation()) {
          /*
-          * Resolve the value given a location reference to an input spreadsheet
+          * Get the literal value by resolving the given reference against the input spreadsheet
           */
          SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
          Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
          resolvedValue = processResolvedValue(resolvedValue, location, referenceNode.getReferenceDirectives());
-         
+         Optional<String> languageTag = getLanguage(referenceNode);
+
          if (referenceNode.hasLiteralType()) {
             Optional<String> literalValue = getLiteral(resolvedValue, referenceNode);
             literalValue = processLiteral(literalValue, location, referenceNode.getReferenceDirectives());
@@ -143,11 +149,12 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
              */
             OWLLiteralReferenceRendering literalRendering = null;
             if (literalValue.isPresent()) {
-               OWLLiteral literal = createOWLLiteral(literalValue.get(), referenceType);
+               OWLLiteral literal = createOWLLiteral(literalValue.get(), languageTag, referenceType);
                literalRendering = new OWLLiteralReferenceRendering(literal, referenceType);
             }
             return Optional.ofNullable(literalRendering);
-         } else if (referenceNode.hasEntityType()) {
+         }
+         else if (referenceNode.hasEntityType()) {
             /*
              * Setup the entity name, label and language tag based on user's input. There are validation process
              * for the entity name and label to decide if an empty value will throw a warning, an error or just
@@ -157,7 +164,6 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             entityName = processIdentifier(entityName, location, referenceNode.getReferenceDirectives());
             Optional<String> entityLabel = getEntityLabel(resolvedValue, referenceNode);
             entityLabel = validateLabel(entityLabel, location, referenceNode.getReferenceDirectives());
-            Optional<String> languageTag = getLanguage(referenceNode);
             
             /*
              * Create the OWL entity based on the input of its name, label and language tag. The method createOWLEntity
@@ -703,9 +709,13 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return Optional.ofNullable(languageTag);
    }
 
-   private OWLLiteral createOWLLiteral(String value, ReferenceType referenceType) throws RendererException
+   private OWLLiteral createOWLLiteral(String value, Optional<String> languageTag, ReferenceType referenceType) throws RendererException
    {
-      return objectFactory.createOWLLiteral(value, referenceType.getType());
+      if (referenceType.isTypedLiteral()) {
+         return objectFactory.createTypedLiteral(value, referenceType.getType());
+      } else {
+         return objectFactory.createPlainLiteral(value, languageTag);
+      }
    }
 
    class LocationEncodingCache
