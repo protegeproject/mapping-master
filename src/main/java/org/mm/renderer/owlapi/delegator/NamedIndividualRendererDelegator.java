@@ -41,7 +41,7 @@ public class NamedIndividualRendererDelegator implements RendererDelegator<OWLNa
    private Optional<OWLNamedIndividualRendering> renderNameNode(NameNode nameNode, OWLObjectFactory objectFactory)
          throws RendererException
    {
-      OWLNamedIndividual ind = objectFactory.createOWLNamedIndividual(nameNode.getName());
+      OWLNamedIndividual ind = objectFactory.getAndCheckOWLNamedIndividual(nameNode.getName());
       return Optional.of(new OWLNamedIndividualRendering(ind));
    }
 

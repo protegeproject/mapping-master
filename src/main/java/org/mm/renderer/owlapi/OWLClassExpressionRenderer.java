@@ -390,7 +390,7 @@ public class OWLClassExpressionRenderer implements ClassExpressionRenderer
             if (objectHasValueNode.hasNameNone()) {
                NameNode nameNode = objectHasValueNode.getNameNode();
                String shortName = nameNode.getName();
-               OWLNamedIndividual individual = objectFactory.createOWLNamedIndividual(shortName);
+               OWLNamedIndividual individual = objectFactory.getAndCheckOWLNamedIndividual(shortName);
                OWLObjectHasValue objectHasValueRestriction = objectFactory.createOWLObjectHasValue(objectProperty, individual);
                return Optional.of(new OWLRestrictionRendering(objectHasValueRestriction));
             } else if (objectHasValueNode.hasReferenceNode()) {
