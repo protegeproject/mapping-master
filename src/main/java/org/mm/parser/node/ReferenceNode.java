@@ -749,24 +749,24 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
       if (this.referenceDirectives.hasExplicitlySpecifiedLanguage()
             && this.referenceTypeNode.getReferenceType().isTypedLiteral())
          throw new ParseException(
-               "use of language specification in reference " + toString() + " invalid because it is an OWL literal");
+               "use of language specification in reference " + toString() + " invalid because it is a typed literal");
 
       if (this.referenceDirectives.hasExplicitlySpecifiedPrefix()
-            && this.referenceTypeNode.getReferenceType().isTypedLiteral())
+            && this.referenceTypeNode.getReferenceType().isOWLLiteral())
          throw new ParseException("use of prefix in reference " + toString() + " invalid because it is an OWL literal");
 
       if (this.referenceDirectives.hasExplicitlySpecifiedNamespace()
-            && this.referenceTypeNode.getReferenceType().isTypedLiteral())
+            && this.referenceTypeNode.getReferenceType().isOWLLiteral())
          throw new ParseException(
                "use of namespace in reference " + toString() + " invalid because it is an OWL literal");
 
       if (this.referenceDirectives.hasExplicitlySpecifiedEmptyLiteralDirective()
-            && !this.referenceTypeNode.getReferenceType().isTypedLiteral())
+            && !this.referenceTypeNode.getReferenceType().isOWLLiteral())
          throw new ParseException(
                "use of empty literal setting in reference " + toString() + " invalid because it is not an OWL literal");
 
       if (this.referenceDirectives.hasExplicitlySpecifiedReferenceType()
-            && this.referenceTypeNode.getReferenceType().isTypedLiteral() && hasExplicitlySpecifiedTypes())
+            && this.referenceTypeNode.getReferenceType().isOWLLiteral() && hasExplicitlySpecifiedTypes())
          throw new ParseException("entity type " + this.referenceTypeNode.getReferenceType().getTypeName()
                + " in reference " + toString() + " should not have defining types because it is an OWL literal");
    }
