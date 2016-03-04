@@ -280,20 +280,21 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
          ReferenceNode referenceNode) throws RendererException
    {
       OWLEntity entity = null;
-      String prefix = getUserDefinedPrefix(referenceNode);
       ReferenceType referenceType = getReferenceType(referenceNode);
       ReferenceDirectives directives = referenceNode.getReferenceDirectives();
+      if (entityName.isPresent()) {
+         entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, directives);
+      } else if (!entityName.isPresent() && label.isPresent()) {
+         String prefix = getUserDefinedPrefix(referenceNode);
+         entity = createOWLEntityUsingEntityLabel(prefix, label.get(), language, referenceType, directives);
+      }
+      /*
+       * Override any entity naming if the user uses location encoding.
+       */
       if (directives.usesLocationEncoding()) {
+         String prefix = getUserDefinedPrefix(referenceNode);
          SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
          entity = createOWLEntityUsingLocationEncoding(prefix, location, referenceType);
-      } else {
-         if (!entityName.isPresent() && label.isPresent()) {
-            entity = createOWLEntityUsingEntityLabel(prefix, label.get(), language, referenceType, directives);
-         } else if (entityName.isPresent() && !label.isPresent()) {
-            entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, directives);
-         } else if (entityName.isPresent() && label.isPresent()) {
-            entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, directives);
-         }
       }
       return Optional.ofNullable(entity);
    }
