@@ -636,6 +636,14 @@ public class OWLObjectFactory implements MappingMasterParserConstants
       return Optional.ofNullable(foundEntity);
    }
 
+   public Optional<OWLEntity> getOWLEntity(String inputName) throws RendererException
+   {
+      /*
+       * Assuming to return the first entity found in the list.
+       */
+      return getOWLEntities(inputName).stream().findFirst();
+   }
+
    private Set<OWLEntity> getOWLEntities(String inputName) throws RendererException
    {
       return ontology.getEntitiesInSignature(getIri(inputName));

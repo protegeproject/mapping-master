@@ -33,16 +33,17 @@ import org.mm.renderer.ReferenceUtil;
 import org.mm.renderer.RendererException;
 import org.mm.rendering.LiteralRendering;
 import org.mm.rendering.ReferenceRendering;
-import org.mm.rendering.owlapi.OWLEntityReferenceRendering;
-import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
-import org.mm.rendering.owlapi.OWLReferenceRendering;
 import org.mm.rendering.owlapi.OWLClassExpressionRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
+import org.mm.rendering.owlapi.OWLEntityReferenceRendering;
+import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
 import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
+import org.mm.rendering.owlapi.OWLReferenceRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetLocation;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassAssertionAxiom;
@@ -287,14 +288,11 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
          entity = createOWLEntityUsingLocationEncoding(prefix, location, referenceType);
       } else {
          if (!entityName.isPresent() && label.isPresent()) {
-            int creationSetting = directives.getActualIfOWLEntityDoesNotExistDirective();
-            entity = createOWLEntityUsingEntityLabel(prefix, label.get(), language, referenceType, creationSetting);
+            entity = createOWLEntityUsingEntityLabel(prefix, label.get(), language, referenceType, directives);
          } else if (entityName.isPresent() && !label.isPresent()) {
-            int creationSetting = directives.getActualIfOWLEntityDoesNotExistDirective();
-            entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, creationSetting);
+            entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, directives);
          } else if (entityName.isPresent() && label.isPresent()) {
-            int creationSetting = directives.getActualIfOWLEntityDoesNotExistDirective();
-            entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, creationSetting);
+            entity = createOWLEntityUsingEntityName(entityName.get(), referenceType, directives);
          }
       }
       return Optional.ofNullable(entity);
@@ -314,13 +312,33 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       }
    }
 
-   private OWLEntity createOWLEntityUsingEntityName(String entityName, ReferenceType referenceType, int creationSetting)
+   private OWLEntity createOWLEntityUsingEntityName(String entityName, ReferenceType referenceType, ReferenceDirectives directives)
          throws RendererException
    {
-      Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(entityName, referenceType);
-      if (!foundEntity.isPresent()) {
-         OWLEntity newEntity = null;
-         switch (creationSetting) {
+      OWLEntity entity = null;
+      Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(entityName);
+      if (foundEntity.isPresent()) {
+         if (isCompatible(foundEntity.get(), referenceType)) {
+            int setting = directives.getActualIfOWLEntityExistsDirective();
+            switch (setting) {
+               case MM_SKIP_IF_OWL_ENTITY_EXISTS:
+                  break;
+               case MM_WARNING_IF_OWL_ENTITY_EXISTS:
+                  logger.warn("An entity with identifier '" + entityName + "' already exists in the ontology");
+                  break;
+               case MM_ERROR_IF_OWL_ENTITY_EXISTS:
+                  throw new RendererException("An entity with identifier '" + entityName + "' already exists in the ontology");
+               case MM_RESOLVE_IF_OWL_ENTITY_EXISTS:
+                  entity = foundEntity.get();
+            }
+         } else {
+            String message = String.format("Mismatch entity type found in the ontology (%s) and in the transformation rule (%s)",
+                  foundEntity.get().getEntityType(), referenceType.getTypeName());
+            throw new RendererException(message);
+         }
+      } else {
+         int setting = directives.getActualIfOWLEntityDoesNotExistDirective();
+         switch (setting) {
             case MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST:
                break;
             case MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST:
@@ -328,23 +346,41 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                break;
             case MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST:
                throw new RendererException("An entity with identifier '" + entityName + "' does not exist in the ontology.\n"
-                     + "Please provide it first with the proper IRI identifier.");
+                     + "Please create it first in your ontology.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               newEntity = createOWLEntity(NameUtil.toSnakeCase(entityName), referenceType);
+               entity = createOWLEntity(NameUtil.toSnakeCase(entityName), referenceType);
          }
-         return newEntity;
-      } else {
-         return foundEntity.get();
       }
+      return entity;
    }
 
    private OWLEntity createOWLEntityUsingEntityLabel(String labelPrefix, String entityLabel, Optional<String> languageTag,
-         ReferenceType referenceType, int creationSetting) throws RendererException
+         ReferenceType referenceType, ReferenceDirectives directives) throws RendererException
    {
+      OWLEntity entity = null;
       Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(entityLabel, languageTag);
-      if (!foundEntity.isPresent()) {
-         OWLEntity newEntity = null;
-         switch (creationSetting) {
+      if (foundEntity.isPresent()) {
+         if (isCompatible(foundEntity.get(), referenceType)) {
+            int setting = directives.getActualIfOWLEntityExistsDirective();
+            switch (setting) {
+               case MM_SKIP_IF_OWL_ENTITY_EXISTS:
+                  break;
+               case MM_WARNING_IF_OWL_ENTITY_EXISTS:
+                  logger.warn("An entity with display name '" + entityLabel + "' already exists in the ontology");
+                  break;
+               case MM_ERROR_IF_OWL_ENTITY_EXISTS:
+                  throw new RendererException("An entity with display name '" + entityLabel + "' already exists in the ontology");
+               case MM_RESOLVE_IF_OWL_ENTITY_EXISTS:
+                  entity = foundEntity.get();
+            }
+         } else {
+            String message = String.format("Mismatch entity type found in the ontology (%s) and in the transformation rule (%s)",
+                  foundEntity.get().getEntityType(), referenceType.getTypeName());
+            throw new RendererException(message);
+         }
+      } else {
+         int setting = directives.getActualIfOWLEntityDoesNotExistDirective();
+         switch (setting) {
             case MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST:
                break;
             case MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST:
@@ -352,18 +388,24 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                break;
             case MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST:
                throw new RendererException("An entity with display name '" + entityLabel + "' does not exist in the ontology.\n"
-                     + "Please provide it first with the proper rdfs:label annotation.");
+                     + "Please create it first in your ontology with the proper rdfs:label annotation.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               newEntity = createOWLEntity(labelPrefix, NameUtil.toSnakeCase(entityLabel), referenceType);
+               entity = createOWLEntity(labelPrefix, NameUtil.toSnakeCase(entityLabel), referenceType);
          }
-         return newEntity;
-      } else {
-         return foundEntity.get();
       }
+      return entity;
    }
 
-   private OWLEntity createOWLEntity(String prefix, String localName, ReferenceType referenceType)
-         throws RendererException
+   private boolean isCompatible(OWLEntity entity, ReferenceType referenceType)
+   {
+      return (entity instanceof OWLClass && referenceType.isOWLClass())
+            || (entity instanceof OWLDataProperty && referenceType.isOWLDataProperty())
+            || (entity instanceof OWLObjectProperty && referenceType.isOWLObjectProperty())
+            || (entity instanceof OWLAnnotationProperty && referenceType.isOWLAnnotationProperty())
+            || (entity instanceof OWLNamedIndividual && referenceType.isOWLNamedIndividual());
+   }
+
+   private OWLEntity createOWLEntity(String prefix, String localName, ReferenceType referenceType) throws RendererException
    {
       String entityName = prefix + localName;
       if (!NameUtil.isValidUriConstruct(entityName)) {
@@ -382,9 +424,9 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return objectFactory.getOWLEntityFromDisplayName(displayName, languageTag);
    }
 
-   private Optional<OWLEntity> getOWLEntityFromOntology(String entityName, ReferenceType referenceType) throws RendererException
+   private Optional<OWLEntity> getOWLEntityFromOntology(String entityName) throws RendererException
    {
-      return objectFactory.getOWLEntity(entityName, referenceType.getType());
+      return objectFactory.getOWLEntity(entityName);
    }
 
    private Optional<OWLEntity> getOWLEntityFromLocationCache(String prefix, SpreadsheetLocation location)
@@ -693,8 +735,9 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             } else {
                throw new RendererException("Expecting literal for value extraction argument, got " + argumentNode);
             }
-         } else
+         } else {
             throw new RendererException("Empty reference for value extraction function argument");
+         }
       } else {
          throw new InternalRendererException("Unknown child for node " + argumentNode.getNodeName());
       }
