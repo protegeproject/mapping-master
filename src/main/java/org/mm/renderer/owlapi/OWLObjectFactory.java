@@ -56,6 +56,7 @@ import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
+import org.semanticweb.owlapi.model.PrefixManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
@@ -66,19 +67,26 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    private final OWLDataFactory owlDataFactory;
 
-   private final LabelToEntityMapper labelToEntityMapper;
+   private final PrefixManager prefixManager;
 
-   private final DefaultPrefixManager prefixManager = new DefaultPrefixManager();
+   private final LabelToEntityMapper labelToEntityMapper;
 
    public OWLObjectFactory(OWLOntology ontology)
    {
       this.ontology = ontology;
 
+      prefixManager = setupPrefixManager(ontology);
       labelToEntityMapper = new LabelToEntityMapper(ontology);
 
       owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
+   }
 
-      // Assemble the prefix manager for the given ontology
+   private PrefixManager setupPrefixManager(OWLOntology ontology) {
+      PrefixManager prefixManager = new DefaultPrefixManager();
+      
+      /*
+       * Assemble the prefix manager for the given ontology
+       */
       OWLDocumentFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
       if (format.isPrefixOWLOntologyFormat()) {
          Map<String, String> prefixMap = format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap();
@@ -86,8 +94,9 @@ public class OWLObjectFactory implements MappingMasterParserConstants
             prefixManager.setPrefix(prefixName, prefixMap.get(prefixName));
          }
       }
-
-      // Make sure the default prefix is set
+      /*
+       * Make sure the default prefix is set
+       */
       if (prefixManager.getDefaultPrefix() == null) {
          com.google.common.base.Optional<IRI> ontologyIRI = ontology.getOntologyID().getOntologyIRI();
          if (ontologyIRI.isPresent()) {
@@ -98,6 +107,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
             prefixManager.setDefaultPrefix(iri);
          }
       }
+      return prefixManager;
    }
 
    /*
