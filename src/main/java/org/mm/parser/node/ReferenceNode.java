@@ -13,6 +13,7 @@ import org.mm.parser.ASTEmptyLiteralSetting;
 import org.mm.parser.ASTEmptyLocationSetting;
 import org.mm.parser.ASTEmptyRDFIDSetting;
 import org.mm.parser.ASTEmptyRDFSLabelSetting;
+import org.mm.parser.ASTIRIEncoding;
 import org.mm.parser.ASTIfExistsDirective;
 import org.mm.parser.ASTIfNotExistsDirective;
 import org.mm.parser.ASTLanguage;
@@ -55,6 +56,7 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
    private ShiftDirectiveNode shiftDirectiveNode;
    private final ReferenceDirectives referenceDirectives;
    private final List<ValueEncodingDirectiveNode> valueEncodingsNodes = new ArrayList<>();
+   private IRIEncodingDirectiveNode iriEncodingDirectiveNode;
 
    public ReferenceNode(ASTReference node) throws ParseException
    {
@@ -79,6 +81,8 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
             this.namespaceDirectiveNode = new NamespaceDirectiveNode((ASTNamespace) child);
          } else if (ParserUtil.hasName(child, "ValueEncoding")) {
             this.valueEncodingsNodes.add(new ValueEncodingDirectiveNode((ASTValueEncoding) child));
+         } else if (ParserUtil.hasName(child, "IRIEncoding")) {
+            this.iriEncodingDirectiveNode = new IRIEncodingDirectiveNode((ASTIRIEncoding) child);
          } else if (ParserUtil.hasName(child, "DefaultLocationValue")) {
             if (this.defaultLocationValueDirectiveNode != null) throw new RendererException(
                   "only one default location value directive can be specified for a Reference");
@@ -153,6 +157,9 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
                this.referenceDirectives.setUsesLocationWithDuplicatesEncoding();
          }
       }
+
+      if (this.iriEncodingDirectiveNode != null)
+         this.referenceDirectives.setExplicitlySpecifiedIRIEncoding(this.iriEncodingDirectiveNode.getValueEncodingType());
 
       if (this.defaultLocationValueDirectiveNode != null)
          this.referenceDirectives.setExplicitlySpecifiedDefaultLocationValue(
@@ -249,6 +256,11 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
    public List<ValueEncodingDirectiveNode> getValueEncodingNodes()
    {
       return this.valueEncodingsNodes;
+   }
+
+   public IRIEncodingDirectiveNode getIRIEncodingNode()
+   {
+      return this.iriEncodingDirectiveNode;
    }
 
    public TypesNode getTypesNode()

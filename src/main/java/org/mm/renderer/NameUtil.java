@@ -3,6 +3,9 @@ package org.mm.renderer;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.UUID;
+
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class NameUtil
 {
@@ -33,10 +36,8 @@ public class NameUtil
 
    public static String toUpperCamel(final String text)
    {
-      final String cleanText = removeNonWordCharacters(text, " ");
-      
       final StringBuilder sb = new StringBuilder();
-      for (final String word : cleanText.split("\\s+")) {
+      for (final String word : text.split("\\s+")) {
          if (!word.isEmpty()) {
             if (word.matches("\\p{javaLowerCase}*")) {
                /*
@@ -55,12 +56,10 @@ public class NameUtil
 
    public static String toLowerCamel(final String text)
    {
-      String cleanText = removeNonWordCharacters(text, " ");
-      
       final StringBuilder sb = new StringBuilder();
       
       boolean isFirstWord = true;
-      for (final String word : cleanText.split("\\s+")) {
+      for (final String word : text.split("\\s+")) {
          if (!word.isEmpty()) {
             if (word.matches("\\p{javaLowerCase}*")) {
                if (isFirstWord) {
@@ -85,6 +84,16 @@ public class NameUtil
    public static String toSnakeCase(final String text)
    {
       return text.replaceAll("\\s+", "_");
+   }
+
+   public static String toUUID()
+   {
+      return UUID.randomUUID().toString();
+   }
+
+   public static String toMD5(final String text)
+   {
+      return DigestUtils.md5Hex(text);
    }
 
    public static String removeNonWordCharacters(final String text)

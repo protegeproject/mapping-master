@@ -39,10 +39,13 @@ public class ReferenceDirectives implements MappingMasterParserConstants
    private int explicitlySpecifiedEmptyLiteralDirective = -1;
    private int explicitlySpecifiedEmptyRDFIDDirective = -1;
    private int explicitlySpecifiedEmptyRDFSLabelDirective = -1;
+   private int explicitlySpecifiedIRIEncoding = -1;
 
    private boolean usesLocationEncoding;
    private boolean usesLocationWithDuplicatesEncoding;
    private boolean hasExplicitlySpecifiedTypes;
+   private boolean hasExplicitlySpecifiedIRIEncoding;
+
    private SpreadsheetLocation shiftedLocation;
 
    private boolean hasExplicitlySpecifiedOptions;
@@ -128,6 +131,23 @@ public class ReferenceDirectives implements MappingMasterParserConstants
    {
       return hasExplicitlySpecifiedReferenceType() ? this.explicitlySpecifiedReferenceType
             : this.defaultReferenceDirectives.getDefaultReferenceType();
+   }
+
+   public boolean hasExplicitlySpecifiedIRIEncoding()
+   {
+      return this.hasExplicitlySpecifiedIRIEncoding;
+   }
+
+   public void setExplicitlySpecifiedIRIEncoding(int iriEncodingType)
+   {
+      this.explicitlySpecifiedIRIEncoding = iriEncodingType;
+      this.hasExplicitlySpecifiedIRIEncoding = true;
+   }
+
+   public int getActualIRIEncoding()
+   {
+      return hasExplicitlySpecifiedIRIEncoding() ? this.explicitlySpecifiedIRIEncoding
+            : this.defaultReferenceDirectives.getDefaultIRIEncoding();
    }
 
    public boolean hasExplicitlySpecifiedValueEncodings()

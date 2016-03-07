@@ -37,6 +37,7 @@ public class MappingMasterParser
   private int defaultAnnotationPropertyValueType = XSD_STRING;
 
   private int defaultValueEncoding = -1;
+  private int defaultIRIEncoding = -1;
   private int defaultClassValueEncoding = -1;
   private int defaultPropertyValueEncoding = -1;
   private int defaultObjectPropertyValueEncoding = -1;
@@ -66,6 +67,7 @@ public class MappingMasterParser
     defaultReferenceType = settings.getReferenceTypeSetting().getConstant();
     defaultPropertyType = settings.getPropertyTypeSetting().getConstant();
     defaultValueEncoding = settings.getValueEncodingSetting().getConstant();
+    defaultIRIEncoding = settings.getValueEncodingSetting().getConstant();
     defaultClassValueEncoding = settings.getValueEncodingSetting().getConstant();
     defaultPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
     defaultObjectPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
@@ -215,6 +217,7 @@ TOKEN: { <MM_NULL: "mm:null" > }
 TOKEN: { <MM_LITERAL: "mm:Literal"> }
 
 TOKEN: { <MM_DEFAULT_VALUE_ENCODING: "mm:DefaultValueEncoding"> }
+TOKEN: { <MM_DEFAULT_IRI_ENCODING: "mm:DefaultIRIEncoding"> }
 TOKEN: { <MM_DEFAULT_REFERENCE_TYPE: "mm:DefaultReferenceType"> }
 TOKEN: { <MM_DEFAULT_PROPERTY_TYPE: "mm:DefaultPropertyType"> }
 TOKEN: { <MM_DEFAULT_PROPERTY_VALUE_TYPE: "mm:DefaultPropertyValueType"> }
@@ -254,6 +257,12 @@ TOKEN: { <MM_REPLACE_ALL: "mm:replaceAll"> }
 TOKEN: { <MM_REPLACE_FIRST: "mm:replaceFirst"> }
 TOKEN: { <MM_APPEND: "mm:append"> }
 TOKEN: { <MM_PREPEND: "mm:prepend"> }
+
+TOKEN: { <MM_NO_ENCODE: "mm:noEncode"> }
+TOKEN: { <MM_CAMELCASE_ENCODE: "mm:camelCaseEncode"> }
+TOKEN: { <MM_SNAKECASE_ENCODE: "mm:snakeCaseEncode"> }
+TOKEN: { <MM_UUID_ENCODE: "mm:uuidEncode"> }
+TOKEN: { <MM_HASH_ENCODE: "mm:hashEncode"> }
 
 TOKEN: { <MM_DEFAULT_LOCATION_VALUE: "mm:DefaultLocationValue"> }
 TOKEN: { <MM_DEFAULT_LITERAL: "mm:DefaultLiteral"> }
@@ -333,6 +342,7 @@ SimpleNode expression() #Expression : {}
 void mm_directive() #MMDirective : {}
 {
   (  mm_default_value_encoding_directive()
+   | mm_default_iri_encoding_directive()
    | mm_default_reference_type_directive()
    | mm_default_property_type_directive()
    | mm_default_property_value_type_directive()
@@ -371,6 +381,24 @@ void mm_default_value_encoding_directive() #MMDefaultValueEncoding:
   {
     jjtThis.encodingType = encodingType;
     defaultValueEncoding = encodingType;
+  }
+}
+
+void mm_default_iri_encoding_directive() #MMDefaultIRIEncoding: 
+{
+  int encodingType;
+}
+{
+  <MM_DEFAULT_IRI_ENCODING> 
+      (  <MM_NO_ENCODE> { encodingType = MM_NO_ENCODE; } 
+       | <MM_CAMELCASE_ENCODE> { encodingType = MM_CAMELCASE_ENCODE; } 
+       | <MM_SNAKECASE_ENCODE> { encodingType = MM_SNAKECASE_ENCODE; } 
+       | <MM_UUID_ENCODE> { encodingType = MM_UUID_ENCODE; } 
+       | <MM_HASH_ENCODE> { encodingType = MM_HASH_ENCODE; } 
+      )
+  {
+    jjtThis.encodingType = encodingType;
+    defaultIRIEncoding = encodingType;
   }
 }
 
@@ -626,7 +654,7 @@ void annotation_fact() #AnnotationFact: {}
 
 void owl_annotation_property() #OWLAnnotationProperty: {}
 {
-  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding)
+  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding, defaultIRIEncoding)
 }
 
 void owl_class_name() : {}
@@ -662,7 +690,7 @@ void name() #Name:
 
 void owl_annotation_value(int defaultPropertyValueType) #OWLAnnotationValue : {}
 {
-  (  reference(defaultPropertyValueType, defaultValueEncoding) 
+  (  reference(defaultPropertyValueType, defaultValueEncoding, defaultIRIEncoding) 
    | name() 
    | owl_literal() 
   )
@@ -770,17 +798,17 @@ void owl_object_one_of() #OWLObjectOneOf : {}
 
 void owl_class(int defaultValueEncoding) #OWLClass : {}
 {
-  owl_class_name() | reference(OWL_CLASS, defaultValueEncoding)
+  owl_class_name() | reference(OWL_CLASS, defaultValueEncoding, defaultIRIEncoding)
 } 
 
 void owl_named_individual(int defaultValueEncoding) #OWLNamedIndividual : {}
 {
-  owl_individual_name() | reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding)
+  owl_individual_name() | reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding, defaultIRIEncoding)
 } 
 
 void owl_property() #OWLProperty : {}
 {
-  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding)
+  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding, defaultIRIEncoding)
 } 
 
  
@@ -789,8 +817,8 @@ void types(int referenceType) #Types :
   int defaultType = ParserUtil.getDefaultType(referenceType);
 } 
 {
-  ( LOOKAHEAD(3) reference(referenceType, defaultValueEncoding) | owl_class_expression() )
-    ( "," ( LOOKAHEAD(3) reference(referenceType, defaultValueEncoding) | owl_class_expression() ) )*
+  ( LOOKAHEAD(3) reference(referenceType, defaultValueEncoding, defaultIRIEncoding) | owl_class_expression() )
+    ( "," ( LOOKAHEAD(3) reference(referenceType, defaultValueEncoding, defaultIRIEncoding) | owl_class_expression() ) )*
 }
 
 void value_specification_item() #ValueSpecificationItem : 
@@ -800,7 +828,7 @@ void value_specification_item() #ValueSpecificationItem :
 }
 {
   (  stringLiteral = string() 
-   | reference(XSD_STRING, defaultValueEncoding) 
+   | reference(XSD_STRING, defaultValueEncoding, defaultIRIEncoding) 
    | value_extraction_function() 
 //   | ( "[" captureExpression = string() "]" )
   )
@@ -899,7 +927,7 @@ void owl_min_cardinality_restriction() #OWLMinCardinalityRestriction :
 
 void owl_has_value_restriction() #OWLHasValueRestriction : {}
 {
-  <VALUE> (  reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding) 
+  <VALUE> (  reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding, defaultIRIEncoding) 
            | name() 
            | owl_literal() 
           )
@@ -953,7 +981,7 @@ void owl_data_some_values_from() #OWLDataSomeValuesFrom :
 
 void owl_property_assertion_object(int defaultPropertyValueType) #OWLPropertyAssertionObject : {}
 {
-  (  reference(defaultPropertyValueType, defaultValueEncoding) 
+  (  reference(defaultPropertyValueType, defaultValueEncoding, defaultIRIEncoding) 
    | name() 
    | owl_literal() 
   )
@@ -1010,18 +1038,18 @@ int datatype() :
   }
 }
 
-void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : {}
+void reference(int defaultReferenceType, int defaultValueEncoding, int defaultIRIEncoding) #Reference : {}
 {
    "@" source_specification()
        ( LOOKAHEAD(2) 
          "(" ( reference_type() )?
-             ( reference_directive(defaultValueEncoding) )*
+             ( reference_directive(defaultValueEncoding, defaultIRIEncoding) )*
          ")"
        )?
   {
     jjtThis.defaultReferenceDirectives = new DefaultReferenceDirectives(
-                        defaultReferenceType, defaultValueEncoding,defaultLocationValue,
-                        defaultLiteral, defaultID, defaultLabel,
+                        defaultReferenceType, defaultValueEncoding, defaultIRIEncoding,
+                        defaultLocationValue, defaultLiteral, defaultID, defaultLabel,
                         defaultLanguage, defaultPrefix, defaultNamespace,
                         defaultShiftSetting, defaultEmptyLocationSetting,
                         defaultEmptyLiteralSetting, defaultEmptyRDFIDSetting,
@@ -1031,13 +1059,14 @@ void reference(int defaultReferenceType, int defaultValueEncoding) #Reference : 
   }
 }
 
-void reference_directive(int defaultValueEncoding) : {}
+void reference_directive(int defaultValueEncoding, int defaultIRIEncoding) : {}
 {
   (  namespace_directive()  
    | prefix_directive() 
    | language_directive()
    | value_extraction_function() 
    | value_encoding_directive(defaultValueEncoding) 
+   | iri_encoding_directive(defaultIRIEncoding) 
    | default_location_value_directive() 
    | default_literal_directive() 
    | default_label_directive() 
@@ -1091,6 +1120,24 @@ int value_encoding_directive(int defaultValueEncoding) #ValueEncoding :
       )
       ( value_specification() )?
     )
+  )
+  {
+    jjtThis.encodingType = encodingType;
+    return encodingType;
+  }
+}
+
+int iri_encoding_directive(int defaultIRIEncoding) #IRIEncoding :
+{
+  int encodingType = defaultIRIEncoding;
+}
+{
+  (
+      <MM_NO_ENCODE> { encodingType = MM_NO_ENCODE; }
+    | <MM_CAMELCASE_ENCODE> { encodingType = MM_CAMELCASE_ENCODE; }
+    | <MM_SNAKECASE_ENCODE> { encodingType = MM_SNAKECASE_ENCODE; }
+    | <MM_UUID_ENCODE> { encodingType = MM_UUID_ENCODE; }
+    | <MM_HASH_ENCODE> { encodingType = MM_HASH_ENCODE; }
   )
   {
     jjtThis.encodingType = encodingType;
@@ -1360,7 +1407,7 @@ void value_extraction_function() #ValueExtractionFunction:
 
 void value_extraction_function_argument() #ValueExtractionFunctionArgument : {}
 {
-  reference(XSD_STRING, defaultValueEncoding) | owl_literal()
+  reference(XSD_STRING, defaultValueEncoding, defaultIRIEncoding) | owl_literal()
 }
 
 

@@ -9,6 +9,7 @@ public class ReferenceSettings
    private ReferenceTypeSetting referenceTypeSetting = ReferenceTypeSetting.OWL_CLASS;
    private PropertyTypeSetting propertyTypeSetting = PropertyTypeSetting.OWL_DATA_PROPERTY;
    private ValueEncodingSetting valueEncodingSetting = ValueEncodingSetting.RDF_ID;
+   private IRIEncodingSetting iriEncodingSetting = IRIEncodingSetting.MM_NO_ENCODE;
    private EmptyLocationSetting emptyLocationSetting = EmptyLocationSetting.WARNING_IF_EMPTY_LOCATION;
    private EmptyLiteralSetting emptyLiteralSetting = EmptyLiteralSetting.WARNING_IF_EMPTY_LITERAL;
    private EmptyRDFIDSetting emptyRDFIDSetting = EmptyRDFIDSetting.WARNING_IF_EMPTY_ID;
@@ -65,6 +66,16 @@ public class ReferenceSettings
    public void setValueEncodingSetting(ValueEncodingSetting value)
    {
       valueEncodingSetting = value;
+   }
+
+   public IRIEncodingSetting getIRIEncodingSetting()
+   {
+      return iriEncodingSetting;
+   }
+
+   public void setIRIEncodingSetting(IRIEncodingSetting value)
+   {
+      iriEncodingSetting = value;
    }
 
    public PropertyTypeSetting getPropertyTypeSetting()
