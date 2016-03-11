@@ -1,23 +1,23 @@
 package org.mm.rendering.owlapi;
 
 import org.mm.core.ReferenceType;
-import org.semanticweb.owlapi.model.OWLLiteral;
+import org.semanticweb.owlapi.model.IRI;
 
-public class OWLLiteralReferenceRendering extends OWLReferenceRendering
+public class OWLIRIReferenceRendering extends OWLReferenceRendering
 {
-   private OWLLiteral literal;
+   private IRI iri;
 
    private final String rawRendering;
 
-   public OWLLiteralReferenceRendering(OWLLiteral literal, ReferenceType referenceType) {
+   public OWLIRIReferenceRendering(IRI iri, ReferenceType referenceType) {
       super(referenceType);
-      this.literal = literal;
-      this.rawRendering = literal.getLiteral();
+      this.iri = iri;
+      this.rawRendering = iri.toString();
    }
 
-   public OWLLiteral getOWLLiteral()
+   public IRI getIRI()
    {
-      return literal;
+      return iri;
    }
 
    @Override
@@ -29,7 +29,7 @@ public class OWLLiteralReferenceRendering extends OWLReferenceRendering
    @Override
    public boolean isOWLLiteral()
    {
-      return true;
+      return false;
    }
 
    @Override
@@ -77,6 +77,6 @@ public class OWLLiteralReferenceRendering extends OWLReferenceRendering
    @Override
    public boolean isOWLIRI()
    {
-      return false;
+      return true;
    }
 }

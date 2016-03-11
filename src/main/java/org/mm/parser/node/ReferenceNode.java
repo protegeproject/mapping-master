@@ -228,6 +228,11 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
       return getReferenceType().isOWLEntity();
    }
 
+   public boolean hasIRIType()
+   {
+      return getReferenceType().isOWLIRI();
+   }
+
    public ReferenceType getReferenceType()
    {
       return getReferenceTypeNode().getReferenceType();

@@ -39,9 +39,8 @@ public class TextLiteralRendering extends TextRendering implements LiteralRender
       return getRendering();
    }
 
-   @Override
-   public OWLLiteralType getOWLLiteralType()
+   public boolean isQuoted()
    {
-      return this.literalType;
+      return literalType.isQuotedOWLLiteral();
    }
 }

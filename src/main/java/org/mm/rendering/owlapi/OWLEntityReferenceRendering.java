@@ -83,4 +83,10 @@ public class OWLEntityReferenceRendering extends OWLReferenceRendering
    {
       return entity.isOWLDatatype();
    }
+
+   @Override
+   public boolean isOWLIRI()
+   {
+      return false;
+   }
 }

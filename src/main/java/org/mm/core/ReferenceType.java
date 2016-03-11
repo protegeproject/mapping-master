@@ -56,6 +56,11 @@ public class ReferenceType implements MappingMasterParserConstants
       return this.type == OWL_DATATYPE;
    }
 
+   public boolean isOWLIRI()
+   {
+      return this.type == OWL_IRI;
+   }
+
    public boolean isOWLEntity()
    {
       return isOWLClass() || isOWLNamedIndividual() || isOWLObjectProperty() || isOWLDataProperty()

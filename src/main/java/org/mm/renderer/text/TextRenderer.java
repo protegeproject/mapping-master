@@ -49,10 +49,10 @@ import org.mm.parser.node.ValueExtractionFunctionArgumentNode;
 import org.mm.parser.node.ValueExtractionFunctionNode;
 import org.mm.parser.node.ValueSpecificationItemNode;
 import org.mm.parser.node.ValueSpecificationNode;
-import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.ClassExpressionRenderer;
 import org.mm.renderer.DeclarationRenderer;
 import org.mm.renderer.EntityRenderer;
+import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.LiteralRenderer;
 import org.mm.renderer.ReferenceRenderer;
 import org.mm.renderer.ReferenceRendererConfiguration;
@@ -188,8 +188,13 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                TextReferenceRendering rendering = new TextReferenceRendering(label, referenceType);
                if (isCommented) rendering.addComment(createComment(label, referenceNode));
                return Optional.of(rendering);
+            } else if (referenceType.isOWLIRI()) {
+               String iri = resolvedValue.get();
+               TextReferenceRendering rendering = new TextReferenceRendering(iri, referenceType);
+               if (isCommented) rendering.addComment(createComment(iri, referenceNode));
+               return Optional.of(rendering);
             }
-            throw new InternalRendererException("Unknown type (" + referenceType + ") for reference node: " + referenceNode);
+            throw new InternalRendererException("Unknown type '" + referenceType + "' for reference node: " + referenceNode);
          }
       }
       throw new InternalRendererException("Unknown definition for reference node: " + referenceNode);
@@ -916,7 +921,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                propertyAssertionNode.getOWLLiteralNode());
          if (literalRenderingResult.isPresent()) {
             TextLiteralRendering literalRendering = literalRenderingResult.get();
-            if (literalRendering.getOWLLiteralType().isQuotedOWLLiteral()) {
+            if (literalRendering.isQuoted()) {
                return Optional.of(new TextRendering(quotes(literalRendering.getRawValue())));
             } else {
                return literalRenderingResult;
@@ -1023,7 +1028,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          Optional<? extends TextLiteralRendering> literalRendering = renderOWLLiteral(
                annotationValueNode.getOWLLiteralNode());
          if (literalRendering.isPresent()) {
-            if (literalRendering.get().getOWLLiteralType().isQuotedOWLLiteral()) {
+            if (literalRendering.get().isQuoted()) {
                return Optional.of(new TextRendering(quotes(literalRendering.get().getRawValue())));
             } else {
                return literalRendering;
@@ -1211,7 +1216,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       } else if (hasValueNode.hasLiteralNode()) {
          Optional<? extends TextLiteralRendering> literalRendering = renderOWLLiteral(hasValueNode.getOWLLiteralNode());
          if (literalRendering.isPresent()) {
-            if (literalRendering.get().getOWLLiteralType().isQuotedOWLLiteral()) {
+            if (literalRendering.get().isQuoted()) {
                valueRendering = Optional.of(new TextLiteralRendering(quotes(literalRendering.get().getRendering())));
             } else {
                valueRendering = literalRendering;

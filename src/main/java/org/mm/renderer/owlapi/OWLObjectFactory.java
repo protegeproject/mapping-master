@@ -119,7 +119,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
       return prefixManager.getDefaultPrefix();
    }
 
-   public IRI getIri(String inputName) throws RendererException
+   public IRI createIri(String inputName) throws RendererException
    {
       try {
          if (NameUtil.isValidUriConstruct(inputName)) {
@@ -173,7 +173,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    public OWLClass createOWLClass(String inputName) throws RendererException
    {
-      return createOWLClass(getIri(inputName));
+      return createOWLClass(createIri(inputName));
    }
 
    public OWLClass createOWLClass(IRI iri)
@@ -183,7 +183,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    public OWLNamedIndividual createOWLNamedIndividual(String inputName) throws RendererException
    {
-      return createOWLNamedIndividual(getIri(inputName));
+      return createOWLNamedIndividual(createIri(inputName));
    }
 
    public OWLNamedIndividual createOWLNamedIndividual(IRI iri)
@@ -193,7 +193,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    public OWLObjectProperty createOWLObjectProperty(String inputName) throws RendererException
    {
-      return createOWLObjectProperty(getIri(inputName));
+      return createOWLObjectProperty(createIri(inputName));
    }
 
    public OWLObjectProperty createOWLObjectProperty(IRI iri)
@@ -203,7 +203,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    public OWLDataProperty createOWLDataProperty(String inputName) throws RendererException
    {
-      return createOWLDataProperty(getIri(inputName));
+      return createOWLDataProperty(createIri(inputName));
    }
 
    public OWLDataProperty createOWLDataProperty(IRI iri)
@@ -213,50 +213,12 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    public OWLAnnotationProperty createOWLAnnotationProperty(String inputName) throws RendererException
    {
-      return createOWLAnnotationProperty(getIri(inputName));
+      return createOWLAnnotationProperty(createIri(inputName));
    }
 
    public OWLAnnotationProperty createOWLAnnotationProperty(IRI iri)
    {
       return owlDataFactory.getOWLAnnotationProperty(iri);
-   }
-
-   /*
-    * Handles the creation of OWL annotation values
-    */
-
-   public OWLAnnotationValue createOWLAnnotationValue(String value, boolean asIri) throws RendererException
-   {
-      if (asIri) {
-         return getIri(value);
-      } else {
-         return owlDataFactory.getOWLLiteral(value);
-      }
-   }
-
-   public OWLAnnotationValue createOWLAnnotationValue(String value, String lang) throws RendererException
-   {
-      return owlDataFactory.getOWLLiteral(value, lang);
-   }
-
-   public OWLAnnotationValue createOWLAnnotationValue(float value)
-   {
-      return owlDataFactory.getOWLLiteral(value);
-   }
-
-   public OWLAnnotationValue createOWLAnnotationValue(double value)
-   {
-      return owlDataFactory.getOWLLiteral(value);
-   }
-
-   public OWLAnnotationValue createOWLAnnotationValue(int value)
-   {
-      return owlDataFactory.getOWLLiteral(value);
-   }
-
-   public OWLAnnotationValue createOWLAnnotationValue(boolean value)
-   {
-      return owlDataFactory.getOWLLiteral(value);
    }
 
    /*
@@ -372,7 +334,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    public OWLDatatype createOWLDatatype(String typeName) throws RendererException
    {
-      return owlDataFactory.getOWLDatatype(getIri(typeName));
+      return owlDataFactory.getOWLDatatype(createIri(typeName));
    }
 
    /*
@@ -656,7 +618,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    private Set<OWLEntity> getOWLEntities(String inputName) throws RendererException
    {
-      return ontology.getEntitiesInSignature(getIri(inputName));
+      return ontology.getEntitiesInSignature(createIri(inputName));
    }
 
    private void throwEntityNotFoundException(String inputName, String entityType) throws RendererException

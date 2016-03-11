@@ -74,4 +74,10 @@ public class TextReferenceRendering extends TextRendering implements ReferenceRe
    {
       return this.referenceType.isOWLDatatype();
    }
+
+   @Override
+   public boolean isOWLIRI()
+   {
+      return this.referenceType.isOWLIRI();
+   }
 }

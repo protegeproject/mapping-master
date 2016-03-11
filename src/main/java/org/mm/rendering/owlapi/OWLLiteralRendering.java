@@ -1,19 +1,17 @@
 package org.mm.rendering.owlapi;
 
 import org.mm.core.OWLLiteralType;
-import org.mm.parser.MappingMasterParserConstants;
-import org.mm.rendering.LiteralRendering;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
-public class OWLLiteralRendering extends OWLRendering implements LiteralRendering, MappingMasterParserConstants
+public class OWLLiteralRendering extends OWLAnnotationValueRendering
 {
    private final OWLLiteralType literalType;
    private final OWLLiteral literal;
 
    public OWLLiteralRendering(OWLLiteral literal)
    {
-      super();
+      super(literal);
       this.literal = literal;
       this.literalType = getOWLLiteralType(literal);
    }
@@ -23,16 +21,9 @@ public class OWLLiteralRendering extends OWLRendering implements LiteralRenderin
       return this.literal;
    }
 
-   @Override
    public OWLLiteralType getOWLLiteralType()
    {
       return this.literalType;
-   }
-
-   @Override
-   public String getRawValue()
-   {
-      return this.literal.getLiteral();
    }
 
    private static OWLLiteralType getOWLLiteralType(OWLLiteral literal)
@@ -61,6 +52,7 @@ public class OWLLiteralRendering extends OWLRendering implements LiteralRenderin
          return new OWLLiteralType(XSD_DATETIME);
       else if (literal.getDatatype().getIRI().equals(XSDVocabulary.DURATION.getIRI()))
          return new OWLLiteralType(XSD_DURATION);
-      else return new OWLLiteralType(RDF_XMLLITERAL);
+      
+      throw new RuntimeException("Unsupported data type: " + literal.getDatatype());
    }
 }

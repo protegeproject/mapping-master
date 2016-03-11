@@ -36,6 +36,7 @@ import org.mm.rendering.ReferenceRendering;
 import org.mm.rendering.owlapi.OWLClassExpressionRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
 import org.mm.rendering.owlapi.OWLEntityReferenceRendering;
+import org.mm.rendering.owlapi.OWLIRIReferenceRendering;
 import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
 import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
@@ -133,6 +134,10 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             }
             return Optional.ofNullable(entityRendering);
          }
+         else if (referenceNode.hasIRIType()) {
+            IRI iri = objectFactory.createIri(literalValue);
+            return Optional.of(new OWLIRIReferenceRendering(iri, referenceType));
+         }
       } else if (sourceSpecificationNode.hasLocation()) {
          /*
           * Get the literal value by resolving the given reference against the input spreadsheet
@@ -179,7 +184,15 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             }
             return Optional.ofNullable(entityRendering);
          }
-         throw new InternalRendererException("Unknown type (" + referenceType + ") for reference node: " + referenceNode);
+         else if (referenceNode.hasIRIType()) {
+            OWLIRIReferenceRendering iriRendering = null;
+            if (resolvedValue.isPresent()) {
+               IRI iri = objectFactory.createIri(resolvedValue.get());
+               iriRendering = new OWLIRIReferenceRendering(iri, referenceType);
+            }
+            return Optional.ofNullable(iriRendering);
+         }
+         throw new InternalRendererException("Unknown type '" + referenceType + "' for reference node: " + referenceNode);
       }
       throw new InternalRendererException("Unknown definition for reference node: " + referenceNode);
    }
