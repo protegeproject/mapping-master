@@ -18,10 +18,4 @@ public abstract class OWLAnnotationValueRendering extends OWLRendering implement
    {
       return annotationValue;
    }
-
-   @Override
-   public String getRawValue()
-   {
-      return annotationValue.toString();
-   }
 }

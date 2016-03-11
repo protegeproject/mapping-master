@@ -21,6 +21,12 @@ public class OWLLiteralRendering extends OWLAnnotationValueRendering
       return this.literal;
    }
 
+   @Override
+   public String getRawValue()
+   {
+      return literal.getLiteral();
+   }
+
    public OWLLiteralType getOWLLiteralType()
    {
       return this.literalType;

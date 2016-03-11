@@ -16,4 +16,10 @@ public class OWLIRIRendering extends OWLAnnotationValueRendering
    {
       return iri;
    }
+
+   @Override
+   public String getRawValue()
+   {
+      return iri.toString();
+   }
 }
