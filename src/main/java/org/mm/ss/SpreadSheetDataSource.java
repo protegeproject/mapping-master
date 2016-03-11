@@ -247,7 +247,7 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
                columnNumber = SpreadSheetUtil.getColumnNumber(sheet, columnSpecification);
             }
             if (isRowWildcard) {
-               rowNumber = currentLocation.get().getPhysicalRowNumber();
+               rowNumber = getCurrentLocation().get().getPhysicalRowNumber();
             } else {
                rowNumber = SpreadSheetUtil.getRowNumber(sheet, rowSpecification);
             }
