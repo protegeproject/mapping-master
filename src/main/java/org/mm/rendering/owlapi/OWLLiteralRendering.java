@@ -1,6 +1,7 @@
 package org.mm.rendering.owlapi;
 
 import org.mm.core.OWLLiteralType;
+import org.openrdf.rio.helpers.RDFaVersion;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
@@ -58,7 +59,9 @@ public class OWLLiteralRendering extends OWLAnnotationValueRendering
          return new OWLLiteralType(XSD_DATETIME);
       else if (literal.getDatatype().getIRI().equals(XSDVocabulary.DURATION.getIRI()))
          return new OWLLiteralType(XSD_DURATION);
-      
+      else if (literal.getDatatype().isRDFPlainLiteral()) {
+         return new OWLLiteralType(RDF_PLAINLITERAL);
+      }
       throw new RuntimeException("Unsupported data type: " + literal.getDatatype());
    }
 }
