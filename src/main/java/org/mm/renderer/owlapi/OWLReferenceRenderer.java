@@ -428,7 +428,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
    {
       int setting = directives.getActualIRIEncoding();
       switch (setting) {
-         case MM_CAMELCASE_ENCODE: localName = NameUtil.toUpperCamel(localName); break;
+         case MM_CAMELCASE_ENCODE: localName = NameUtil.toLowerCamel(localName); break;
          case MM_SNAKECASE_ENCODE: localName = NameUtil.toSnakeCase(localName); break;
          case MM_UUID_ENCODE: localName = NameUtil.toUUID(); break;
          case MM_HASH_ENCODE: localName = NameUtil.toMD5(localName); break;
