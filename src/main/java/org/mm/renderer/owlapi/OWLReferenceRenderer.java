@@ -167,9 +167,9 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
              * simply ignore it.
              */
             Optional<String> entityName = getEntityName(resolvedValue, referenceNode);
-            entityName = processIdentifier(entityName, location, referenceNode.getReferenceDirectives());
+            entityName = processIdentifier(entityName, location, referenceNode);
             Optional<String> entityLabel = getEntityLabel(resolvedValue, referenceNode);
-            entityLabel = validateLabel(entityLabel, location, referenceNode.getReferenceDirectives());
+            entityLabel = validateLabel(entityLabel, location, referenceNode);
             
             /*
              * Create the OWL entity based on the input of its name, label and language tag. The method createOWLEntity
@@ -239,12 +239,12 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return finalLiteral;
    }
 
-   private Optional<String> processIdentifier(Optional<String> entityName, SpreadsheetLocation location, ReferenceDirectives directives)
+   private Optional<String> processIdentifier(Optional<String> entityName, SpreadsheetLocation location, ReferenceNode referenceNode)
          throws RendererException
    {
       Optional<String> finalName = entityName;
-      if (!entityName.isPresent()) {
-         switch (directives.getActualEmptyRDFIDDirective()) {
+      if (referenceNode.hasRDFIDValueEncoding() && !entityName.isPresent()) {
+         switch (referenceNode.getReferenceDirectives().getActualEmptyRDFIDDirective()) {
             case MM_PROCESS_IF_EMPTY_ID:
                finalName = Optional.of("");
                break;
@@ -260,14 +260,15 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return finalName;
    }
 
-   private Optional<String> validateLabel(Optional<String> entityLabel, SpreadsheetLocation location, ReferenceDirectives directives)
+   private Optional<String> validateLabel(Optional<String> entityLabel, SpreadsheetLocation location, ReferenceNode referenceNode)
          throws RendererException
    {
       Optional<String> finalLabel = entityLabel;
-      if (!entityLabel.isPresent()) {
-         switch (directives.getActualEmptyRDFSLabelDirective()) {
+      if (referenceNode.hasRDFSLabelValueEncoding() && !entityLabel.isPresent()) {
+         switch (referenceNode.getReferenceDirectives().getActualEmptyRDFSLabelDirective()) {
             case MM_PROCESS_IF_EMPTY_LABEL:
                finalLabel = Optional.of("");
+               break;
             case MM_SKIP_IF_EMPTY_LABEL:
                break;
             case MM_WARNING_IF_EMPTY_LABEL:
