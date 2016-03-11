@@ -67,7 +67,7 @@ public class MappingMasterParser
     defaultReferenceType = settings.getReferenceTypeSetting().getConstant();
     defaultPropertyType = settings.getPropertyTypeSetting().getConstant();
     defaultValueEncoding = settings.getValueEncodingSetting().getConstant();
-    defaultIRIEncoding = settings.getValueEncodingSetting().getConstant();
+    defaultIRIEncoding = settings.getIRIEncodingSetting().getConstant();
     defaultClassValueEncoding = settings.getValueEncodingSetting().getConstant();
     defaultPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
     defaultObjectPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
