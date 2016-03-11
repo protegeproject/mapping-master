@@ -1,7 +1,6 @@
 package org.mm.rendering.owlapi;
 
 import org.mm.core.OWLLiteralType;
-import org.openrdf.rio.helpers.RDFaVersion;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
@@ -43,8 +42,8 @@ public class OWLLiteralRendering extends OWLAnnotationValueRendering
          return new OWLLiteralType(XSD_BYTE);
       else if (literal.getDatatype().getIRI().equals(XSDVocabulary.SHORT.getIRI()))
          return new OWLLiteralType(XSD_SHORT);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.INT.getIRI()))
-         return new OWLLiteralType(XSD_INT);
+      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.INTEGER.getIRI()))
+         return new OWLLiteralType(XSD_INTEGER);
       else if (literal.getDatatype().getIRI().equals(XSDVocabulary.LONG.getIRI()))
          return new OWLLiteralType(XSD_LONG);
       else if (literal.getDatatype().getIRI().equals(XSDVocabulary.FLOAT.getIRI()))

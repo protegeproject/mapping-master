@@ -10,7 +10,7 @@ public class OWLLiteralType implements MappingMasterParserConstants
 
    public static OWLLiteralType BOOLEAN_LITERAL_TYPE = new OWLLiteralType(XSD_BOOLEAN);
 
-   public static OWLLiteralType INT_LITERAL_TYPE = new OWLLiteralType(XSD_INT);
+   public static OWLLiteralType INT_LITERAL_TYPE = new OWLLiteralType(XSD_INTEGER);
 
    public static OWLLiteralType FLOAT_LITERAL_TYPE = new OWLLiteralType(XSD_FLOAT);
 
@@ -44,9 +44,9 @@ public class OWLLiteralType implements MappingMasterParserConstants
       return this.type == XSD_SHORT;
    }
 
-   public boolean isXSDInt()
+   public boolean isXSDInteger()
    {
-      return this.type == XSD_INT;
+      return this.type == XSD_INTEGER;
    }
 
    public boolean isXSDLong()

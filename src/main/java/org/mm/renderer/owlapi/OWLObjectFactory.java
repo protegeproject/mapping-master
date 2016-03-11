@@ -238,7 +238,7 @@ public class OWLObjectFactory implements MappingMasterParserConstants
             return createOWLLiteralFloat(value);
          case XSD_LONG:
             return createOWLLiteralLong(value);
-         case XSD_INT:
+         case XSD_INTEGER:
             return createOWLLiteralInteger(value);
          case XSD_SHORT:
             return createOWLLiteralShort(value);

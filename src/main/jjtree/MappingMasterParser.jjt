@@ -159,7 +159,7 @@ TOKEN: { <XSD_STRING: "xsd:string" > }
 TOKEN: { <XSD_DECIMAL: "xsd:decimal" > }
 TOKEN: { <XSD_BYTE: "xsd:byte" > }
 TOKEN: { <XSD_SHORT: "xsd:short" > }
-TOKEN: { <XSD_INT: "xsd:int" > }
+TOKEN: { <XSD_INTEGER: "xsd:integer" > }
 TOKEN: { <XSD_LONG: "xsd:long" > }
 TOKEN: { <XSD_FLOAT: "xsd:float"  > }
 TOKEN: { <XSD_DOUBLE: "xsd:double" > }
@@ -1023,7 +1023,7 @@ int datatype() :
    | t = <XSD_DECIMAL>
    | t = <XSD_BYTE>
    | t = <XSD_SHORT> 
-   | t = <XSD_INT>
+   | t = <XSD_INTEGER>
    | t = <XSD_LONG>
    | t = <XSD_FLOAT>
    | t = <XSD_DOUBLE>

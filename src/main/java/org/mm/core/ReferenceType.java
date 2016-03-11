@@ -74,7 +74,7 @@ public class ReferenceType implements MappingMasterParserConstants
 
    public boolean isTypedLiteral()
    {
-      return isXSDString() || isXSDBoolean() || isXSDDouble() || isXSDFloat() || isXSDLong() || isXSDInt()
+      return isXSDString() || isXSDBoolean() || isXSDDouble() || isXSDFloat() || isXSDLong() || isXSDInteger()
             || isXSDShort() || isXSDByte() || isXSDDecimal() || isXSDDateTime() || isXSDDate() || isXSDTime()
             || isXSDDuration();
    }
@@ -104,9 +104,9 @@ public class ReferenceType implements MappingMasterParserConstants
       return this.type == XSD_SHORT;
    }
 
-   public boolean isXSDInt()
+   public boolean isXSDInteger()
    {
-      return this.type == XSD_INT;
+      return this.type == XSD_INTEGER;
    }
 
    public boolean isXSDLong()
