@@ -244,7 +244,7 @@ TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
 TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
 TOKEN: { <OWL_ANNOTATION_PROPERTY: "AnnotationProperty"> }
 TOKEN: { <OWL_DATATYPE: "Datatype"> }
-TOKEN: { <OWL_IRI: "IRI" > }
+TOKEN: { <MM_IRI: "mm:IRI" > }
 
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
 TOKEN: { <MM_TO_LOWER_CASE: "mm:toLowerCase"> }
@@ -1096,7 +1096,7 @@ int reference_type() #ReferenceType :
    | t = <OWL_OBJECT_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_DATA_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_ANNOTATION_PROPERTY> { referenceType = t.kind; }
-   | t = <OWL_IRI> { referenceType = t.kind; }
+   | t = <MM_IRI> { referenceType = t.kind; }
    | referenceType = datatype()
   ) 
 

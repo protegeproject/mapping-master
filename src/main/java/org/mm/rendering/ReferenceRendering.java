@@ -24,5 +24,5 @@ public interface ReferenceRendering extends Rendering
 
    boolean isOWLDatatype();
 
-   boolean isOWLIRI();
+   boolean isIRI();
 }

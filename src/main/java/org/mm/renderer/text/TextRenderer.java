@@ -201,7 +201,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
             TextReferenceRendering rendering = createTextReferenceRendering(entityName, entityLabel, referenceNode);
             if (isCommented) rendering.addComment(createComment(entityLabel, referenceNode));
             return Optional.of(rendering);
-         } else if (referenceType.isOWLIRI()) {
+         } else if (referenceType.isIRI()) {
             String iri = resolvedValue.get();
             TextReferenceRendering rendering = new TextReferenceRendering(iri, referenceType);
             if (isCommented) rendering.addComment(createComment(iri, referenceNode));

@@ -76,8 +76,8 @@ public class TextReferenceRendering extends TextRendering implements ReferenceRe
    }
 
    @Override
-   public boolean isOWLIRI()
+   public boolean isIRI()
    {
-      return this.referenceType.isOWLIRI();
+      return this.referenceType.isIRI();
    }
 }

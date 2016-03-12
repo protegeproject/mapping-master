@@ -230,7 +230,7 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
 
    public boolean hasIRIType()
    {
-      return getReferenceType().isOWLIRI();
+      return getReferenceType().isIRI();
    }
 
    public ReferenceType getReferenceType()

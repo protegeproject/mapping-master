@@ -75,7 +75,7 @@ public class OWLIRIReferenceRendering extends OWLReferenceRendering
    }
 
    @Override
-   public boolean isOWLIRI()
+   public boolean isIRI()
    {
       return true;
    }
