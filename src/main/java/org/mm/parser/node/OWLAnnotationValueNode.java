@@ -1,5 +1,6 @@
 package org.mm.parser.node;
 
+import org.mm.parser.ASTIRIRef;
 import org.mm.parser.ASTName;
 import org.mm.parser.ASTOWLAnnotationValue;
 import org.mm.parser.ASTOWLLiteral;
@@ -14,6 +15,7 @@ public class OWLAnnotationValueNode implements TypeNode
    private ReferenceNode referenceNode;
    private NameNode nameNode;
    private OWLLiteralNode literalNode;
+   private IRIRefNode iriRefNode;
 
    public OWLAnnotationValueNode(ASTOWLAnnotationValue node) throws ParseException
    {
@@ -27,6 +29,8 @@ public class OWLAnnotationValueNode implements TypeNode
             this.nameNode = new NameNode((ASTName) child);
          else if (ParserUtil.hasName(child, "OWLLiteral"))
             this.literalNode = new OWLLiteralNode((ASTOWLLiteral) child);
+         else if (ParserUtil.hasName(child, "IRIRef"))
+            this.iriRefNode = new IRIRefNode((ASTIRIRef) child);
          else throw new InternalParseException("unexpected child node " + child + " for OWLAnnotationValue node");
       }
    }
@@ -51,6 +55,11 @@ public class OWLAnnotationValueNode implements TypeNode
       return this.literalNode;
    }
 
+   public IRIRefNode getIRIRefNode()
+   {
+      return this.iriRefNode;
+   }
+
    public boolean hasReferenceNode()
    {
       return this.referenceNode != null;
@@ -66,6 +75,11 @@ public class OWLAnnotationValueNode implements TypeNode
       return this.literalNode != null;
    }
 
+   public boolean hasIRIRefNode()
+   {
+      return this.iriRefNode != null;
+   }
+
    public String toString()
    {
       if (hasReferenceNode())
@@ -74,6 +88,8 @@ public class OWLAnnotationValueNode implements TypeNode
          return this.nameNode.toString();
       else if (hasLiteralNode())
          return this.literalNode.toString();
+      else if (hasIRIRefNode())
+         return this.iriRefNode.toString();
       else return "";
    }
 }

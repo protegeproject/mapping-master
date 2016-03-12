@@ -314,6 +314,7 @@ TOKEN:
   <STRING_LITERAL: "\"" (~["\""])* ("\"\"" (~["\""])*)* ("\\\"")* "\"" >
 | <QUOTED_NAME_LITERAL: "'" (~["'"])* ("''" (~["'"])*)* "'" >
 | <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT> | "_" | "-" | "#" | "." | ":" | "/" )* | "'" (~["'"])* "'"> 
+| <IRI_REF: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", "\u0000"-"\u0020"])* ">" >
 | <INTEGER_LITERAL: (["-"])? (<DIGIT>)+ > 
 | <LONG_LITERAL: (["-"])? (<DIGIT>)+> 
 | <FLOAT_LITERAL:   (["-"])? (<DIGIT>)+ "." (<DIGIT>)+ (<EXPONENT>)?
@@ -694,6 +695,7 @@ void owl_annotation_value(int defaultPropertyValueType) #OWLAnnotationValue : {}
   (  reference(defaultPropertyValueType, defaultValueEncoding, defaultIRIEncoding) 
    | name() 
    | owl_literal() 
+   | iri_ref()
   )
 }
 
@@ -765,6 +767,17 @@ void boolean_literal() #BooleanLiteral :
 
   {
     jjtThis.value = value;
+  }
+}
+
+void iri_ref() #IRIRef : 
+{
+  Token t;
+}
+{
+  t = <IRI_REF> 
+  {
+    jjtThis.value = t.image;
   }
 }
 

@@ -83,6 +83,7 @@ public interface MappingMasterParserTreeConstants
   public int JJTVALUESPECIFICATION = 77;
   public int JJTVALUEEXTRACTIONFUNCTION = 78;
   public int JJTVALUEEXTRACTIONFUNCTIONARGUMENT = 79;
+  public int JJTIRIREF = 80;
 
 
   public String[] jjtNodeName = {
@@ -166,6 +167,7 @@ public interface MappingMasterParserTreeConstants
     "ValueSpecification",
     "ValueExtractionFunction",
     "ValueExtractionFunctionArgument",
+    "IRIRef",
   };
 }
-/* JavaCC - OriginalChecksum=6a56d87c08772305f1297568112950dc (do not edit this line) */
+/* JavaCC - OriginalChecksum=767b0bd8bfa5ca5411e412f955a4fa0d (do not edit this line) */

@@ -10,6 +10,7 @@ import org.mm.core.ReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.FactNode;
+import org.mm.parser.node.IRIRefNode;
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAllValuesFromNode;
@@ -1081,6 +1082,9 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          } else {
             return Optional.empty();
          }
+      } else if (annotationValueNode.hasIRIRefNode()) {
+         IRIRefNode iriRefNode = annotationValueNode.getIRIRefNode();
+         return Optional.of(new TextRendering(iriRefNode.getValue()));
       }
       throw new InternalRendererException("Unknown annotation value node: " + annotationValueNode.getNodeName());
    }

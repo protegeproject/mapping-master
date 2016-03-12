@@ -2,6 +2,7 @@ package org.mm.renderer.owlapi.delegator;
 
 import java.util.Optional;
 
+import org.mm.parser.node.IRIRefNode;
 import org.mm.parser.node.NameNode;
 import org.mm.parser.node.OWLAnnotationValueNode;
 import org.mm.parser.node.OWLLiteralNode;
@@ -43,6 +44,8 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
             return renderReferenceNode(annotationValueNode.getReferenceNode(), objectFactory);
          } else if (annotationValueNode.hasLiteralNode()) {
             return renderLiteralNode(annotationValueNode.getOWLLiteralNode(), objectFactory);
+         } else if (annotationValueNode.hasIRIRefNode()) {
+            return renderIRIRefNode(annotationValueNode.getIRIRefNode(), objectFactory);
          }
       }
       throw new RendererException("Node " + typeNode + " is not an OWL annotation value");
@@ -51,16 +54,8 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
    private Optional<OWLAnnotationValueRendering> renderNameNode(NameNode nameNode, OWLObjectFactory objectFactory)
          throws RendererException
    {
-      OWLAnnotationValueRendering valueRendering = null;
-      String text = nameNode.getName();
-      if (text.startsWith("<") && text.endsWith(">")) {
-         IRI iri = objectFactory.createIri(text);
-         valueRendering = new OWLIRIRendering(iri);
-      } else {
-         OWLLiteral lit = objectFactory.createOWLLiteralString(nameNode.getName());
-         valueRendering = new OWLLiteralRendering(lit);
-      }
-      return Optional.of(valueRendering);
+      OWLLiteral lit = objectFactory.createOWLLiteralString(nameNode.getName());
+      return Optional.of(new OWLLiteralRendering(lit));
    }
 
    private Optional<OWLAnnotationValueRendering> renderReferenceNode(ReferenceNode referenceNode,
@@ -92,17 +87,18 @@ public class AnnotationValueRendererDelegator implements RendererDelegator<OWLAn
          OWLObjectFactory objectFactory) throws RendererException
    {
       OWLAnnotationValueRendering valueRendering = null;
-      String text = literalNode.toString();
-      if (text.startsWith("<") && text.endsWith(">")) {
-         IRI iri = objectFactory.createIri(text);
-         valueRendering = new OWLIRIRendering(iri);
-      } else {
-         Optional<OWLLiteralRendering> rendering = literalRenderer.renderOWLLiteral(literalNode);
-         if (rendering.isPresent()) {
-            OWLLiteral lit = rendering.get().getOWLLiteral();
-            valueRendering = new OWLLiteralRendering(lit);
-         }
+      Optional<OWLLiteralRendering> rendering = literalRenderer.renderOWLLiteral(literalNode);
+      if (rendering.isPresent()) {
+         OWLLiteral lit = rendering.get().getOWLLiteral();
+         valueRendering = new OWLLiteralRendering(lit);
       }
       return Optional.ofNullable(valueRendering);
+   }
+
+   private Optional<OWLAnnotationValueRendering> renderIRIRefNode(IRIRefNode iriRefNode, OWLObjectFactory objectFactory)
+         throws RendererException
+   {
+      IRI iri = objectFactory.createIri(iriRefNode.getValue());
+      return Optional.of(new OWLIRIRendering(iri));
    }
 }
