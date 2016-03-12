@@ -137,86 +137,125 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          if (isCommented) rendering.addComment(createComment(literalValue, referenceNode));
          return Optional.of(rendering);
 
-      } else {
+      } else if (sourceSpecificationNode.hasLocation()) {
          SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
          Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
          
-         // Decide what will happen if the resolved value is empty
          if (!resolvedValue.isPresent()) {
             switch (referenceNode.getActualEmptyLocationDirective()) {
+               case MM_PROCESS_IF_EMPTY_LOCATION:
+                  resolvedValue = Optional.of("");
+                  break;
                case MM_SKIP_IF_EMPTY_LOCATION:
-                  return Optional.empty();
+                  break;
                case MM_WARNING_IF_EMPTY_LOCATION:
                   // TODO Warn in log files
-                  return Optional.empty();
+                  break;
                case MM_ERROR_IF_EMPTY_LOCATION:
                   throw new RendererException("Empty cell values for " + referenceNode + " at location " + location);
             }
-         } else {
-            // Decide what will happen if the resolved value is not empty based on the entity types
-            if (referenceType.isOWLLiteral()) { // Reference is an OWL literal
-               String literal = processOWLLiteralReferenceValue(location, resolvedValue.get(), referenceNode);
-               if (literal.isEmpty()) {
-                  switch (referenceNode.getActualEmptyLiteralDirective()) {
-                     case MM_SKIP_IF_EMPTY_LITERAL:
-                        return Optional.empty();
-                     case MM_WARNING_IF_EMPTY_LITERAL:
-                        // TODO Warn in log file
-                        return Optional.empty();
-                     case MM_ERROR_IF_EMPTY_LITERAL:
-                        throw new RendererException("Empty literal for " + referenceNode + " at location " + location);
-                  }
-               }
-               TextReferenceRendering rendering = new TextReferenceRendering(literal, referenceType);
-               if (isCommented) rendering.addComment(createComment(literal, referenceNode));
-               return Optional.of(rendering);
-            } else if (referenceType.isOWLEntity()) { // Reference is an OWL entity
-               // TODO If the rendering uses the ID then we should use it
-               // String localName = getReferenceRDFID(resolvedValue, referenceNode);
-               String label = getReferenceRDFSLabel(resolvedValue.get(), referenceNode);
-               if (label.isEmpty()) {
-                  switch (referenceNode.getActualEmptyRDFSLabelDirective()) {
-                     case MM_SKIP_IF_EMPTY_LABEL:
-                        return Optional.empty();
-                     case MM_WARNING_IF_EMPTY_LABEL:
-                        // TODO Warn in log file
-                        return Optional.empty();
-                     case MM_ERROR_IF_EMPTY_LABEL:
-                        throw new RendererException("Empty rdfs:label for " + referenceNode + " at location " + location);
-                  }
-               }
-               TextReferenceRendering rendering = new TextReferenceRendering(label, referenceType);
-               if (isCommented) rendering.addComment(createComment(label, referenceNode));
-               return Optional.of(rendering);
-            } else if (referenceType.isOWLIRI()) {
-               String iri = resolvedValue.get();
-               TextReferenceRendering rendering = new TextReferenceRendering(iri, referenceType);
-               if (isCommented) rendering.addComment(createComment(iri, referenceNode));
-               return Optional.of(rendering);
-            }
-            throw new InternalRendererException("Unknown type '" + referenceType + "' for reference node: " + referenceNode);
          }
+         
+         if (referenceNode.hasLiteralType()) { // Reference is an OWL literal
+            String literal = processOWLLiteralReferenceValue(location, resolvedValue, referenceNode);
+            if (literal.isEmpty()) {
+               switch (referenceNode.getActualEmptyLiteralDirective()) {
+                  case MM_SKIP_IF_EMPTY_LITERAL:
+                     return Optional.empty();
+                  case MM_WARNING_IF_EMPTY_LITERAL:
+                     // TODO Warn in log file
+                     return Optional.empty();
+                  case MM_ERROR_IF_EMPTY_LITERAL:
+                     throw new RendererException("Empty literal for " + referenceNode + " at location " + location);
+               }
+            }
+            TextReferenceRendering rendering = new TextReferenceRendering(literal, referenceType);
+            if (isCommented) rendering.addComment(createComment(literal, referenceNode));
+            return Optional.of(rendering);
+         } else if (referenceNode.hasEntityType()) { // Reference is an OWL entity
+            // TODO If the rendering uses the ID then we should use it
+            String entityName = getReferenceRDFID(resolvedValue, referenceNode);
+            if (referenceNode.hasRDFIDValueEncoding() && entityName.isEmpty()) {
+               switch (referenceNode.getActualEmptyRDFIDDirective()) {
+                  case MM_SKIP_IF_EMPTY_ID:
+                     return Optional.empty();
+                  case MM_WARNING_IF_EMPTY_ID:
+                     // TODO Warn in log file
+                     return Optional.empty();
+                  case MM_ERROR_IF_EMPTY_ID:
+                     throw new RendererException("Empty rdf:ID for " + referenceNode + " at location " + location);
+               }
+            }
+            String entityLabel = getReferenceRDFSLabel(resolvedValue, referenceNode);
+            if (referenceNode.hasRDFSLabelValueEncoding() && entityLabel.isEmpty()) {
+               switch (referenceNode.getActualEmptyRDFSLabelDirective()) {
+                  case MM_SKIP_IF_EMPTY_LABEL:
+                     return Optional.empty();
+                  case MM_WARNING_IF_EMPTY_LABEL:
+                     // TODO Warn in log file
+                     return Optional.empty();
+                  case MM_ERROR_IF_EMPTY_LABEL:
+                     throw new RendererException("Empty rdfs:label for " + referenceNode + " at location " + location);
+               }
+            }
+            TextReferenceRendering rendering = createTextReferenceRendering(entityName, entityLabel, referenceNode);
+            if (isCommented) rendering.addComment(createComment(entityLabel, referenceNode));
+            return Optional.of(rendering);
+         } else if (referenceType.isOWLIRI()) {
+            String iri = resolvedValue.get();
+            TextReferenceRendering rendering = new TextReferenceRendering(iri, referenceType);
+            if (isCommented) rendering.addComment(createComment(iri, referenceNode));
+            return Optional.of(rendering);
+         }
+         throw new InternalRendererException("Unknown type '" + referenceType + "' for reference node: " + referenceNode);
       }
       throw new InternalRendererException("Unknown definition for reference node: " + referenceNode);
    }
 
-   private String processOWLLiteralReferenceValue(SpreadsheetLocation location, String resolvedValue,
-         ReferenceNode referenceNode) throws RendererException
+   private TextReferenceRendering createTextReferenceRendering(String entityName, String entityLabel, ReferenceNode referenceNode)
+         throws RendererException
    {
-      resolvedValue = resolvedValue.replace("\"", "\\\"");
-      String literal = "";
-      if (referenceNode.hasLiteralValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding()) {
-            literal = generateReferenceValue(resolvedValue, referenceNode.getLiteralValueEncodingNode(), referenceNode);
-         } else if (referenceNode.hasValueExtractionFunctionNode()) {
-            ValueExtractionFunctionNode valueExtractionFunctionNode = referenceNode.getValueExtractionFunctionNode();
-            literal = generateReferenceValue(resolvedValue, valueExtractionFunctionNode);
+      ReferenceType referenceType = getReferenceType(referenceNode);
+      if (referenceNode.getReferenceDirectives().usesLocationEncoding()) {
+         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
+         String label = getLabelUsingLocationEncoding(location);
+         return new TextReferenceRendering(label, referenceType);
+      } else {
+         if (!entityName.isEmpty()) {
+            return new TextReferenceRendering(entityLabel, referenceType);
          } else {
-            literal = resolvedValue;
+            return new TextReferenceRendering(entityLabel, referenceType);
          }
       }
+   }
 
-      if (literal.isEmpty() && !referenceNode.getActualDefaultLiteral().isEmpty()) {
+   private ReferenceType getReferenceType(ReferenceNode referenceNode) throws RendererException
+   {
+      ReferenceType referenceType = referenceNode.getReferenceType();
+      if (referenceType.isUntyped()) {
+         throw new RendererException("Untyped reference " + referenceNode);
+      }
+      return referenceType;
+   }
+
+   private String processOWLLiteralReferenceValue(SpreadsheetLocation location, Optional<String> resolvedValue,
+         ReferenceNode referenceNode) throws RendererException
+   {
+      String literal = "";
+      if (resolvedValue.isPresent()) {
+         String value = resolvedValue.get();
+         if (referenceNode.hasLiteralValueEncoding()) {
+            if (referenceNode.hasExplicitlySpecifiedLiteralValueEncoding()) {
+               literal = generateReferenceValue(value, referenceNode.getLiteralValueEncodingNode(), referenceNode);
+            } else if (referenceNode.hasValueExtractionFunctionNode()) {
+               ValueExtractionFunctionNode valueExtractionFunctionNode = referenceNode.getValueExtractionFunctionNode();
+               literal = generateReferenceValue(value, valueExtractionFunctionNode);
+            } else {
+               literal = value;
+            }
+         }
+      }
+      if (referenceNode.hasExplicitlySpecifiedDefaultLiteral()) {
          literal = referenceNode.getActualDefaultLiteral();
       }
       return literal;
@@ -280,42 +319,48 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
             arguments, resolvedValue, functionNode.hasArguments());
    }
 
-   private String getReferenceRDFID(String resolvedValue, ReferenceNode referenceNode) throws RendererException
+   private String getReferenceRDFID(Optional<String> resolvedValue, ReferenceNode referenceNode) throws RendererException
    {
       String id = "";
-      if (referenceNode.hasRDFIDValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedRDFIDValueEncoding()) {
-            id = generateReferenceValue(resolvedValue, referenceNode.getRDFIDValueEncodingNode(), referenceNode);
-         } else if (referenceNode.hasValueExtractionFunctionNode()) {
-            id = generateReferenceValue(resolvedValue, referenceNode.getValueExtractionFunctionNode());
-         } else {
-            id = resolvedValue;
+      if (resolvedValue.isPresent()) {
+         String value = resolvedValue.get();
+         if (referenceNode.hasRDFIDValueEncoding()) {
+            if (referenceNode.hasExplicitlySpecifiedRDFIDValueEncoding()) {
+               id = generateReferenceValue(value, referenceNode.getRDFIDValueEncodingNode(), referenceNode);
+            } else if (referenceNode.hasValueExtractionFunctionNode()) {
+               id = generateReferenceValue(value, referenceNode.getValueExtractionFunctionNode());
+            } else {
+               id = value;
+            }
          }
       }
-      if (id.isEmpty() && !referenceNode.getActualDefaultRDFID().isEmpty()) {
+      if (referenceNode.hasExplicitlySpecifiedDefaultRDFID()) {
          id = referenceNode.getActualDefaultRDFID();
+      } else if (referenceNode.hasExplicitlySpecifiedDefaultLocationValue()) {
+         id = referenceNode.getActualDefaultLocationValue();
       }
       return id;
    }
 
-   private String getReferenceRDFSLabel(String resolvedValue, ReferenceNode referenceNode) throws RendererException
+   private String getReferenceRDFSLabel(Optional<String> resolvedValue, ReferenceNode referenceNode) throws RendererException
    {
       String label = "";
-      if (referenceNode.hasRDFSLabelValueEncoding()) {
-         if (referenceNode.hasExplicitlySpecifiedRDFSLabelValueEncoding()) {
-            label = generateReferenceValue(resolvedValue, referenceNode.getRDFSLabelValueEncodingNode(), referenceNode);
-         } else if (referenceNode.hasValueExtractionFunctionNode()) {
-            label = generateReferenceValue(resolvedValue, referenceNode.getValueExtractionFunctionNode());
-         } else {
-            label = resolvedValue;
+      if (resolvedValue.isPresent()) {
+         String value = resolvedValue.get();
+         if (referenceNode.hasRDFSLabelValueEncoding()) {
+            if (referenceNode.hasExplicitlySpecifiedRDFSLabelValueEncoding()) {
+               label = generateReferenceValue(value, referenceNode.getRDFSLabelValueEncodingNode(), referenceNode);
+            } else if (referenceNode.hasValueExtractionFunctionNode()) {
+               label = generateReferenceValue(value, referenceNode.getValueExtractionFunctionNode());
+            } else {
+               label = value;
+            }
          }
       }
-      if (label.isEmpty() && !referenceNode.getActualDefaultRDFSLabel().isEmpty()) {
+      if (referenceNode.hasExplicitlySpecifiedDefaultRDFSLabel()) {
          label = referenceNode.getActualDefaultRDFSLabel();
-      }
-      if (label.isEmpty() && referenceNode.getReferenceDirectives().usesLocationEncoding()) {
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-         label = getLabelUsingLocationEncoding(location);
+      } else if (referenceNode.hasExplicitlySpecifiedDefaultLocationValue()) {
+         label = referenceNode.getActualDefaultLocationValue();
       }
       return label;
    }
