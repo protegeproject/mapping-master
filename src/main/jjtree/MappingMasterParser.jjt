@@ -615,13 +615,14 @@ void owl_subclass_of() #OWLSubclassOf : {}
 } 
 
 void owl_individual_declaration() #OWLIndividualDeclaration : {}
-{ // TODO Order of subclauses should not matter
-  <INDIVIDUAL> owl_named_individual(defaultIndividualValueEncoding) 
-  ( <FACTS> fact_list() )?
-  ( <TYPES> types(OWL_CLASS) )?
-  ( <ANNOTATIONS> annotation_fact_list() )?
-  ( owl_same_as() )?
-  ( owl_different_from() )?
+{
+  <INDIVIDUAL> owl_named_individual(defaultIndividualValueEncoding)
+  ( <FACTS> fact_list()
+     | <TYPES> types(OWL_CLASS)
+     | <ANNOTATIONS> annotation_fact_list()
+     | owl_same_as()
+     | owl_different_from()
+  ) *
 }
 
 void owl_same_as() #OWLSameAs : {}
