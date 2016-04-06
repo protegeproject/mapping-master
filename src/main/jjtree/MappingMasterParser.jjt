@@ -596,10 +596,10 @@ void mm_default_property_type_directive() #MMDefaultPropertyType:
 void owl_class_declaration() #OWLClassDeclaration : {}
 {
   <CLASS> owl_class(defaultClassValueEncoding)
-    (  owl_equivalent_classes() 
+    ( <ANNOTATIONS> annotation_fact_list()
+     | owl_equivalent_classes() 
      | owl_subclass_of()
     ) *
-   ( <ANNOTATIONS> annotation_fact_list() )?
   // TODO Other clauses: DisjointWith, DisjoinUnionOf, HasKey
   // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
