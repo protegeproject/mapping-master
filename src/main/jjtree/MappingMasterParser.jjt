@@ -618,7 +618,7 @@ void owl_individual_declaration() #OWLIndividualDeclaration : {}
 {
   <INDIVIDUAL> owl_named_individual(defaultIndividualValueEncoding)
   ( <FACTS> fact_list()
-     | <TYPES> types(OWL_CLASS)
+     | <TYPES> types()
      | <ANNOTATIONS> annotation_fact_list()
      | owl_same_as()
      | owl_different_from()
@@ -826,14 +826,9 @@ void owl_property() #OWLProperty : {}
   owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding, defaultIRIEncoding)
 } 
 
- 
-void types(int referenceType) #Types : 
+void types() #Types : {}
 {
-  int defaultType = ParserUtil.getDefaultType(referenceType);
-} 
-{
-  ( LOOKAHEAD(3) reference(referenceType, defaultValueEncoding, defaultIRIEncoding) | owl_class_expression() )
-    ( "," ( LOOKAHEAD(3) reference(referenceType, defaultValueEncoding, defaultIRIEncoding) | owl_class_expression() ) )*
+  owl_class_expression_with_condition() ( "," owl_class_expression_with_condition() )*
 }
 
 void value_specification_item() #ValueSpecificationItem : 
