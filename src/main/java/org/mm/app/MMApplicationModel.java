@@ -1,23 +1,23 @@
 package org.mm.app;
 
+import org.mm.core.OWLOntologySource;
 import org.mm.core.TransformationRuleSet;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
 import org.mm.ss.SpreadSheetDataSource;
-import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MMApplicationModel implements ApplicationModel
 {
-   private OWLOntology ontology;
+   private OWLOntologySource ontologySource;
    private SpreadSheetDataSource dataSource;
 
    private MMDataSourceModel dataSourceModel;
    private MMTransformationRuleModel expressionMappingsModel;
 
-   public MMApplicationModel(OWLOntology ontology, SpreadSheetDataSource dataSource, TransformationRuleSet ruleSet)
+   public MMApplicationModel(OWLOntologySource ontologySource, SpreadSheetDataSource dataSource, TransformationRuleSet ruleSet)
    {
-      this.ontology = ontology;
+      this.ontologySource = ontologySource;
       this.dataSource = dataSource;
 
       dataSourceModel = new MMDataSourceModel(dataSource);
@@ -44,7 +44,7 @@ public class MMApplicationModel implements ApplicationModel
 
    public OWLRenderer getOWLAPIRenderer()
    {
-      return new OWLRenderer(ontology, dataSource);
+      return new OWLRenderer(ontologySource, dataSource);
    }
 
    public TextRenderer getTextRenderer()

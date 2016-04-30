@@ -1,16 +1,16 @@
 package org.mm.app;
 
+import org.mm.core.OWLOntologySource;
 import org.mm.core.TransformationRuleSet;
 import org.mm.ss.SpreadSheetDataSource;
-import org.semanticweb.owlapi.model.OWLOntology;
 
 public class MMApplication
 {
    private MMApplicationModel applicationModel;
 
-   public MMApplication(OWLOntology ontology, SpreadSheetDataSource dataSource, TransformationRuleSet ruleSet)
+   public MMApplication(OWLOntologySource ontologySource, SpreadSheetDataSource dataSource, TransformationRuleSet ruleSet)
    {
-      applicationModel = new MMApplicationModel(ontology, dataSource, ruleSet);
+      applicationModel = new MMApplicationModel(ontologySource, dataSource, ruleSet);
    }
 
    public MMApplicationModel getApplicationModel()
