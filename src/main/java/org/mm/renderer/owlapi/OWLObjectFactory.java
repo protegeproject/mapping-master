@@ -1,9 +1,14 @@
 package org.mm.renderer.owlapi;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.mm.core.OWLEntityResolver;
+import org.mm.core.OWLOntologySource;
+import org.mm.exceptions.EntityCreationException;
+import org.mm.exceptions.EntityNotFoundException;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.renderer.LabelToEntityMapper;
 import org.mm.renderer.NameUtil;
@@ -56,96 +61,61 @@ import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
-import org.semanticweb.owlapi.model.PrefixManager;
-import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
 public class OWLObjectFactory implements MappingMasterParserConstants
 {
-   private final OWLOntology ontology;
+   private final OWLEntityResolver entityResolver;
 
    private final OWLDataFactory owlDataFactory;
 
-   private final PrefixManager prefixManager;
-
    private final LabelToEntityMapper labelToEntityMapper;
 
-   public OWLObjectFactory(OWLOntology ontology)
+   private Map<String, String> prefixMap = new HashMap<>();
+
+   private OWLObjectFactory(OWLOntology ontology, OWLEntityResolver entityResolver)
    {
-      this.ontology = ontology;
-
-      prefixManager = setupPrefixManager(ontology);
-      labelToEntityMapper = new LabelToEntityMapper(ontology);
-
+      this.entityResolver = entityResolver;
       owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
-   }
-
-   private PrefixManager setupPrefixManager(OWLOntology ontology) {
-      PrefixManager prefixManager = new DefaultPrefixManager();
-      
-      /*
-       * Assemble the prefix manager for the given ontology
-       */
+      labelToEntityMapper = new LabelToEntityMapper(ontology);
       OWLDocumentFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
       if (format.isPrefixOWLOntologyFormat()) {
-         Map<String, String> prefixMap = format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap();
-         for (String prefixName : prefixMap.keySet()) {
-            prefixManager.setPrefix(prefixName, prefixMap.get(prefixName));
-         }
+         prefixMap = format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap();
       }
-      /*
-       * Make sure the default prefix is set
-       */
-      if (prefixManager.getDefaultPrefix() == null) {
-         com.google.common.base.Optional<IRI> ontologyIRI = ontology.getOntologyID().getOntologyIRI();
-         if (ontologyIRI.isPresent()) {
-            String iri = ontologyIRI.get().toString();
-            if (!iri.endsWith("/") && !iri.endsWith("#")) {
-               iri += "/";
-            }
-            prefixManager.setDefaultPrefix(iri);
-         }
-      }
-      return prefixManager;
+   }
+
+   public static OWLObjectFactory newInstance(OWLOntologySource ontologySource)
+   {
+      return new OWLObjectFactory(ontologySource.getOWLOntology(), ontologySource.getEntityResolver());
    }
 
    /*
     * Handles IRI string resolutions and IRI creation
     */
 
-   public String getDefaultPrefix()
+   public IRI createIri(String inputString)
    {
-      return prefixManager.getDefaultPrefix();
+      if (inputString.startsWith("<")) {
+         inputString = inputString.substring(1, inputString.length() - 1);
+      }
+      return IRI.create(inputString);
    }
 
-   public IRI createIri(String inputName) throws RendererException
+   public String getDefaultPrefix()
    {
-      try {
-         if (NameUtil.isValidUriConstruct(inputName)) {
-            /*
-             * Handles if the input name is already in a valid URI construct, e.g., http://example.org/someName
-             */
-            return IRI.create(inputName);
-         }
-         else {
-            /*
-             * There are two cases where the input name falls into this handler:
-             * - the input name has "<...>" enclosed, e.g., <http://example.org/someName>, or
-             * - the input name is an abbreviated IRI, e.g., abc:someName, :someName, someName
-             */
-            return prefixManager.getIRI(inputName);
-         }
-      } catch (RuntimeException e) {
-         throw new RendererException(e.getMessage());
-      }
+      return entityResolver.getDefaultPrefix();
+   }
+
+   private boolean isValidUriConstruct(String inputName) {
+      return NameUtil.isValidUriConstruct(inputName);
    }
 
    public String getPrefix(String prefixLabel) throws RendererException
    {
-      IRI iri = prefixManager.getIRI(prefixLabel);
-      if (iri != null) {
-         return iri.toString();
+      String iriString = prefixMap.get(prefixLabel);
+      if (iriString != null) {
+         return iriString;
       }
       throw new RendererException("No prefix found for '" + prefixLabel);
    }
@@ -173,52 +143,67 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    public OWLClass createOWLClass(String inputName) throws RendererException
    {
-      return createOWLClass(createIri(inputName));
-   }
-
-   public OWLClass createOWLClass(IRI iri)
-   {
-      return owlDataFactory.getOWLClass(iri);
+      try {
+         if (isValidUriConstruct(inputName)) {
+            return owlDataFactory.getOWLClass(IRI.create(inputName));
+         } else {
+            return entityResolver.create(inputName, OWLClass.class);
+         }
+      } catch (EntityCreationException e) {
+         throw new RendererException(e.getMessage());
+      }
    }
 
    public OWLNamedIndividual createOWLNamedIndividual(String inputName) throws RendererException
    {
-      return createOWLNamedIndividual(createIri(inputName));
-   }
-
-   public OWLNamedIndividual createOWLNamedIndividual(IRI iri)
-   {
-      return owlDataFactory.getOWLNamedIndividual(iri);
+      try {
+         if (isValidUriConstruct(inputName)) {
+            return owlDataFactory.getOWLNamedIndividual(IRI.create(inputName));
+         } else {
+            return entityResolver.create(inputName, OWLNamedIndividual.class);
+         }
+      } catch (EntityCreationException e) {
+         throw new RendererException(e.getMessage());
+      }
    }
 
    public OWLObjectProperty createOWLObjectProperty(String inputName) throws RendererException
    {
-      return createOWLObjectProperty(createIri(inputName));
-   }
-
-   public OWLObjectProperty createOWLObjectProperty(IRI iri)
-   {
-      return owlDataFactory.getOWLObjectProperty(iri);
+      try {
+         if (isValidUriConstruct(inputName)) {
+            return owlDataFactory.getOWLObjectProperty(IRI.create(inputName));
+         } else {
+            return entityResolver.create(inputName, OWLObjectProperty.class);
+         }
+      } catch (EntityCreationException e) {
+         throw new RendererException(e.getMessage());
+      }
    }
 
    public OWLDataProperty createOWLDataProperty(String inputName) throws RendererException
    {
-      return createOWLDataProperty(createIri(inputName));
-   }
-
-   public OWLDataProperty createOWLDataProperty(IRI iri)
-   {
-      return owlDataFactory.getOWLDataProperty(iri);
+      try {
+         if (isValidUriConstruct(inputName)) {
+            return owlDataFactory.getOWLDataProperty(IRI.create(inputName));
+         } else {
+            return entityResolver.create(inputName, OWLDataProperty.class);
+         }
+      } catch (EntityCreationException e) {
+         throw new RendererException(e.getMessage());
+      }
    }
 
    public OWLAnnotationProperty createOWLAnnotationProperty(String inputName) throws RendererException
    {
-      return createOWLAnnotationProperty(createIri(inputName));
-   }
-
-   public OWLAnnotationProperty createOWLAnnotationProperty(IRI iri)
-   {
-      return owlDataFactory.getOWLAnnotationProperty(iri);
+      try {
+         if (isValidUriConstruct(inputName)) {
+            return owlDataFactory.getOWLAnnotationProperty(IRI.create(inputName));
+         } else {
+            return entityResolver.create(inputName, OWLAnnotationProperty.class);
+         }
+      } catch (EntityCreationException e) {
+         throw new RendererException(e.getMessage());
+      }
    }
 
    /*
@@ -334,7 +319,11 @@ public class OWLObjectFactory implements MappingMasterParserConstants
 
    public OWLDatatype createOWLDatatype(String typeName) throws RendererException
    {
-      return owlDataFactory.getOWLDatatype(createIri(typeName));
+      try {
+         return entityResolver.create(typeName, OWLDatatype.class);
+      } catch (EntityCreationException e) {
+         throw new RendererException(e.getMessage());
+      }
    }
 
    /*
@@ -509,122 +498,97 @@ public class OWLObjectFactory implements MappingMasterParserConstants
     * throw an exception if the input entity name doesn't exist in the ontology.
     */
 
-   public OWLClass getAndCheckOWLClass(String inputName) throws RendererException {
-      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_CLASS);
-      if (!foundEntity.isPresent()) {
-         throwEntityNotFoundException(inputName, "class");
-      }
-      return foundEntity.get().asOWLClass();
-   }
-
-   public OWLObjectProperty getAndCheckOWLObjectProperty(String inputName) throws RendererException {
-      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_OBJECT_PROPERTY);
-      if (!foundEntity.isPresent()) {
-         throwEntityNotFoundException(inputName, "object property");
-      }
-      return foundEntity.get().asOWLObjectProperty();
-   }
-
-   public OWLDataProperty getAndCheckOWLDataProperty(String inputName) throws RendererException {
-      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_DATA_PROPERTY);
-      if (!foundEntity.isPresent()) {
-         throwEntityNotFoundException(inputName, "data property");
-      }
-      return foundEntity.get().asOWLDataProperty();
-   }
-
-   public OWLAnnotationProperty getAndCheckOWLAnnotationProperty(String inputName) throws RendererException {
-      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_ANNOTATION_PROPERTY);
-      if (!foundEntity.isPresent()) {
-         throwEntityNotFoundException(inputName, "annotation property");
-      }
-      return foundEntity.get().asOWLAnnotationProperty();
-   }
-
-   public OWLNamedIndividual getAndCheckOWLNamedIndividual(String inputName) throws RendererException {
-      Optional<OWLEntity> foundEntity = getOWLEntity(inputName, OWL_NAMED_INDIVIDUAL);
-      if (!foundEntity.isPresent()) {
-         throwEntityNotFoundException(inputName, "named individual");
-      }
-      return foundEntity.get().asOWLNamedIndividual();
-   }
-
-   public OWLProperty getAndCheckOWLProperty(String inputName) throws RendererException {
-      /*
-       * Try to find first if the given input name is a data property
-       */
+   public OWLClass getAndCheckOWLClass(String inputName) throws RendererException
+   {
       try {
-         return getAndCheckOWLObjectProperty(inputName);
-      } catch (RendererException e) {
-         // NO-OP
+         return entityResolver.resolve(inputName, OWLClass.class);
+      } catch (EntityNotFoundException e) {
+         throw new RendererException(e.getMessage());
       }
-      /*
-       * If not, try to check if it is an object property
-       */
+   }
+
+   public OWLObjectProperty getAndCheckOWLObjectProperty(String inputName) throws RendererException
+   {
       try {
-         return getAndCheckOWLDataProperty(inputName);
-      } catch (RendererException e) {
-         // NO-OP
+         return entityResolver.resolve(inputName, OWLObjectProperty.class);
+      } catch (EntityNotFoundException e) {
+         throw new RendererException(e.getMessage());
       }
-      /*
-       * Perhaps, it is an annotation property...
-       */
+   }
+
+   public OWLDataProperty getAndCheckOWLDataProperty(String inputName) throws RendererException
+   {
       try {
-         return getAndCheckOWLAnnotationProperty(inputName);
-      } catch (RendererException e) {
-         // NO-OP
+         return entityResolver.resolve(inputName, OWLDataProperty.class);
+      } catch (EntityNotFoundException e) {
+         throw new RendererException(e.getMessage());
       }
-      /*
-       * OK, give up!
-       */
-      throwEntityNotFoundException(inputName, "data/object/annotation property");
-      return null;
+   }
+
+   public OWLAnnotationProperty getAndCheckOWLAnnotationProperty(String inputName) throws RendererException
+   {
+      try {
+         return entityResolver.resolve(inputName, OWLAnnotationProperty.class);
+      } catch (EntityNotFoundException e) {
+         throw new RendererException(e.getMessage());
+      }
+   }
+
+   public OWLNamedIndividual getAndCheckOWLNamedIndividual(String inputName) throws RendererException
+   {
+      try {
+         return entityResolver.resolve(inputName, OWLNamedIndividual.class);
+      } catch (EntityNotFoundException e) {
+         throw new RendererException(e.getMessage());
+      }
+   }
+
+   public OWLProperty getAndCheckOWLProperty(String inputName) throws RendererException
+   {
+      try {
+         return entityResolver.resolve(inputName, OWLProperty.class);
+      } catch (EntityNotFoundException e) {
+         throw new RendererException(e.getMessage());
+      }
    }
 
    public Optional<OWLEntity> getOWLEntity(String inputName, int entityType) throws RendererException
    {
       OWLEntity foundEntity = null;
-      Set<OWLEntity> entities = getOWLEntities(inputName);
-      for (OWLEntity entity : entities) {
+      try {
          switch (entityType) {
-            case OWL_CLASS:
-               if (entity.isOWLClass()) { foundEntity = entity; }
+            case OWL_CLASS :
+               foundEntity = entityResolver.resolve(inputName, OWLClass.class);
                break;
-            case OWL_OBJECT_PROPERTY:
-               if (entity.isOWLObjectProperty()) { foundEntity = entity; }
+            case OWL_OBJECT_PROPERTY :
+               foundEntity = entityResolver.resolve(inputName, OWLObjectProperty.class);
                break;
-            case OWL_DATA_PROPERTY:
-               if (entity.isOWLDataProperty()) { foundEntity = entity; }
+            case OWL_DATA_PROPERTY :
+               foundEntity = entityResolver.resolve(inputName, OWLDataProperty.class);
                break;
-            case OWL_ANNOTATION_PROPERTY:
-               if (entity.isOWLAnnotationProperty()) { foundEntity = entity; }
+            case OWL_ANNOTATION_PROPERTY :
+               foundEntity = entityResolver.resolve(inputName, OWLAnnotationProperty.class);
                break;
-            case OWL_NAMED_INDIVIDUAL:
-               if (entity.isOWLNamedIndividual()) { foundEntity = entity; }
+            case OWL_NAMED_INDIVIDUAL :
+               foundEntity = entityResolver.resolve(inputName, OWLNamedIndividual.class);
                break;
          }
-         if (foundEntity != null) { break; }
+      } catch (EntityNotFoundException e) {
+         ; // Do nothing
       }
       return Optional.ofNullable(foundEntity);
    }
 
-   public Optional<OWLEntity> getOWLEntity(String inputName) throws RendererException
+   public Optional<OWLEntity> getOWLEntity(String inputName)
    {
-      /*
-       * Assuming to return the first entity found in the list.
-       */
-      return getOWLEntities(inputName).stream().findFirst();
-   }
-
-   private Set<OWLEntity> getOWLEntities(String inputName) throws RendererException
-   {
-      return ontology.getEntitiesInSignature(createIri(inputName));
-   }
-
-   private void throwEntityNotFoundException(String inputName, String entityType) throws RendererException
-   {
-      String msg = String.format("The expected %s (%s) does not exist in the ontology", entityType, inputName);
-      throw new RendererException(msg);
+      OWLEntity foundEntity = null;
+      try {
+         foundEntity = entityResolver.resolve(inputName, OWLEntity.class);
+      }
+      catch (EntityNotFoundException e) {
+         ; // Do nothing
+      }
+      return Optional.ofNullable(foundEntity);
    }
 
    /*
