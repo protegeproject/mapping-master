@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.mm.core.OWLOntologySource;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.AnnotationFactNode;
 import org.mm.parser.node.FactNode;
@@ -20,18 +21,18 @@ import org.mm.parser.node.OWLPropertyAssertionNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.OWLSubclassOfNode;
 import org.mm.parser.node.TypeNode;
-import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.DeclarationRenderer;
+import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.ReferenceRendererConfiguration;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RendererException;
-import org.mm.rendering.owlapi.OWLRendering;
 import org.mm.rendering.owlapi.OWLAnnotationValueRendering;
 import org.mm.rendering.owlapi.OWLClassExpressionRendering;
 import org.mm.rendering.owlapi.OWLClassRendering;
 import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyAssertionRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
+import org.mm.rendering.owlapi.OWLRendering;
 import org.mm.ss.SpreadSheetDataSource;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
@@ -50,7 +51,6 @@ import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
-import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.OWLPropertyAssertionObject;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
@@ -75,10 +75,10 @@ public class OWLRenderer extends ReferenceRendererConfiguration implements Rende
    private final OWLClassExpressionRenderer classExpressionRenderer;
    private final OWLReferenceRenderer referenceRenderer;
 
-   public OWLRenderer(OWLOntology ontology, SpreadSheetDataSource dataSource)
+   public OWLRenderer(OWLOntologySource ontologySource, SpreadSheetDataSource dataSource)
    {
       this.dataSource = dataSource;
-      objectFactory = new OWLObjectFactory(ontology);
+      objectFactory = OWLObjectFactory.newInstance(ontologySource);
       referenceRenderer = new OWLReferenceRenderer(dataSource, objectFactory);
       entityRenderer = new OWLEntityRenderer(referenceRenderer, objectFactory);
       classExpressionRenderer = new OWLClassExpressionRenderer(referenceRenderer, objectFactory);
@@ -260,12 +260,12 @@ public class OWLRenderer extends ReferenceRendererConfiguration implements Rende
             if (propertyAssertionRendering.isPresent()) {
                OWLPropertyAssertionObject propertyAssertion = propertyAssertionRendering.get().getOWLPropertyAssertionObject();
                if (property instanceof OWLObjectProperty) {
-                  OWLObjectProperty op = objectFactory.createOWLObjectProperty(property.getIRI());
+                  OWLObjectProperty op = (OWLObjectProperty) property;
                   OWLIndividual value = (OWLNamedIndividual) propertyAssertion;
                   OWLObjectPropertyAssertionAxiom axiom = objectFactory.createOWLObjectPropertyAssertionAxiom(op, individual, value);
                   axioms.add(axiom);
                } else if (property instanceof OWLDataProperty) {
-                  OWLDataProperty dp = objectFactory.createOWLDataProperty(property.getIRI());
+                  OWLDataProperty dp = (OWLDataProperty) property;
                   OWLLiteral value = (OWLLiteral) propertyAssertion;
                   OWLDataPropertyAssertionAxiom axiom = objectFactory.createOWLDataPropertyAssertionAxiom(dp, individual, value);
                   axioms.add(axiom);

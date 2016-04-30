@@ -302,9 +302,9 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
          entity = createOWLEntityUsingLocationEncoding(location, userPrefix, referenceType, directives);
       } else {
          if (entityName.isPresent()) {
-            entity = createOWLEntityUsingEntityName(entityName.get(), userPrefix, referenceType, directives);
+            entity = createOWLEntityUsingEntityName(entityName.get(), referenceNode, referenceType, directives);
          } else if (!entityName.isPresent() && entityLabel.isPresent()) {
-            entity = createOWLEntityUsingEntityLabel(entityLabel.get(), userPrefix, language, referenceType, directives);
+            entity = createOWLEntityUsingEntityLabel(entityLabel.get(), language, referenceNode, referenceType, directives);
          }
       }
       return Optional.ofNullable(entity);
@@ -324,7 +324,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       }
    }
 
-   private OWLEntity createOWLEntityUsingEntityName(String entityName, String userPrefix, ReferenceType referenceType, ReferenceDirectives directives)
+   private OWLEntity createOWLEntityUsingEntityName(String entityName, ReferenceNode referenceNode, ReferenceType referenceType, ReferenceDirectives directives)
          throws RendererException
    {
       OWLEntity entity = null;
@@ -360,13 +360,14 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                throw new RendererException("An entity with identifier '" + entityName + "' does not exist in the ontology.\n"
                      + "Please create it first in your ontology.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
+               String userPrefix = getUserDefinedPrefix(referenceNode);
                entity = createOWLEntity(entityName, userPrefix, referenceType, directives);
          }
       }
       return entity;
    }
 
-   private OWLEntity createOWLEntityUsingEntityLabel(String entityLabel, String userPrefix, Optional<String> languageTag,
+   private OWLEntity createOWLEntityUsingEntityLabel(String entityLabel, Optional<String> languageTag, ReferenceNode referenceNode,
          ReferenceType referenceType, ReferenceDirectives directives) throws RendererException
    {
       OWLEntity entity = null;
@@ -402,6 +403,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                throw new RendererException("An entity with display name '" + entityLabel + "' does not exist in the ontology.\n"
                      + "Please create it first in your ontology with the proper rdfs:label annotation.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
+               String userPrefix = getUserDefinedPrefix(referenceNode);
                entity = createOWLEntity(entityLabel, userPrefix, referenceType, directives);
          }
       }
