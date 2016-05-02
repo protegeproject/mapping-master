@@ -30,10 +30,10 @@ public class OWLAPIEntityResolver implements OWLEntityResolver
    }
 
    @Override
-   public <T extends OWLEntity> T resolve(String shortName, final Class<T> entityType)
+   public <T extends OWLEntity> T resolve(String entityName, final Class<T> entityType)
          throws EntityNotFoundException
    {
-      IRI entityIRI = prefixManager.getIRI(shortName);
+      IRI entityIRI = prefixManager.getIRI(entityName);
       Optional<OWLEntity> foundEntity = ontology.getEntitiesInSignature(entityIRI).stream().findFirst();
       if (foundEntity.isPresent()) {
          try {
@@ -41,11 +41,11 @@ public class OWLAPIEntityResolver implements OWLEntityResolver
          }
          catch (ClassCastException e) {
             String template = "The expected entity '%s' does not have type: %s";
-            throw new EntityNotFoundException(String.format(template, shortName, entityType.getSimpleName()));
+            throw new EntityNotFoundException(String.format(template, entityName, entityType.getSimpleName()));
          }
       }
       String template = "The expected entity '%s' does not exist in the ontology";
-      throw new EntityNotFoundException(String.format(template, shortName));
+      throw new EntityNotFoundException(String.format(template, entityName));
    }
 
    @Override
