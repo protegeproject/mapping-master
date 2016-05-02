@@ -102,11 +102,6 @@ public class OWLObjectFactory implements MappingMasterParserConstants
       return IRI.create(inputString);
    }
 
-   public String getDefaultPrefix()
-   {
-      return entityResolver.getDefaultPrefix();
-   }
-
    private boolean isValidUriConstruct(String inputName) {
       return NameUtil.isValidUriConstruct(inputName);
    }

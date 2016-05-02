@@ -90,11 +90,6 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return literalRenderer;
    }
 
-   public String getDefaultPrefix()
-   {
-      return objectFactory.getDefaultPrefix();
-   }
-
    @Override
    public Optional<OWLReferenceRendering> renderReference(ReferenceNode referenceNode) throws RendererException
    {
@@ -295,40 +290,40 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
    {
       OWLEntity entity = null;
       ReferenceDirectives directives = referenceNode.getReferenceDirectives();
-      ReferenceType referenceType = getReferenceType(referenceNode);
-      String userPrefix = getUserDefinedPrefix(referenceNode);
       if (directives.usesLocationEncoding()) {
          SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-         entity = createOWLEntityUsingLocationEncoding(location, userPrefix, referenceType, directives);
+         entity = createOWLEntityUsingLocationEncoding(location, referenceNode);
       } else {
          if (entityName.isPresent()) {
-            entity = createOWLEntityUsingEntityName(entityName.get(), referenceNode, referenceType, directives);
+            entity = createOWLEntityUsingEntityName(entityName.get(), referenceNode, directives);
          } else if (!entityName.isPresent() && entityLabel.isPresent()) {
-            entity = createOWLEntityUsingEntityLabel(entityLabel.get(), language, referenceNode, referenceType, directives);
+            entity = createOWLEntityUsingEntityLabel(entityLabel.get(), language, referenceNode, directives);
          }
       }
       return Optional.ofNullable(entity);
    }
 
-   private OWLEntity createOWLEntityUsingLocationEncoding(SpreadsheetLocation location, String userPrefix, ReferenceType referenceType,
-         ReferenceDirectives directives) throws RendererException
+   private OWLEntity createOWLEntityUsingLocationEncoding(SpreadsheetLocation location, ReferenceNode referenceNode)
+         throws RendererException
    {
-      Optional<OWLEntity> foundEntity = getOWLEntityFromLocationCache(userPrefix, location);
+      Optional<OWLEntity> foundEntity = getOWLEntityFromLocationCache(location);
       if (!foundEntity.isPresent()) {
          String localName = ReferenceUtil.createNameUsingCellLocation(location);
-         OWLEntity newEntity = createOWLEntity(localName, userPrefix, referenceType, directives);
-         putOWLEntityToLocationCache(userPrefix, location, newEntity);
+         String entityName = getEntityNaming(localName, referenceNode);
+         OWLEntity newEntity = createOWLEntity(entityName, referenceNode);
+         putOWLEntityToLocationCache(location, newEntity);
          return newEntity;
       } else {
          return foundEntity.get();
       }
    }
 
-   private OWLEntity createOWLEntityUsingEntityName(String entityName, ReferenceNode referenceNode, ReferenceType referenceType, ReferenceDirectives directives)
+   private OWLEntity createOWLEntityUsingEntityName(String entityName, ReferenceNode referenceNode, ReferenceDirectives directives)
          throws RendererException
    {
       OWLEntity entity = null;
       Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(entityName);
+      ReferenceType referenceType = getReferenceType(referenceNode);
       if (foundEntity.isPresent()) {
          if (isCompatible(foundEntity.get(), referenceType)) {
             int setting = directives.getActualIfOWLEntityExistsDirective();
@@ -360,18 +355,21 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                throw new RendererException("An entity with identifier '" + entityName + "' does not exist in the ontology.\n"
                      + "Please create it first in your ontology.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               String userPrefix = getUserDefinedPrefix(referenceNode);
-               entity = createOWLEntity(entityName, userPrefix, referenceType, directives);
+               if (!NameUtil.isValidUriConstruct(entityName)) {
+                  entityName = getEntityNaming(entityName, referenceNode);
+               }
+               entity = createOWLEntity(entityName, referenceType);
          }
       }
       return entity;
    }
 
-   private OWLEntity createOWLEntityUsingEntityLabel(String entityLabel, Optional<String> languageTag, ReferenceNode referenceNode,
-         ReferenceType referenceType, ReferenceDirectives directives) throws RendererException
+   private OWLEntity createOWLEntityUsingEntityLabel(String displayName, Optional<String> languageTag, ReferenceNode referenceNode,
+         ReferenceDirectives directives) throws RendererException
    {
       OWLEntity entity = null;
-      Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(entityLabel, languageTag);
+      Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(displayName, languageTag);
+      ReferenceType referenceType = getReferenceType(referenceNode);
       if (foundEntity.isPresent()) {
          if (isCompatible(foundEntity.get(), referenceType)) {
             int setting = directives.getActualIfOWLEntityExistsDirective();
@@ -379,10 +377,10 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                case MM_SKIP_IF_OWL_ENTITY_EXISTS:
                   break;
                case MM_WARNING_IF_OWL_ENTITY_EXISTS:
-                  logger.warn("An entity with display name '" + entityLabel + "' already exists in the ontology");
+                  logger.warn("An entity with display name '" + displayName + "' already exists in the ontology");
                   break;
                case MM_ERROR_IF_OWL_ENTITY_EXISTS:
-                  throw new RendererException("An entity with display name '" + entityLabel + "' already exists in the ontology");
+                  throw new RendererException("An entity with display name '" + displayName + "' already exists in the ontology");
                case MM_RESOLVE_IF_OWL_ENTITY_EXISTS:
                   entity = foundEntity.get();
             }
@@ -397,14 +395,14 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             case MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST:
                break;
             case MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               logger.warn("An entity with display name '" + entityLabel + "' does not exist in the ontology");
+               logger.warn("An entity with display name '" + displayName + "' does not exist in the ontology");
                break;
             case MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               throw new RendererException("An entity with display name '" + entityLabel + "' does not exist in the ontology.\n"
+               throw new RendererException("An entity with display name '" + displayName + "' does not exist in the ontology.\n"
                      + "Please create it first in your ontology with the proper rdfs:label annotation.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               String userPrefix = getUserDefinedPrefix(referenceNode);
-               entity = createOWLEntity(entityLabel, userPrefix, referenceType, directives);
+               String entityName = getEntityNaming(displayName, referenceNode);
+               entity = createOWLEntity(entityName, referenceType);
          }
       }
       return entity;
@@ -419,15 +417,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             || (entity instanceof OWLNamedIndividual && referenceType.isOWLNamedIndividual());
    }
 
-   private OWLEntity createOWLEntity(@Nonnull String localName, @Nonnull String userPrefix, ReferenceType referenceType,
-         ReferenceDirectives directives) throws RendererException
-   {
-      String encodedLocalName = constructLocalName(localName, directives);
-      String entityName = constructEntityName(userPrefix, encodedLocalName);
-      return createOWLEntity(entityName, referenceType);
-   }
-
-   private String constructLocalName(String localName, ReferenceDirectives directives)
+   private String encodeLocalName(String localName, ReferenceDirectives directives)
    {
       int setting = directives.getActualIRIEncoding();
       switch (setting) {
@@ -439,13 +429,10 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return localName;
    }
 
-   private String constructEntityName(String prefix, String localName) throws RendererException
+   private OWLEntity createOWLEntity(String entityName, ReferenceNode referenceNode) throws RendererException
    {
-      String entityName = prefix + localName;
-      if (!NameUtil.isValidUriConstruct(entityName)) {
-         throw new RendererException("Failed to construct valid IRI using cell value: " + localName);
-      }
-      return entityName;
+      ReferenceType referenceType = getReferenceType(referenceNode);
+      return objectFactory.createOWLEntity(entityName, referenceType.getType());
    }
 
    private OWLEntity createOWLEntity(String entityName, ReferenceType referenceType) throws RendererException
@@ -463,14 +450,14 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return objectFactory.getOWLEntity(entityName);
    }
 
-   private Optional<OWLEntity> getOWLEntityFromLocationCache(String prefix, SpreadsheetLocation location)
+   private Optional<OWLEntity> getOWLEntityFromLocationCache(SpreadsheetLocation location)
    {
-      return locationEncodingCache.get(prefix, location);
+      return locationEncodingCache.get(location);
    }
 
-   private void putOWLEntityToLocationCache(String prefix, SpreadsheetLocation location, OWLEntity newEntity)
+   private void putOWLEntityToLocationCache(SpreadsheetLocation location, OWLEntity newEntity)
    {
-      locationEncodingCache.put(prefix, location, newEntity);
+      locationEncodingCache.put(location, newEntity);
    }
 
    public Optional<? extends LiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
@@ -508,16 +495,21 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return axioms;
    }
 
-   private String getUserDefinedPrefix(ReferenceNode referenceNode) throws RendererException
+   /*
+    * This method will return either a short name or an IRI string, depending on the directive in the reference node.
+    */
+   private String getEntityNaming(String displayName, ReferenceNode referenceNode) throws RendererException
    {
-      String prefix = getDefaultPrefix();
+      String localName = encodeLocalName(displayName, referenceNode.getReferenceDirectives());
       if (referenceNode.hasExplicitlySpecifiedPrefix()) {
          String prefixLabel = referenceNode.getPrefixDirectiveNode().getPrefix();
-         prefix = objectFactory.getPrefix(prefixLabel);
+         return prefixLabel + ":" + localName;
       } else if (referenceNode.hasExplicitlySpecifiedNamespace()) {
-         prefix = referenceNode.getNamespaceDirectiveNode().getNamespace();
+         String prefix = referenceNode.getNamespaceDirectiveNode().getNamespace();
+         return prefix + localName;
+      } else {
+         return localName;
       }
-      return prefix;
    }
 
    private Set<OWLAxiom> createOWLAxioms(OWLEntity entity, Optional<String> entityLabel, Optional<String> languageTag,
@@ -797,21 +789,17 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 
    class LocationEncodingCache
    {
-      private final Map<String, Map<SpreadsheetLocation, OWLEntity>> cache = new HashMap<>();
+      private final Map<SpreadsheetLocation, OWLEntity> cache = new HashMap<>();
 
-      public Optional<OWLEntity> get(String prefix, SpreadsheetLocation location)
+      public Optional<OWLEntity> get(SpreadsheetLocation location)
       {
-         OWLEntity entity = cache.get(prefix).get(location);
+         OWLEntity entity = cache.get(location);
          return Optional.ofNullable(entity);
       }
 
-      public void put(String prefix, SpreadsheetLocation location, OWLEntity entity)
+      public void put(SpreadsheetLocation location, OWLEntity entity)
       {
-         Map<SpreadsheetLocation, OWLEntity> innerMap = cache.get(prefix);
-         if (innerMap == null) {
-            innerMap = new HashMap<>();
-         }
-         innerMap.put(location, entity);
+         cache.put(location, entity);
       }
    }
 }
