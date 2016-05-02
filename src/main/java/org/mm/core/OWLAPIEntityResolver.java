@@ -30,12 +30,6 @@ public class OWLAPIEntityResolver implements OWLEntityResolver
    }
 
    @Override
-   public String getDefaultPrefix()
-   {
-      return prefixManager.getDefaultPrefix();
-   }
-
-   @Override
    public <T extends OWLEntity> T resolve(String shortName, final Class<T> entityType)
          throws EntityNotFoundException
    {

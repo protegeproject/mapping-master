@@ -6,8 +6,6 @@ import org.semanticweb.owlapi.model.OWLEntity;
 
 public interface OWLEntityResolver
 {
-   String getDefaultPrefix();
-
    <T extends OWLEntity> T resolve(String shortName, final Class<T> entityType)
          throws EntityNotFoundException;
 
