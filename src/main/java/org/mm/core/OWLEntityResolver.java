@@ -31,6 +31,7 @@ public interface OWLEntityResolver
     *
     * @param entityName
     *        The entity name in short form or as a prefixed name string.
+    * @param entityType
     *          The entity type following the OWLAPI class hierarchy. The types an be
     *          one of these: {@link OWLClass}, {@linke OWLDataProperty},
     *          {@link OWLObjectProperty}. {@link OWLNamedIndividual} or
