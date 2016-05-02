@@ -49,22 +49,28 @@ public class OWLAPIEntityResolver implements OWLEntityResolver
    }
 
    @Override
-   public <T extends OWLEntity> T create(String shortName, final Class<T> entityType)
+   public <T extends OWLEntity> T create(String entityName, final Class<T> entityType)
          throws EntityCreationException
    {
-      if (OWLClass.class.isAssignableFrom(entityType)) {
-         return entityType.cast(owlDataFactory.getOWLClass(shortName, prefixManager));
-      } else if (OWLObjectProperty.class.isAssignableFrom(entityType)) {
-         return entityType.cast(owlDataFactory.getOWLObjectProperty(shortName, prefixManager));
-      } else if (OWLDataProperty.class.isAssignableFrom(entityType)) {
-         return entityType.cast(owlDataFactory.getOWLDataProperty(shortName, prefixManager));
-      } else if (OWLNamedIndividual.class.isAssignableFrom(entityType)) {
-         return entityType.cast(owlDataFactory.getOWLNamedIndividual(shortName, prefixManager));
-      } else if (OWLAnnotationProperty.class.isAssignableFrom(entityType)) {
-         return entityType.cast(owlDataFactory.getOWLAnnotationProperty(shortName, prefixManager));
-      } else if (OWLDatatype.class.isAssignableFrom(entityType)) {
-         return entityType.cast(owlDataFactory.getOWLDatatype(shortName, prefixManager));
+      IRI entityIRI = prefixManager.getIRI(entityName);
+      Optional<OWLEntity> foundEntity = ontology.getEntitiesInSignature(entityIRI).stream().findFirst();
+      if (foundEntity.isPresent()) {
+         return entityType.cast(foundEntity.get());
+      } else {
+         if (OWLClass.class.isAssignableFrom(entityType)) {
+            return entityType.cast(owlDataFactory.getOWLClass(entityName, prefixManager));
+         } else if (OWLObjectProperty.class.isAssignableFrom(entityType)) {
+            return entityType.cast(owlDataFactory.getOWLObjectProperty(entityName, prefixManager));
+         } else if (OWLDataProperty.class.isAssignableFrom(entityType)) {
+            return entityType.cast(owlDataFactory.getOWLDataProperty(entityName, prefixManager));
+         } else if (OWLNamedIndividual.class.isAssignableFrom(entityType)) {
+            return entityType.cast(owlDataFactory.getOWLNamedIndividual(entityName, prefixManager));
+         } else if (OWLAnnotationProperty.class.isAssignableFrom(entityType)) {
+            return entityType.cast(owlDataFactory.getOWLAnnotationProperty(entityName, prefixManager));
+         } else if (OWLDatatype.class.isAssignableFrom(entityType)) {
+            return entityType.cast(owlDataFactory.getOWLDatatype(entityName, prefixManager));
+         }
       }
-      throw new EntityCreationException("Missing branch for entity type: " + entityType.getSimpleName());
+      throw new IllegalStateException("Programmer error - report this (with stack trace) to the Protege mailing list");
    }
 }
