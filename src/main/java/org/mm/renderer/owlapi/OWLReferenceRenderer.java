@@ -339,8 +339,8 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                   entity = foundEntity.get();
             }
          } else {
-            String message = String.format("Mismatch entity type found in the ontology (%s) and in the transformation rule (%s)",
-                  foundEntity.get().getEntityType(), referenceType.getTypeName());
+            String message = String.format("The entity '%s' was found as [%s] in the ontology but was mentioned as [%s] "
+                  + "in the transformation rule", entityName, foundEntity.get().getEntityType(), referenceType.getTypeName());
             throw new RendererException(message);
          }
       } else {
@@ -385,8 +385,8 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                   entity = foundEntity.get();
             }
          } else {
-            String message = String.format("Mismatch entity type found in the ontology (%s) and in the transformation rule (%s)",
-                  foundEntity.get().getEntityType(), referenceType.getTypeName());
+            String message = String.format("The entity name '%s' was found as [%s] in the ontology but was mentioned as [%s] "
+                  + "in the transformation rule", displayName, foundEntity.get().getEntityType(), referenceType.getTypeName());
             throw new RendererException(message);
          }
       } else {
