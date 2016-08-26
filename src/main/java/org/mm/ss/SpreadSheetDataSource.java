@@ -1,10 +1,7 @@
 package org.mm.ss;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,9 +21,11 @@ import org.mm.renderer.RendererException;
 public class SpreadSheetDataSource implements DataSource, MappingMasterParserConstants
 {
    private final Workbook workbook;
-   private Optional<SpreadsheetLocation> currentLocation;
 
-   private Map<String, Sheet> sheetMap = new HashMap<String, Sheet>();
+   private final List<String> sheetNameList = new ArrayList<>();
+   private final List<Sheet> sheetList = new ArrayList<>();
+
+   private Optional<SpreadsheetLocation> currentLocation;
 
    public SpreadSheetDataSource()
    {
@@ -42,7 +41,8 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
        * Populate the sheets from the workbook
        */
       for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-         sheetMap.put(workbook.getSheetName(i), workbook.getSheetAt(i));
+         sheetNameList.add(workbook.getSheetName(i));
+         sheetList.add(workbook.getSheetAt(i));
       }
    }
 
@@ -73,17 +73,12 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
 
    public List<Sheet> getSheets()
    {
-      return new ArrayList<Sheet>(sheetMap.values());
+      return new ArrayList<Sheet>(sheetList);
    }
 
    public List<String> getSheetNames()
    {
-      return new ArrayList<String>(sheetMap.keySet());
-   }
-
-   public Map<String, Sheet> getSheetMap()
-   {
-      return Collections.unmodifiableMap(sheetMap);
+      return new ArrayList<String>(sheetNameList);
    }
 
    public String getLocationValue(SpreadsheetLocation location, ReferenceNode referenceNode) throws RendererException
