@@ -244,12 +244,12 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
             if (isColumnWildcard) {
                columnNumber = getCurrentLocation().get().getPhysicalColumnNumber();
             } else {
-               columnNumber = SpreadSheetUtil.getColumnNumber(sheet, columnSpecification);
+               columnNumber = SpreadSheetUtil.columnName2Number(columnSpecification);
             }
             if (isRowWildcard) {
                rowNumber = getCurrentLocation().get().getPhysicalRowNumber();
             } else {
-               rowNumber = SpreadSheetUtil.getRowNumber(sheet, rowSpecification);
+               rowNumber = SpreadSheetUtil.rowLabel2Number(rowSpecification);
             }
          } catch (MappingMasterException e) {
             throw new RendererException("Invalid source specification " + sourceSpecification + " - " + e.getMessage());
