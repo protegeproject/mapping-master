@@ -4,14 +4,15 @@ public class TransformationRule
 {
    public static final String EndWildcard = "+";
 
-   private String sheetName;
-   private String startColumn;
-   private String endColumn;
-   private String startRow;
-   private String endRow;
-   private String comment;
-   private String rule;
-   private boolean active;
+   private final String sheetName;
+   private final String startColumn;
+   private final String endColumn;
+   private final String startRow;
+   private final String endRow;
+   private final String comment;
+   private final String rule;
+
+   private boolean active = false;
 
    public TransformationRule(String sheetName, String startColumn, String endColumn, String startRow, String endRow,
          String comment, String rule)
