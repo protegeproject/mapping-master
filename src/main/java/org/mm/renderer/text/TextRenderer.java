@@ -87,7 +87,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    private final static String INDENT = "   ";
    private final static String NEWLINE = "\n";
 
-   public final static String COMMENT_HEADER = "   # ";
+   public final static String COMMENT_HEADER = "#";
 
    public TextRenderer(SpreadSheetDataSource dataSource)
    {
@@ -397,7 +397,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    public Optional<? extends TextRendering> renderOWLClassDeclaration(OWLClassDeclarationNode classDeclarationNode)
          throws RendererException
    {
-      StringBuilder textRepresentation = new StringBuilder(NEWLINE);
+      StringBuilder textRepresentation = new StringBuilder();
       OWLClassNode declaredClassNode = classDeclarationNode.getOWLClassNode();
       Optional<? extends TextRendering> textRenderingResult = null;
 
@@ -505,7 +505,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    public Optional<? extends TextRendering> renderOWLIndividualDeclaration(
          OWLIndividualDeclarationNode individualDeclarationNode) throws RendererException
    {
-      StringBuilder textRepresentation = new StringBuilder(NEWLINE);
+      StringBuilder textRepresentation = new StringBuilder();
       Optional<? extends TextRendering> textRenderingResult = null;
 
       /*
@@ -1349,36 +1349,13 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    private String createComment(String rawValue, ReferenceNode referenceNode) throws RendererException
    {
       StringBuffer sb = new StringBuffer();
-      sb.append(rawValue);
-      sb.append(" ");
-      sb.append("was rendered from reference ");
-      sb.append(referenceNode);
-      sb.append(" ");
-      sb.append("at location ");
-      sb.append(ReferenceUtil.resolveLocation(getDataSource(), referenceNode));
-      sb.append(" ");
-      sb.append("with cell value ");
+      sb.append("Generated from value ");
       sb.append("\"").append(rawValue).append("\"");
       sb.append(" ");
-      sb.append("(");
-      sb.append(getEncoding(referenceNode));
-      sb.append(")");
+      sb.append("located at cell ");
+      sb.append(ReferenceUtil.resolveLocation(getDataSource(), referenceNode));
+      sb.append(".");
       return sb.toString();
-   }
-
-   private Object getEncoding(ReferenceNode referenceNode)
-   {
-      if (referenceNode.hasRDFSLabelValueEncoding()) {
-         return "rdfs:label encoding";
-      } else if (referenceNode.hasRDFIDValueEncoding()) {
-         return "IRI encoding";
-      } else if (referenceNode.hasLiteralValueEncoding()) {
-         return "Literal encoding";
-      } else if (referenceNode.hasLocationValueEncoding()) {
-         return "Location encoding";
-      } else {
-         return "Unknown encoding";
-      }
    }
 
    private static String quotes(String text)
@@ -1388,6 +1365,6 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
    private static String comment(String text)
    {
-      return COMMENT_HEADER + text;
+      return String.format("  %s %s", COMMENT_HEADER, text);
    }
 }
