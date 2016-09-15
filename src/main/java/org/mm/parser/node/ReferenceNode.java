@@ -233,6 +233,11 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
       return getReferenceType().isIRI();
    }
 
+   public boolean hasEntityIRIType()
+   {
+      return getReferenceType().isEntityIRI();
+   }
+
    public ReferenceType getReferenceType()
    {
       return getReferenceTypeNode().getReferenceType();

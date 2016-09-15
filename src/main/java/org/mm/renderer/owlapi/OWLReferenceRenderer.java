@@ -133,6 +133,13 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             IRI iri = objectFactory.createIri(literalValue);
             return Optional.of(new OWLIRIReferenceRendering(iri, referenceType));
          }
+         else if (referenceNode.hasEntityIRIType()) {
+            Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(literalValue);
+            if (foundEntity.isPresent()) {
+               IRI entityIri = foundEntity.get().getIRI();
+               return  Optional.of(new OWLIRIReferenceRendering(entityIri, referenceType));
+            }
+         }
       } else if (sourceSpecificationNode.hasLocation()) {
          /*
           * Get the literal value by resolving the given reference against the input spreadsheet
@@ -184,6 +191,17 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             if (resolvedValue.isPresent()) {
                IRI iri = objectFactory.createIri(resolvedValue.get());
                iriRendering = new OWLIRIReferenceRendering(iri, referenceType);
+            }
+            return Optional.ofNullable(iriRendering);
+         }
+         else if (referenceNode.hasEntityIRIType()) {
+            OWLIRIReferenceRendering iriRendering = null;
+            if (resolvedValue.isPresent()) {
+               Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(resolvedValue.get());
+               if (foundEntity.isPresent()) {
+                  IRI entityIri = foundEntity.get().getIRI();
+                  iriRendering = new OWLIRIReferenceRendering(entityIri, referenceType);
+               }
             }
             return Optional.ofNullable(iriRendering);
          }
