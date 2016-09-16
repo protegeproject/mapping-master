@@ -9,17 +9,19 @@ import org.mm.ss.SpreadSheetDataSource;
 
 public class MMApplicationModel implements ApplicationModel
 {
-   private OWLOntologySource ontologySource;
-   private SpreadSheetDataSource dataSource;
+   private final OWLOntologySource ontologySource;
+   private final SpreadSheetDataSource dataSource;
 
-   private MMDataSourceModel dataSourceModel;
-   private MMTransformationRuleModel expressionMappingsModel;
+   private final Renderer applicationRenderer;
+   private final MMDataSourceModel dataSourceModel;
+   private final MMTransformationRuleModel expressionMappingsModel;
 
    public MMApplicationModel(OWLOntologySource ontologySource, SpreadSheetDataSource dataSource, TransformationRuleSet ruleSet)
    {
       this.ontologySource = ontologySource;
       this.dataSource = dataSource;
 
+      applicationRenderer = new OWLRenderer(ontologySource, dataSource);
       dataSourceModel = new MMDataSourceModel(dataSource);
       expressionMappingsModel = new MMTransformationRuleModel(ruleSet);
    }
@@ -39,17 +41,7 @@ public class MMApplicationModel implements ApplicationModel
    @Override
    public Renderer getDefaultRenderer()
    {
-      return getOWLAPIRenderer();
-   }
-
-   public OWLRenderer getOWLAPIRenderer()
-   {
-      return new OWLRenderer(ontologySource, dataSource);
-   }
-
-   public TextRenderer getTextRenderer()
-   {
-      return new TextRenderer(dataSource);
+      return applicationRenderer;
    }
 
    public TextRenderer getLogRenderer()

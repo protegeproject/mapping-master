@@ -309,8 +309,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       OWLEntity entity = null;
       ReferenceDirectives directives = referenceNode.getReferenceDirectives();
       if (directives.usesLocationEncoding()) {
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-         entity = createOWLEntityUsingLocationEncoding(location, referenceNode);
+         entity = createOWLEntityUsingLocationEncoding(referenceNode);
       } else {
          if (entityName.isPresent()) {
             entity = createOWLEntityUsingEntityName(entityName.get(), referenceNode, directives);
@@ -321,13 +320,13 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return Optional.ofNullable(entity);
    }
 
-   private OWLEntity createOWLEntityUsingLocationEncoding(SpreadsheetLocation location, ReferenceNode referenceNode)
-         throws RendererException
+   private OWLEntity createOWLEntityUsingLocationEncoding(ReferenceNode referenceNode) throws RendererException
    {
+      SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
       Optional<OWLEntity> foundEntity = getOWLEntityFromLocationCache(location);
       if (!foundEntity.isPresent()) {
-         String localName = ReferenceUtil.createNameUsingCellLocation(location);
-         String entityName = getEntityNaming(localName, referenceNode);
+         String cellLocationName = ReferenceUtil.createNameUsingCellLocation(location);
+         String entityName = constructEntityIdentifier(cellLocationName, referenceNode);
          OWLEntity newEntity = createOWLEntity(entityName, referenceNode);
          putOWLEntityToLocationCache(location, newEntity);
          return newEntity;
@@ -373,10 +372,16 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                throw new RendererException("An entity with identifier '" + entityName + "' does not exist in the ontology.\n"
                      + "Please create it first in your ontology.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               if (!NameUtil.isValidUriConstruct(entityName)) {
-                  entityName = getEntityNaming(entityName, referenceNode);
+               if (directives.getActualIRIEncoding() == MM_UUID_ENCODE) {
+                  entity = createOWLEntityUsingLocationEncoding(referenceNode);
                }
-               entity = createOWLEntity(entityName, referenceType);
+               else {
+                  String entityIdentifier = entityName;
+                  if (!NameUtil.isValidUriConstruct(entityIdentifier)) {
+                     entityIdentifier = constructEntityIdentifier(entityName, referenceNode);
+                  }
+                  entity = createOWLEntity(entityIdentifier, referenceType);
+               }
          }
       }
       return entity;
@@ -419,7 +424,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
                throw new RendererException("An entity with display name '" + displayName + "' does not exist in the ontology.\n"
                      + "Please create it first in your ontology with the proper rdfs:label annotation.");
             case MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST:
-               String entityName = getEntityNaming(displayName, referenceNode);
+               String entityName = constructEntityIdentifier(displayName, referenceNode);
                entity = createOWLEntity(entityName, referenceType);
          }
       }
@@ -516,9 +521,9 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
    /*
     * This method will return either a short name or an IRI string, depending on the directive in the reference node.
     */
-   private String getEntityNaming(String displayName, ReferenceNode referenceNode) throws RendererException
+   private String constructEntityIdentifier(String inputName, ReferenceNode referenceNode) throws RendererException
    {
-      String localName = encodeLocalName(displayName, referenceNode.getReferenceDirectives());
+      String localName = encodeLocalName(inputName, referenceNode.getReferenceDirectives());
       if (referenceNode.hasExplicitlySpecifiedPrefix()) {
          String prefixLabel = referenceNode.getPrefixDirectiveNode().getPrefix();
          return prefixLabel + ":" + localName;
