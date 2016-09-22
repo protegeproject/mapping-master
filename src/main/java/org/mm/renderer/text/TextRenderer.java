@@ -87,7 +87,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    private final static String INDENT = "   ";
    private final static String NEWLINE = "\n";
 
-   public final static String COMMENT_HEADER = "#";
+   public final static String COMMENT_SYMBOL = "#";
 
    public TextRenderer(SpreadSheetDataSource dataSource)
    {
@@ -1370,6 +1370,6 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
    private static String comment(String text)
    {
-      return String.format("  %s %s", COMMENT_HEADER, text);
+      return String.format("  %s %s", COMMENT_SYMBOL, text);
    }
 }
