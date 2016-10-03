@@ -19,6 +19,7 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.PrefixManager;
+import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 public class OWLAPIEntityResolver implements OWLEntityResolver {
 
@@ -32,25 +33,66 @@ public class OWLAPIEntityResolver implements OWLEntityResolver {
       dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
    }
 
+   /**
+    * Resolves the given entity name and returns the OWL entity object with the specified type.
+    * The method will scan the entity name in the active ontology and return the found object.
+    * If no entity was found, the method will check against a list of built-in entities before
+    * throwing a checked exception if still no entity was found.
+    *
+    * @param entityName
+    *          The entity name in short form or as a prefixed name string.
+    * @param entityType
+    *          The entity type following the OWLAPI class hierarchy. The types an be
+    *          one of these: {@link OWLClass}, {@link OWLDataProperty},
+    *          {@link OWLObjectProperty}. {@link OWLNamedIndividual} or
+    *          {@link OWLDatatype}.
+    * @return Returns an OWL entity object according to its type.
+    * @throws EntityNotFoundException If the entity name does not exist in the ontology.
+    */
    @Override
    public <T extends OWLEntity> T resolve(String entityName, final Class<T> entityType)
          throws EntityNotFoundException {
-      IRI entityIRI = prefixManager.getIRI(entityName);
-      Optional<OWLEntity> foundEntity = ontology.getEntitiesInSignature(entityIRI).stream().findFirst();
-      if (foundEntity.isPresent()) {
-         try {
-            return entityType.cast(foundEntity.get());
-         } catch (ClassCastException e) {
-            throw new EntityNotFoundException(
-                  String.format("The expected entity name '%s' does not have type %s",
-                  entityName, entityType.getSimpleName()));
-         }
+      T entity = null;
+      IRI entityIri = prefixManager.getIRI(entityName);
+      Optional<OWLEntity> foundEntity = ontology.getEntitiesInSignature(entityIri).stream().findFirst();
+      if (!foundEntity.isPresent()) {
+         entity = createNewForBuiltInEntity(entityName, entityType);
+      } else {
+         entity = entityType.cast(foundEntity.get());
       }
-      throw new EntityNotFoundException(
-            String.format("The expected entity name '%s' does not exist in the ontology",
-                  entityName));
+      if (entity == null) {
+         throw new EntityNotFoundException(
+               String.format("The expected entity name '%s' does not exist in the ontology",
+                     entityName));
+      }
+      return entity;
    }
 
+   private <T extends OWLEntity> T createNewForBuiltInEntity(String entityName, final Class<T> entityType) {
+      IRI entityIri = prefixManager.getIRI(entityName);
+      if (OWLRDFVocabulary.BUILT_IN_VOCABULARY_IRIS.contains(entityIri)) {
+         return createNew(entityName, entityType);
+      } else {
+         return null;
+      }
+   }
+
+   /**
+    * Resolves the given entity name and returns the OWL entity object with the specified type.
+    * The method will scan the entity name in the active ontology and return the found object.
+    * If no entity was found, the method will check against a list of built-in entities before
+    * throwing a runtime exception if still no entity was found.
+    *
+    * @param entityName
+    *          The entity name in short form or as a prefixed name string.
+    * @param entityType
+    *          The entity type following the OWLAPI class hierarchy. The types an be
+    *          one of these: {@link OWLClass}, {@link OWLDataProperty},
+    *          {@link OWLObjectProperty}. {@link OWLNamedIndividual} or
+    *          {@link OWLDatatype}.
+    * @return Returns an OWL entity object according to its type.
+    * @throws EntityNotFoundException If the entity name does not exist in the ontology.
+    */
    @Override
    public <T extends OWLEntity> T resolveUnchecked(String entityName, Class<T> entityType) {
       try {
