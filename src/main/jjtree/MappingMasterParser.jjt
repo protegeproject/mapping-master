@@ -684,7 +684,8 @@ void name() #Name:
   boolean isQuotedName = false;
 }
 {
-  (  name = identifier() 
+  (  <RDFS_LABEL> { name = "rdfs:label"; }
+   | name = identifier() 
    | name = quoted_name() { isQuotedName = true; }
   )
 
