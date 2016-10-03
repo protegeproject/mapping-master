@@ -3,6 +3,7 @@ package org.mm.renderer.owlapi.delegator;
 import java.util.Optional;
 
 import org.mm.parser.node.NameNode;
+import org.mm.parser.node.OWLAnnotationPropertyNode;
 import org.mm.parser.node.OWLPropertyNode;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.TypeNode;
@@ -37,7 +38,7 @@ public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyR
       if (typeNode instanceof OWLPropertyNode) {
          OWLPropertyNode propertyNode = (OWLPropertyNode) typeNode;
          if (propertyNode.hasNameNode()) {
-            return renderNameNode(propertyNode.getNameNode(), objectFactory);
+            return renderNameNode(propertyNode.getNameNode(), typeNode, objectFactory);
          } else if (propertyNode.hasReferenceNode()) {
             return renderReferenceNode(propertyNode.getReferenceNode(), objectFactory);
          }
@@ -45,17 +46,20 @@ public class PropertyRendererDelegator implements RendererDelegator<OWLPropertyR
       throw new RendererException("Node " + typeNode + " is not an OWL property");
    }
 
-   private Optional<OWLPropertyRendering> renderNameNode(NameNode nameNode, OWLObjectFactory objectFactory)
+   private Optional<OWLPropertyRendering> renderNameNode(NameNode nameNode, TypeNode typeNode, OWLObjectFactory objectFactory)
          throws RendererException
    {
       OWLPropertyRendering propertyRendering = null;
-      OWLProperty prop = objectFactory.getAndCheckOWLProperty(nameNode.getName());
-      if (prop instanceof OWLObjectProperty) {
-         propertyRendering = new OWLObjectPropertyRendering((OWLObjectProperty) prop);
-      } else if (prop instanceof OWLDataProperty) {
-         propertyRendering = new OWLDataPropertyRendering((OWLDataProperty) prop);
-      } else if (prop instanceof OWLAnnotationProperty) {
+      if (typeNode instanceof OWLAnnotationPropertyNode) {
+         OWLProperty prop = objectFactory.getAndCheckOWLAnnotationProperty(nameNode.getName());
          propertyRendering = new OWLAnnotationPropertyRendering((OWLAnnotationProperty) prop);
+      } else {
+         OWLProperty prop = objectFactory.getAndCheckOWLProperty(nameNode.getName());
+         if (prop instanceof OWLObjectProperty) {
+            propertyRendering = new OWLObjectPropertyRendering((OWLObjectProperty) prop);
+         } else if (prop instanceof OWLDataProperty) {
+            propertyRendering = new OWLDataPropertyRendering((OWLDataProperty) prop);
+         }
       }
       return Optional.ofNullable(propertyRendering);
    }
