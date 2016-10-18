@@ -5,28 +5,28 @@ import java.util.List;
 
 import org.mm.ss.SpreadSheetDataSource;
 
-public class MMDataSourceModel implements DataSourceModel
-{
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class MMDataSourceModel implements DataSourceModel {
+
    private SpreadSheetDataSource dataSource;
 
-   public MMDataSourceModel()
-   {
+   public MMDataSourceModel() {
       this(new SpreadSheetDataSource());
    }
 
-   public MMDataSourceModel(SpreadSheetDataSource dataSource)
-   {
+   public MMDataSourceModel(SpreadSheetDataSource dataSource) {
       this.dataSource = dataSource;
    }
 
    @Override
-   public SpreadSheetDataSource getDataSource()
-   {
+   public SpreadSheetDataSource getDataSource() {
       return dataSource;
    }
 
-   public List<String> getSheetNames()
-   {
+   public List<String> getSheetNames() {
       List<String> sheetNames = new ArrayList<String>();
       if (dataSource != null) {
          sheetNames.addAll(dataSource.getSheetNames());

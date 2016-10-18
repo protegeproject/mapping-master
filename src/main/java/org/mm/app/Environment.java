@@ -1,7 +1,13 @@
 package org.mm.app;
 
-public class Environment
-{
+/**
+ * Represents the application environment settings.
+ *
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class Environment {
+
    /**
     * The version number
     */

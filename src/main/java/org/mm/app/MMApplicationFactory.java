@@ -15,80 +15,72 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-public class MMApplicationFactory
-{
-   private Properties properties;
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class MMApplicationFactory {
 
-   public MMApplicationFactory()
-   {
-      properties = new Properties();
+   private final Properties properties = new Properties();
+
+   public MMApplicationFactory() {
+      // NO-OP
    }
 
-   protected MMApplicationFactory addProperty(String propertyName, String value)
-   {
+   protected MMApplicationFactory addProperty(String propertyName, String value) {
       properties.setProperty(propertyName, value);
       return this;
    }
 
-   public String getWorkbookFileLocation()
-   {
+   public String getWorkbookFileLocation() {
       return properties.getProperty(Environment.WORKBOOK_SOURCE);
    }
 
-   public void setWorkbookFileLocation(String path)
-   {
+   public void setWorkbookFileLocation(String path) {
       properties.setProperty(Environment.WORKBOOK_SOURCE, path);
    }
 
-   public String getOntologyFileLocation()
-   {
+   public String getOntologyFileLocation() {
       return properties.getProperty(Environment.ONTOLOGY_SOURCE);
    }
 
-   public void setOntologyFileLocation(String path)
-   {
+   public void setOntologyFileLocation(String path) {
       properties.setProperty(Environment.ONTOLOGY_SOURCE, path);
    }
 
-   public String getRuleFileLocation()
-   {
+   public String getRuleFileLocation() {
       return properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
    }
 
-   public void setRuleFileLocation(String path)
-   {
+   public void setRuleFileLocation(String path) {
       properties.setProperty(Environment.TRANSFORMATION_RULES_SOURCE, path);
    }
 
-   public Properties getProperties()
-   {
+   public Properties getProperties() {
       return properties;
    }
 
-   public MMApplication createApplication() throws Exception
-   {
+   public MMApplication createApplication() throws Exception {
       Properties copy = new Properties();
       copy.putAll(properties);
-      validate (copy, null);
+      validate(copy, null);
       Resources resources = buildResources(copy);
       return new MMApplication(resources.getOWLOntologySource(),
             resources.getSpreadSheetDataSource(),
             resources.getTransformationRuleSet());
    }
 
-   public MMApplication createApplication(OWLOntologySourceHook ontologySourceHook) throws Exception
-   {
+   public MMApplication createApplication(OWLOntologySourceHook ontologySourceHook)
+         throws Exception {
       Properties copy = new Properties();
       copy.putAll(properties);
       validate(copy, ontologySourceHook);
       Resources resources = buildResources(copy, ontologySourceHook);
       return new MMApplication(resources.getOWLOntologySource(),
-            resources.getSpreadSheetDataSource(),
-            resources.getTransformationRuleSet());
+            resources.getSpreadSheetDataSource(), resources.getTransformationRuleSet());
    }
 
-   private Resources buildResources(Properties properties) throws Exception
-   {
+   private Resources buildResources(Properties properties) throws Exception {
       Resources resources = new Resources();
 
       String ontologySourceLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
@@ -112,8 +104,8 @@ public class MMApplicationFactory
       return resources;
    }
 
-   private Resources buildResources(Properties properties, OWLOntologySourceHook ontologySourceHook) throws Exception
-   {
+   private Resources buildResources(Properties properties, OWLOntologySourceHook ontologySourceHook)
+         throws Exception {
       Resources resources = new Resources();
 
       resources.setOWLOntologySource(ontologySourceHook);
@@ -133,8 +125,7 @@ public class MMApplicationFactory
       return resources;
    }
 
-   private void validate(Properties properties, OWLOntologySource ontologySource)
-   {
+   private void validate(Properties properties, OWLOntologySource ontologySource) {
       if (ontologySource == null) {
          if (properties.getProperty(Environment.ONTOLOGY_SOURCE) == null) {
             throw new ApplicationStartupException("Missing ontology source parameter");
@@ -145,39 +136,33 @@ public class MMApplicationFactory
       }
    }
 
-   class Resources
-   {
+   class Resources {
+
       private SpreadSheetDataSource spreadsheet;
       private OWLOntologySource ontology;
       private TransformationRuleSet ruleSet;
 
-      public SpreadSheetDataSource getSpreadSheetDataSource()
-      {
+      public SpreadSheetDataSource getSpreadSheetDataSource() {
          return spreadsheet;
       }
 
-      public void setSpreadSheetDataSource(SpreadSheetDataSource spreadsheet)
-      {
+      public void setSpreadSheetDataSource(SpreadSheetDataSource spreadsheet) {
          this.spreadsheet = spreadsheet;
       }
 
-      public OWLOntologySource getOWLOntologySource()
-      {
+      public OWLOntologySource getOWLOntologySource() {
          return ontology;
       }
 
-      public void setOWLOntologySource(OWLOntologySource ontology)
-      {
+      public void setOWLOntologySource(OWLOntologySource ontology) {
          this.ontology = ontology;
       }
 
-      public TransformationRuleSet getTransformationRuleSet()
-      {
+      public TransformationRuleSet getTransformationRuleSet() {
          return ruleSet;
       }
 
-      public void setTransformationRuleSet(TransformationRuleSet ruleSet)
-      {
+      public void setTransformationRuleSet(TransformationRuleSet ruleSet) {
          this.ruleSet = ruleSet;
       }
    }

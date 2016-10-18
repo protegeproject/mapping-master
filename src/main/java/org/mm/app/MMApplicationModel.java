@@ -7,8 +7,12 @@ import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
 import org.mm.ss.SpreadSheetDataSource;
 
-public class MMApplicationModel implements ApplicationModel
-{
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class MMApplicationModel implements ApplicationModel {
+
    private final OWLOntologySource ontologySource;
    private final SpreadSheetDataSource dataSource;
 
@@ -16,8 +20,8 @@ public class MMApplicationModel implements ApplicationModel
    private final MMDataSourceModel dataSourceModel;
    private final MMTransformationRuleModel expressionMappingsModel;
 
-   public MMApplicationModel(OWLOntologySource ontologySource, SpreadSheetDataSource dataSource, TransformationRuleSet ruleSet)
-   {
+   public MMApplicationModel(OWLOntologySource ontologySource, SpreadSheetDataSource dataSource,
+         TransformationRuleSet ruleSet) {
       this.ontologySource = ontologySource;
       this.dataSource = dataSource;
 
@@ -27,25 +31,21 @@ public class MMApplicationModel implements ApplicationModel
    }
 
    @Override
-   public MMDataSourceModel getDataSourceModel()
-   {
+   public MMDataSourceModel getDataSourceModel() {
       return dataSourceModel;
    }
 
    @Override
-   public MMTransformationRuleModel getTransformationRuleModel()
-   {
+   public MMTransformationRuleModel getTransformationRuleModel() {
       return expressionMappingsModel;
    }
 
    @Override
-   public Renderer getDefaultRenderer()
-   {
+   public Renderer getDefaultRenderer() {
       return applicationRenderer;
    }
 
-   public TextRenderer getLogRenderer()
-   {
+   public TextRenderer getLogRenderer() {
       TextRenderer renderer = new TextRenderer(dataSource);
       renderer.setComment(true);
       return renderer;
