@@ -1,8 +1,11 @@
 package org.mm.ss;
 
-public class SpreadsheetLocation
-{
-   // There is an equals() method defined on this class.
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class SpreadsheetLocation {
+
    private final String sheetName;
    private final int columnNumber, rowNumber;
 
@@ -15,15 +18,13 @@ public class SpreadsheetLocation
     * @param rowNumber
     *           The physical row number (start from 1)
     */
-   public SpreadsheetLocation(String sheetName, int columnNumber, int rowNumber)
-   {
+   public SpreadsheetLocation(String sheetName, int columnNumber, int rowNumber) {
       this.sheetName = sheetName;
       this.columnNumber = columnNumber;
       this.rowNumber = rowNumber;
    }
 
-   public String getSheetName()
-   {
+   public String getSheetName() {
       return sheetName;
    }
 
@@ -32,8 +33,7 @@ public class SpreadsheetLocation
     *
     * @return The column number, starts from 0.
     */
-   public int getColumnNumber()
-   {
+   public int getColumnNumber() {
       return columnNumber - 1;
    }
 
@@ -43,13 +43,11 @@ public class SpreadsheetLocation
     *
     * @return The column number, starts from 1.
     */
-   public int getPhysicalColumnNumber()
-   {
+   public int getPhysicalColumnNumber() {
       return columnNumber;
    }
 
-   public String getColumnName()
-   {
+   public String getColumnName() {
       return SpreadSheetUtil.columnNumber2Name(getPhysicalColumnNumber());
    }
 
@@ -58,8 +56,7 @@ public class SpreadsheetLocation
     *
     * @return The row number, starts from 0.
     */
-   public int getRowNumber()
-   {
+   public int getRowNumber() {
       return rowNumber - 1;
    }
 
@@ -69,8 +66,7 @@ public class SpreadsheetLocation
     *
     * @return The row number, starts from 1.
     */
-   public int getPhysicalRowNumber()
-   {
+   public int getPhysicalRowNumber() {
       return rowNumber;
    }
 
@@ -80,14 +76,12 @@ public class SpreadsheetLocation
     * @return The cell location in format [COLUMN_NAME][ROW_NUMBER], e.g., A1,
     *         B3, H24
     */
-   public String getCellLocation()
-   {
+   public String getCellLocation() {
       return getColumnName() + getPhysicalRowNumber();
    }
 
    @Override
-   public boolean equals(Object o)
-   {
+   public boolean equals(Object o) {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
 
@@ -100,21 +94,18 @@ public class SpreadsheetLocation
    }
 
    @Override
-   public int hashCode()
-   {
+   public int hashCode() {
       int result = sheetName != null ? sheetName.hashCode() : 0;
       result = 31 * result + columnNumber;
       result = 31 * result + rowNumber;
       return result;
    }
 
-   public String getFullyQualifiedLocation()
-   {
+   public String getFullyQualifiedLocation() {
       return "'" + getSheetName() + "'!" + getCellLocation();
    }
 
-   public String toString()
-   {
+   public String toString() {
       return getFullyQualifiedLocation();
    }
 }

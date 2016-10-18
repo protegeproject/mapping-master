@@ -4,8 +4,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.exceptions.MappingMasterException;
 
-public class SpreadSheetUtil
-{
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class SpreadSheetUtil {
+
    public static String columnRow2Name(int columnIndex, int rowIndex) // 1-based
    {
       return columnNumber2Name(columnIndex) + rowIndex;
@@ -22,8 +26,7 @@ public class SpreadSheetUtil
       return col;
    }
 
-   public static int columnName2Number(String columnName) throws MappingMasterException
-   {
+   public static int columnName2Number(String columnName) throws MappingMasterException {
       int columnNumber = 0;
       for (int i = 0; i < columnName.length(); i++) {
          columnNumber *= 26;
@@ -40,8 +43,7 @@ public class SpreadSheetUtil
       return columnNumber; // 0-indexed
    }
 
-   public static int rowLabel2Number(String rowLabel) throws MappingMasterException
-   {
+   public static int rowLabel2Number(String rowLabel) throws MappingMasterException {
       try {
          return Integer.parseInt(rowLabel);
       } catch (NumberFormatException e) {
@@ -49,13 +51,11 @@ public class SpreadSheetUtil
       }
    }
 
-   public static Sheet getSheet(Workbook workbook, String sheetName) throws MappingMasterException
-   {
+   public static Sheet getSheet(Workbook workbook, String sheetName) throws MappingMasterException {
       return workbook.getSheet(sheetName);
    }
 
-   private static boolean isAlpha(char c)
-   {
+   private static boolean isAlpha(char c) {
       return c >= 'A' && c <= 'Z';
    }
 }
