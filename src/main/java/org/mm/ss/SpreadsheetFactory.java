@@ -1,5 +1,6 @@
 package org.mm.ss;
 
+import java.io.File;
 import java.io.FileInputStream;
 
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,7 +17,11 @@ public class SpreadsheetFactory {
       return new XSSFWorkbook(); // an empty xlsx workbook
    }
 
-   public static Workbook loadWorkbookFromDocument(String location) throws Exception {
-      return WorkbookFactory.create(new FileInputStream(location));
+   public static Workbook loadWorkbookFromDocument(String path) throws Exception {
+      return WorkbookFactory.create(new FileInputStream(path));
+   }
+
+   public static Workbook loadWorkbookFromDocument(File file) throws Exception {
+      return WorkbookFactory.create(new FileInputStream(file));
    }
 }
