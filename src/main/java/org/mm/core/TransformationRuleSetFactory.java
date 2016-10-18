@@ -9,23 +9,24 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-public class TransformationRuleSetFactory
-{
-   public static TransformationRuleSet createEmptyTransformationRuleSet()
-   {
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class TransformationRuleSetFactory {
+
+   public static TransformationRuleSet createEmptyTransformationRuleSet() {
       return new TransformationRuleSet();
    }
 
    public static TransformationRuleSet loadTransformationRulesFromDocument(String location)
-         throws FileNotFoundException
-   {
+         throws FileNotFoundException {
       BufferedReader br = new BufferedReader(new FileReader(location));
       return new Gson().fromJson(br, TransformationRuleSet.class);
    }
 
-   public static void saveTransformationRulesToDocument(String location, List<TransformationRule> rules)
-         throws IOException
-   {
+   public static void saveTransformationRulesToDocument(String location,
+         List<TransformationRule> rules) throws IOException {
       String json = new Gson().toJson(TransformationRuleSet.create(rules));
       FileWriter writer = new FileWriter(location);
       writer.write(json);

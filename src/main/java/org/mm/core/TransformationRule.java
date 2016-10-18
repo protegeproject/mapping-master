@@ -1,7 +1,11 @@
 package org.mm.core;
 
-public class TransformationRule
-{
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class TransformationRule {
+
    public static final String EndWildcard = "+";
 
    private final String sheetName;
@@ -14,9 +18,8 @@ public class TransformationRule
 
    private boolean active = false;
 
-   public TransformationRule(String sheetName, String startColumn, String endColumn, String startRow, String endRow,
-         String comment, String rule)
-   {
+   public TransformationRule(String sheetName, String startColumn, String endColumn,
+         String startRow, String endRow, String comment, String rule) {
       this.active = true;
       this.sheetName = sheetName;
       this.startColumn = startColumn;
@@ -27,65 +30,54 @@ public class TransformationRule
       this.rule = rule;
    }
 
-   public void setActive(boolean active)
-   {
+   public void setActive(boolean active) {
       this.active = active;
    }
 
-   public boolean isActive()
-   {
+   public boolean isActive() {
       return active;
    }
 
-   public String getRuleString()
-   {
+   public String getRuleString() {
       return rule;
    }
 
-   public String getComment()
-   {
+   public String getComment() {
       return comment;
    }
 
-   public String getSheetName()
-   {
+   public String getSheetName() {
       return sheetName;
    }
 
-   public String getStartColumn()
-   {
+   public String getStartColumn() {
       return startColumn;
    }
 
-   public String getEndColumn()
-   {
+   public String getEndColumn() {
       return endColumn;
    }
 
-   public String getStartRow()
-   {
+   public String getStartRow() {
       return startRow;
    }
 
-   public String getEndRow()
-   {
+   public String getEndRow() {
       return endRow;
    }
 
-   public boolean hasEndColumnWildcard()
-   {
+   public boolean hasEndColumnWildcard() {
       return endColumn.equals(EndWildcard);
    }
 
-   public boolean hasEndRowWildcard()
-   {
+   public boolean hasEndRowWildcard() {
       return endRow.equals(EndWildcard);
    }
 
-   public String toString()
-   {
-      return "TransformationRule [" + "sheetName=" + sheetName + ", " + "startColumn=" + startColumn + ", "
-            + "endColumn=" + endColumn + ", " + "startRow=" + startRow + ", " + "endRow=" + endRow + ", "
-            + "expression=" + rule + ", " + "comment=" + comment + ", " + "active=" + active + "]";
+   public String toString() {
+      return "TransformationRule [" + "sheetName=" + sheetName + ", " + "startColumn=" + startColumn
+            + ", " + "endColumn=" + endColumn + ", " + "startRow=" + startRow + ", " + "endRow="
+            + endRow + ", " + "expression=" + rule + ", " + "comment=" + comment + ", " + "active="
+            + active + "]";
    }
 }

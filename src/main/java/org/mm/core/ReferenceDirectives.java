@@ -4,8 +4,13 @@ import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.DefaultReferenceDirectives;
 import org.mm.ss.SpreadsheetLocation;
 
-public class ReferenceDirectives implements MappingMasterParserConstants
-{
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu>
+ * @author Martin O'Connor <sunid@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class ReferenceDirectives implements MappingMasterParserConstants {
+
    private final DefaultReferenceDirectives defaultReferenceDirectives;
    private final int explicitlySpecifiedValueEncoding = -1;
    private boolean hasExplicitlySpecifiedReferenceType;
@@ -50,434 +55,364 @@ public class ReferenceDirectives implements MappingMasterParserConstants
 
    private boolean hasExplicitlySpecifiedOptions;
 
-   public ReferenceDirectives(DefaultReferenceDirectives defaultReferenceDirectives)
-   {
+   public ReferenceDirectives(DefaultReferenceDirectives defaultReferenceDirectives) {
       this.defaultReferenceDirectives = defaultReferenceDirectives;
    }
 
-   public boolean hasExplicitlySpecifiedOptions()
-   {
+   public boolean hasExplicitlySpecifiedOptions() {
       return this.hasExplicitlySpecifiedOptions;
    }
 
-   public void setUsesLocationEncoding()
-   {
+   public void setUsesLocationEncoding() {
       this.usesLocationEncoding = true;
    }
 
-   public void setUsesLocationWithDuplicatesEncoding()
-   {
+   public void setUsesLocationWithDuplicatesEncoding() {
       this.usesLocationWithDuplicatesEncoding = true;
    }
 
-   public boolean usesLocationEncoding()
-   {
+   public boolean usesLocationEncoding() {
       return this.usesLocationEncoding;
    }
 
-   public boolean usesLocationWithDuplicatesEncoding()
-   {
+   public boolean usesLocationWithDuplicatesEncoding() {
       return this.usesLocationWithDuplicatesEncoding;
    }
 
-   public boolean isDefaultLiteralEncoding()
-   {
+   public boolean isDefaultLiteralEncoding() {
       return this.defaultReferenceDirectives.getDefaultValueEncoding() == MM_LITERAL;
    }
 
-   public boolean isDefaultLocationValueEncoding()
-   {
+   public boolean isDefaultLocationValueEncoding() {
       return this.defaultReferenceDirectives.getDefaultValueEncoding() == MM_LOCATION;
    }
 
-   public boolean isDefaultRDFIDValueEncoding()
-   {
+   public boolean isDefaultRDFIDValueEncoding() {
       return this.defaultReferenceDirectives.getDefaultValueEncoding() == RDF_ID;
    }
 
-   public boolean isDefaultRDFSLabelValueEncoding()
-   {
+   public boolean isDefaultRDFSLabelValueEncoding() {
       return this.defaultReferenceDirectives.getDefaultValueEncoding() == RDFS_LABEL;
    }
 
-   public int getDefaultShiftDirective()
-   {
+   public int getDefaultShiftDirective() {
       return this.defaultReferenceDirectives.getDefaultShiftDirective();
    }
 
-   public void setDefaultShiftDirective(int shiftDirective)
-   {
+   public void setDefaultShiftDirective(int shiftDirective) {
       this.defaultReferenceDirectives.setDefaultShiftDirective(shiftDirective);
    }
 
-   public String getDefaultLocationValue()
-   {
+   public String getDefaultLocationValue() {
       return this.defaultReferenceDirectives.getDefaultLocationValue();
    }
 
-   public boolean hasExplicitlySpecifiedReferenceType()
-   {
+   public boolean hasExplicitlySpecifiedReferenceType() {
       return this.hasExplicitlySpecifiedReferenceType;
    }
 
-   public void setExplicitlySpecifiedReferenceType(ReferenceType referenceType)
-   {
+   public void setExplicitlySpecifiedReferenceType(ReferenceType referenceType) {
       this.explicitlySpecifiedReferenceType = referenceType;
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedReferenceType = true;
    }
 
-   public ReferenceType getActualReferenceType()
-   {
+   public ReferenceType getActualReferenceType() {
       return hasExplicitlySpecifiedReferenceType() ? this.explicitlySpecifiedReferenceType
             : this.defaultReferenceDirectives.getDefaultReferenceType();
    }
 
-   public boolean hasExplicitlySpecifiedIRIEncoding()
-   {
+   public boolean hasExplicitlySpecifiedIRIEncoding() {
       return this.hasExplicitlySpecifiedIRIEncoding;
    }
 
-   public void setExplicitlySpecifiedIRIEncoding(int iriEncodingType)
-   {
+   public void setExplicitlySpecifiedIRIEncoding(int iriEncodingType) {
       this.explicitlySpecifiedIRIEncoding = iriEncodingType;
       this.hasExplicitlySpecifiedIRIEncoding = true;
    }
 
-   public int getActualIRIEncoding()
-   {
+   public int getActualIRIEncoding() {
       return hasExplicitlySpecifiedIRIEncoding() ? this.explicitlySpecifiedIRIEncoding
             : this.defaultReferenceDirectives.getDefaultIRIEncoding();
    }
 
-   public boolean hasExplicitlySpecifiedValueEncodings()
-   {
+   public boolean hasExplicitlySpecifiedValueEncodings() {
       return this.hasExplicitlySpecifiedValueEncodings;
    }
 
-   public void setHasExplicitlySpecifiedValueEncodings()
-   {
+   public void setHasExplicitlySpecifiedValueEncodings() {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedValueEncodings = true;
    }
 
-   public int getActualValueEncoding()
-   {
+   public int getActualValueEncoding() {
       return hasExplicitlySpecifiedValueEncodings() ? this.explicitlySpecifiedValueEncoding
             : this.defaultReferenceDirectives.getDefaultValueEncoding();
    }
 
-   public boolean hasExplicitlySpecifiedDefaultLocationValue()
-   {
+   public boolean hasExplicitlySpecifiedDefaultLocationValue() {
       return this.hasExplicitlySpecifiedDefaultLocationValue;
    }
 
-   public void setExplicitlySpecifiedDefaultLocationValue(String locationValue)
-   {
+   public void setExplicitlySpecifiedDefaultLocationValue(String locationValue) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedDefaultLocationValue = true;
       this.explicitlySpecifiedDefaultLocationValue = locationValue;
    }
 
-   public String getActualDefaultLocationValue()
-   {
-      return hasExplicitlySpecifiedDefaultLocationValue() ? this.explicitlySpecifiedDefaultLocationValue
+   public String getActualDefaultLocationValue() {
+      return hasExplicitlySpecifiedDefaultLocationValue()
+            ? this.explicitlySpecifiedDefaultLocationValue
             : this.defaultReferenceDirectives.getDefaultLocationValue();
    }
 
-   public boolean hasExplicitlySpecifiedDefaultLiteral()
-   {
+   public boolean hasExplicitlySpecifiedDefaultLiteral() {
       return this.hasExplicitlySpecifiedDefaultLiteral;
    }
 
-   public void setExplicitlySpecifiedDefaultLiteral(String literal)
-   {
+   public void setExplicitlySpecifiedDefaultLiteral(String literal) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedDefaultLiteral = true;
       this.explicitlySpecifiedDefaultLiteral = literal;
    }
 
-   public String getActualDefaultLiteral()
-   {
+   public String getActualDefaultLiteral() {
       return hasExplicitlySpecifiedDefaultLiteral() ? this.explicitlySpecifiedDefaultLiteral
             : this.defaultReferenceDirectives.getDefaultLiteral();
    }
 
-   public boolean hasExplicitlySpecifiedDefaultID()
-   {
+   public boolean hasExplicitlySpecifiedDefaultID() {
       return this.hasExplicitlySpecifiedDefaultRDFID;
    }
 
-   public void setHasExplicitlySpecifiedDefaultID(String id)
-   {
+   public void setHasExplicitlySpecifiedDefaultID(String id) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedDefaultRDFID = true;
       this.explicitlySpecifiedDefaultRDFID = id;
    }
 
-   public String getActualDefaultRDFID()
-   {
+   public String getActualDefaultRDFID() {
       return hasExplicitlySpecifiedDefaultID() ? this.explicitlySpecifiedDefaultRDFID
             : this.defaultReferenceDirectives.getDefaultRDFID();
    }
 
-   public boolean hasExplicitlySpecifiedDefaultLabel()
-   {
+   public boolean hasExplicitlySpecifiedDefaultLabel() {
       return this.hasExplicitlySpecifiedDefaultRDFSLabel;
    }
 
-   public void setHasExplicitlySpecifiedDefaultLabel(String label)
-   {
+   public void setHasExplicitlySpecifiedDefaultLabel(String label) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedDefaultRDFSLabel = true;
       this.explicitlySpecifiedDefaultRDFSLabel = label;
    }
 
-   public String getActualDefaultRDFSLabel()
-   {
+   public String getActualDefaultRDFSLabel() {
       return hasExplicitlySpecifiedDefaultLabel() ? this.explicitlySpecifiedDefaultRDFSLabel
             : this.defaultReferenceDirectives.getDefaultRDFSLabel();
    }
 
-   public boolean hasExplicitlySpecifiedShiftDirective()
-   {
+   public boolean hasExplicitlySpecifiedShiftDirective() {
       return this.hasExplicitlySpecifiedShiftDirective;
    }
 
-   public void setHasExplicitlySpecifiedShiftDirective(int shiftDirective)
-   {
+   public void setHasExplicitlySpecifiedShiftDirective(int shiftDirective) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedShiftDirective = true;
       this.explicitlySpecifiedShiftDirective = shiftDirective;
    }
 
-   public int getActualShiftDirective()
-   {
+   public int getActualShiftDirective() {
       return hasExplicitlySpecifiedShiftDirective() ? this.explicitlySpecifiedShiftDirective
             : this.defaultReferenceDirectives.getDefaultShiftDirective();
    }
 
-   public boolean hasExplicitlySpecifiedLanguage()
-   {
+   public boolean hasExplicitlySpecifiedLanguage() {
       return this.hasExplicitlySpecifiedLanguage;
    }
 
-   public void setHasExplicitlySpecifiedLanguage(String language)
-   {
+   public void setHasExplicitlySpecifiedLanguage(String language) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedLanguage = true;
       this.explicitlySpecifiedLanguage = language;
    }
 
-   public String getActualLanguage()
-   {
+   public String getActualLanguage() {
       return hasExplicitlySpecifiedLanguage() ? this.explicitlySpecifiedLanguage
             : this.defaultReferenceDirectives.getDefaultLanguage();
    }
 
-   public boolean hasExplicitlySpecifiedPrefix()
-   {
+   public boolean hasExplicitlySpecifiedPrefix() {
       return this.hasExplicitlySpecifiedPrefix;
    }
 
-   public void setHasExplicitlySpecifiedPrefix(String prefix)
-   {
+   public void setHasExplicitlySpecifiedPrefix(String prefix) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedPrefix = true;
       this.explicitlySpecifiedPrefix = prefix;
    }
 
-   public String getActualPrefix()
-   {
+   public String getActualPrefix() {
       return hasExplicitlySpecifiedPrefix() ? this.explicitlySpecifiedPrefix
             : this.defaultReferenceDirectives.getDefaultPrefix();
    }
 
-   public boolean hasExplicitlySpecifiedNamespace()
-   {
+   public boolean hasExplicitlySpecifiedNamespace() {
       return this.hasExplicitlySpecifiedNamespace;
    }
 
-   public void setHasExplicitlySpecifiedNamespace(String namespace)
-   {
+   public void setHasExplicitlySpecifiedNamespace(String namespace) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedNamespace = true;
       this.explicitlySpecifiedNamespace = namespace;
    }
 
-   public String getActualNamespace()
-   {
+   public String getActualNamespace() {
       return hasExplicitlySpecifiedNamespace() ? this.explicitlySpecifiedNamespace
             : this.defaultReferenceDirectives.getDefaultNamespace();
    }
 
-   public boolean hasExplicitlySpecifiedIfExistsDirective()
-   {
+   public boolean hasExplicitlySpecifiedIfExistsDirective() {
       return this.hasExplicitlySpecifiedIfExistsDirective;
    }
 
-   public void setHasExplicitlySpecifiedIfExistsDirective(int ifExistsDirective)
-   {
+   public void setHasExplicitlySpecifiedIfExistsDirective(int ifExistsDirective) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedIfExistsDirective = true;
       this.explicitlySpecifiedIfExistsDirective = ifExistsDirective;
    }
 
-   public int getActualIfOWLEntityExistsDirective()
-   {
+   public int getActualIfOWLEntityExistsDirective() {
       return hasExplicitlySpecifiedIfExistsDirective() ? this.explicitlySpecifiedIfExistsDirective
             : this.defaultReferenceDirectives.getDefaultIfExistsDirective();
    }
 
-   public boolean actualIfOWLEntityExistsDirectiveIsSkip()
-   {
+   public boolean actualIfOWLEntityExistsDirectiveIsSkip() {
       return getActualIfOWLEntityExistsDirective() == MM_SKIP_IF_OWL_ENTITY_EXISTS;
    }
 
-   public boolean actualIfExistsDirectiveIsWarning()
-   {
+   public boolean actualIfExistsDirectiveIsWarning() {
       return getActualIfOWLEntityExistsDirective() == MM_WARNING_IF_OWL_ENTITY_EXISTS;
    }
 
-   public boolean actualIfExistsDirectiveIsError()
-   {
+   public boolean actualIfExistsDirectiveIsError() {
       return getActualIfOWLEntityExistsDirective() == MM_ERROR_IF_OWL_ENTITY_EXISTS;
    }
 
-   public boolean hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective()
-   {
+   public boolean hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective() {
       return this.hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective;
    }
 
-   public void setHasExplicitlySpecifiedIfOWLEntitiDoesNotExistDirective(int ifOWLEntityDoesNotExistDirective)
-   {
+   public void setHasExplicitlySpecifiedIfOWLEntitiDoesNotExistDirective(
+         int ifOWLEntityDoesNotExistDirective) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective = true;
       this.explicitlySpecifiedIfOWLEntityDoesNotExistDirective = ifOWLEntityDoesNotExistDirective;
    }
 
-   public int getActualIfOWLEntityDoesNotExistDirective()
-   {
+   public int getActualIfOWLEntityDoesNotExistDirective() {
       return hasExplicitlySpecifiedIfOWLEntityDoesNotExistDirective()
             ? this.explicitlySpecifiedIfOWLEntityDoesNotExistDirective
             : this.defaultReferenceDirectives.getDefaultIfNotExistsDirective();
    }
 
-   public boolean actualIfOWLEntityDoesNotExistDirectiveIsSkip()
-   {
+   public boolean actualIfOWLEntityDoesNotExistDirectiveIsSkip() {
       return getActualIfOWLEntityDoesNotExistDirective() == MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST;
    }
 
-   public boolean actualIfOWLEntityDoesNotExistDirectiveIsWarning()
-   {
+   public boolean actualIfOWLEntityDoesNotExistDirectiveIsWarning() {
       return getActualIfOWLEntityDoesNotExistDirective() == MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST;
    }
 
-   public boolean actualIfOWLEntityDoesNotExistDirectiveIsError()
-   {
+   public boolean actualIfOWLEntityDoesNotExistDirectiveIsError() {
       return getActualIfOWLEntityDoesNotExistDirective() == MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST;
    }
 
-   public boolean hasExplicitlySpecifiedEmptyLocationDirective()
-   {
+   public boolean hasExplicitlySpecifiedEmptyLocationDirective() {
       return this.hasExplicitlySpecifiedEmptyLocationDirective;
    }
 
-   public void setHasExplicitlySpecifiedEmptyLocationDirective(int emptyLocationDirective)
-   {
+   public void setHasExplicitlySpecifiedEmptyLocationDirective(int emptyLocationDirective) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedEmptyLocationDirective = true;
       this.explicitlySpecifiedEmptyLocationDirective = emptyLocationDirective;
    }
 
-   public int getActualEmptyLocationDirective()
-   {
-      return hasExplicitlySpecifiedEmptyLocationDirective() ? this.explicitlySpecifiedEmptyLocationDirective
+   public int getActualEmptyLocationDirective() {
+      return hasExplicitlySpecifiedEmptyLocationDirective()
+            ? this.explicitlySpecifiedEmptyLocationDirective
             : this.defaultReferenceDirectives.getDefaultEmptyLocationDirective();
    }
 
-   public boolean hasExplicitlySpecifiedEmptyLiteralDirective()
-   {
+   public boolean hasExplicitlySpecifiedEmptyLiteralDirective() {
       return this.hasExplicitlySpecifiedEmptyLiteralDirective;
    }
 
-   public void setHasExplicitlySpecifiedEmptyLiteralDirective(int emptyLiteralDirective)
-   {
+   public void setHasExplicitlySpecifiedEmptyLiteralDirective(int emptyLiteralDirective) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedEmptyLiteralDirective = true;
       this.explicitlySpecifiedEmptyLiteralDirective = emptyLiteralDirective;
    }
 
-   public int getActualEmptyLiteralDirective()
-   {
-      return hasExplicitlySpecifiedEmptyLiteralDirective() ? this.explicitlySpecifiedEmptyLiteralDirective
+   public int getActualEmptyLiteralDirective() {
+      return hasExplicitlySpecifiedEmptyLiteralDirective()
+            ? this.explicitlySpecifiedEmptyLiteralDirective
             : this.defaultReferenceDirectives.getDefaultEmptyLiteralDirective();
    }
 
-   public boolean hasExplicitlySpecifiedEmptyRDFIDDirective()
-   {
+   public boolean hasExplicitlySpecifiedEmptyRDFIDDirective() {
       return this.hasExplicitlySpecifiedEmptyRDFIDDirective;
    }
 
-   public void setHasExplicitlySpecifiedEmptyRDFIDDirective(int emptyRDFIDDirective)
-   {
+   public void setHasExplicitlySpecifiedEmptyRDFIDDirective(int emptyRDFIDDirective) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedEmptyRDFIDDirective = true;
       this.explicitlySpecifiedEmptyRDFIDDirective = emptyRDFIDDirective;
    }
 
-   public int getActualEmptyRDFIDDirective()
-   {
-      return hasExplicitlySpecifiedEmptyRDFIDDirective() ? this.explicitlySpecifiedEmptyRDFIDDirective
+   public int getActualEmptyRDFIDDirective() {
+      return hasExplicitlySpecifiedEmptyRDFIDDirective()
+            ? this.explicitlySpecifiedEmptyRDFIDDirective
             : this.defaultReferenceDirectives.getDefaultEmptyRDFIDDirective();
    }
 
-   public boolean actualEmptyRDFIDDirectiveIsSkipIfEmpty()
-   {
+   public boolean actualEmptyRDFIDDirectiveIsSkipIfEmpty() {
       return getActualEmptyRDFIDDirective() == MM_SKIP_IF_EMPTY_ID;
    }
 
-   public boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective()
-   {
+   public boolean hasExplicitlySpecifiedEmptyRDFSLabelDirective() {
       return this.hasExplicitlySpecifiedEmptyRDFSLabelDirective;
    }
 
-   public void setHasExplicitlySpecifiedEmptyRDFSLabelDirective(int emptyRDFSLabelDirective)
-   {
+   public void setHasExplicitlySpecifiedEmptyRDFSLabelDirective(int emptyRDFSLabelDirective) {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedEmptyRDFSLabelDirective = true;
       this.explicitlySpecifiedEmptyRDFSLabelDirective = emptyRDFSLabelDirective;
    }
 
-   public int getActualEmptyRDFSLabelDirective()
-   {
-      return hasExplicitlySpecifiedEmptyRDFSLabelDirective() ? this.explicitlySpecifiedEmptyRDFSLabelDirective
+   public int getActualEmptyRDFSLabelDirective() {
+      return hasExplicitlySpecifiedEmptyRDFSLabelDirective()
+            ? this.explicitlySpecifiedEmptyRDFSLabelDirective
             : this.defaultReferenceDirectives.getDefaultEmptyRDFSLabelDirective();
    }
 
-   public boolean actualEmptyRDFSLabelDirectiveIsSkipIfEmpty()
-   {
+   public boolean actualEmptyRDFSLabelDirectiveIsSkipIfEmpty() {
       return getActualEmptyRDFSLabelDirective() == MM_SKIP_IF_EMPTY_LABEL;
    }
 
-   public boolean hasExplicitlySpecifiedTypes()
-   {
+   public boolean hasExplicitlySpecifiedTypes() {
       return this.hasExplicitlySpecifiedTypes;
    }
 
-   public void setHasExplicitlySpecifiedTypes()
-   {
+   public void setHasExplicitlySpecifiedTypes() {
       this.hasExplicitlySpecifiedOptions = true;
       this.hasExplicitlySpecifiedTypes = true;
    }
 
-   public SpreadsheetLocation getShiftedLocation()
-   {
+   public SpreadsheetLocation getShiftedLocation() {
       return this.shiftedLocation;
    }
 
-   public void setShiftedLocation(SpreadsheetLocation shiftedLocation)
-   {
+   public void setShiftedLocation(SpreadsheetLocation shiftedLocation) {
       this.shiftedLocation = shiftedLocation;
    }
 }

@@ -6,20 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gson.annotations.SerializedName;
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class TransformationRuleSet implements Iterable<TransformationRule> {
 
-public class TransformationRuleSet implements Iterable<TransformationRule>
-{
-   @SerializedName("Collections")
    private Set<TransformationRule> ruleSet;
 
-   public TransformationRuleSet()
-   {
+   public TransformationRuleSet() {
       ruleSet = new HashSet<TransformationRule>();
    }
 
-   public static TransformationRuleSet create(List<TransformationRule> rules)
-   {
+   public static TransformationRuleSet create(List<TransformationRule> rules) {
       TransformationRuleSet ruleSet = new TransformationRuleSet();
       for (TransformationRule rule : rules) {
          ruleSet.add(rule);
@@ -27,44 +26,36 @@ public class TransformationRuleSet implements Iterable<TransformationRule>
       return ruleSet;
    }
 
-   public Set<TransformationRule> getTransformationRules()
-   {
+   public Set<TransformationRule> getTransformationRules() {
       return Collections.unmodifiableSet(ruleSet);
    }
 
-   public void setTransformationRules(Set<TransformationRule> ruleSet)
-   {
+   public void setTransformationRules(Set<TransformationRule> ruleSet) {
       this.ruleSet = ruleSet;
    }
 
-   public void add(TransformationRule rule)
-   {
+   public void add(TransformationRule rule) {
       ruleSet.add(rule);
    }
 
-   public boolean remove(TransformationRule rule)
-   {
+   public boolean remove(TransformationRule rule) {
       return ruleSet.remove(rule);
    }
 
-   public boolean isEmpty()
-   {
+   public boolean isEmpty() {
       return ruleSet.isEmpty();
    }
 
-   public boolean contains(TransformationRule rule)
-   {
+   public boolean contains(TransformationRule rule) {
       return ruleSet.contains(rule);
    }
 
-   public int size()
-   {
+   public int size() {
       return ruleSet.size();
    }
 
    @Override
-   public Iterator<TransformationRule> iterator()
-   {
+   public Iterator<TransformationRule> iterator() {
       return ruleSet.iterator();
    }
 }

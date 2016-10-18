@@ -11,9 +11,12 @@ import java.util.Optional;
 /**
  * Interface describing a data source seen by a Mapping Master renderer.
  * Currently this supports spreadsheets only.
+ *
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
  */
-public interface DataSource
-{
+public interface DataSource {
+
    String getLocationValue(SpreadsheetLocation location, ReferenceNode node) throws RendererException;
 
    String getLocationValue(SpreadsheetLocation location) throws RendererException;

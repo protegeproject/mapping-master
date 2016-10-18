@@ -8,8 +8,12 @@ import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 
-public interface OWLEntityResolver
-{
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public interface OWLEntityResolver {
+
    /**
     * Resolves the given entity name and returns the OWL entity object with the specified type.
     * The method will look the entity name in the active ontology and return the found object.

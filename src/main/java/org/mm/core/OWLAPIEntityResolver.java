@@ -21,6 +21,10 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.PrefixManager;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
 public class OWLAPIEntityResolver implements OWLEntityResolver {
 
    private final OWLOntology ontology;
