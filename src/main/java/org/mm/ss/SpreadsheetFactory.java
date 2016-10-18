@@ -13,15 +13,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class SpreadsheetFactory {
 
-   public static Workbook createEmptyWorkbook() {
-      return new XSSFWorkbook(); // an empty xlsx workbook
+   public static SpreadSheetDataSource createEmptyWorkbook() {
+      Workbook emptyWorkbook = new XSSFWorkbook(); // an empty xlsx workbook
+      return new SpreadSheetDataSource(emptyWorkbook);
    }
 
-   public static Workbook loadWorkbookFromDocument(String path) throws Exception {
-      return WorkbookFactory.create(new FileInputStream(path));
+   public static SpreadSheetDataSource loadWorkbookFromDocument(String path) throws Exception {
+      Workbook workbook = WorkbookFactory.create(new FileInputStream(path));
+      return new SpreadSheetDataSource(workbook);
    }
 
-   public static Workbook loadWorkbookFromDocument(File file) throws Exception {
-      return WorkbookFactory.create(new FileInputStream(file));
+   public static SpreadSheetDataSource loadWorkbookFromDocument(File file) throws Exception {
+      Workbook workbook = WorkbookFactory.create(new FileInputStream(file));
+      return new SpreadSheetDataSource(workbook);
    }
 }
