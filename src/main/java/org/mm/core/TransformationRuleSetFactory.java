@@ -50,4 +50,14 @@ public class TransformationRuleSetFactory {
       writer.write(json);
       writer.close();
    }
+
+   public static void saveTransformationRulesToDocument(@Nonnull File file,
+         @Nonnull List<TransformationRule> rules) throws IOException {
+      checkNotNull(file);
+      checkNotNull(rules);
+      String json = new Gson().toJson(TransformationRuleSet.create(rules));
+      FileWriter writer = new FileWriter(file);
+      writer.write(json);
+      writer.close();
+   }
 }
