@@ -19,8 +19,7 @@ import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.RendererException;
 
 /**
- * @author Josef Hardi <josef.hardi@stanford.edu>
- * @author Martin O'Connor <sunid@stanford.edu> <br>
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
 public class SpreadSheetDataSource implements DataSource, MappingMasterParserConstants {
@@ -31,10 +30,6 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
    private final List<Sheet> sheetList = new ArrayList<>();
 
    private Optional<SpreadsheetLocation> currentLocation;
-
-   public SpreadSheetDataSource() {
-      this(SpreadsheetFactory.createEmptyWorkbook());
-   }
 
    public SpreadSheetDataSource(Workbook workbook) {
       this.workbook = workbook;
