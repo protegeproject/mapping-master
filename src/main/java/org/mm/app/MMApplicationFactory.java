@@ -1,19 +1,20 @@
 package org.mm.app;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.FileInputStream;
 import java.util.Properties;
 
-import org.apache.poi.ss.usermodel.Workbook;
+import javax.annotation.Nonnull;
+
 import org.mm.core.OWLAPIOntology;
 import org.mm.core.OWLOntologySource;
-import org.mm.core.OWLOntologySourceHook;
 import org.mm.core.TransformationRuleSet;
 import org.mm.core.TransformationRuleSetFactory;
 import org.mm.ss.SpreadSheetDataSource;
 import org.mm.ss.SpreadsheetFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -21,115 +22,89 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
  */
 public class MMApplicationFactory {
 
+   private static final String DEFAULT_VALUE = "";
+
    private final Properties properties = new Properties();
 
    public MMApplicationFactory() {
       // NO-OP
    }
 
-   protected MMApplicationFactory addProperty(String propertyName, String value) {
+   protected MMApplicationFactory addProperty(@Nonnull String propertyName, @Nonnull String value) {
+      checkNotNull(propertyName);
+      checkNotNull(value);
       properties.setProperty(propertyName, value);
       return this;
    }
 
+   @Nonnull
    public String getWorkbookFileLocation() {
-      return properties.getProperty(Environment.WORKBOOK_SOURCE);
+      return properties.getProperty(Environment.WORKBOOK_SOURCE, DEFAULT_VALUE);
    }
 
-   public void setWorkbookFileLocation(String path) {
+   public void setWorkbookFileLocation(@Nonnull String path) {
+      checkNotNull(path);
       properties.setProperty(Environment.WORKBOOK_SOURCE, path);
    }
 
+   @Nonnull
    public String getOntologyFileLocation() {
-      return properties.getProperty(Environment.ONTOLOGY_SOURCE);
+      return properties.getProperty(Environment.ONTOLOGY_SOURCE, DEFAULT_VALUE);
    }
 
-   public void setOntologyFileLocation(String path) {
+   public void setOntologyFileLocation(@Nonnull String path) {
+      checkNotNull(path);
       properties.setProperty(Environment.ONTOLOGY_SOURCE, path);
    }
 
+   @Nonnull
    public String getRuleFileLocation() {
-      return properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
+      return properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE, DEFAULT_VALUE);
    }
 
-   public void setRuleFileLocation(String path) {
+   public void setRuleFileLocation(@Nonnull String path) {
+      checkNotNull(path);
       properties.setProperty(Environment.TRANSFORMATION_RULES_SOURCE, path);
    }
 
+   @Nonnull
    public Properties getProperties() {
       return properties;
    }
 
+   @Nonnull
    public MMApplication createApplication() throws Exception {
       Properties copy = new Properties();
       copy.putAll(properties);
-      validate(copy, null);
+      validate(copy);
       Resources resources = buildResources(copy);
       return new MMApplication(resources.getOWLOntologySource(),
             resources.getSpreadSheetDataSource(),
             resources.getTransformationRuleSet());
    }
 
-   public MMApplication createApplication(OWLOntologySourceHook ontologySourceHook)
-         throws Exception {
-      Properties copy = new Properties();
-      copy.putAll(properties);
-      validate(copy, ontologySourceHook);
-      Resources resources = buildResources(copy, ontologySourceHook);
-      return new MMApplication(resources.getOWLOntologySource(),
-            resources.getSpreadSheetDataSource(), resources.getTransformationRuleSet());
-   }
-
    private Resources buildResources(Properties properties) throws Exception {
       Resources resources = new Resources();
 
       String ontologySourceLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
-      OWLOntologyManager owlManager = OWLManager.createOWLOntologyManager();
-      OWLOntology ontology = owlManager.loadOntologyFromOntologyDocument(new FileInputStream(ontologySourceLocation));
+      OWLOntology ontology = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(
+            new FileInputStream(ontologySourceLocation));
       OWLOntologySource ontologySource = new OWLAPIOntology(ontology);
       resources.setOWLOntologySource(ontologySource);
 
       String workbookSourceLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
-      Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookSourceLocation);
-      SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
+      SpreadSheetDataSource datasource = SpreadsheetFactory.loadWorkbookFromDocument(workbookSourceLocation);
       resources.setSpreadSheetDataSource(datasource);
 
       String ruleSourceLocation = properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
-      TransformationRuleSet rules = TransformationRuleSetFactory.createEmptyTransformationRuleSet();
-      if (ruleSourceLocation != null) {
-         rules = TransformationRuleSetFactory.loadTransformationRulesFromDocument(ruleSourceLocation);
-      }
+      TransformationRuleSet rules = TransformationRuleSetFactory.loadTransformationRulesFromDocument(ruleSourceLocation);
       resources.setTransformationRuleSet(rules);
-
       return resources;
    }
 
-   private Resources buildResources(Properties properties, OWLOntologySourceHook ontologySourceHook)
-         throws Exception {
-      Resources resources = new Resources();
-
-      resources.setOWLOntologySource(ontologySourceHook);
-
-      String workbookSourceLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
-      Workbook workbook = SpreadsheetFactory.loadWorkbookFromDocument(workbookSourceLocation);
-      SpreadSheetDataSource datasource = new SpreadSheetDataSource(workbook);
-      resources.setSpreadSheetDataSource(datasource);
-
-      String ruleSourceLocation = properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
-      TransformationRuleSet ruleSet = TransformationRuleSetFactory.createEmptyTransformationRuleSet();
-      if (ruleSourceLocation != null) {
-         ruleSet = TransformationRuleSetFactory.loadTransformationRulesFromDocument(ruleSourceLocation);
-      }
-      resources.setTransformationRuleSet(ruleSet);
-
-      return resources;
-   }
-
-   private void validate(Properties properties, OWLOntologySource ontologySource) {
-      if (ontologySource == null) {
-         if (properties.getProperty(Environment.ONTOLOGY_SOURCE) == null) {
-            throw new ApplicationStartupException("Missing ontology source parameter");
-         }
+   private void validate(Properties properties) {
+      if (properties.getProperty(Environment.ONTOLOGY_SOURCE) == null) {
+         throw new ApplicationStartupException("Missing ontology source parameter");
       }
       if (properties.getProperty(Environment.WORKBOOK_SOURCE) == null) {
          throw new ApplicationStartupException("Missing workbook source parameter");
