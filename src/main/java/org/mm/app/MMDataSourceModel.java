@@ -1,7 +1,11 @@
 package org.mm.app;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import org.mm.ss.SpreadSheetDataSource;
 
@@ -11,14 +15,10 @@ import org.mm.ss.SpreadSheetDataSource;
  */
 public class MMDataSourceModel implements DataSourceModel {
 
-   private SpreadSheetDataSource dataSource;
+   private final SpreadSheetDataSource dataSource;
 
-   public MMDataSourceModel() {
-      this(new SpreadSheetDataSource());
-   }
-
-   public MMDataSourceModel(SpreadSheetDataSource dataSource) {
-      this.dataSource = dataSource;
+   public MMDataSourceModel(@Nonnull SpreadSheetDataSource dataSource) {
+      this.dataSource = checkNotNull(dataSource);
    }
 
    @Override
