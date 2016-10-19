@@ -1,6 +1,7 @@
 package org.mm.core;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -22,6 +23,12 @@ public class TransformationRuleSetFactory {
    public static TransformationRuleSet loadTransformationRulesFromDocument(String location)
          throws FileNotFoundException {
       BufferedReader br = new BufferedReader(new FileReader(location));
+      return new Gson().fromJson(br, TransformationRuleSet.class);
+   }
+
+   public static TransformationRuleSet loadTransformationRulesFromDocument(File file)
+         throws FileNotFoundException {
+      BufferedReader br = new BufferedReader(new FileReader(file));
       return new Gson().fromJson(br, TransformationRuleSet.class);
    }
 
