@@ -6,12 +6,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
 public class TransformationRuleSet implements Iterable<TransformationRule> {
 
+   @SerializedName("Collections")
    private Set<TransformationRule> ruleSet;
 
    public TransformationRuleSet() {
