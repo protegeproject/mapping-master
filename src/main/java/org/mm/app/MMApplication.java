@@ -41,6 +41,16 @@ public class MMApplication {
    }
 
    @Nonnull
+   public static MMApplication create(@Nonnull OWLOntologySource ontologySource,
+         @Nonnull File workbookFile) throws Exception {
+      checkNotNull(ontologySource);
+      checkNotNull(workbookFile);
+      return new MMApplication(ontologySource,
+            SpreadsheetFactory.loadWorkbookFromDocument(workbookFile),
+            TransformationRuleSetFactory.createEmptyTransformationRuleSet());
+   }
+
+   @Nonnull
    public MMApplicationModel getApplicationModel() { // TODO: Rename to MappingMasterEngine?
       return new MMApplicationModel(ontology, dataSource, ruleSet);
    }
