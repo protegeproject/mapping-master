@@ -1,5 +1,7 @@
 package org.mm.core;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,6 +9,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import com.google.gson.Gson;
 
@@ -16,26 +20,33 @@ import com.google.gson.Gson;
  */
 public class TransformationRuleSetFactory {
 
+   @Nonnull
    public static TransformationRuleSet createEmptyTransformationRuleSet() {
       return new TransformationRuleSet();
    }
 
-   public static TransformationRuleSet loadTransformationRulesFromDocument(String location)
+   @Nonnull
+   public static TransformationRuleSet loadTransformationRulesFromDocument(@Nonnull String path)
          throws FileNotFoundException {
-      BufferedReader br = new BufferedReader(new FileReader(location));
+      checkNotNull(path);
+      BufferedReader br = new BufferedReader(new FileReader(path));
       return new Gson().fromJson(br, TransformationRuleSet.class);
    }
 
-   public static TransformationRuleSet loadTransformationRulesFromDocument(File file)
+   @Nonnull
+   public static TransformationRuleSet loadTransformationRulesFromDocument(@Nonnull File file)
          throws FileNotFoundException {
+      checkNotNull(file);
       BufferedReader br = new BufferedReader(new FileReader(file));
       return new Gson().fromJson(br, TransformationRuleSet.class);
    }
 
-   public static void saveTransformationRulesToDocument(String location,
-         List<TransformationRule> rules) throws IOException {
+   public static void saveTransformationRulesToDocument(@Nonnull String path,
+         @Nonnull List<TransformationRule> rules) throws IOException {
+      checkNotNull(path);
+      checkNotNull(rules);
       String json = new Gson().toJson(TransformationRuleSet.create(rules));
-      FileWriter writer = new FileWriter(location);
+      FileWriter writer = new FileWriter(path);
       writer.write(json);
       writer.close();
    }
