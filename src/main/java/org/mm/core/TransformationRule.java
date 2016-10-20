@@ -26,11 +26,8 @@ public class TransformationRule {
    private final String comment;
    private final String ruleExpression;
 
-   private boolean active = false;
-
    public TransformationRule(@Nonnull String sheetName, @Nonnull String startColumn, @Nonnull String endColumn,
          @Nonnull String startRow, @Nonnull String endRow, @Nonnull String comment, @Nonnull String ruleExpression) {
-      this.active = true;
       this.sheetName = checkNotNull(sheetName);
       this.startColumn = checkNotNull(startColumn);
       this.endColumn = checkNotNull(endColumn);
@@ -38,14 +35,6 @@ public class TransformationRule {
       this.endRow = checkNotNull(endRow);
       this.comment = checkNotNull(comment);
       this.ruleExpression = checkNotNull(ruleExpression);
-   }
-
-   public void setActive(boolean active) {
-      this.active = active;
-   }
-
-   public boolean isActive() {
-      return active;
    }
 
    @Nonnull
