@@ -38,7 +38,7 @@ public class TransformationRule {
       return active;
    }
 
-   public String getRuleString() {
+   public String getRuleExpression() {
       return rule;
    }
 
