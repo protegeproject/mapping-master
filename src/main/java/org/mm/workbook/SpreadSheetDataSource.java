@@ -10,7 +10,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.mm.core.DataSource;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
