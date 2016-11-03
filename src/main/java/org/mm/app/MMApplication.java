@@ -18,13 +18,14 @@ import org.mm.ss.SpreadsheetFactory;
  */
 public class MMApplication {
 
-   private final OWLOntologySource ontology;
+   private final OWLOntologySource ontologySource;
    private final SpreadSheetDataSource dataSource;
    private final TransformationRuleSet ruleSet;
 
    /* package */ MMApplication(@Nonnull OWLOntologySource ontologySource,
-         @Nonnull SpreadSheetDataSource dataSource, @Nonnull TransformationRuleSet ruleSet) {
-      this.ontology = checkNotNull(ontologySource);
+         @Nonnull SpreadSheetDataSource dataSource,
+         @Nonnull TransformationRuleSet ruleSet) {
+      this.ontologySource = checkNotNull(ontologySource);
       this.dataSource = checkNotNull(dataSource);
       this.ruleSet = checkNotNull(ruleSet);
    }
@@ -52,6 +53,6 @@ public class MMApplication {
 
    @Nonnull
    public MMApplicationModel getApplicationModel() { // TODO: Rename to MappingMasterEngine?
-      return new MMApplicationModel(ontology, dataSource, ruleSet);
+      return new MMApplicationModel(ontologySource, dataSource, ruleSet);
    }
 }
