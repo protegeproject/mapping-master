@@ -1,5 +1,9 @@
 package org.mm.app;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import javax.annotation.Nonnull;
+
 import org.mm.core.OWLOntologySource;
 import org.mm.core.TransformationRuleSet;
 import org.mm.renderer.Renderer;
@@ -15,34 +19,29 @@ public class MMApplicationModel implements ApplicationModel {
 
    private final OWLOntologySource ontologySource;
    private final SpreadSheetDataSource dataSource;
+   private final TransformationRuleSet ruleSet;
 
-   private final Renderer applicationRenderer;
-   private final MMDataSourceModel dataSourceModel;
-   private final MMTransformationRuleModel expressionMappingsModel;
-
-   public MMApplicationModel(OWLOntologySource ontologySource, SpreadSheetDataSource dataSource,
-         TransformationRuleSet ruleSet) {
-      this.ontologySource = ontologySource;
-      this.dataSource = dataSource;
-
-      applicationRenderer = new OWLRenderer(ontologySource, dataSource);
-      dataSourceModel = new MMDataSourceModel(dataSource);
-      expressionMappingsModel = new MMTransformationRuleModel(ruleSet);
+   public MMApplicationModel(@Nonnull OWLOntologySource ontologySource,
+         @Nonnull SpreadSheetDataSource dataSource,
+         @Nonnull TransformationRuleSet ruleSet) {
+      this.ontologySource = checkNotNull(ontologySource);
+      this.dataSource = checkNotNull(dataSource);
+      this.ruleSet = checkNotNull(ruleSet);
    }
 
    @Override
-   public MMDataSourceModel getDataSourceModel() {
-      return dataSourceModel;
+   public SpreadSheetDataSource getWorkbook() {
+      return dataSource;
+   }
+
+   @Override
+   public Renderer getTransformationRenderer() {
+      return new OWLRenderer(ontologySource, dataSource);
    }
 
    @Override
    public MMTransformationRuleModel getTransformationRuleModel() {
-      return expressionMappingsModel;
-   }
-
-   @Override
-   public Renderer getDefaultRenderer() {
-      return applicationRenderer;
+      return new MMTransformationRuleModel(ruleSet);
    }
 
    public TextRenderer getLogRenderer() {

@@ -1,6 +1,7 @@
 package org.mm.app;
 
 import org.mm.renderer.Renderer;
+import org.mm.ss.SpreadSheetDataSource;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -9,17 +10,17 @@ import org.mm.renderer.Renderer;
 public interface ApplicationModel
 {
    /**
-    * Returns the data source model
+    * Returns the workbook
     */
-   DataSourceModel getDataSourceModel();
+   SpreadSheetDataSource getWorkbook();
+
+   /**
+    * Returns the default renderer.
+    */
+   Renderer getTransformationRenderer();
 
    /**
     * Returns the mapping expression model
     */
    TransformationRuleModel getTransformationRuleModel();
-
-   /**
-    * Returns the default renderer.
-    */
-   Renderer getDefaultRenderer();
 }
