@@ -22,7 +22,7 @@ public class MMApplication {
    private final SpreadSheetDataSource dataSource;
    private final TransformationRuleSet ruleSet;
 
-   public MMApplication(@Nonnull OWLOntologySource ontologySource,
+   /* package */ MMApplication(@Nonnull OWLOntologySource ontologySource,
          @Nonnull SpreadSheetDataSource dataSource, @Nonnull TransformationRuleSet ruleSet) {
       this.ontology = checkNotNull(ontologySource);
       this.dataSource = checkNotNull(dataSource);
