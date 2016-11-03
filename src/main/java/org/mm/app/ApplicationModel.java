@@ -1,7 +1,7 @@
 package org.mm.app;
 
 import org.mm.renderer.Renderer;
-import org.mm.ss.SpreadSheetDataSource;
+import org.mm.workbook.SpreadSheetDataSource;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>

@@ -9,7 +9,7 @@ import org.mm.core.TransformationRuleSet;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
-import org.mm.ss.SpreadSheetDataSource;
+import org.mm.workbook.SpreadSheetDataSource;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>

@@ -3,7 +3,7 @@ package org.mm.core;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.renderer.RendererException;
-import org.mm.ss.SpreadsheetLocation;
+import org.mm.workbook.SpreadsheetLocation;
 
 import java.util.List;
 import java.util.Optional;

@@ -32,7 +32,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 import org.mm.renderer.RendererException;
-import org.mm.ss.SpreadsheetLocation;
+import org.mm.workbook.SpreadsheetLocation;
 
 public class ReferenceNode implements MMNode, MappingMasterParserConstants
 {

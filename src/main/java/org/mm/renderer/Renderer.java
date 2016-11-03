@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.mm.parser.node.MMExpressionNode;
 import org.mm.rendering.Rendering;
-import org.mm.ss.SpreadSheetDataSource;
+import org.mm.workbook.SpreadSheetDataSource;
 
 public interface Renderer
 {

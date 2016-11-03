@@ -65,8 +65,8 @@ import org.mm.rendering.ReferenceRendering;
 import org.mm.rendering.text.TextLiteralRendering;
 import org.mm.rendering.text.TextReferenceRendering;
 import org.mm.rendering.text.TextRendering;
-import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ss.SpreadsheetLocation;
+import org.mm.workbook.SpreadSheetDataSource;
+import org.mm.workbook.SpreadsheetLocation;
 
 // TODO Refactor - too long. Look at the OWLAPI renderer for example of decomposition.
 

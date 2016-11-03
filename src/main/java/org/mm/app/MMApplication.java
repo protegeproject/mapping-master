@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 import org.mm.core.OWLOntologySource;
 import org.mm.core.TransformationRuleSet;
 import org.mm.core.TransformationRuleSetFactory;
-import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ss.SpreadsheetFactory;
+import org.mm.workbook.SpreadSheetDataSource;
+import org.mm.workbook.SpreadsheetFactory;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>

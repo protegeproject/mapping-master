@@ -3,8 +3,8 @@ package org.mm.renderer;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
-import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ss.SpreadsheetLocation;
+import org.mm.workbook.SpreadSheetDataSource;
+import org.mm.workbook.SpreadsheetLocation;
 
 import java.text.DecimalFormat;
 import java.util.Collections;

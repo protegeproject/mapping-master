@@ -1,4 +1,4 @@
-package org.mm.ss;
+package org.mm.workbook;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>

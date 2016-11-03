@@ -33,7 +33,7 @@ import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyAssertionRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.mm.rendering.owlapi.OWLRendering;
-import org.mm.ss.SpreadSheetDataSource;
+import org.mm.workbook.SpreadSheetDataSource;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;

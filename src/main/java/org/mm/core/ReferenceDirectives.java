@@ -1,8 +1,8 @@
 package org.mm.core;
 
 import org.mm.parser.MappingMasterParserConstants;
+import org.mm.workbook.SpreadsheetLocation;
 import org.mm.parser.DefaultReferenceDirectives;
-import org.mm.ss.SpreadsheetLocation;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu>

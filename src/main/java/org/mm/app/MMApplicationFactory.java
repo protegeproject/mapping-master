@@ -11,8 +11,8 @@ import org.mm.core.OWLAPIOntology;
 import org.mm.core.OWLOntologySource;
 import org.mm.core.TransformationRuleSet;
 import org.mm.core.TransformationRuleSetFactory;
-import org.mm.ss.SpreadSheetDataSource;
-import org.mm.ss.SpreadsheetFactory;
+import org.mm.workbook.SpreadSheetDataSource;
+import org.mm.workbook.SpreadsheetFactory;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 
