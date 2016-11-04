@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -26,10 +28,10 @@ public class TransformationRuleSetFactory {
    }
 
    @Nonnull
-   public static TransformationRuleSet loadTransformationRulesFromDocument(@Nonnull String path)
+   public static TransformationRuleSet loadTransformationRulesFromDocument(@Nonnull InputStream inputStream)
          throws FileNotFoundException {
-      checkNotNull(path);
-      BufferedReader br = new BufferedReader(new FileReader(path));
+      checkNotNull(inputStream);
+      BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
       return new Gson().fromJson(br, TransformationRuleSet.class);
    }
 
