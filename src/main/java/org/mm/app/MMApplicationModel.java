@@ -9,7 +9,7 @@ import org.mm.core.TransformationRuleSet;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
-import org.mm.workbook.SpreadSheetDataSource;
+import org.mm.workbook.Workbook;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -18,25 +18,25 @@ import org.mm.workbook.SpreadSheetDataSource;
 public class MMApplicationModel implements ApplicationModel {
 
    private final OWLOntologySource ontologySource;
-   private final SpreadSheetDataSource dataSource;
+   private final Workbook workbook;
    private final TransformationRuleSet ruleSet;
 
    public MMApplicationModel(@Nonnull OWLOntologySource ontologySource,
-         @Nonnull SpreadSheetDataSource dataSource,
+         @Nonnull Workbook workbook,
          @Nonnull TransformationRuleSet ruleSet) {
       this.ontologySource = checkNotNull(ontologySource);
-      this.dataSource = checkNotNull(dataSource);
+      this.workbook = checkNotNull(workbook);
       this.ruleSet = checkNotNull(ruleSet);
    }
 
    @Override
-   public SpreadSheetDataSource getWorkbook() {
-      return dataSource;
+   public Workbook getWorkbook() {
+      return workbook;
    }
 
    @Override
    public Renderer getTransformationRenderer() {
-      return new OWLRenderer(ontologySource, dataSource);
+      return new OWLRenderer(ontologySource, workbook);
    }
 
    @Override
@@ -45,7 +45,7 @@ public class MMApplicationModel implements ApplicationModel {
    }
 
    public TextRenderer getLogRenderer() {
-      TextRenderer renderer = new TextRenderer(dataSource);
+      TextRenderer renderer = new TextRenderer(workbook);
       renderer.setComment(true);
       return renderer;
    }

@@ -33,7 +33,7 @@ import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyAssertionRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.mm.rendering.owlapi.OWLRendering;
-import org.mm.workbook.SpreadSheetDataSource;
+import org.mm.workbook.Workbook;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -68,26 +68,26 @@ public class OWLRenderer extends ReferenceRendererConfiguration implements Rende
    public static final int DataPropertyValueTypes[] = { XSD_STRING, XSD_BYTE, XSD_SHORT, XSD_INTEGER, XSD_FLOAT, XSD_DOUBLE,
          XSD_BOOLEAN, XSD_TIME, XSD_DATETIME, XSD_DATE, XSD_DURATION };
 
-   private SpreadSheetDataSource dataSource;
+   private Workbook workbook;
 
    private final OWLObjectFactory objectFactory;
    private final OWLEntityRenderer entityRenderer;
    private final OWLClassExpressionRenderer classExpressionRenderer;
    private final OWLReferenceRenderer referenceRenderer;
 
-   public OWLRenderer(OWLOntologySource ontologySource, SpreadSheetDataSource dataSource)
+   public OWLRenderer(OWLOntologySource ontologySource, Workbook workbook)
    {
-      this.dataSource = dataSource;
+      this.workbook = workbook;
       objectFactory = OWLObjectFactory.newInstance(ontologySource);
-      referenceRenderer = new OWLReferenceRenderer(dataSource, objectFactory);
+      referenceRenderer = new OWLReferenceRenderer(workbook, objectFactory);
       entityRenderer = new OWLEntityRenderer(referenceRenderer, objectFactory);
       classExpressionRenderer = new OWLClassExpressionRenderer(referenceRenderer, objectFactory);
    }
 
    @Override
-   public SpreadSheetDataSource getDataSource()
+   public Workbook getDataSource()
    {
-      return dataSource;
+      return workbook;
    }
 
    @Override

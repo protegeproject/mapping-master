@@ -11,8 +11,8 @@ import org.mm.core.OWLAPIOntology;
 import org.mm.core.OWLOntologySource;
 import org.mm.core.TransformationRuleSet;
 import org.mm.core.TransformationRuleSetFactory;
-import org.mm.workbook.SpreadSheetDataSource;
 import org.mm.workbook.SpreadsheetFactory;
+import org.mm.workbook.Workbook;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -93,7 +93,7 @@ public class MMApplicationFactory {
       resources.setOWLOntologySource(ontologySource);
 
       String workbookSourceLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
-      SpreadSheetDataSource datasource = SpreadsheetFactory.loadWorkbookFromDocument(workbookSourceLocation);
+      Workbook datasource = SpreadsheetFactory.loadWorkbookFromDocument(workbookSourceLocation);
       resources.setSpreadSheetDataSource(datasource);
 
       String ruleSourceLocation = properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
@@ -113,16 +113,16 @@ public class MMApplicationFactory {
 
    class Resources {
 
-      private SpreadSheetDataSource spreadsheet;
+      private Workbook workbook;
       private OWLOntologySource ontology;
       private TransformationRuleSet ruleSet;
 
-      public SpreadSheetDataSource getSpreadSheetDataSource() {
-         return spreadsheet;
+      public Workbook getSpreadSheetDataSource() { // TODO: Rename to getWorkbook
+         return workbook;
       }
 
-      public void setSpreadSheetDataSource(SpreadSheetDataSource spreadsheet) {
-         this.spreadsheet = spreadsheet;
+      public void setSpreadSheetDataSource(Workbook workbook) { // TODO: Rename to setWorkbook
+         this.workbook = workbook;
       }
 
       public OWLOntologySource getOWLOntologySource() {

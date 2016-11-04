@@ -1,11 +1,5 @@
 package org.mm.renderer;
 
-import org.mm.parser.MappingMasterParserConstants;
-import org.mm.parser.node.ReferenceNode;
-import org.mm.parser.node.SourceSpecificationNode;
-import org.mm.workbook.SpreadSheetDataSource;
-import org.mm.workbook.SpreadsheetLocation;
-
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.IllegalFormatException;
@@ -15,22 +9,28 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.mm.parser.MappingMasterParserConstants;
+import org.mm.parser.node.ReferenceNode;
+import org.mm.parser.node.SourceSpecificationNode;
+import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.Workbook;
+
 public class ReferenceUtil implements MappingMasterParserConstants
 {
-  public static SpreadsheetLocation resolveLocation(SpreadSheetDataSource dataSource, ReferenceNode referenceNode)
+  public static SpreadsheetLocation resolveLocation(Workbook workbook, ReferenceNode referenceNode)
       throws RendererException
   {
     SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
-    return dataSource.resolveLocation(sourceSpecificationNode);
+    return workbook.resolveLocation(sourceSpecificationNode);
   }
 
-  public static Optional<String> resolveReferenceValue(SpreadSheetDataSource dataSource, ReferenceNode referenceNode)
+  public static Optional<String> resolveReferenceValue(Workbook workbook, ReferenceNode referenceNode)
       throws RendererException
   {
-    SpreadsheetLocation location = resolveLocation(dataSource, referenceNode);
+    SpreadsheetLocation location = resolveLocation(workbook, referenceNode);
 
     String referenceValue = null;
-    String rawLocationValue = dataSource.getLocationValue(location, referenceNode);
+    String rawLocationValue = workbook.getLocationValue(location, referenceNode);
     if (rawLocationValue != null && !rawLocationValue.isEmpty()) {
       referenceValue = rawLocationValue;
     }

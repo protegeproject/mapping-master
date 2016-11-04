@@ -65,8 +65,8 @@ import org.mm.rendering.ReferenceRendering;
 import org.mm.rendering.text.TextLiteralRendering;
 import org.mm.rendering.text.TextReferenceRendering;
 import org.mm.rendering.text.TextRendering;
-import org.mm.workbook.SpreadSheetDataSource;
 import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.Workbook;
 
 // TODO Refactor - too long. Look at the OWLAPI renderer for example of decomposition.
 
@@ -78,7 +78,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       DeclarationRenderer, EntityRenderer, LiteralRenderer, ClassExpressionRenderer,
       MappingMasterParserConstants
 {
-   private SpreadSheetDataSource dataSource;
+   private Workbook workbook;
 
    private boolean isCommented = false;
 
@@ -89,9 +89,9 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
    public final static String COMMENT_SYMBOL = "#";
 
-   public TextRenderer(SpreadSheetDataSource dataSource)
+   public TextRenderer(Workbook workbook)
    {
-      this.dataSource = dataSource;
+      this.workbook = workbook;
    }
 
    public void setComment(boolean option)
@@ -100,9 +100,9 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    }
 
    @Override
-   public SpreadSheetDataSource getDataSource()
+   public Workbook getDataSource()
    {
-      return dataSource;
+      return workbook;
    }
 
    @Override
@@ -139,8 +139,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          return Optional.of(rendering);
 
       } else if (sourceSpecificationNode.hasLocation()) {
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-         Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
+         SpreadsheetLocation location = ReferenceUtil.resolveLocation(workbook, referenceNode);
+         Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(workbook, referenceNode);
          
          if (!resolvedValue.isPresent()) {
             switch (referenceNode.getActualEmptyLocationDirective()) {
@@ -223,7 +223,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    {
       ReferenceType referenceType = getReferenceType(referenceNode);
       if (referenceNode.getReferenceDirectives().usesLocationEncoding()) {
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
+         SpreadsheetLocation location = ReferenceUtil.resolveLocation(workbook, referenceNode);
          String label = getLabelUsingLocationEncoding(location);
          return new TextReferenceRendering(label, referenceType);
       } else {

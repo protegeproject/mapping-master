@@ -41,8 +41,8 @@ import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
 import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.mm.rendering.owlapi.OWLReferenceRendering;
-import org.mm.workbook.SpreadSheetDataSource;
 import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.Workbook;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -62,7 +62,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 {
    private final Logger logger = LoggerFactory.getLogger(OWLReferenceRenderer.class);
 
-   private SpreadSheetDataSource dataSource;
+   private Workbook workbook;
    private OWLObjectFactory objectFactory;
    private OWLEntityRenderer entityRenderer;
    private OWLLiteralRenderer literalRenderer;
@@ -70,9 +70,9 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 
    private LocationEncodingCache locationEncodingCache = new LocationEncodingCache();
 
-   public OWLReferenceRenderer(SpreadSheetDataSource dataSource, OWLObjectFactory objectFactory)
+   public OWLReferenceRenderer(Workbook workbook, OWLObjectFactory objectFactory)
    {
-      this.dataSource = dataSource;
+      this.workbook = workbook;
       this.objectFactory = objectFactory;
       
       literalRenderer = new OWLLiteralRenderer(objectFactory);
@@ -144,8 +144,8 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
          /*
           * Get the literal value by resolving the given reference against the input spreadsheet
           */
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
-         Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(dataSource, referenceNode);
+         SpreadsheetLocation location = ReferenceUtil.resolveLocation(workbook, referenceNode);
+         Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(workbook, referenceNode);
          resolvedValue = processResolvedValue(resolvedValue, location, referenceNode.getReferenceDirectives());
          Optional<String> languageTag = getLanguage(referenceNode);
 
@@ -322,7 +322,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 
    private OWLEntity createOWLEntityUsingLocationEncoding(ReferenceNode referenceNode) throws RendererException
    {
-      SpreadsheetLocation location = ReferenceUtil.resolveLocation(dataSource, referenceNode);
+      SpreadsheetLocation location = ReferenceUtil.resolveLocation(workbook, referenceNode);
       Optional<OWLEntity> foundEntity = getOWLEntityFromLocationCache(location);
       if (!foundEntity.isPresent()) {
          String cellLocationName = ReferenceUtil.createNameUsingCellLocation(location);

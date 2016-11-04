@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 import org.mm.core.OWLOntologySource;
 import org.mm.core.TransformationRuleSet;
 import org.mm.core.TransformationRuleSetFactory;
-import org.mm.workbook.SpreadSheetDataSource;
+import org.mm.workbook.Workbook;
 import org.mm.workbook.SpreadsheetFactory;
 
 /**
@@ -19,14 +19,14 @@ import org.mm.workbook.SpreadsheetFactory;
 public class MMApplication {
 
    private final OWLOntologySource ontologySource;
-   private final SpreadSheetDataSource dataSource;
+   private final Workbook workbook;
    private final TransformationRuleSet ruleSet;
 
    /* package */ MMApplication(@Nonnull OWLOntologySource ontologySource,
-         @Nonnull SpreadSheetDataSource dataSource,
+         @Nonnull Workbook workbook,
          @Nonnull TransformationRuleSet ruleSet) {
       this.ontologySource = checkNotNull(ontologySource);
-      this.dataSource = checkNotNull(dataSource);
+      this.workbook = checkNotNull(workbook);
       this.ruleSet = checkNotNull(ruleSet);
    }
 
@@ -53,6 +53,6 @@ public class MMApplication {
 
    @Nonnull
    public MMApplicationModel getApplicationModel() { // TODO: Rename to MappingMasterEngine?
-      return new MMApplicationModel(ontologySource, dataSource, ruleSet);
+      return new MMApplicationModel(ontologySource, workbook, ruleSet);
    }
 }

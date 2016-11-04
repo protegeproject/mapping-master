@@ -1,7 +1,7 @@
 package org.mm.app;
 
 import org.mm.renderer.Renderer;
-import org.mm.workbook.SpreadSheetDataSource;
+import org.mm.workbook.Workbook;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -12,7 +12,7 @@ public interface ApplicationModel
    /**
     * Returns the workbook
     */
-   SpreadSheetDataSource getWorkbook();
+   Workbook getWorkbook();
 
    /**
     * Returns the default renderer.

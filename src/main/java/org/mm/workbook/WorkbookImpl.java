@@ -1,15 +1,18 @@
 package org.mm.workbook;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
@@ -21,25 +24,24 @@ import org.mm.renderer.RendererException;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class SpreadSheetDataSource implements DataSource, MappingMasterParserConstants {
+public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
 
-   private final Workbook workbook;
+   private final org.apache.poi.ss.usermodel.Workbook excelWorkbook;
 
    private final List<String> sheetNameList = new ArrayList<>();
    private final List<Sheet> sheetList = new ArrayList<>();
 
-   private Optional<SpreadsheetLocation> currentLocation;
+   private Optional<SpreadsheetLocation> currentLocation = Optional.empty();
 
-   public SpreadSheetDataSource(Workbook workbook) {
-      this.workbook = workbook;
-      currentLocation = Optional.empty();
+   public WorkbookImpl(@Nonnull org.apache.poi.ss.usermodel.Workbook excelWorkbook) {
+      this.excelWorkbook = checkNotNull(excelWorkbook);
 
       /*
        * Populate the sheets from the workbook
        */
-      for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-         sheetNameList.add(workbook.getSheetName(i));
-         sheetList.add(workbook.getSheetAt(i));
+      for (int i = 0; i < excelWorkbook.getNumberOfSheets(); i++) {
+         sheetNameList.add(excelWorkbook.getSheetName(i));
+         sheetList.add(excelWorkbook.getSheetAt(i));
       }
    }
 
@@ -55,12 +57,8 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
       return currentLocation != null;
    }
 
-   public Workbook getWorkbook() {
-      return workbook;
-   }
-
    public boolean hasWorkbook() {
-      return workbook != null;
+      return excelWorkbook != null;
    }
 
    public List<Sheet> getSheets() {
@@ -84,7 +82,7 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
       int columnNumber = location.getColumnNumber();
       int rowNumber = location.getRowNumber();
 
-      Sheet sheet = workbook.getSheet(location.getSheetName());
+      Sheet sheet = excelWorkbook.getSheet(location.getSheetName());
       Row row = sheet.getRow(rowNumber);
       if (row == null) {
          return "";
@@ -125,7 +123,7 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
    public String getLocationValueWithShifting(SpreadsheetLocation location,
          ReferenceNode referenceNode) throws RendererException {
       String sheetName = location.getSheetName();
-      Sheet sheet = workbook.getSheet(sheetName);
+      Sheet sheet = excelWorkbook.getSheet(sheetName);
       String shiftedLocationValue = getLocationValue(location);
       if (shiftedLocationValue == null || shiftedLocationValue.isEmpty()) {
          switch (referenceNode.getActualShiftDirective()) {
@@ -199,13 +197,13 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
             throw new RendererException(
                   "Sheet name '" + sheetName + "' specified but there is no active workbook");
          }
-         sheet = getWorkbook().getSheet(sheetName);
+         sheet = excelWorkbook.getSheet(sheetName);
          if (sheet == null) {
             throw new RendererException("Sheet name '" + sheetName + "' does not exist");
          }
       } else {
          String sheetName = getCurrentLocation().get().getSheetName();
-         sheet = getWorkbook().getSheet(sheetName);
+         sheet = excelWorkbook.getSheet(sheetName);
          if (sheet == null) {
             throw new RendererException("Sheet name '" + sheetName + "' does not exist");
          }
