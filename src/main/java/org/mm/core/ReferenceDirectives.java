@@ -1,7 +1,7 @@
 package org.mm.core;
 
 import org.mm.parser.MappingMasterParserConstants;
-import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.CellLocation;
 import org.mm.parser.DefaultReferenceDirectives;
 
 /**
@@ -51,7 +51,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
    private boolean hasExplicitlySpecifiedTypes;
    private boolean hasExplicitlySpecifiedIRIEncoding;
 
-   private SpreadsheetLocation shiftedLocation;
+   private CellLocation shiftedLocation;
 
    private boolean hasExplicitlySpecifiedOptions;
 
@@ -408,11 +408,11 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
       this.hasExplicitlySpecifiedTypes = true;
    }
 
-   public SpreadsheetLocation getShiftedLocation() {
+   public CellLocation getShiftedLocation() {
       return this.shiftedLocation;
    }
 
-   public void setShiftedLocation(SpreadsheetLocation shiftedLocation) {
+   public void setShiftedLocation(CellLocation shiftedLocation) {
       this.shiftedLocation = shiftedLocation;
    }
 }

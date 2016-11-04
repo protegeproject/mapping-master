@@ -41,7 +41,7 @@ import org.mm.rendering.owlapi.OWLLiteralReferenceRendering;
 import org.mm.rendering.owlapi.OWLNamedIndividualRendering;
 import org.mm.rendering.owlapi.OWLPropertyRendering;
 import org.mm.rendering.owlapi.OWLReferenceRendering;
-import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.CellLocation;
 import org.mm.workbook.Workbook;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -144,14 +144,14 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
          /*
           * Get the literal value by resolving the given reference against the input spreadsheet
           */
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(workbook, referenceNode);
+         CellLocation cellLocation = ReferenceUtil.resolveLocation(workbook, referenceNode);
          Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(workbook, referenceNode);
-         resolvedValue = processResolvedValue(resolvedValue, location, referenceNode.getReferenceDirectives());
+         resolvedValue = processResolvedValue(resolvedValue, cellLocation, referenceNode.getReferenceDirectives());
          Optional<String> languageTag = getLanguage(referenceNode);
 
          if (referenceNode.hasLiteralType()) {
             Optional<String> literalValue = getLiteral(resolvedValue, referenceNode);
-            literalValue = processLiteral(literalValue, location, referenceNode.getReferenceDirectives());
+            literalValue = processLiteral(literalValue, cellLocation, referenceNode.getReferenceDirectives());
             /*
              * Create the OWL literal if the literal value is not null
              */
@@ -169,9 +169,9 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
              * simply ignore it.
              */
             Optional<String> entityName = getEntityName(resolvedValue, referenceNode);
-            entityName = processIdentifier(entityName, location, referenceNode);
+            entityName = processIdentifier(entityName, cellLocation, referenceNode);
             Optional<String> entityLabel = getEntityLabel(resolvedValue, referenceNode);
-            entityLabel = validateLabel(entityLabel, location, referenceNode);
+            entityLabel = validateLabel(entityLabel, cellLocation, referenceNode);
             
             /*
              * Create the OWL entity based on the input of its name, label and language tag. The method createOWLEntity
@@ -210,8 +210,8 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       throw new InternalRendererException("Unknown definition for reference node: " + referenceNode);
    }
 
-   private Optional<String> processResolvedValue(Optional<String> resolvedValue, SpreadsheetLocation location, ReferenceDirectives directives)
-         throws RendererException
+   private Optional<String> processResolvedValue(Optional<String> resolvedValue, CellLocation cellLocation,
+         ReferenceDirectives directives) throws RendererException
    {
       Optional<String> finalValue = resolvedValue;
       if (!resolvedValue.isPresent()) {
@@ -222,17 +222,17 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             case MM_SKIP_IF_EMPTY_LOCATION:
                break;
             case MM_WARNING_IF_EMPTY_LOCATION:
-               logger.warn("The cell location {} has an empty value", location);
+               logger.warn("The cell location {} has an empty value", cellLocation);
                break;
             case MM_ERROR_IF_EMPTY_LOCATION:
-               throw new RendererException("The cell location " + location + " has an empty value");
+               throw new RendererException("The cell location " + cellLocation + " has an empty value");
          }
       }
       return finalValue;
    }
 
-   private Optional<String> processLiteral(Optional<String> literalValue, SpreadsheetLocation location, ReferenceDirectives directives)
-         throws RendererException
+   private Optional<String> processLiteral(Optional<String> literalValue, CellLocation cellLocation,
+         ReferenceDirectives directives) throws RendererException
    {
       Optional<String> finalLiteral = literalValue;
       if (!literalValue.isPresent()) {
@@ -243,17 +243,17 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             case MM_SKIP_IF_EMPTY_LITERAL:
                break;
             case MM_WARNING_IF_EMPTY_LITERAL:
-               logger.warn("The cell location {} has an empty value", location);
+               logger.warn("The cell location {} has an empty value", cellLocation);
                break;
             case MM_ERROR_IF_EMPTY_LITERAL:
-               throw new RendererException("The cell location " + location + " has an empty value");
+               throw new RendererException("The cell location " + cellLocation + " has an empty value");
          }
       }
       return finalLiteral;
    }
 
-   private Optional<String> processIdentifier(Optional<String> entityName, SpreadsheetLocation location, ReferenceNode referenceNode)
-         throws RendererException
+   private Optional<String> processIdentifier(Optional<String> entityName, CellLocation cellLocation,
+         ReferenceNode referenceNode) throws RendererException
    {
       Optional<String> finalName = entityName;
       if (referenceNode.hasRDFIDValueEncoding() && !entityName.isPresent()) {
@@ -264,17 +264,17 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             case MM_SKIP_IF_EMPTY_ID:
                break;
             case MM_WARNING_IF_EMPTY_ID:
-               logger.warn("The cell location {} has an empty value", location);
+               logger.warn("The cell location {} has an empty value", cellLocation);
                break;
             case MM_ERROR_IF_EMPTY_ID:
-               throw new RendererException("The cell location " + location + " has an empty value");
+               throw new RendererException("The cell location " + cellLocation + " has an empty value");
          }
       }
       return finalName;
    }
 
-   private Optional<String> validateLabel(Optional<String> entityLabel, SpreadsheetLocation location, ReferenceNode referenceNode)
-         throws RendererException
+   private Optional<String> validateLabel(Optional<String> entityLabel, CellLocation cellLocation,
+         ReferenceNode referenceNode) throws RendererException
    {
       Optional<String> finalLabel = entityLabel;
       if (referenceNode.hasRDFSLabelValueEncoding() && !entityLabel.isPresent()) {
@@ -285,10 +285,10 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             case MM_SKIP_IF_EMPTY_LABEL:
                break;
             case MM_WARNING_IF_EMPTY_LABEL:
-               logger.warn("The cell location {} has an empty value", location);
+               logger.warn("The cell location {} has an empty value", cellLocation);
                break;
             case MM_ERROR_IF_EMPTY_LABEL:
-               throw new RendererException("The cell location " + location + " has an empty value");
+               throw new RendererException("The cell location " + cellLocation + " has an empty value");
          }
       }
       return finalLabel;
@@ -322,13 +322,13 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 
    private OWLEntity createOWLEntityUsingLocationEncoding(ReferenceNode referenceNode) throws RendererException
    {
-      SpreadsheetLocation location = ReferenceUtil.resolveLocation(workbook, referenceNode);
-      Optional<OWLEntity> foundEntity = getOWLEntityFromLocationCache(location);
+      CellLocation cellLocation = ReferenceUtil.resolveLocation(workbook, referenceNode);
+      Optional<OWLEntity> foundEntity = getOWLEntityFromLocationCache(cellLocation);
       if (!foundEntity.isPresent()) {
-         String cellLocationName = ReferenceUtil.createNameUsingCellLocation(location);
+         String cellLocationName = ReferenceUtil.createNameUsingCellLocation(cellLocation);
          String entityName = constructEntityIdentifier(cellLocationName, referenceNode);
          OWLEntity newEntity = createOWLEntity(entityName, referenceNode);
-         putOWLEntityToLocationCache(location, newEntity);
+         putOWLEntityToLocationCache(cellLocation, newEntity);
          return newEntity;
       } else {
          return foundEntity.get();
@@ -473,14 +473,14 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
       return objectFactory.getOWLEntity(entityName);
    }
 
-   private Optional<OWLEntity> getOWLEntityFromLocationCache(SpreadsheetLocation location)
+   private Optional<OWLEntity> getOWLEntityFromLocationCache(CellLocation cellLocation)
    {
-      return locationEncodingCache.get(location);
+      return locationEncodingCache.get(cellLocation);
    }
 
-   private void putOWLEntityToLocationCache(SpreadsheetLocation location, OWLEntity newEntity)
+   private void putOWLEntityToLocationCache(CellLocation cellLocation, OWLEntity newEntity)
    {
-      locationEncodingCache.put(location, newEntity);
+      locationEncodingCache.put(cellLocation, newEntity);
    }
 
    public Optional<? extends LiteralRendering> renderOWLLiteral(OWLLiteralNode literalNode) throws RendererException
@@ -812,17 +812,17 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
 
    class LocationEncodingCache
    {
-      private final Map<SpreadsheetLocation, OWLEntity> cache = new HashMap<>();
+      private final Map<CellLocation, OWLEntity> cache = new HashMap<>();
 
-      public Optional<OWLEntity> get(SpreadsheetLocation location)
+      public Optional<OWLEntity> get(CellLocation celLocation)
       {
-         OWLEntity entity = cache.get(location);
+         OWLEntity entity = cache.get(celLocation);
          return Optional.ofNullable(entity);
       }
 
-      public void put(SpreadsheetLocation location, OWLEntity entity)
+      public void put(CellLocation cellLocation, OWLEntity entity)
       {
-         cache.put(location, entity);
+         cache.put(cellLocation, entity);
       }
    }
 }

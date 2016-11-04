@@ -12,12 +12,12 @@ import java.util.regex.PatternSyntaxException;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
 import org.mm.parser.node.SourceSpecificationNode;
-import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.CellLocation;
 import org.mm.workbook.Workbook;
 
 public class ReferenceUtil implements MappingMasterParserConstants
 {
-  public static SpreadsheetLocation resolveLocation(Workbook workbook, ReferenceNode referenceNode)
+  public static CellLocation resolveLocation(Workbook workbook, ReferenceNode referenceNode)
       throws RendererException
   {
     SourceSpecificationNode sourceSpecificationNode = referenceNode.getSourceSpecificationNode();
@@ -27,10 +27,10 @@ public class ReferenceUtil implements MappingMasterParserConstants
   public static Optional<String> resolveReferenceValue(Workbook workbook, ReferenceNode referenceNode)
       throws RendererException
   {
-    SpreadsheetLocation location = resolveLocation(workbook, referenceNode);
+    CellLocation cellLocation = resolveLocation(workbook, referenceNode);
 
     String referenceValue = null;
-    String rawLocationValue = workbook.getLocationValue(location, referenceNode);
+    String rawLocationValue = workbook.getLocationValue(cellLocation, referenceNode);
     if (rawLocationValue != null && !rawLocationValue.isEmpty()) {
       referenceValue = rawLocationValue;
     }
@@ -185,11 +185,11 @@ public class ReferenceUtil implements MappingMasterParserConstants
     }
   }
 
-  public static String createNameUsingCellLocation(SpreadsheetLocation location)
+  public static String createNameUsingCellLocation(CellLocation cellLocation)
   {
     StringBuffer sb = new StringBuffer();
-    sb.append(NameUtil.toUpperCamel(location.getSheetName().trim()));
-    sb.append(location.getCellLocation());
+    sb.append(NameUtil.toUpperCamel(cellLocation.getSheetName().trim()));
+    sb.append(cellLocation.getCellLocation());
     return sb.toString();
   }
 

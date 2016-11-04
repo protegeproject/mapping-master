@@ -4,12 +4,13 @@ package org.mm.workbook;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class SpreadsheetLocation {
+public class CellLocation {
 
    private final String sheetName;
    private final int columnNumber, rowNumber;
 
    /**
+    * Constructs a cell location, or a cell coordinate in a spreadsheet
     *
     * @param sheetName
     *           The name of the sheet
@@ -18,7 +19,7 @@ public class SpreadsheetLocation {
     * @param rowNumber
     *           The physical row number (start from 1)
     */
-   public SpreadsheetLocation(String sheetName, int columnNumber, int rowNumber) {
+   public CellLocation(String sheetName, int columnNumber, int rowNumber) {
       this.sheetName = sheetName;
       this.columnNumber = columnNumber;
       this.rowNumber = rowNumber;
@@ -33,7 +34,7 @@ public class SpreadsheetLocation {
     *
     * @return The column number, starts from 0.
     */
-   public int getColumnNumber() {
+   public int getColumnNumber() { // TODO: Rename to getColumnIndex
       return columnNumber - 1;
    }
 
@@ -56,7 +57,7 @@ public class SpreadsheetLocation {
     *
     * @return The row number, starts from 0.
     */
-   public int getRowNumber() {
+   public int getRowNumber() { // TODO: Rename to getRowIndex
       return rowNumber - 1;
    }
 
@@ -85,7 +86,7 @@ public class SpreadsheetLocation {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
 
-      SpreadsheetLocation that = (SpreadsheetLocation) o;
+      CellLocation that = (CellLocation) o;
 
       if (columnNumber != that.columnNumber) return false;
       if (rowNumber != that.rowNumber) return false;
@@ -94,7 +95,7 @@ public class SpreadsheetLocation {
    }
 
    @Override
-   public int hashCode() {
+   public int hashCode() { // TODO: Use Guava
       int result = sheetName != null ? sheetName.hashCode() : 0;
       result = 31 * result + columnNumber;
       result = 31 * result + rowNumber;
@@ -105,7 +106,7 @@ public class SpreadsheetLocation {
       return "'" + getSheetName() + "'!" + getCellLocation();
    }
 
-   public String toString() {
+   public String toString() { // TODO: Use Guava
       return getFullyQualifiedLocation();
    }
 }

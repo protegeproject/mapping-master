@@ -25,7 +25,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
 
    private final Map<String, Sheet> sheets = new HashMap<>();
 
-   private Optional<SpreadsheetLocation> currentLocation = Optional.empty();
+   private Optional<CellLocation> currentCellLocation = Optional.empty();
 
    public WorkbookImpl(@Nonnull org.apache.poi.ss.usermodel.Workbook excelWorkbook) {
       /*
@@ -37,16 +37,16 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
       }
    }
 
-   public void setCurrentLocation(SpreadsheetLocation location) { // TODO: Revisit this
-      currentLocation = Optional.of(location);
+   public void setCurrentCellLocation(CellLocation location) { // TODO: Revisit this
+      currentCellLocation = Optional.of(location);
    }
 
-   public Optional<SpreadsheetLocation> getCurrentLocation() { // TODO: Revisit this
-      return currentLocation;
+   public Optional<CellLocation> getCurrentCellLocation() { // TODO: Revisit this
+      return currentCellLocation;
    }
 
    public boolean hasCurrentLocation() { // TODO: Revisit this
-      return currentLocation != null;
+      return currentCellLocation != null;
    }
 
    @Override
@@ -64,92 +64,92 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
       return new ArrayList<String>(sheets.keySet());
    }
 
-   public String getLocationValue(SpreadsheetLocation location, ReferenceNode referenceNode)
+   public String getLocationValue(CellLocation cellLocation, ReferenceNode referenceNode)
          throws RendererException {
-      String locationValue = getLocationValue(location);
+      String locationValue = getLocationValue(cellLocation);
       if (referenceNode.getActualShiftDirective() != MM_NO_SHIFT) {
-         locationValue = getLocationValueWithShifting(location, referenceNode);
+         locationValue = getLocationValueWithShifting(cellLocation, referenceNode);
       }
       return locationValue;
    }
 
-   public String getLocationValue(SpreadsheetLocation location) throws RendererException {
-      Sheet sheet = getSheet(location.getSheetName());
-      Object value = sheet.getCellValue(location.getRowNumber(), location.getColumnNumber());
+   public String getLocationValue(CellLocation cellLocation) throws RendererException {
+      Sheet sheet = getSheet(cellLocation.getSheetName());
+      Object value = sheet.getCellValue(cellLocation.getRowNumber(), cellLocation.getColumnNumber());
       return String.valueOf(value);
    }
 
    // TODO: Revisit this method
-   public String getLocationValueWithShifting(SpreadsheetLocation location,
+   public String getLocationValueWithShifting(CellLocation cellLocation,
          ReferenceNode referenceNode) throws RendererException {
-      String sheetName = location.getSheetName();
+      String sheetName = cellLocation.getSheetName();
       Sheet sheet = getSheet(sheetName);
-      String shiftedLocationValue = getLocationValue(location);
-      if (shiftedLocationValue == null || shiftedLocationValue.isEmpty()) {
+      String shiftedCellLocation = getLocationValue(cellLocation);
+      if (shiftedCellLocation == null || shiftedCellLocation.isEmpty()) {
          switch (referenceNode.getActualShiftDirective()) {
             case MM_SHIFT_LEFT :
                int firstColumnNumber = 1;
-               for (int currentColumn = location
+               for (int currentColumn = cellLocation
                      .getPhysicalColumnNumber(); currentColumn >= firstColumnNumber; currentColumn--) {
-                  shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName,
-                        currentColumn, location.getPhysicalRowNumber()));
-                  if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty()) {
+                  shiftedCellLocation = getLocationValue(new CellLocation(sheetName,
+                        currentColumn, cellLocation.getPhysicalRowNumber()));
+                  if (shiftedCellLocation != null && !shiftedCellLocation.isEmpty()) {
                      break;
                   }
                }
-               return shiftedLocationValue;
+               return shiftedCellLocation;
             case MM_SHIFT_RIGHT :
-               int lastColumnNumber = sheet.getLastColumnIndexAt(location.getRowNumber()) + 1;
-               for (int currentColumn = location
+               int lastColumnNumber = sheet.getLastColumnIndexAt(cellLocation.getRowNumber()) + 1;
+               for (int currentColumn = cellLocation
                      .getPhysicalColumnNumber(); currentColumn <= lastColumnNumber; currentColumn++) {
-                  shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName,
-                        currentColumn, location.getPhysicalRowNumber()));
-                  if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty()) {
+                  shiftedCellLocation = getLocationValue(new CellLocation(sheetName,
+                        currentColumn, cellLocation.getPhysicalRowNumber()));
+                  if (shiftedCellLocation != null && !shiftedCellLocation.isEmpty()) {
                      break;
                   }
                }
-               return shiftedLocationValue;
+               return shiftedCellLocation;
             case MM_SHIFT_DOWN :
                int lastRowNumber = sheet.getLastRowIndex() + 1;
-               for (int currentRow = location
+               for (int currentRow = cellLocation
                      .getPhysicalRowNumber(); currentRow <= lastRowNumber; currentRow++) {
-                  shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName,
-                        location.getPhysicalColumnNumber(), currentRow));
-                  if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty()) {
+                  shiftedCellLocation = getLocationValue(new CellLocation(sheetName,
+                        cellLocation.getPhysicalColumnNumber(), currentRow));
+                  if (shiftedCellLocation != null && !shiftedCellLocation.isEmpty()) {
                      break;
                   }
                }
-               return shiftedLocationValue;
+               return shiftedCellLocation;
             case MM_SHIFT_UP :
                int firstRowNumber = 1;
-               for (int currentRow = location
+               for (int currentRow = cellLocation
                      .getPhysicalRowNumber(); currentRow >= firstRowNumber; currentRow--) {
-                  shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName,
-                        location.getPhysicalColumnNumber(), currentRow));
-                  if (shiftedLocationValue != null && !shiftedLocationValue.isEmpty()) {
+                  shiftedCellLocation = getLocationValue(new CellLocation(sheetName,
+                        cellLocation.getPhysicalColumnNumber(), currentRow));
+                  if (shiftedCellLocation != null && !shiftedCellLocation.isEmpty()) {
                      break;
                   }
                }
-               return shiftedLocationValue;
+               return shiftedCellLocation;
             default :
                throw new InternalRendererException(
                      "Unknown shift setting " + referenceNode.getActualShiftDirective());
          }
       } else {
-         referenceNode.setShiftedLocation(location);
-         return shiftedLocationValue;
+         referenceNode.setShiftedLocation(cellLocation);
+         return shiftedCellLocation;
       }
    }
 
    // TODO: Break down this method
-   public SpreadsheetLocation resolveLocation(SourceSpecificationNode sourceSpecification)
+   public CellLocation resolveLocation(SourceSpecificationNode sourceSpecification)
          throws RendererException {
       Pattern p = Pattern.compile("(\\*|[a-zA-Z]+)(\\*|[0-9]+)");
       Matcher m = p.matcher(sourceSpecification.getLocation());
       Sheet sheet;
-      SpreadsheetLocation resolvedLocation;
+      CellLocation resolvedLocation;
 
-      if (!currentLocation.isPresent()) {
+      if (!currentCellLocation.isPresent()) {
          throw new RendererException("current location not set");
       }
       if (sourceSpecification.hasSource()) {
@@ -159,7 +159,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
             throw new RendererException("Sheet name '" + sheetName + "' does not exist");
          }
       } else {
-         String sheetName = getCurrentLocation().get().getSheetName();
+         String sheetName = getCurrentCellLocation().get().getSheetName();
          sheet = getSheet(sheetName);
          if (sheet == null) {
             throw new RendererException("Sheet name '" + sheetName + "' does not exist");
@@ -184,12 +184,12 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
 
          try {
             if (isColumnWildcard) {
-               columnNumber = getCurrentLocation().get().getPhysicalColumnNumber();
+               columnNumber = getCurrentCellLocation().get().getPhysicalColumnNumber();
             } else {
                columnNumber = WorkbookUtils.columnName2Number(columnSpecification);
             }
             if (isRowWildcard) {
-               rowNumber = getCurrentLocation().get().getPhysicalRowNumber();
+               rowNumber = getCurrentCellLocation().get().getPhysicalRowNumber();
             } else {
                rowNumber = WorkbookUtils.rowLabel2Number(rowSpecification);
             }
@@ -197,7 +197,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
             throw new RendererException(
                   "Invalid source specification " + sourceSpecification + " - " + e.getMessage());
          }
-         resolvedLocation = new SpreadsheetLocation(sheet.getName(), columnNumber, rowNumber);
+         resolvedLocation = new CellLocation(sheet.getName(), columnNumber, rowNumber);
       } else {
          throw new RendererException("Invalid source specification " + sourceSpecification);
       }

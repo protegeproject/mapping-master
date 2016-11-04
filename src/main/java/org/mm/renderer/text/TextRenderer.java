@@ -65,7 +65,7 @@ import org.mm.rendering.ReferenceRendering;
 import org.mm.rendering.text.TextLiteralRendering;
 import org.mm.rendering.text.TextReferenceRendering;
 import org.mm.rendering.text.TextRendering;
-import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.CellLocation;
 import org.mm.workbook.Workbook;
 
 // TODO Refactor - too long. Look at the OWLAPI renderer for example of decomposition.
@@ -82,7 +82,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
 
    private boolean isCommented = false;
 
-   private final Map<SpreadsheetLocation, String> createdLabelsUsingLocation = new HashMap<>();
+   private final Map<CellLocation, String> createdLabelsUsingLocation = new HashMap<>();
 
    private final static String INDENT = "   ";
    private final static String NEWLINE = "\n";
@@ -139,7 +139,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
          return Optional.of(rendering);
 
       } else if (sourceSpecificationNode.hasLocation()) {
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(workbook, referenceNode);
+         CellLocation cellLocation = ReferenceUtil.resolveLocation(workbook, referenceNode);
          Optional<String> resolvedValue = ReferenceUtil.resolveReferenceValue(workbook, referenceNode);
          
          if (!resolvedValue.isPresent()) {
@@ -153,12 +153,12 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                   // TODO Warn in log files
                   break;
                case MM_ERROR_IF_EMPTY_LOCATION:
-                  throw new RendererException("Empty cell values for " + referenceNode + " at location " + location);
+                  throw new RendererException("Empty cell values for " + referenceNode + " at location " + cellLocation);
             }
          }
          
          if (referenceNode.hasLiteralType()) { // Reference is an OWL literal
-            String literal = processOWLLiteralReferenceValue(location, resolvedValue, referenceNode);
+            String literal = processOWLLiteralReferenceValue(cellLocation, resolvedValue, referenceNode);
             if (literal.isEmpty()) {
                switch (referenceNode.getActualEmptyLiteralDirective()) {
                   case MM_SKIP_IF_EMPTY_LITERAL:
@@ -167,7 +167,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                      // TODO Warn in log file
                      return Optional.empty();
                   case MM_ERROR_IF_EMPTY_LITERAL:
-                     throw new RendererException("Empty literal for " + referenceNode + " at location " + location);
+                     throw new RendererException("Empty literal for " + referenceNode + " at location " + cellLocation);
                }
             }
             TextReferenceRendering rendering = new TextReferenceRendering(literal, referenceType);
@@ -184,7 +184,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                      // TODO Warn in log file
                      return Optional.empty();
                   case MM_ERROR_IF_EMPTY_ID:
-                     throw new RendererException("Empty rdf:ID for " + referenceNode + " at location " + location);
+                     throw new RendererException("Empty rdf:ID for " + referenceNode + " at location " + cellLocation);
                }
             }
             String entityLabel = getReferenceRDFSLabel(resolvedValue, referenceNode);
@@ -196,7 +196,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
                      // TODO Warn in log file
                      return Optional.empty();
                   case MM_ERROR_IF_EMPTY_LABEL:
-                     throw new RendererException("Empty rdfs:label for " + referenceNode + " at location " + location);
+                     throw new RendererException("Empty rdfs:label for " + referenceNode + " at location " + cellLocation);
                }
             }
             TextReferenceRendering rendering = createTextReferenceRendering(entityName, entityLabel, referenceNode);
@@ -223,8 +223,8 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    {
       ReferenceType referenceType = getReferenceType(referenceNode);
       if (referenceNode.getReferenceDirectives().usesLocationEncoding()) {
-         SpreadsheetLocation location = ReferenceUtil.resolveLocation(workbook, referenceNode);
-         String label = getLabelUsingLocationEncoding(location);
+         CellLocation cellLocation = ReferenceUtil.resolveLocation(workbook, referenceNode);
+         String label = getLabelUsingLocationEncoding(cellLocation);
          return new TextReferenceRendering(label, referenceType);
       } else {
          if (!entityName.isEmpty()) {
@@ -244,7 +244,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       return referenceType;
    }
 
-   private String processOWLLiteralReferenceValue(SpreadsheetLocation location, Optional<String> resolvedValue,
+   private String processOWLLiteralReferenceValue(CellLocation cellLocation, Optional<String> resolvedValue,
          ReferenceNode referenceNode) throws RendererException
    {
       String literal = "";
@@ -371,31 +371,31 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       return label;
    }
 
-   private String getLabelUsingLocationEncoding(SpreadsheetLocation location) throws RendererException
+   private String getLabelUsingLocationEncoding(CellLocation cellLocation) throws RendererException
    {
       String label = "";
-      if (hasLabelBeenCreatedAtLocation(location)) {
-         label = getLabelAtLocation(location);
+      if (hasLabelBeenCreatedAtLocation(cellLocation)) {
+         label = getLabelAtLocation(cellLocation);
       } else {
-         label = ReferenceUtil.createNameUsingCellLocation(location);
-         recordLabelAtLocation(location, label);
+         label = ReferenceUtil.createNameUsingCellLocation(cellLocation);
+         recordLabelAtLocation(cellLocation, label);
       }
       return label;
    }
 
-   private boolean hasLabelBeenCreatedAtLocation(SpreadsheetLocation location)
+   private boolean hasLabelBeenCreatedAtLocation(CellLocation cellLocation)
    {
-      return createdLabelsUsingLocation.containsKey(location);
+      return createdLabelsUsingLocation.containsKey(cellLocation);
    }
 
-   private String getLabelAtLocation(SpreadsheetLocation location)
+   private String getLabelAtLocation(CellLocation cellLocation)
    {
-      return createdLabelsUsingLocation.get(location);
+      return createdLabelsUsingLocation.get(cellLocation);
    }
 
-   private void recordLabelAtLocation(SpreadsheetLocation location, String label)
+   private void recordLabelAtLocation(CellLocation cellLocation, String label)
    {
-      createdLabelsUsingLocation.put(location, label);
+      createdLabelsUsingLocation.put(cellLocation, label);
    }
 
    @Override

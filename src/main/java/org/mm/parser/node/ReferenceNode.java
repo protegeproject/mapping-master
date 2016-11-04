@@ -32,7 +32,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 import org.mm.renderer.RendererException;
-import org.mm.workbook.SpreadsheetLocation;
+import org.mm.workbook.CellLocation;
 
 public class ReferenceNode implements MMNode, MappingMasterParserConstants
 {
@@ -498,12 +498,12 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
       return this.referenceDirectives.getShiftedLocation() != null;
    }
 
-   public void setShiftedLocation(SpreadsheetLocation location)
+   public void setShiftedLocation(CellLocation cellLocation)
    {
-      this.referenceDirectives.setShiftedLocation(location);
+      this.referenceDirectives.setShiftedLocation(cellLocation);
    }
 
-   public SpreadsheetLocation getShiftedLocation()
+   public CellLocation getShiftedLocation()
    {
       return this.referenceDirectives.getShiftedLocation();
    }

@@ -15,19 +15,19 @@ import java.util.Optional;
  */
 public interface Workbook {
 
-   String getLocationValue(SpreadsheetLocation location, ReferenceNode node) throws RendererException;
+   String getLocationValue(CellLocation cellLocation, ReferenceNode node) throws RendererException;
 
-   String getLocationValue(SpreadsheetLocation location) throws RendererException;
+   String getLocationValue(CellLocation cellLocation) throws RendererException;
 
-   String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode node) throws RendererException;
+   String getLocationValueWithShifting(CellLocation cellLocation, ReferenceNode node) throws RendererException;
 
-   void setCurrentLocation(SpreadsheetLocation location);
+   void setCurrentCellLocation(CellLocation cellLocation);
 
-   Optional<SpreadsheetLocation> getCurrentLocation();
+   Optional<CellLocation> getCurrentCellLocation();
 
    boolean hasCurrentLocation();
 
-   SpreadsheetLocation resolveLocation(SourceSpecificationNode node) throws RendererException;
+   CellLocation resolveLocation(SourceSpecificationNode node) throws RendererException;
 
    Sheet getSheet(String sheetName);
 
