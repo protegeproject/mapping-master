@@ -1,18 +1,15 @@
 package org.mm.workbook;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.mm.exceptions.MappingMasterException;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.node.ReferenceNode;
@@ -26,47 +23,45 @@ import org.mm.renderer.RendererException;
  */
 public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
 
-   private final org.apache.poi.ss.usermodel.Workbook excelWorkbook;
-
-   private final List<String> sheetNameList = new ArrayList<>();
-   private final List<Sheet> sheetList = new ArrayList<>();
+   private final Map<String, Sheet> sheets = new HashMap<>();
 
    private Optional<SpreadsheetLocation> currentLocation = Optional.empty();
 
    public WorkbookImpl(@Nonnull org.apache.poi.ss.usermodel.Workbook excelWorkbook) {
-      this.excelWorkbook = checkNotNull(excelWorkbook);
-
       /*
        * Populate the sheets from the workbook
        */
       for (int i = 0; i < excelWorkbook.getNumberOfSheets(); i++) {
-         sheetNameList.add(excelWorkbook.getSheetName(i));
-         sheetList.add(excelWorkbook.getSheetAt(i));
+         org.apache.poi.ss.usermodel.Sheet excelSheet = excelWorkbook.getSheetAt(i);
+         sheets.put(excelSheet.getSheetName(), new SheetImpl(excelSheet));
       }
    }
 
-   public void setCurrentLocation(SpreadsheetLocation location) {
+   public void setCurrentLocation(SpreadsheetLocation location) { // TODO: Revisit this
       currentLocation = Optional.of(location);
    }
 
-   public Optional<SpreadsheetLocation> getCurrentLocation() {
+   public Optional<SpreadsheetLocation> getCurrentLocation() { // TODO: Revisit this
       return currentLocation;
    }
 
-   public boolean hasCurrentLocation() {
+   public boolean hasCurrentLocation() { // TODO: Revisit this
       return currentLocation != null;
    }
 
-   public boolean hasWorkbook() {
-      return excelWorkbook != null;
+   @Override
+   public Sheet getSheet(String sheetName) {
+      return sheets.get(sheetName);
    }
 
+   @Override
    public List<Sheet> getSheets() {
-      return new ArrayList<Sheet>(sheetList);
+      return new ArrayList<Sheet>(sheets.values());
    }
 
+   @Override
    public List<String> getSheetNames() {
-      return new ArrayList<String>(sheetNameList);
+      return new ArrayList<String>(sheets.keySet());
    }
 
    public String getLocationValue(SpreadsheetLocation location, ReferenceNode referenceNode)
@@ -79,51 +74,16 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
    }
 
    public String getLocationValue(SpreadsheetLocation location) throws RendererException {
-      int columnNumber = location.getColumnNumber();
-      int rowNumber = location.getRowNumber();
-
-      Sheet sheet = excelWorkbook.getSheet(location.getSheetName());
-      Row row = sheet.getRow(rowNumber);
-      if (row == null) {
-         return "";
-      }
-      Cell cell = row.getCell(columnNumber);
-      if (cell == null) {
-         return "";
-      }
-      return getStringValue(cell);
+      Sheet sheet = getSheet(location.getSheetName());
+      Object value = sheet.getCellValue(location.getRowNumber(), location.getColumnNumber());
+      return String.valueOf(value);
    }
 
-   private String getStringValue(Cell cell) {
-      switch (cell.getCellType()) {
-         case Cell.CELL_TYPE_BLANK :
-            return "";
-         case Cell.CELL_TYPE_STRING :
-            return cell.getStringCellValue();
-         case Cell.CELL_TYPE_NUMERIC :
-            // Check if the numeric is an integer or double
-            if (isInteger(cell.getNumericCellValue())) {
-               return Integer.toString((int) cell.getNumericCellValue());
-            } else {
-               return Double.toString(cell.getNumericCellValue());
-            }
-         case Cell.CELL_TYPE_BOOLEAN :
-            return Boolean.toString(cell.getBooleanCellValue());
-         case Cell.CELL_TYPE_FORMULA :
-            return Double.toString(cell.getNumericCellValue());
-         default :
-            return "";
-      }
-   }
-
-   private boolean isInteger(double number) {
-      return (number == Math.floor(number) && !Double.isInfinite(number));
-   }
-
+   // TODO: Revisit this method
    public String getLocationValueWithShifting(SpreadsheetLocation location,
          ReferenceNode referenceNode) throws RendererException {
       String sheetName = location.getSheetName();
-      Sheet sheet = excelWorkbook.getSheet(sheetName);
+      Sheet sheet = getSheet(sheetName);
       String shiftedLocationValue = getLocationValue(location);
       if (shiftedLocationValue == null || shiftedLocationValue.isEmpty()) {
          switch (referenceNode.getActualShiftDirective()) {
@@ -139,7 +99,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
                }
                return shiftedLocationValue;
             case MM_SHIFT_RIGHT :
-               int lastColumnNumber = sheet.getRow(location.getRowNumber()).getLastCellNum();
+               int lastColumnNumber = sheet.getLastColumnIndexAt(location.getRowNumber()) + 1;
                for (int currentColumn = location
                      .getPhysicalColumnNumber(); currentColumn <= lastColumnNumber; currentColumn++) {
                   shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName,
@@ -150,7 +110,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
                }
                return shiftedLocationValue;
             case MM_SHIFT_DOWN :
-               int lastRowNumber = sheet.getLastRowNum() + 1;
+               int lastRowNumber = sheet.getLastRowIndex() + 1;
                for (int currentRow = location
                      .getPhysicalRowNumber(); currentRow <= lastRowNumber; currentRow++) {
                   shiftedLocationValue = getLocationValue(new SpreadsheetLocation(sheetName,
@@ -181,6 +141,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
       }
    }
 
+   // TODO: Break down this method
    public SpreadsheetLocation resolveLocation(SourceSpecificationNode sourceSpecification)
          throws RendererException {
       Pattern p = Pattern.compile("(\\*|[a-zA-Z]+)(\\*|[0-9]+)");
@@ -193,17 +154,13 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
       }
       if (sourceSpecification.hasSource()) {
          String sheetName = sourceSpecification.getSource();
-         if (!hasWorkbook()) {
-            throw new RendererException(
-                  "Sheet name '" + sheetName + "' specified but there is no active workbook");
-         }
-         sheet = excelWorkbook.getSheet(sheetName);
+         sheet = getSheet(sheetName);
          if (sheet == null) {
             throw new RendererException("Sheet name '" + sheetName + "' does not exist");
          }
       } else {
          String sheetName = getCurrentLocation().get().getSheetName();
-         sheet = excelWorkbook.getSheet(sheetName);
+         sheet = getSheet(sheetName);
          if (sheet == null) {
             throw new RendererException("Sheet name '" + sheetName + "' does not exist");
          }
@@ -240,7 +197,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
             throw new RendererException(
                   "Invalid source specification " + sourceSpecification + " - " + e.getMessage());
          }
-         resolvedLocation = new SpreadsheetLocation(sheet.getSheetName(), columnNumber, rowNumber);
+         resolvedLocation = new SpreadsheetLocation(sheet.getName(), columnNumber, rowNumber);
       } else {
          throw new RendererException("Invalid source specification " + sourceSpecification);
       }

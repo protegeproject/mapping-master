@@ -29,5 +29,9 @@ public interface Workbook {
 
    SpreadsheetLocation resolveLocation(SourceSpecificationNode node) throws RendererException;
 
+   Sheet getSheet(String sheetName);
+
+   List<Sheet> getSheets();
+
    List<String> getSheetNames();
 }
