@@ -8,7 +8,7 @@ import org.mm.exceptions.MappingMasterException;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class SpreadSheetUtil {
+public class WorkbookUtils {
 
    public static String columnRow2Name(int columnIndex, int rowIndex) // 1-based
    {

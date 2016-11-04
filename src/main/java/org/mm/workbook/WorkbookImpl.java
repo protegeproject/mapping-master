@@ -186,12 +186,12 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
             if (isColumnWildcard) {
                columnNumber = getCurrentLocation().get().getPhysicalColumnNumber();
             } else {
-               columnNumber = SpreadSheetUtil.columnName2Number(columnSpecification);
+               columnNumber = WorkbookUtils.columnName2Number(columnSpecification);
             }
             if (isRowWildcard) {
                rowNumber = getCurrentLocation().get().getPhysicalRowNumber();
             } else {
-               rowNumber = SpreadSheetUtil.rowLabel2Number(rowSpecification);
+               rowNumber = WorkbookUtils.rowLabel2Number(rowSpecification);
             }
          } catch (MappingMasterException e) {
             throw new RendererException(

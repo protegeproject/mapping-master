@@ -48,7 +48,7 @@ public class SpreadsheetLocation {
    }
 
    public String getColumnName() {
-      return SpreadSheetUtil.columnNumber2Name(getPhysicalColumnNumber());
+      return WorkbookUtils.columnNumber2Name(getPhysicalColumnNumber());
    }
 
    /**
