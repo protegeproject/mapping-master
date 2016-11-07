@@ -78,29 +78,26 @@ public class MMApplicationFactory {
       copy.putAll(properties);
       validate(copy);
       Resources resources = buildResources(copy);
-      return new MMApplication(resources.getOWLOntologySource(),
-            resources.getSpreadSheetDataSource(),
-            resources.getTransformationRuleSet());
+      return new MMApplication(resources.getOntology(),
+            resources.getWorkbook(),
+            resources.getTransformationRules());
    }
 
    private Resources buildResources(Properties properties) throws Exception {
-      Resources resources = new Resources();
 
       String ontologySourceLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
       OWLOntology ontology = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(
             new FileInputStream(ontologySourceLocation));
       OWLOntologySource ontologySource = new OWLAPIOntology(ontology);
-      resources.setOWLOntologySource(ontologySource);
 
       String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
       Workbook workbook = WorkbookLoader.loadWorkbook(new FileInputStream(workbookLocation));
-      resources.setSpreadSheetDataSource(workbook);
 
       String ruleLocation = properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
-      TransformationRuleSet rules = TransformationRuleSetManager.loadTransformationRulesFromDocument(
+      TransformationRuleSet ruleSet = TransformationRuleSetManager.loadTransformationRulesFromDocument(
             new FileInputStream(ruleLocation));
-      resources.setTransformationRuleSet(rules);
-      return resources;
+
+      return new Resources(ontologySource, workbook, ruleSet);
    }
 
    private void validate(Properties properties) {
@@ -112,34 +109,32 @@ public class MMApplicationFactory {
       }
    }
 
-   class Resources {
+   private class Resources {
 
-      private Workbook workbook;
-      private OWLOntologySource ontology;
-      private TransformationRuleSet ruleSet;
+      private final OWLOntologySource ontology;
+      private final Workbook workbook;
+      private final TransformationRuleSet ruleSet;
 
-      public Workbook getSpreadSheetDataSource() { // TODO: Rename to getWorkbook
-         return workbook;
+      public Resources(@Nonnull OWLOntologySource ontology, @Nonnull Workbook workbook,
+            @Nonnull TransformationRuleSet ruleSet) {
+         this.ontology = checkNotNull(ontology);
+         this.workbook = checkNotNull(workbook);
+         this.ruleSet = checkNotNull(ruleSet);
       }
 
-      public void setSpreadSheetDataSource(Workbook workbook) { // TODO: Rename to setWorkbook
-         this.workbook = workbook;
-      }
-
-      public OWLOntologySource getOWLOntologySource() {
+      @Nonnull
+      public OWLOntologySource getOntology() {
          return ontology;
       }
 
-      public void setOWLOntologySource(OWLOntologySource ontology) {
-         this.ontology = ontology;
+      @Nonnull
+      public Workbook getWorkbook() {
+         return workbook;
       }
 
-      public TransformationRuleSet getTransformationRuleSet() {
+      @Nonnull
+      public TransformationRuleSet getTransformationRules() {
          return ruleSet;
-      }
-
-      public void setTransformationRuleSet(TransformationRuleSet ruleSet) {
-         this.ruleSet = ruleSet;
       }
    }
 }
