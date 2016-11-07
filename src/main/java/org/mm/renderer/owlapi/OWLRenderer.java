@@ -85,7 +85,7 @@ public class OWLRenderer extends ReferenceRendererConfiguration implements Rende
    }
 
    @Override
-   public Workbook getDataSource()
+   public Workbook getWorkbook()
    {
       return workbook;
    }

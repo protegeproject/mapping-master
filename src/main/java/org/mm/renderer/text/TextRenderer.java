@@ -100,7 +100,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
    }
 
    @Override
-   public Workbook getDataSource()
+   public Workbook getWorkbook()
    {
       return workbook;
    }
@@ -1358,7 +1358,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       sb.append("\"").append(rawValue).append("\"");
       sb.append(" ");
       sb.append("located at cell ");
-      sb.append(ReferenceUtil.resolveLocation(getDataSource(), referenceNode));
+      sb.append(ReferenceUtil.resolveLocation(getWorkbook(), referenceNode));
       sb.append(".");
       return sb.toString();
    }
