@@ -34,7 +34,7 @@ public class CellLocation {
     *
     * @return The column number, starts from 0.
     */
-   public int getColumnNumber() { // TODO: Rename to getColumnIndex
+   public int getColumnIndex() {
       return columnNumber - 1;
    }
 
@@ -57,7 +57,7 @@ public class CellLocation {
     *
     * @return The row number, starts from 0.
     */
-   public int getRowNumber() { // TODO: Rename to getRowIndex
+   public int getRowIndex() {
       return rowNumber - 1;
    }
 

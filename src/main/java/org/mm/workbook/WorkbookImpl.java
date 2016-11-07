@@ -75,7 +75,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
 
    public String getLocationValue(CellLocation cellLocation) throws RendererException {
       Sheet sheet = getSheet(cellLocation.getSheetName());
-      Object value = sheet.getCellValue(cellLocation.getRowNumber(), cellLocation.getColumnNumber());
+      Object value = sheet.getCellValue(cellLocation.getRowIndex(), cellLocation.getColumnIndex());
       return String.valueOf(value);
    }
 
@@ -99,7 +99,7 @@ public class WorkbookImpl implements Workbook, MappingMasterParserConstants {
                }
                return shiftedCellLocation;
             case MM_SHIFT_RIGHT :
-               int lastColumnNumber = sheet.getLastColumnIndexAt(cellLocation.getRowNumber()) + 1;
+               int lastColumnNumber = sheet.getLastColumnIndexAt(cellLocation.getRowIndex()) + 1;
                for (int currentColumn = cellLocation
                      .getPhysicalColumnNumber(); currentColumn <= lastColumnNumber; currentColumn++) {
                   shiftedCellLocation = getLocationValue(new CellLocation(sheetName,
