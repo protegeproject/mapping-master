@@ -10,7 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
@@ -43,21 +43,17 @@ public class TransformationRuleSetManager {
       return new Gson().fromJson(br, TransformationRuleSet.class);
    }
 
-   public static void saveTransformationRulesToDocument(@Nonnull String path,
-         @Nonnull List<TransformationRule> rules) throws IOException {
-      checkNotNull(path);
-      checkNotNull(rules);
-      String json = new Gson().toJson(TransformationRuleSet.create(rules));
-      FileWriter writer = new FileWriter(path);
-      writer.write(json);
-      writer.close();
+   public static void saveTransformationRulesToDocument(@Nonnull File file,
+         @Nonnull Collection<TransformationRule> rules) throws IOException {
+      TransformationRuleSet ruleSet = TransformationRuleSet.create(rules);
+      saveTransformationRulesToDocument(file, ruleSet);
    }
 
    public static void saveTransformationRulesToDocument(@Nonnull File file,
-         @Nonnull List<TransformationRule> rules) throws IOException {
+         @Nonnull TransformationRuleSet ruleSet) throws IOException {
       checkNotNull(file);
-      checkNotNull(rules);
-      String json = new Gson().toJson(TransformationRuleSet.create(rules));
+      checkNotNull(ruleSet);
+      String json = new Gson().toJson(TransformationRuleSet.create(ruleSet));
       FileWriter writer = new FileWriter(file);
       writer.write(json);
       writer.close();
