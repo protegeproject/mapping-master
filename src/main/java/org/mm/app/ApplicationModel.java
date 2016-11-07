@@ -1,7 +1,9 @@
 package org.mm.app;
 
+import java.util.Collection;
+
 import org.mm.renderer.Renderer;
-import org.mm.transformationrule.TransformationRuleModel;
+import org.mm.transformationrule.TransformationRule;
 import org.mm.workbook.Workbook;
 
 /**
@@ -21,7 +23,7 @@ public interface ApplicationModel
    Renderer getTransformationRenderer();
 
    /**
-    * Returns the mapping expression model
+    * Returns the transformation rules.
     */
-   TransformationRuleModel getTransformationRuleModel();
+   Collection<TransformationRule> getTransformationRules();
 }

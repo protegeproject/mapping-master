@@ -8,7 +8,6 @@ import org.mm.core.OWLOntologySource;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
-import org.mm.transformationrule.MMTransformationRuleModel;
 import org.mm.transformationrule.TransformationRuleSet;
 import org.mm.workbook.Workbook;
 
@@ -20,7 +19,8 @@ public class MMApplicationModel implements ApplicationModel {
 
    private final OWLOntologySource ontologySource;
    private final Workbook workbook;
-   private final TransformationRuleSet ruleSet;
+
+   private TransformationRuleSet ruleSet;
 
    public MMApplicationModel(@Nonnull OWLOntologySource ontologySource,
          @Nonnull Workbook workbook,
@@ -41,8 +41,12 @@ public class MMApplicationModel implements ApplicationModel {
    }
 
    @Override
-   public MMTransformationRuleModel getTransformationRuleModel() {
-      return new MMTransformationRuleModel(ruleSet);
+   public TransformationRuleSet getTransformationRules() {
+      return ruleSet;
+   }
+
+   public void setTransformationRules(@Nonnull TransformationRuleSet ruleSet) {
+      this.ruleSet = ruleSet;
    }
 
    public TextRenderer getLogRenderer() {
