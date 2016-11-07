@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import org.mm.core.OWLAPIOntology;
 import org.mm.core.OWLOntologySource;
 import org.mm.transformationrule.TransformationRuleSet;
-import org.mm.transformationrule.TransformationRuleSetFactory;
+import org.mm.transformationrule.TransformationRuleSetManager;
 import org.mm.workbook.WorkbookLoader;
 import org.mm.workbook.Workbook;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -97,7 +97,7 @@ public class MMApplicationFactory {
       resources.setSpreadSheetDataSource(workbook);
 
       String ruleLocation = properties.getProperty(Environment.TRANSFORMATION_RULES_SOURCE);
-      TransformationRuleSet rules = TransformationRuleSetFactory.loadTransformationRulesFromDocument(
+      TransformationRuleSet rules = TransformationRuleSetManager.loadTransformationRulesFromDocument(
             new FileInputStream(ruleLocation));
       resources.setTransformationRuleSet(rules);
       return resources;

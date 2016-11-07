@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 
 import org.mm.core.OWLOntologySource;
 import org.mm.transformationrule.TransformationRuleSet;
-import org.mm.transformationrule.TransformationRuleSetFactory;
+import org.mm.transformationrule.TransformationRuleSetManager;
 import org.mm.workbook.WorkbookLoader;
 import org.mm.workbook.Workbook;
 
@@ -38,7 +38,7 @@ public class MMApplication {
       checkNotNull(ruleFile);
       return new MMApplication(ontologySource,
             WorkbookLoader.loadWorkbook(workbookFile),
-            TransformationRuleSetFactory.loadTransformationRulesFromDocument(ruleFile));
+            TransformationRuleSetManager.loadTransformationRulesFromDocument(ruleFile));
    }
 
    @Nonnull
@@ -48,7 +48,7 @@ public class MMApplication {
       checkNotNull(workbookFile);
       return new MMApplication(ontologySource,
             WorkbookLoader.loadWorkbook(workbookFile),
-            TransformationRuleSetFactory.createEmptyTransformationRuleSet());
+            TransformationRuleSetManager.createEmptyTransformationRuleSet());
    }
 
    @Nonnull
