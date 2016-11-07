@@ -7,8 +7,8 @@ import java.io.File;
 import javax.annotation.Nonnull;
 
 import org.mm.core.OWLOntologySource;
-import org.mm.core.TransformationRuleSet;
-import org.mm.core.TransformationRuleSetFactory;
+import org.mm.transformationrule.TransformationRuleSet;
+import org.mm.transformationrule.TransformationRuleSetFactory;
 import org.mm.workbook.WorkbookLoader;
 import org.mm.workbook.Workbook;
 

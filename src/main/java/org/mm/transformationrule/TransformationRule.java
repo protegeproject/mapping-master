@@ -1,4 +1,4 @@
-package org.mm.core;
+package org.mm.transformationrule;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

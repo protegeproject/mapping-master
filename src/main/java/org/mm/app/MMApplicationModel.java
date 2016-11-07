@@ -5,10 +5,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import javax.annotation.Nonnull;
 
 import org.mm.core.OWLOntologySource;
-import org.mm.core.TransformationRuleSet;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.owlapi.OWLRenderer;
 import org.mm.renderer.text.TextRenderer;
+import org.mm.transformationrule.TransformationRuleSet;
 import org.mm.workbook.Workbook;
 
 /**

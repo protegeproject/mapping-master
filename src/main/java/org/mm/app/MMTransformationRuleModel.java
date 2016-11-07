@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.mm.core.TransformationRule;
-import org.mm.core.TransformationRuleSet;
+import org.mm.transformationrule.TransformationRule;
+import org.mm.transformationrule.TransformationRuleSet;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>

@@ -1,4 +1,4 @@
-package org.mm.core;
+package org.mm.transformationrule;
 
 import java.util.Collections;
 import java.util.HashSet;

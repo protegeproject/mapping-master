@@ -2,7 +2,7 @@ package org.mm.app;
 
 import java.util.List;
 
-import org.mm.core.TransformationRule;
+import org.mm.transformationrule.TransformationRule;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
