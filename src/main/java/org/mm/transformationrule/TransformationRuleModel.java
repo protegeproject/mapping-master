@@ -1,8 +1,6 @@
-package org.mm.app;
+package org.mm.transformationrule;
 
 import java.util.List;
-
-import org.mm.transformationrule.TransformationRule;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>

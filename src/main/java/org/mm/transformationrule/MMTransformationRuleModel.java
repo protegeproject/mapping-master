@@ -1,11 +1,10 @@
-package org.mm.app;
+package org.mm.transformationrule;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.mm.transformationrule.TransformationRule;
-import org.mm.transformationrule.TransformationRuleSet;
+import org.mm.app.ApplicationStartupException;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
