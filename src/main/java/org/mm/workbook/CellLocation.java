@@ -1,6 +1,14 @@
 package org.mm.workbook;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 /**
+ * Represents the cell location (e.g., A1, D22, etc) in a spreadsheet.
+ *
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
@@ -19,12 +27,13 @@ public class CellLocation {
     * @param rowNumber
     *           The physical row number (start from 1)
     */
-   public CellLocation(String sheetName, int columnNumber, int rowNumber) {
-      this.sheetName = sheetName;
+   public CellLocation(@Nonnull String sheetName, int columnNumber, int rowNumber) {
+      this.sheetName = checkNotNull(sheetName);
       this.columnNumber = columnNumber;
       this.rowNumber = rowNumber;
    }
 
+   @Nonnull
    public String getSheetName() {
       return sheetName;
    }
@@ -82,31 +91,34 @@ public class CellLocation {
    }
 
    @Override
-   public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-
-      CellLocation that = (CellLocation) o;
-
-      if (columnNumber != that.columnNumber) return false;
-      if (rowNumber != that.rowNumber) return false;
-      return !(sheetName != null ? !sheetName.equals(that.sheetName) : that.sheetName != null);
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+     }
+     if (obj == this) {
+         return true;
+     }
+     if (!(obj instanceof CellLocation)) {
+         return false;
+     }
+     CellLocation other = (CellLocation) obj;
+     return this.sheetName.equals(other.sheetName)
+           && this.columnNumber == other.columnNumber
+           && this.rowNumber == other.rowNumber;
 
    }
 
    @Override
-   public int hashCode() { // TODO: Use Guava
-      int result = sheetName != null ? sheetName.hashCode() : 0;
-      result = 31 * result + columnNumber;
-      result = 31 * result + rowNumber;
-      return result;
+   public int hashCode() {
+      return Objects.hashCode(sheetName) + columnNumber + rowNumber;
    }
 
    public String getFullyQualifiedLocation() {
       return "'" + getSheetName() + "'!" + getCellLocation();
    }
 
-   public String toString() { // TODO: Use Guava
+   @Override
+   public String toString() {
       return getFullyQualifiedLocation();
    }
 }
