@@ -1,66 +1,42 @@
 package org.mm.rendering.owlapi;
 
-import org.mm.core.OWLLiteralType;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import javax.annotation.Nonnull;
+
 import org.semanticweb.owlapi.model.OWLLiteral;
-import org.semanticweb.owlapi.vocab.XSDVocabulary;
 
-public class OWLLiteralRendering extends OWLAnnotationValueRendering
-{
-   private final OWLLiteralType literalType;
-   private final OWLLiteral literal;
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class OWLLiteralRendering extends OWLAnnotationValueRendering {
 
-   public OWLLiteralRendering(OWLLiteral literal)
-   {
-      super(literal);
-      this.literal = literal;
-      this.literalType = getOWLLiteralType(literal);
-   }
+   private final OWLLiteral value;
 
-   public OWLLiteral getOWLLiteral()
-   {
-      return this.literal;
+   public OWLLiteralRendering(@Nonnull OWLLiteral value) {
+      super(value);
+      this.value = checkNotNull(value);
    }
 
    @Override
-   public String getRawValue()
-   {
-      return literal.getLiteral();
+   @Nonnull
+   public OWLLiteral getOWLObject() {
+      return value;
    }
 
-   public OWLLiteralType getOWLLiteralType()
-   {
-      return this.literalType;
-   }
-
-   private static OWLLiteralType getOWLLiteralType(OWLLiteral literal)
-   {
-      if (literal.getDatatype().isString())
-         return new OWLLiteralType(XSD_STRING);
-      else if (literal.getDatatype().isBoolean())
-         return new OWLLiteralType(XSD_BOOLEAN);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.BYTE.getIRI()))
-         return new OWLLiteralType(XSD_BYTE);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.SHORT.getIRI()))
-         return new OWLLiteralType(XSD_SHORT);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.INTEGER.getIRI()))
-         return new OWLLiteralType(XSD_INTEGER);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.LONG.getIRI()))
-         return new OWLLiteralType(XSD_LONG);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.FLOAT.getIRI()))
-         return new OWLLiteralType(XSD_FLOAT);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.DOUBLE.getIRI()))
-         return new OWLLiteralType(XSD_DOUBLE);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.DATE.getIRI()))
-         return new OWLLiteralType(XSD_DATE);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.TIME.getIRI()))
-         return new OWLLiteralType(XSD_TIME);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.DATE_TIME.getIRI()))
-         return new OWLLiteralType(XSD_DATETIME);
-      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.DURATION.getIRI()))
-         return new OWLLiteralType(XSD_DURATION);
-      else if (literal.getDatatype().isRDFPlainLiteral()) {
-         return new OWLLiteralType(RDF_PLAINLITERAL);
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
       }
-      throw new RuntimeException("Unsupported data type: " + literal.getDatatype());
+      if (obj == this) {
+         return true;
+      }
+      if (!(obj instanceof OWLLiteralRendering)) {
+         return false;
+      }
+      OWLLiteralRendering other = (OWLLiteralRendering) obj;
+      return value.equals(other.value);
    }
 }

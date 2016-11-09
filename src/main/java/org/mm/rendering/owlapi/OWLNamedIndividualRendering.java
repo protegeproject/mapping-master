@@ -1,34 +1,42 @@
 package org.mm.rendering.owlapi;
 
-import java.util.Set;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.semanticweb.owlapi.model.OWLAxiom;
+import javax.annotation.Nonnull;
+
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
-public class OWLNamedIndividualRendering extends OWLRendering
-{
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class OWLNamedIndividualRendering extends OWLRendering {
+
    private final OWLNamedIndividual individual;
 
-   public OWLNamedIndividualRendering(OWLNamedIndividual individual)
-   {
-      super();
-      this.individual = individual;
+   public OWLNamedIndividualRendering(@Nonnull OWLNamedIndividual individual) {
+      super(individual);
+      this.individual = checkNotNull(individual);
    }
 
-   public OWLNamedIndividualRendering(OWLNamedIndividual individual, OWLAxiom axiom)
-   {
-      super(axiom);
-      this.individual = individual;
+   @Override
+   @Nonnull
+   public OWLNamedIndividual getOWLObject() {
+      return individual;
    }
 
-   public OWLNamedIndividualRendering(OWLNamedIndividual individual, Set<OWLAxiom> axioms)
-   {
-      super(axioms);
-      this.individual = individual;
-   }
-
-   public OWLNamedIndividual getOWLNamedIndividual()
-   {
-      return this.individual;
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
+      if (obj == this) {
+         return true;
+     }
+     if (!(obj instanceof OWLNamedIndividualRendering)) {
+         return false;
+     }
+     OWLNamedIndividualRendering other = (OWLNamedIndividualRendering) obj;
+     return individual.equals(other.individual);
    }
 }

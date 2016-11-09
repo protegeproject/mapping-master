@@ -1,34 +1,42 @@
 package org.mm.rendering.owlapi;
 
-import java.util.Set;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.semanticweb.owlapi.model.OWLAxiom;
+import javax.annotation.Nonnull;
+
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 
-public class OWLObjectPropertyRendering extends OWLPropertyRendering
-{
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public class OWLObjectPropertyRendering extends OWLPropertyRendering {
+
    private final OWLObjectProperty property;
 
-   public OWLObjectPropertyRendering(OWLObjectProperty property)
-   {
+   public OWLObjectPropertyRendering(@Nonnull OWLObjectProperty property) {
       super(property);
-      this.property = property;
+      this.property = checkNotNull(property);
    }
 
-   public OWLObjectPropertyRendering(OWLObjectProperty property, OWLAxiom axiom)
-   {
-      super(property, axiom);
-      this.property = property;
+   @Override
+   @Nonnull
+   public OWLObjectProperty getOWLObject() {
+      return property;
    }
 
-   public OWLObjectPropertyRendering(OWLObjectProperty property, Set<OWLAxiom> axioms)
-   {
-      super(property, axioms);
-      this.property = property;
-   }
-
-   public OWLObjectProperty getOWLObjectProperty()
-   {
-      return this.property;
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
+      if (obj == this) {
+         return true;
+      }
+      if (!(obj instanceof OWLObjectPropertyRendering)) {
+         return false;
+      }
+      OWLObjectPropertyRendering other = (OWLObjectPropertyRendering) obj;
+      return property.equals(other.property);
    }
 }

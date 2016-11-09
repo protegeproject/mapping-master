@@ -1,34 +1,38 @@
 package org.mm.rendering.owlapi;
 
-import java.util.Set;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import org.semanticweb.owlapi.model.OWLAxiom;
+import javax.annotation.Nonnull;
+
 import org.semanticweb.owlapi.model.OWLRestriction;
 
-public class OWLRestrictionRendering extends OWLClassExpressionRendering
-{
+public class OWLRestrictionRendering extends OWLClassExpressionRendering {
+
    private final OWLRestriction restriction;
 
-   public OWLRestrictionRendering(OWLRestriction restriction)
-   {
+   public OWLRestrictionRendering(@Nonnull OWLRestriction restriction) {
       super(restriction);
-      this.restriction = restriction;
+      this.restriction = checkNotNull(restriction);
    }
 
-   public OWLRestrictionRendering(OWLRestriction restriction, OWLAxiom axiom)
-   {
-      super(restriction, axiom);
-      this.restriction = restriction;
+   @Override
+   @Nonnull
+   public OWLRestriction getOWLObject() {
+      return restriction;
    }
 
-   public OWLRestrictionRendering(OWLRestriction restriction, Set<OWLAxiom> axioms)
-   {
-      super(restriction, axioms);
-      this.restriction = restriction;
-   }
-
-   public OWLRestriction getOWLRestriction()
-   {
-      return this.restriction;
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == null) {
+         return false;
+      }
+      if (obj == this) {
+         return true;
+     }
+     if (!(obj instanceof OWLRestrictionRendering)) {
+         return false;
+     }
+     OWLRestrictionRendering other = (OWLRestrictionRendering) obj;
+     return restriction.equals(other.restriction);
    }
 }

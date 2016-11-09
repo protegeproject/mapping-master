@@ -1,34 +1,16 @@
 package org.mm.rendering.owlapi;
 
-import java.util.Set;
+import javax.annotation.Nonnull;
 
-import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLProperty;
 
-public abstract class OWLPropertyRendering extends OWLRendering
-{
-   private final OWLProperty property;
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public abstract class OWLPropertyRendering extends OWLRendering {
 
-   public OWLPropertyRendering(OWLProperty property)
-   {
-      super();
-      this.property = property;
-   }
-
-   public OWLPropertyRendering(OWLProperty property, OWLAxiom axiom)
-   {
-      super(axiom);
-      this.property = property;
-   }
-
-   public OWLPropertyRendering(OWLProperty property, Set<OWLAxiom> axioms)
-   {
-      super(axioms);
-      this.property = property;
-   }
-
-   public OWLProperty getOWLProperty()
-   {
-      return this.property;
+   public OWLPropertyRendering(@Nonnull OWLProperty property) {
+      super(property);
    }
 }

@@ -1,55 +1,41 @@
 package org.mm.rendering.owlapi;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
 import org.mm.rendering.Rendering;
-import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
+import org.semanticweb.owlapi.model.OWLObject;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+/**
+ * @author Josef Hardi <josef.hardi@stanford.edu> <br>
+ *         Stanford Center for Biomedical Informatics Research
+ */
+public abstract class OWLRendering implements Rendering {
 
-public class OWLRendering implements Rendering
-{
-   private final Set<OWLAxiom> axioms;
+   private final OWLObject object;
 
-   public OWLRendering()
-   {
-      this.axioms = new HashSet<>();
+   public OWLRendering(@Nonnull OWLObject object) {
+      this.object = checkNotNull(object);
    }
 
-   public OWLRendering(Set<OWLAxiom> axioms)
-   {
-      this.axioms = new HashSet<>(axioms);
-   }
+   public abstract OWLObject getOWLObject();
 
-   public OWLRendering(OWLAxiom axiom)
-   {
-      this.axioms = new HashSet<>();
-      this.axioms.add(axiom);
+   @Override
+   public String getRendering() {
+      return new ManchesterOWLSyntaxOWLObjectRendererImpl().render(object);
    }
 
    @Override
-   public String getRendering()
-   {
-      final StringBuffer sb = new StringBuffer();
-      boolean newline = false;
-      for (OWLAxiom axiom : getOWLAxioms()) {
-         if (newline) {
-            sb.append("\n");
-         }
-         sb.append(axiom.getAxiomType() + ": " + axiom.toString());
-         newline = true;
-      }
-      return sb.toString();
-   }
-
-   public Set<OWLAxiom> getOWLAxioms()
-   {
-      return Collections.unmodifiableSet(this.axioms);
+   public int hashCode() {
+      return Objects.hashCode(object);
    }
 
    @Override
-   public String toString()
-   {
+   public String toString() {
       return getRendering();
    }
 }
