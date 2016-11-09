@@ -10,7 +10,7 @@ import org.semanticweb.owlapi.model.OWLDataProperty;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class OWLDataPropertyRendering extends OWLRendering implements OWLPropertyRendering {
+public class OWLDataPropertyRendering extends OWLObjectRendering implements OWLPropertyRendering {
 
    private final OWLDataProperty property;
 

@@ -1,40 +1,12 @@
 package org.mm.rendering.owlapi;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
-import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
-import org.semanticweb.owlapi.model.OWLObject;
+import org.mm.rendering.Rendering;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public abstract class OWLRendering implements OWLObjectRendering {
+public interface OWLRendering extends Rendering {
 
-   private final OWLObject object;
-
-   public OWLRendering(@Nonnull OWLObject object) {
-      this.object = checkNotNull(object);
-   }
-
-   public abstract OWLObject getOWLObject();
-
-   @Override
-   public String getRendering() {
-      return new ManchesterOWLSyntaxOWLObjectRendererImpl().render(object);
-   }
-
-   @Override
-   public int hashCode() {
-      return Objects.hashCode(object);
-   }
-
-   @Override
-   public String toString() {
-      return getRendering();
-   }
+   // NO-OP
 }

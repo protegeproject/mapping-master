@@ -10,7 +10,7 @@ import org.semanticweb.owlapi.model.IRI;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class OWLIRIRendering extends OWLRendering {
+public class OWLIRIRendering extends OWLObjectRendering {
 
    private final IRI value;
 

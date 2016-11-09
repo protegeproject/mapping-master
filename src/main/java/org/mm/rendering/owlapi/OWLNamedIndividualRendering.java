@@ -10,7 +10,7 @@ import org.semanticweb.owlapi.model.OWLNamedIndividual;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class OWLNamedIndividualRendering extends OWLRendering {
+public class OWLNamedIndividualRendering extends OWLObjectRendering {
 
    private final OWLNamedIndividual individual;
 
