@@ -10,7 +10,8 @@ import org.semanticweb.owlapi.model.OWLLiteral;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class OWLLiteralRendering extends OWLAnnotationValueRendering {
+public class OWLLiteralRendering extends OWLRendering
+      implements OWLPropertyAssertionObjectRendering, OWLAnnotationValueRendering {
 
    private final OWLLiteral value;
 

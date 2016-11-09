@@ -10,7 +10,7 @@ import org.semanticweb.owlapi.model.OWLClass;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class OWLClassRendering extends OWLClassExpressionRendering {
+public class OWLClassRendering extends OWLRendering implements OWLClassExpressionRendering {
 
    private final OWLClass cls;
 

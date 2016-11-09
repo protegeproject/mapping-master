@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import org.mm.rendering.Rendering;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -14,7 +13,7 @@ import org.semanticweb.owlapi.model.OWLObject;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public abstract class OWLRendering implements Rendering {
+public abstract class OWLRendering implements OWLObjectRendering {
 
    private final OWLObject object;
 

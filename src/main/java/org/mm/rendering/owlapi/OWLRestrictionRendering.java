@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 
 import org.semanticweb.owlapi.model.OWLRestriction;
 
-public class OWLRestrictionRendering extends OWLClassExpressionRendering {
+public class OWLRestrictionRendering extends OWLRendering implements OWLClassExpressionRendering {
 
    private final OWLRestriction restriction;
 
