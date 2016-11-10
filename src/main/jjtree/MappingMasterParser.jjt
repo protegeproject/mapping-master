@@ -621,7 +621,7 @@ void owl_individual_declaration() #OWLIndividualDeclaration : {}
 {
   <INDIVIDUAL> owl_named_individual(defaultIndividualValueEncoding)
   ( <FACTS> fact_list()
-     | <TYPES> types()
+     | <TYPES> type_list()
      | <ANNOTATIONS> annotation_fact_list()
      | owl_same_as()
      | owl_different_from()
@@ -830,9 +830,14 @@ void owl_property() #OWLProperty : {}
   owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding, defaultIRIEncoding)
 } 
 
-void types() #Types : {}
+void type_list() : {}
 {
-  owl_class_expression_with_condition() ( "," owl_class_expression_with_condition() )*
+  type() ( "," type() )*
+}
+
+void type() #Type: {}
+{
+  owl_class_expression_with_condition()
 }
 
 void value_specification_item() #ValueSpecificationItem : 
