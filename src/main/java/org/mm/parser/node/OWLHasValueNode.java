@@ -9,7 +9,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLHasValueNode implements MMNode
+public class OWLHasValueNode implements OWLNode
 {
    private ReferenceNode referenceNode;
    private NameNode nameNode;
@@ -64,6 +64,11 @@ public class OWLHasValueNode implements MMNode
    public boolean hasLiteralNode()
    {
       return this.literalNode != null;
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

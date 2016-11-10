@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLObjectSomeValuesFromNode implements MMNode
+public class OWLObjectSomeValuesFromNode implements OWLNode // TODO: Rename to OWLObjectSomeValuesNode
 {
    private OWLClassExpressionNode classExpressionNode;
    private OWLClassNode classNode;
@@ -47,6 +47,11 @@ public class OWLObjectSomeValuesFromNode implements MMNode
    public String getNodeName()
    {
       return "OWLSomeValuesFrom";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

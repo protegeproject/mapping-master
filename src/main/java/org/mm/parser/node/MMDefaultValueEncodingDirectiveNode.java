@@ -1,10 +1,9 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTMMDefaultValueEncoding;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class MMDefaultValueEncodingDirectiveNode implements MMNode, MappingMasterParserConstants
+public class MMDefaultValueEncodingDirectiveNode implements RuleDirectiveNode
 {
    private final int valueEncodingType;
 

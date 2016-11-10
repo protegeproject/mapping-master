@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLAllValuesFromNode implements MMNode
+public class OWLAllValuesFromNode implements OWLNode // TODO: Delete this?
 {
    private OWLDataAllValuesFromNode dataAllValuesFromNode;
    private OWLObjectAllValuesFromNode objectAllValuesFromNode;
@@ -50,6 +50,11 @@ public class OWLAllValuesFromNode implements MMNode
    public String getNodeName()
    {
       return "OWLAllValuesFromRestriction";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

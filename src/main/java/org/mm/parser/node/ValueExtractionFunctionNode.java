@@ -11,7 +11,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ValueExtractionFunctionNode implements MMNode, MappingMasterParserConstants
+public class ValueExtractionFunctionNode implements FunctionNode, MappingMasterParserConstants
 {
    private final int functionID;
    private final List<ValueExtractionFunctionArgumentNode> argumentNodes;

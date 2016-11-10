@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTDefaultLocationValue;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultLocationValueDirectiveNode implements MMNode, MappingMasterParserConstants
+public class DefaultLocationValueDirectiveNode implements ReferenceDirectiveNode
 {
    private final String defaultLocationValue;
 

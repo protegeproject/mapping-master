@@ -1,10 +1,9 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTIRIEncoding;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class IRIEncodingDirectiveNode implements MMNode, MappingMasterParserConstants
+public class IRIEncodingDirectiveNode implements ReferenceDirectiveNode
 {
    private final int valueEncodingType;
 

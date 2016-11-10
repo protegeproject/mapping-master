@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTEmptyLocationSetting;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class EmptyLocationDirectiveNode implements MMNode, MappingMasterParserConstants
+public class EmptyLocationDirectiveNode implements ReferenceDirectiveNode
 {
    private final int emptyLocationSetting;
 

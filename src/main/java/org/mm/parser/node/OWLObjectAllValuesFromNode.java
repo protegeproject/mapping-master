@@ -9,7 +9,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLObjectAllValuesFromNode implements MMNode
+public class OWLObjectAllValuesFromNode implements OWLNode
 {
    private OWLClassExpressionNode classExpressionNode;
    private OWLClassNode classNode;
@@ -61,6 +61,11 @@ public class OWLObjectAllValuesFromNode implements MMNode
    public String getNodeName()
    {
       return "OWLObjectAllValuesFrom";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

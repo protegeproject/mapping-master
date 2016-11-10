@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTEmptyLiteralSetting;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class EmptyLiteralDirectiveNode implements MMNode, MappingMasterParserConstants
+public class EmptyLiteralDirectiveNode implements ReferenceDirectiveNode
 {
    private final int emptyLiteralSetting;
 

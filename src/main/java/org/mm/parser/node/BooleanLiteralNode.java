@@ -3,7 +3,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTBooleanLiteral;
 import org.mm.parser.ParseException;
 
-public class BooleanLiteralNode implements MMNode
+public class BooleanLiteralNode implements LiteralNode
 {
    private final boolean value;
 
@@ -22,9 +22,13 @@ public class BooleanLiteralNode implements MMNode
       return "BooleanLiteral";
    }
 
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
+   }
+
    public String toString()
    {
       return "" + this.value;
    }
-
 }

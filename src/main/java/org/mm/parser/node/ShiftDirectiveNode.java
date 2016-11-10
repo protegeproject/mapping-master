@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTShiftSetting;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class ShiftDirectiveNode implements MMNode, MappingMasterParserConstants
+public class ShiftDirectiveNode implements ReferenceDirectiveNode
 {
    private final int shiftSetting;
 

@@ -2,11 +2,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTNamespace;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class NamespaceDirectiveNode implements MMNode, MappingMasterParserConstants
+public class NamespaceDirectiveNode implements ReferenceDirectiveNode
 {
    private final String namespace;
 

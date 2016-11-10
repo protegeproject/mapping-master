@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTLanguage;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class LanguageDirectiveNode implements MMNode, MappingMasterParserConstants
+public class LanguageDirectiveNode implements ReferenceDirectiveNode
 {
    private final String language;
 

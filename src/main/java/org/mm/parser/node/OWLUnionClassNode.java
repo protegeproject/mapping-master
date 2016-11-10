@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OWLUnionClassNode implements MMNode
+public class OWLUnionClassNode implements OWLNode
 {
    private final List<OWLIntersectionClassNode> intersectionClassNodes;
 
@@ -38,6 +38,11 @@ public class OWLUnionClassNode implements MMNode
    public String getNodeName()
    {
       return "OWLUnionClass";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

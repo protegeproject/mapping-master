@@ -1,10 +1,9 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTMMDefaultPropertyType;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class MMDefaultPropertyTypeDirectiveNode implements MMNode, MappingMasterParserConstants
+public class MMDefaultPropertyTypeDirectiveNode implements RuleDirectiveNode
 {
    private final int defaultPropertyType;
 

@@ -1,10 +1,9 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTStringLiteral;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class StringLiteralNode implements StringNode, MappingMasterParserConstants
+public class StringLiteralNode implements LiteralNode
 {
    private final String value;
 
@@ -21,6 +20,11 @@ public class StringLiteralNode implements StringNode, MappingMasterParserConstan
    public String getValue()
    {
       return this.value;
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

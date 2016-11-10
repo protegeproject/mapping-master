@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class MMDefaultReferenceTypeDirectiveNode implements MMNode
+public class MMDefaultReferenceTypeDirectiveNode implements RuleDirectiveNode
 {
    private ReferenceTypeNode referenceTypeNode;
 

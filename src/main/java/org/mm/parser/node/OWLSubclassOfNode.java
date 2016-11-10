@@ -10,7 +10,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLSubclassOfNode implements MMNode
+public class OWLSubclassOfNode implements OWLNode
 {
    private final List<OWLClassExpressionNode> classExpressionNodes;
 
@@ -36,6 +36,11 @@ public class OWLSubclassOfNode implements MMNode
    public String getNodeName()
    {
       return "OWLSubclassOf";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

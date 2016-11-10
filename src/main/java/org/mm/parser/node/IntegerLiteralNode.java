@@ -3,7 +3,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTIntegerLiteral;
 import org.mm.parser.ParseException;
 
-public class IntegerLiteralNode implements MMNode
+public class IntegerLiteralNode implements LiteralNode
 {
    private final int value;
 
@@ -21,6 +21,12 @@ public class IntegerLiteralNode implements MMNode
    public String getNodeName()
    {
       return "IntegerLiteral";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      // TODO Auto-generated method stub
+      
    }
 
    public String toString()

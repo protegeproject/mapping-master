@@ -3,7 +3,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTOWLMinCardinalityRestriction;
 import org.mm.parser.ParseException;
 
-public class OWLMinCardinalityNode implements MMNode
+public class OWLMinCardinalityNode implements OWLNode
 {
    private final int cardinality;
 
@@ -21,6 +21,11 @@ public class OWLMinCardinalityNode implements MMNode
    public String getNodeName()
    {
       return "OWLMinCardinaliyRestriction";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

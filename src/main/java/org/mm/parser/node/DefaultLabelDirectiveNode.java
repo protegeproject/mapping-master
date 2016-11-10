@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ParseException;
 import org.mm.parser.ASTDefaultLabel;
-import org.mm.parser.MappingMasterParserConstants;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultLabelDirectiveNode implements MMNode, MappingMasterParserConstants
+public class DefaultLabelDirectiveNode implements ReferenceDirectiveNode
 {
    private final String defaultLabel;
 

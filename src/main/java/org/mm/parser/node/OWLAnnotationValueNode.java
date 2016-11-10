@@ -10,7 +10,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLAnnotationValueNode implements TypeNode
+public class OWLAnnotationValueNode implements OWLNode
 {
    private ReferenceNode referenceNode;
    private NameNode nameNode;
@@ -78,6 +78,11 @@ public class OWLAnnotationValueNode implements TypeNode
    public boolean hasIRIRefNode()
    {
       return this.iriRefNode != null;
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

@@ -13,7 +13,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLRestrictionNode implements MMNode
+public class OWLRestrictionNode implements OWLNode
 {
    private OWLPropertyNode propertyNode;
    private OWLMaxCardinalityNode maxCardinalityNode;
@@ -114,6 +114,11 @@ public class OWLRestrictionNode implements MMNode
    public String getNodeName()
    {
       return "OWLRestriction";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

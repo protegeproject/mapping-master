@@ -3,7 +3,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTSourceSpecification;
 import org.mm.parser.ParseException;
 
-public class SourceSpecificationNode implements MMNode
+public class SourceSpecificationNode implements MMNode // TODO: Rename to MMSourceSpecificationNode
 {
    private final String source, location;
    private final String literal;

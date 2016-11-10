@@ -1,16 +1,16 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTOWLLiteral;
 import org.mm.parser.ASTBooleanLiteral;
 import org.mm.parser.ASTFloatLiteral;
 import org.mm.parser.ASTIntegerLiteral;
+import org.mm.parser.ASTOWLLiteral;
 import org.mm.parser.ASTStringLiteral;
 import org.mm.parser.InternalParseException;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLLiteralNode implements MMNode
+public class OWLLiteralNode implements OWLNode
 {
    private IntegerLiteralNode intLiteralNode;
    private FloatLiteralNode floatLiteralNode;
@@ -79,6 +79,11 @@ public class OWLLiteralNode implements MMNode
    public String getNodeName()
    {
       return "OWLLiteral";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

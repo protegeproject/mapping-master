@@ -4,7 +4,7 @@ import org.mm.parser.ASTOWLDataSomeValuesFrom;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class OWLDataSomeValuesFromNode implements MMNode, MappingMasterParserConstants
+public class OWLDataSomeValuesFromNode implements OWLNode, MappingMasterParserConstants
 {
    private final int datatype;
 
@@ -22,6 +22,11 @@ public class OWLDataSomeValuesFromNode implements MMNode, MappingMasterParserCon
    public String getNodeName()
    {
       return "OWLDataSomeValuesFrom";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

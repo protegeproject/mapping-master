@@ -10,7 +10,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLEquivalentClassesNode implements MMNode
+public class OWLEquivalentClassesNode implements OWLNode // TODO: Rename to OWLEquivalentNode
 {
    private final List<OWLClassExpressionNode> classExpressionNodes;
 
@@ -37,6 +37,11 @@ public class OWLEquivalentClassesNode implements MMNode
    public String getNodeName()
    {
       return "OWLClassEquivalentTo";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

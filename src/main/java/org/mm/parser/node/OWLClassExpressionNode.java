@@ -9,7 +9,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class OWLClassExpressionNode implements TypeNode, MMNode
+public class OWLClassExpressionNode implements OWLNode
 {
    private OWLClassNode classNode;
    private OWLUnionClassNode unionClassNode;
@@ -73,6 +73,11 @@ public class OWLClassExpressionNode implements TypeNode, MMNode
    public boolean hasOWLClassNode()
    {
       return this.classNode != null;
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

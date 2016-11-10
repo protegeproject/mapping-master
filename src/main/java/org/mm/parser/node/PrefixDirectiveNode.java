@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ParseException;
 import org.mm.parser.ASTPrefix;
-import org.mm.parser.MappingMasterParserConstants;
+import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class PrefixDirectiveNode implements MMNode, MappingMasterParserConstants
+public class PrefixDirectiveNode implements ReferenceDirectiveNode
 {
    private final String prefix;
 

@@ -8,7 +8,7 @@ import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 import org.mm.parser.SimpleNode;
 
-public class OWLPropertyNode implements TypeNode
+public class OWLPropertyNode implements OWLNode
 {
    private ReferenceNode referenceNode;
    private NameNode nameNode;
@@ -50,6 +50,11 @@ public class OWLPropertyNode implements TypeNode
    public boolean hasReferenceNode()
    {
       return this.referenceNode != null;
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

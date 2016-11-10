@@ -1,32 +1,33 @@
 package org.mm.parser.node;
 
-import org.mm.parser.ASTAnnotationFact;
-import org.mm.parser.ASTOWLDifferentFrom;
-import org.mm.parser.ASTOWLIndividualDeclaration;
-import org.mm.parser.ParseException;
-import org.mm.parser.ASTFact;
-import org.mm.parser.ASTOWLNamedIndividual;
-import org.mm.parser.ASTOWLSameAs;
-import org.mm.parser.ASTTypes;
-import org.mm.parser.InternalParseException;
-import org.mm.parser.Node;
-import org.mm.parser.ParserUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLIndividualDeclarationNode implements MMNode
+import org.mm.parser.ASTAnnotationFact;
+import org.mm.parser.ASTFact;
+import org.mm.parser.ASTOWLDifferentFrom;
+import org.mm.parser.ASTOWLIndividualDeclaration;
+import org.mm.parser.ASTOWLNamedIndividual;
+import org.mm.parser.ASTOWLSameAs;
+import org.mm.parser.ASTType;
+import org.mm.parser.InternalParseException;
+import org.mm.parser.Node;
+import org.mm.parser.ParseException;
+import org.mm.parser.ParserUtil;
+
+public class OWLIndividualDeclarationNode implements OWLNode
 {
    private OWLNamedIndividualNode namedIndividualNode;
    private final List<FactNode> factNodes;
+   private final List<TypeNode> typeNodes;
    private final List<AnnotationFactNode> annotationNodes;
-   private TypesNode typesNode;
    private OWLSameAsNode sameAsNode;
    private OWLDifferentFromNode differentFromNode;
 
    public OWLIndividualDeclarationNode(ASTOWLIndividualDeclaration node) throws ParseException
    {
       this.factNodes = new ArrayList<>();
+      this.typeNodes = new ArrayList<>();
       this.annotationNodes = new ArrayList<>();
 
       for (int i = 0; i < node.jjtGetNumChildren(); i++) {
@@ -39,8 +40,9 @@ public class OWLIndividualDeclarationNode implements MMNode
          } else if (ParserUtil.hasName(child, "AnnotationFact")) {
             AnnotationFactNode fact = new AnnotationFactNode((ASTAnnotationFact) child);
             this.annotationNodes.add(fact);
-         } else if (ParserUtil.hasName(child, "Types")) {
-            this.typesNode = new TypesNode((ASTTypes) child);
+         } else if (ParserUtil.hasName(child, "Type")) {
+            TypeNode type = new TypeNode((ASTType) child);
+            typeNodes.add(type);
          } else if (ParserUtil.hasName(child, "OWLSameAs")) {
             this.sameAsNode = new OWLSameAsNode((ASTOWLSameAs) child);
          } else if (ParserUtil.hasName(child, "OWLDifferentFrom")) {
@@ -61,7 +63,7 @@ public class OWLIndividualDeclarationNode implements MMNode
 
    public boolean hasTypes()
    {
-      return this.typesNode != null;
+      return !typeNodes.isEmpty();
    }
 
    public boolean hasSameAs()
@@ -89,9 +91,9 @@ public class OWLIndividualDeclarationNode implements MMNode
       return this.annotationNodes;
    }
 
-   public TypesNode getTypesNode()
+   public List<TypeNode> getTypeNodes()
    {
-      return this.typesNode;
+      return typeNodes;
    }
 
    public OWLSameAsNode getOWLSameAsNode()
@@ -110,6 +112,11 @@ public class OWLIndividualDeclarationNode implements MMNode
       return "OWLIndividualDeclaration";
    }
 
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
+   }
+
    public String toString()
    {
       String representation = "Individual: " + this.namedIndividualNode;
@@ -126,7 +133,14 @@ public class OWLIndividualDeclarationNode implements MMNode
 
       if (hasTypes()) {
          representation += " Types: ";
-         representation += this.typesNode.toString();
+         boolean needComma = false;
+         for (TypeNode type : typeNodes) {
+            if (needComma) {
+               representation += ", ";
+            }
+            representation += type.toString();
+            needComma = true;
+         }
       }
 
       isFirst = true;

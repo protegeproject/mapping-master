@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class ExpressionNode implements MMNode
+public class ExpressionNode implements MMNode // TODO: Rename to MMRuleNode
 {
    private MMDirectiveNode mmDirectiveNode;
    private MMExpressionNode mmExpressionNode;

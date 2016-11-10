@@ -3,12 +3,11 @@ package org.mm.parser.node;
 import org.mm.parser.ASTValueEncoding;
 import org.mm.parser.ASTValueSpecification;
 import org.mm.parser.InternalParseException;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class ValueEncodingDirectiveNode implements MMNode, MappingMasterParserConstants
+public class ValueEncodingDirectiveNode implements ReferenceDirectiveNode
 {
    private final int valueEncodingType;
    private ValueSpecificationNode valueSpecificationNode;

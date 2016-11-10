@@ -1,5 +1,8 @@
 package org.mm.parser.node;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mm.parser.ASTOWLClassExpression;
 import org.mm.parser.ASTOWLIntersectionClass;
 import org.mm.parser.InternalParseException;
@@ -7,10 +10,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class OWLIntersectionClassNode implements MMNode
+public class OWLIntersectionClassNode implements OWLNode
 {
    private final List<OWLClassExpressionNode> classExpressionNodes;
 
@@ -38,6 +38,11 @@ public class OWLIntersectionClassNode implements MMNode
    public String getNodeName()
    {
       return "OWLIntersectionClass";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

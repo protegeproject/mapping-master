@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTDefaultLiteral;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultLiteralDirectiveNode implements MMNode, MappingMasterParserConstants
+public class DefaultLiteralDirectiveNode implements ReferenceDirectiveNode
 {
    private final String defaultLiteral;
 

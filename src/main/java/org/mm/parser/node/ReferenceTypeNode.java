@@ -5,7 +5,7 @@ import org.mm.parser.ASTReferenceType;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 
-public class ReferenceTypeNode implements MMNode, MappingMasterParserConstants
+public class ReferenceTypeNode implements MMNode, MappingMasterParserConstants // TODO: Rename to MMReferenceTypeNode
 {
    private final ReferenceType referenceType;
 

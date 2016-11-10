@@ -23,7 +23,6 @@ import org.mm.parser.ASTReference;
 import org.mm.parser.ASTReferenceType;
 import org.mm.parser.ASTShiftSetting;
 import org.mm.parser.ASTSourceSpecification;
-import org.mm.parser.ASTTypes;
 import org.mm.parser.ASTValueEncoding;
 import org.mm.parser.ASTValueExtractionFunction;
 import org.mm.parser.InternalParseException;
@@ -34,14 +33,13 @@ import org.mm.parser.ParserUtil;
 import org.mm.renderer.RendererException;
 import org.mm.workbook.CellLocation;
 
-public class ReferenceNode implements MMNode, MappingMasterParserConstants
+public class ReferenceNode implements MMNode, MappingMasterParserConstants // TODO: Rename to MMReferenceNode
 {
    private SourceSpecificationNode sourceSpecificationNode;
    private ReferenceTypeNode referenceTypeNode;
    private PrefixDirectiveNode prefixDirectiveNode;
    private NamespaceDirectiveNode namespaceDirectiveNode;
    private LanguageDirectiveNode languageDirectiveNode;
-   private TypesNode typesNode;
    private DefaultLocationValueDirectiveNode defaultLocationValueDirectiveNode;
    private DefaultLiteralDirectiveNode defaultLiteralDirectiveNode;
    private DefaultIDDirectiveNode defaultRDFIDNode;
@@ -132,8 +130,6 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
             if (this.valueExtractionFunctionNode != null)
                throw new RendererException("only one value extraction directive can be specified for a Reference");
             this.valueExtractionFunctionNode = new ValueExtractionFunctionNode((ASTValueExtractionFunction) child);
-         } else if (ParserUtil.hasName(child, "Types")) {
-            this.typesNode = new TypesNode((ASTTypes) child);
          } else throw new InternalParseException("invalid child node " + child + " for ReferenceNode");
       }
 
@@ -206,8 +202,6 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
          this.referenceDirectives.setHasExplicitlySpecifiedIfOWLEntitiDoesNotExistDirective(
                this.ifNotExistsDirectiveNode.getIfOWLEntityDoesNotExistSetting());
 
-      if (this.typesNode != null) this.referenceDirectives.setHasExplicitlySpecifiedTypes();
-
       checkValueEncodings();
       checkInvalidExplicitDirectives();
    }
@@ -271,11 +265,6 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
    public IRIEncodingDirectiveNode getIRIEncodingNode()
    {
       return this.iriEncodingDirectiveNode;
-   }
-
-   public TypesNode getTypesNode()
-   {
-      return this.typesNode;
    }
 
    public DefaultLiteralDirectiveNode getDefaultLiteralDirectiveNode()
@@ -413,6 +402,7 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
       return this.referenceDirectives.hasExplicitlySpecifiedShiftDirective();
    }
 
+   @Deprecated
    public boolean hasExplicitlySpecifiedTypes()
    {
       return this.referenceDirectives.hasExplicitlySpecifiedTypes();
@@ -722,12 +712,6 @@ public class ReferenceNode implements MMNode, MappingMasterParserConstants
       if (hasExplicitlySpecifiedShiftDirective()) {
          if (atLeastOneOptionProcessed) representation += " ";
          representation += this.shiftDirectiveNode;
-         atLeastOneOptionProcessed = true;
-      }
-
-      if (hasExplicitlySpecifiedTypes()) {
-         if (atLeastOneOptionProcessed) representation += " ";
-         representation += getTypesNode();
          atLeastOneOptionProcessed = true;
       }
 

@@ -8,7 +8,7 @@ import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class AnnotationFactNode implements MMNode
+public class AnnotationFactNode implements OWLNode // TODO: Rename to OWLAnnotationAssertionNode
 {
    private OWLAnnotationValueNode owlAnnotationValueNode;
    private OWLAnnotationPropertyNode owlAnnotationPropertyNode;
@@ -39,6 +39,11 @@ public class AnnotationFactNode implements MMNode
    public String getNodeName()
    {
       return "AnnotationFact";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTDefaultID;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class DefaultIDDirectiveNode implements MMNode, MappingMasterParserConstants
+public class DefaultIDDirectiveNode implements ReferenceDirectiveNode
 {
    private final String defaultID;
 

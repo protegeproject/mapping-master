@@ -1,17 +1,16 @@
 package org.mm.parser.node;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mm.parser.ASTValueSpecification;
 import org.mm.parser.ASTValueSpecificationItem;
 import org.mm.parser.InternalParseException;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.Node;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ValueSpecificationNode implements MMNode, MappingMasterParserConstants
+public class ValueSpecificationNode implements MMNode
 {
    private final List<ValueSpecificationItemNode> valueSpecificationItemNodes = new ArrayList<>();
 

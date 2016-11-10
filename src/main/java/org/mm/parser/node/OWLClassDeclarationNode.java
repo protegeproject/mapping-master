@@ -13,7 +13,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLClassDeclarationNode implements MMNode
+public class OWLClassDeclarationNode implements OWLNode
 {
    private OWLClassNode classNode;
    private final List<OWLEquivalentClassesNode> equivalentClassesNodes = new ArrayList<>();
@@ -78,6 +78,11 @@ public class OWLClassDeclarationNode implements MMNode
       return "OWLClassDeclaration";
    }
 
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
+   }
+
    public String toString()
    {
       String representation = "Class: " + this.classNode;
@@ -109,5 +114,4 @@ public class OWLClassDeclarationNode implements MMNode
 
       return representation;
    }
-
 }

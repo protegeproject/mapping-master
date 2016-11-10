@@ -1,11 +1,10 @@
 package org.mm.parser.node;
 
 import org.mm.parser.ASTIfExistsDirective;
-import org.mm.parser.MappingMasterParserConstants;
 import org.mm.parser.ParseException;
 import org.mm.parser.ParserUtil;
 
-public class IfOWLEntityExistsDirectiveNode implements MMNode, MappingMasterParserConstants
+public class IfOWLEntityExistsDirectiveNode implements ReferenceDirectiveNode
 {
    private final int ifOWLEntityExistsSetting;
 

@@ -3,7 +3,7 @@ package org.mm.parser.node;
 import org.mm.parser.ASTName;
 import org.mm.parser.ParseException;
 
-public class NameNode implements MMNode
+public class NameNode implements OWLNode // TODO: Rename to NamedNode
 {
    private final String name;
    private final boolean isQuotedName;
@@ -28,6 +28,11 @@ public class NameNode implements MMNode
    public String getNodeName()
    {
       return "Name";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()

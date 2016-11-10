@@ -10,7 +10,7 @@ import org.mm.parser.ParserUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OWLSameAsNode implements MMNode
+public class OWLSameAsNode implements OWLNode
 {
    private final List<OWLNamedIndividualNode> namedIndividualNodes;
 
@@ -36,6 +36,11 @@ public class OWLSameAsNode implements MMNode
    public String getNodeName()
    {
       return "OWLSameAs";
+   }
+
+   @Override
+   public void accept(OWLNodeVisitor visitor) {
+      visitor.visit(this);
    }
 
    public String toString()
