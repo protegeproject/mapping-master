@@ -1,7 +1,5 @@
 package org.mm.renderer.owl;
 
-import org.mm.exceptions.EntityCreationException;
-import org.mm.exceptions.EntityNotFoundException;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLEntity;

@@ -7,8 +7,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import org.mm.exceptions.EntityCreationException;
-import org.mm.exceptions.EntityNotFoundException;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
