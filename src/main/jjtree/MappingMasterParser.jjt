@@ -1,4 +1,3 @@
-
 options {
   LOOKAHEAD = 1;
   IGNORE_CASE = true;
@@ -10,76 +9,66 @@ options {
 
   MULTI=true;
   NODE_DEFAULT_VOID = true;
+  NODE_PACKAGE = "org.mm.parser.node";
 }
 
 PARSER_BEGIN(MappingMasterParser)
 
 package org.mm.parser;
 
-import org.mm.core.settings.ReferenceSettings;
+import org.mm.renderer.ReferenceNotation;
+
+import org.mm.directive.ReferenceDirectives;
+import org.mm.directive.DefaultDirectives;
 
 import java.util.*;
 
-public class MappingMasterParser 
-{
-  private String defaultLocationValue = "";
-  private String defaultLiteral = "";
-  private String defaultID = "";
-  private String defaultLabel = "";
-  private String defaultLanguage = "";
-  private String defaultPrefix = "";
-  private String defaultNamespace = "";
+public class MappingMasterParser {
 
-  private int defaultReferenceType = -1;
-  private int defaultPropertyType = -1;
-  private int defaultPropertyValueType = XSD_STRING;
-  private int defaultDataPropertyValueType = XSD_STRING;
-  private int defaultAnnotationPropertyValueType = XSD_STRING;
+  private String prefix;
+  private String namespace;
+  private String language;
 
-  private int defaultValueEncoding = -1;
-  private int defaultIRIEncoding = -1;
-  private int defaultClassValueEncoding = -1;
-  private int defaultPropertyValueEncoding = -1;
-  private int defaultObjectPropertyValueEncoding = -1;
-  private int defaultDataPropertyValueEncoding = -1;
-  private int defaultIndividualValueEncoding = -1;
-  private int defaultShiftSetting = -1;
-  private int defaultEmptyLocationSetting = -1;
-  private int defaultEmptyLiteralSetting = -1;
-  private int defaultEmptyRDFIDSetting = -1;
-  private int defaultEmptyRDFSLabelSetting = -1;
-  private int defaultIfOWLEntityExistsSetting = -1;
-  private int defaultIfOWLEntityDoesNotExistSetting = -1;
-  
-  private ReferenceSettings settings;
-  
-  public MappingMasterParser(java.io.InputStream stream, ReferenceSettings settings, int unused)
-  {
-    this(stream);
-    changeGlobalReferenceSettings(settings);
+  private int referenceType;
+  private int propertyType;
+  private int propertyValueType;
+  private int propertyValueDatatype;
+
+  private int valueEncoding;
+  private int iriEncoding;
+
+  private int shiftDirection;
+
+  private String labelValue;
+  private String literalValue;
+
+  private int orderIfCellEmpty;
+  private int orderIfEntityAbsent;
+
+  public MappingMasterParser(java.io.InputStream inputStream, int unused) {
+    this(inputStream, new DefaultDirectives(), unused);
   }
 
-  public void changeGlobalReferenceSettings(ReferenceSettings settings)
-  {
-    defaultLanguage = settings.getLanguage();
-    defaultPrefix = settings.getPrefix();
-    defaultNamespace = settings.getNamespace();
-    defaultReferenceType = settings.getReferenceTypeSetting().getConstant();
-    defaultPropertyType = settings.getPropertyTypeSetting().getConstant();
-    defaultValueEncoding = settings.getValueEncodingSetting().getConstant();
-    defaultIRIEncoding = settings.getIRIEncodingSetting().getConstant();
-    defaultClassValueEncoding = settings.getValueEncodingSetting().getConstant();
-    defaultPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
-    defaultObjectPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
-    defaultDataPropertyValueEncoding = settings.getValueEncodingSetting().getConstant();
-    defaultIndividualValueEncoding = settings.getValueEncodingSetting().getConstant();
-    defaultShiftSetting = settings.getShiftSetting().getConstant();
-    defaultEmptyLocationSetting = settings.getEmptyLocationSetting().getConstant();
-    defaultEmptyLiteralSetting = settings.getEmptyLiteralSetting().getConstant();
-    defaultEmptyRDFIDSetting = settings.getEmptyRDFIDSetting().getConstant();
-    defaultEmptyRDFSLabelSetting = settings.getEmptyRDFSLabelSetting().getConstant();
-    defaultIfOWLEntityExistsSetting = settings.getIfOWLEntityExistsSetting().getConstant();
-    defaultIfOWLEntityDoesNotExistSetting = settings.getIfOWLEntityDoesNotExistSetting().getConstant();
+  public MappingMasterParser(java.io.InputStream inputStream, ReferenceDirectives systemDirectives, int unused) {
+    this(inputStream);
+    prefix = systemDirectives.getPrefix();
+    namespace = systemDirectives.getNamespace();
+    language = systemDirectives.getLanguage();
+    referenceType = systemDirectives.getReferenceType();
+    propertyType = systemDirectives.getPropertyType();
+    propertyValueType = systemDirectives.getPropertyValueType();
+    propertyValueDatatype = systemDirectives.getPropertyValueDatatype();
+    valueEncoding = systemDirectives.getValueEncoding();
+    iriEncoding = systemDirectives.getIriEncoding();
+    shiftDirection = systemDirectives.getShiftDirection();
+    labelValue = systemDirectives.getLabelValue();
+    literalValue = systemDirectives.getLiteralValue();
+    orderIfCellEmpty = systemDirectives.getOrderIfCellEmpty();
+    orderIfEntityAbsent = systemDirectives.getOrderIfEntityAbsent();
+  }
+
+  public SimpleNode getTransformationRuleNode() throws ParseException {
+    return transformation_rule();
   }
 }
 
@@ -129,7 +118,8 @@ MORE :
   < ~[] >
 }
 
-/* Tokens */
+/* Manchester Syntax keywords */
+
 TOKEN: { <CLASS: "Class:" | "class:"> }
 TOKEN: { <INDIVIDUAL: "Individual:" | "individual:"> }
 TOKEN: { <EQUIVALENT_TO: "EquivalentTo:" | "equivalentTo:"> }
@@ -139,21 +129,22 @@ TOKEN: { <TYPES: "Types:" | "types:"> }
 TOKEN: { <ANNOTATIONS: "Annotations:" | "annotations:"> }
 TOKEN: { <SAME_AS: "SameAs:" | "sameAs:"> }
 TOKEN: { <DIFFERENT_FROM: "DifferentFrom:" | "differentFrom:"> }
+TOKEN: { <SOME: "some" | "SOME">}
+TOKEN: { <ONLY: "only" | "ONLY">}
+TOKEN: { <VALUE: "value" | "VALUE">}
+TOKEN: { <MIN: "min" | "MIN">}
+TOKEN: { <MAX: "max" | "MAX">}
+TOKEN: { <EXACTLY: "exactly" | "EXACTLY">}
+TOKEN: { <AND: "and" | "AND">}
+TOKEN: { <OR: "or" | "OR">}
+TOKEN: { <NOT: "not" | "NOT">}
 
-/* Class expression tokens */
-
-TOKEN: {<SOME: "some" | "SOME">}
-TOKEN: {<ONLY: "only" | "ONLY">}
-TOKEN: {<VALUE: "value" | "VALUE">}
-TOKEN: {<MIN: "min" | "MIN">}
-TOKEN: {<MAX: "max" | "MAX">}
-TOKEN: {<EXACTLY: "exactly" | "EXACTLY">}
-TOKEN: {<AND: "and" | "AND">}
-TOKEN: {<OR: "or" | "OR">}
-TOKEN: {<NOT: "not" | "NOT">}
+/* Boolean keywords */
 
 TOKEN: {<TRUE: "true" | "TRUE">}
 TOKEN: {<FALSE: "false" | "FALSE">}
+
+/* Datatypes */
 
 TOKEN: { <XSD_STRING: "xsd:string" > }
 TOKEN: { <XSD_DECIMAL: "xsd:decimal" > }
@@ -205,48 +196,48 @@ TOKEN: { <XSD_NMTOKEN: "xsd:NMTOKEN" > }
 
 /* MappingMaster tokens */
 
-TOKEN: { <MM_LOCATION_WITH_DUPLICATES: "mm:LocationWithDuplicates"> }
-TOKEN: { <MM_LOCATION: "mm:Location"> }
-
 TOKEN: { <RDF_ID: "rdf:ID"> }
 TOKEN: { <RDFS_LABEL: "rdfs:label"> }
-
 TOKEN: { <XML_LANG: "xml:lang" > }
-TOKEN: { <MM_NULL: "mm:null" > }
-
-TOKEN: { <MM_LITERAL: "mm:Literal"> }
 
 TOKEN: { <MM_DEFAULT_VALUE_ENCODING: "mm:DefaultValueEncoding"> }
 TOKEN: { <MM_DEFAULT_IRI_ENCODING: "mm:DefaultIRIEncoding"> }
+TOKEN: { <MM_DEFAULT_SHIFT_DIRECTION: "mm:DefaultShiftDirection"> }
 TOKEN: { <MM_DEFAULT_REFERENCE_TYPE: "mm:DefaultReferenceType"> }
 TOKEN: { <MM_DEFAULT_PROPERTY_TYPE: "mm:DefaultPropertyType"> }
 TOKEN: { <MM_DEFAULT_PROPERTY_VALUE_TYPE: "mm:DefaultPropertyValueType"> }
-TOKEN: { <MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE: "mm:DefaultDataPropertyValueType"> }
-TOKEN: { <MM_DEFAULT_ANNOTATION_PROPERTY_VALUE_TYPE: "mm:DefaultAnnotationPropertyValueType"> }
-TOKEN: { <MM_DEFAULT_SHIFT: "mm:DefaultShift"> }
+TOKEN: { <MM_DEFAULT_PROPERTY_VALUE_DATATYPE: "mm:DefaultPropertyValueDatatype"> }
 
-TOKEN: { <MM_DEFAULT_EMPTY_LITERAL: "mm:DefaultEmptyLiteral"> }
-TOKEN: { <MM_DEFAULT_EMPTY_LOCATION: "mm:DefaultEmptyLocation"> }
-TOKEN: { <MM_DEFAULT_EMPTY_RDF_ID: "mm:DefaultEmptyID"> }
-TOKEN: { <MM_DEFAULT_EMPTY_RDFS_LABEL: "mm:DefaultEmptyLabel"> }
-TOKEN: { <MM_DEFAULT_IF_OWL_ENTITY_EXISTS: "mm:DefaultIfOWLEntityExists"> }
-TOKEN: { <MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:DefaultIfOWLEntityDoesNotExist"> }
+//TOKEN: { <MM_DEFAULT_SHIFT: "mm:DefaultShift"> }
 
-TOKEN: { <MM_UNTYPED: "mm:Untyped"> }
+//TOKEN: { <MM_DEFAULT_EMPTY_RDFS_LABEL: "mm:DefaultEmptyLabel"> }
+//TOKEN: { <MM_DEFAULT_EMPTY_LITERAL: "mm:DefaultEmptyLiteral"> }
+//TOKEN: { <MM_DEFAULT_EMPTY_LOCATION: "mm:DefaultEmptyLocation"> }
+//TOKEN: { <MM_DEFAULT_EMPTY_RDF_ID: "mm:DefaultEmptyID"> }
+//TOKEN: { <MM_DEFAULT_IF_OWL_ENTITY_EXISTS: "mm:DefaultIfOWLEntityExists"> }
+//TOKEN: { <MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:DefaultIfOWLEntityDoesNotExist"> }
+TOKEN: { <MM_DEFAULT_ORDER_IF_CELL_EMPTY: "mm:DefaultOrderIfCellEmpty"> }
+TOKEN: { <MM_DEFAULT_ORDER_IF_ENTITY_ABSENT: "mm:DefaultOrderIfEntityAbsent"> }
+
 TOKEN: { <MM_PREFIX: "mm:Prefix"> }
 TOKEN: { <MM_NAMESPACE: "mm:Namespace"> }
+TOKEN: { <MM_VALUE_ENCODING: "mm:ValueEncoding"> }
+TOKEN: { <MM_IRI_ENCODING: "mm:IRIEncoding"> }
+
+TOKEN: { <MM_UNTYPED: "mm:Untyped"> }
+TOKEN: { <MM_NULL: "mm:Null" > }
+
 TOKEN: { <CELL_WILDCARD: "*"> }
 
-TOKEN: { <RDFS_CLASS: "rdfs:class"> }
-TOKEN: { <RDF_PROPERTY: "rdf:property"> }
 TOKEN: { <OWL_CLASS: "Class"> }
 TOKEN: { <OWL_NAMED_INDIVIDUAL: "Individual"> }
 TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
 TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
 TOKEN: { <OWL_ANNOTATION_PROPERTY: "AnnotationProperty"> }
+TOKEN: { <OWL_LITERAL: "Literal"> }
 TOKEN: { <OWL_DATATYPE: "Datatype"> }
 TOKEN: { <OWL_IRI: "IRI"> }
-TOKEN: { <MM_IRI: "mm:IRI"> }
+//TOKEN: { <MM_IRI: "mm:IRI"> }
 TOKEN: { <MM_ENTITY_IRI: "mm:entityIRI"> }
 
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
@@ -268,9 +259,9 @@ TOKEN: { <MM_SNAKECASE_ENCODE: "mm:snakeCaseEncode"> }
 TOKEN: { <MM_UUID_ENCODE: "mm:uuidEncode"> }
 TOKEN: { <MM_HASH_ENCODE: "mm:hashEncode"> }
 
-TOKEN: { <MM_DEFAULT_LOCATION_VALUE: "mm:DefaultLocationValue"> }
+//TOKEN: { <MM_DEFAULT_LOCATION_VALUE: "mm:DefaultLocationValue"> }
 TOKEN: { <MM_DEFAULT_LITERAL: "mm:DefaultLiteral"> }
-TOKEN: { <MM_DEFAULT_ID: "mm:DefaultID"> }
+//TOKEN: { <MM_DEFAULT_ID: "mm:DefaultID"> }
 TOKEN: { <MM_DEFAULT_LABEL: "mm:DefaultLabel"> }
 
 TOKEN: { <MM_DEFAULT_PREFIX: "mm:DefaultPrefix"> }
@@ -283,6 +274,7 @@ TOKEN: { <MM_SHIFT_DOWN: "mm:ShiftDown"> }
 TOKEN: { <MM_SHIFT_LEFT: "mm:ShiftLeft"> }
 TOKEN: { <MM_SHIFT_RIGHT: "mm:ShiftRight"> }
 
+/*
 TOKEN: { <MM_ERROR_IF_EMPTY_LOCATION: "mm:ErrorIfEmptyLocation"> }
 TOKEN: { <MM_WARNING_IF_EMPTY_LOCATION: "mm:WarningIfEmptyLocation"> }
 TOKEN: { <MM_SKIP_IF_EMPTY_LOCATION: "mm:SkipIfEmptyLocation"> }
@@ -311,443 +303,717 @@ TOKEN: { <MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:CreateIfOWLEntityDoesNotEx
 TOKEN: { <MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:SkipIfOWLEntityDoesNotExist"> }
 TOKEN: { <MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:WarningIfOWLEntityDoesNotExist"> }
 TOKEN: { <MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:ErrorIfOWLEntityDoesNotExist"> }
+*/
+
+TOKEN: { <MM_CREATE_IF_CELL_EMPTY: "mm:CreateIfCellEmpty"> }
+TOKEN: { <MM_IGNORE_IF_CELL_EMPTY: "mm:IgnoreIfCellEmpty"> }
+TOKEN: { <MM_WARNING_IF_CELL_EMPTY: "mm:WarningIfCellEmpty"> }
+TOKEN: { <MM_ERROR_IF_CELL_EMPTY: "mm:ErrorIfCellEmpty"> }
+
+TOKEN: { <MM_CREATE_IF_ENTITY_ABSENT: "mm:CreateIfEntityAbsent"> }
+TOKEN: { <MM_IGNORE_IF_ENTITY_ABSENT: "mm:IgnoreIfEntityAbsent"> }
+TOKEN: { <MM_WARNING_IF_ENTITY_ABSENT: "mm:WarningIfEntityAbsent"> }
+TOKEN: { <MM_ERROR_IF_ENTITY_ABSENT: "mm:ErrorIfEntityAbsent"> }
+
+TOKEN: { <CREATE: "CREATE"> }
+TOKEN: { <IGNORE: "IGNORE"> }
+TOKEN: { <WARNING: "WARNING"> }
+TOKEN: { <ERROR: "ERROR"> }
 
 TOKEN:
 {
-  <STRING_LITERAL: "\"" (~["\""])* ("\"\"" (~["\""])*)* ("\\\"")* "\"" >
-| <QUOTED_NAME_LITERAL: "'" (~["'"])* ("''" (~["'"])*)* "'" >
-| <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT> | "_" | "-" | "#" | "." | ":" | "/" )* | "'" (~["'"])* "'"> 
-| <IRI_REF: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", "\u0000"-"\u0020"])* ">" >
+<IRI_REF: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", "\u0000"-"\u0020"])* ">" >
+| <STRING_LITERAL: "\"" (~["\""])* ("\"\"" (~["\""])*)* ("\\\"")* "\"" >
 | <INTEGER_LITERAL: (["-"])? (<DIGIT>)+ > 
 | <LONG_LITERAL: (["-"])? (<DIGIT>)+> 
-| <FLOAT_LITERAL:   (["-"])? (<DIGIT>)+ "." (<DIGIT>)+ (<EXPONENT>)?
+| <FLOAT_LITERAL: (["-"])? (<DIGIT>)+ "." (<DIGIT>)+ (<EXPONENT>)?
                   | (["-"])? "." (<DIGIT>)+ (<EXPONENT>)?
                   | (["-"])? (<DIGIT>)+ <EXPONENT>
                   | (["-"])? (<DIGIT>)+ (<EXPONENT>)? > 
-|
-  <#LETTER: [ "a"-"z", "A"-"Z" ]>
-|
-  <#DIGIT: ["0"-"9"] >
-| 
-  <#EXPONENT: ["e", "E"] (["+", "-"])? (<DIGIT>)+ >
-| 
-  <LOCATION_SPECIFICATION: (<LETTER> | <DIGIT> | "_" | "-" | "#" | "." | ":" | "/" | "*" )+ | "'" (~["'"])* "'"> 
+| <QUOTED_NAME: "'" (~["'"])* ("''" (~["'"])*)* "'" >
+| <#LETTER: [ "a"-"z", "A"-"Z" ]>
+| <#DIGIT: ["0"-"9"] >
+| <#EXPONENT: ["e", "E"] (["+", "-"])? (<DIGIT>)+ >
+| <CELL_NOTATION: ( (<LETTER>)+ | "*" ) ( (<DIGIT>)+ | "*" ) >
+| <NAME: <LETTER> ( <LETTER> | <DIGIT> | "_" | "-" | "." )* >
 }
 
-SimpleNode expression() #Expression : {}
+//------------------------------------------------------------------------------------------
+// MM Transformation Rule
+//------------------------------------------------------------------------------------------
+
+SimpleNode transformation_rule() #TransformationRule : {}
 {
-  (  mm_directive()
-   | mm_expression()
+  (  rule_directive()
+    | rule_expression()
   ) <EOF>
   {
-     return jjtThis;
+    return jjtThis;
   }
 }
 
-void mm_directive() #MMDirective : {}
+//------------------------------------------------------------------------------------------
+// MM Rule Directives
+//------------------------------------------------------------------------------------------
+
+void rule_directive() : {}
 {
-  (  mm_default_value_encoding_directive()
-   | mm_default_iri_encoding_directive()
-   | mm_default_reference_type_directive()
-   | mm_default_property_type_directive()
-   | mm_default_property_value_type_directive()
-   | mm_default_data_property_value_type_directive()
-   | mm_default_shift_directive()
-   | mm_default_empty_location_directive()
-   | mm_default_empty_literal_directive()
-   | mm_default_empty_rdf_id_directive()
-   | mm_default_empty_rdfs_label_directive()
-   | mm_default_if_exists_directive()
-   | mm_default_if_not_exists_directive()
-  ) 
+  ( mm_default_prefix_directive()
+    | mm_default_namespace_directive()
+    | mm_default_language_directive()
+    | mm_default_reference_type_directive()
+    | mm_default_property_type_directive()
+    | mm_default_property_value_type_directive()
+    | mm_default_property_value_datatype_directive()
+    | mm_default_value_encoding_directive()
+    | mm_default_iri_encoding_directive()
+    | mm_default_label_value_directive()
+    | mm_default_literal_value_directive()
+    | mm_default_order_if_cell_empty_directive()
+    | mm_default_order_if_entity_absent_directive()
+  )
 }
 
-void mm_expression() #MMExpression : {}
+void mm_default_prefix_directive() :
 {
-  (  owl_class_declaration() 
-   | owl_individual_declaration()
+  String defaultPrefix;
+}
+{
+  <MM_DEFAULT_PREFIX> "=" defaultPrefix = string_value()
+  {
+    prefix = defaultPrefix;
+  }
+}
+
+void mm_default_namespace_directive() :
+{
+  String defaultNamespace;
+}
+{
+  <MM_DEFAULT_NAMESPACE> "=" defaultNamespace = string_value()
+  {
+    namespace = defaultNamespace;
+  }
+}
+
+void mm_default_language_directive() :
+{
+  String defaultLanguage;
+}
+{
+  <MM_DEFAULT_LANGUAGE> "=" defaultLanguage = string_value()
+  {
+    language = defaultLanguage;
+  }
+}
+
+void mm_default_reference_type_directive() :
+{
+  int defaultReferenceType;
+}
+{
+  <MM_DEFAULT_REFERENCE_TYPE> "=" defaultReferenceType = reference_type()
+  {
+    referenceType = defaultReferenceType;
+  }
+}
+
+void mm_default_property_type_directive() :
+{
+  int defaultPropertyType;
+}
+{
+  <MM_DEFAULT_PROPERTY_TYPE> "=" defaultPropertyType = property_type()
+  {
+    propertyType = defaultPropertyType;
+  }
+}
+
+void mm_default_property_value_type_directive() :
+{
+  int defaultPropertyValueType;
+}
+{
+  <MM_DEFAULT_PROPERTY_VALUE_TYPE> "=" defaultPropertyValueType = property_value_type()
+  {
+    propertyValueType = defaultPropertyValueType;
+  }
+}
+
+void mm_default_property_value_datatype_directive() :
+{
+  int defaultPropertyValueDatatype;
+}
+{
+  <MM_DEFAULT_PROPERTY_VALUE_DATATYPE> "=" defaultPropertyValueDatatype = datatype()
+  {
+    propertyValueDatatype = defaultPropertyValueDatatype;
+  }
+}
+
+void mm_default_value_encoding_directive() :
+{
+  int defaultValueEncoding;
+}
+{
+  <MM_DEFAULT_VALUE_ENCODING> "=" defaultValueEncoding = value_encoding()
+  {
+    valueEncoding = defaultValueEncoding;
+  }
+}
+
+void mm_default_iri_encoding_directive() :
+{
+  int defaultIriEncoding;
+}
+{
+  <MM_DEFAULT_IRI_ENCODING> "=" defaultIriEncoding = iri_encoding()
+  {
+    iriEncoding = defaultIriEncoding;
+  }
+}
+
+void mm_default_shift_direction_directive() :
+{
+  int defaultShiftDirection;
+}
+{
+  <MM_DEFAULT_SHIFT_DIRECTION> "=" defaultShiftDirection = shift_direction()
+  {
+    shiftDirection = defaultShiftDirection;
+  }
+}
+
+void mm_default_label_value_directive() :
+{
+  String defaultLabelValue;
+}
+{
+  <MM_DEFAULT_LABEL> "=" defaultLabelValue = string_value()
+  {
+    labelValue = defaultLabelValue;
+  }
+}
+
+void mm_default_literal_value_directive() :
+{
+  String defaultLiteralValue;
+}
+{
+  <MM_DEFAULT_LITERAL> "=" defaultLiteralValue = string_value()
+  {
+    literalValue = defaultLiteralValue;
+  }
+}
+
+void mm_default_order_if_cell_empty_directive() :
+{
+  int defaultOrderIfCellEmpty;
+}
+{
+  <MM_DEFAULT_ORDER_IF_CELL_EMPTY> "=" defaultOrderIfCellEmpty = order_type()
+  {
+    orderIfCellEmpty = defaultOrderIfCellEmpty;
+  }
+}
+
+void mm_default_order_if_entity_absent_directive() :
+{
+  int defaultOrderIfEntityAbsent;
+}
+{
+  <MM_DEFAULT_ORDER_IF_ENTITY_ABSENT> "=" defaultOrderIfEntityAbsent = order_type()
+  {
+    orderIfEntityAbsent = defaultOrderIfEntityAbsent;
+  }
+}
+
+//------------------------------------------------------------------------------------------
+// MM Rule Expression
+//------------------------------------------------------------------------------------------
+
+void rule_expression() #RuleExpression : {}
+{
+  ( class_frame()
+   | individual_frame()
   )
   // TODO datatype, object property, data property, and annotation property declarations
   // TODO negative property assertions, disjoint classes, disjoint properties, equivalent properties
   // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
 
-void mm_default_value_encoding_directive() #MMDefaultValueEncoding: 
-{
-  int encodingType;
-}
-{
-  <MM_DEFAULT_VALUE_ENCODING> 
-      (  <RDF_ID> { encodingType = RDF_ID; }  
-       | <RDFS_LABEL> { encodingType = RDFS_LABEL; } 
-       | <MM_LITERAL> { encodingType = MM_LITERAL; } 
-       | <MM_LOCATION> { encodingType = MM_LOCATION; } 
-      )
-  {
-    jjtThis.encodingType = encodingType;
-    defaultValueEncoding = encodingType;
-  }
-}
+//------------------------------------------------------------------------------------------
+// MM Class Frame
+//------------------------------------------------------------------------------------------
 
-void mm_default_iri_encoding_directive() #MMDefaultIRIEncoding: 
+void class_frame() #ClassFrame : {}
 {
-  int encodingType;
-}
-{
-  <MM_DEFAULT_IRI_ENCODING> 
-      (  <MM_NO_ENCODE> { encodingType = MM_NO_ENCODE; } 
-       | <MM_CAMELCASE_ENCODE> { encodingType = MM_CAMELCASE_ENCODE; } 
-       | <MM_SNAKECASE_ENCODE> { encodingType = MM_SNAKECASE_ENCODE; } 
-       | <MM_UUID_ENCODE> { encodingType = MM_UUID_ENCODE; } 
-       | <MM_HASH_ENCODE> { encodingType = MM_HASH_ENCODE; } 
-      )
-  {
-    jjtThis.encodingType = encodingType;
-    defaultIRIEncoding = encodingType;
-  }
-}
-
-void mm_default_shift_directive() #MMDefaultShiftSetting: 
-{
-  int shiftSetting;
-}
-{
-  <MM_DEFAULT_SHIFT> shiftSetting = shift_directive()
-
-  {
-    jjtThis.shiftSetting = shiftSetting;
-    defaultShiftSetting = shiftSetting;
-  }
-}
-
-void mm_default_empty_location_directive() #MMDefaultEmptyLocationSetting: 
-{
-  int emptyLocationSetting;
-}
-{
-  <MM_DEFAULT_EMPTY_LOCATION> emptyLocationSetting = empty_location_directive()
-
-  {
-    jjtThis.emptyLocationSetting = emptyLocationSetting;
-    defaultEmptyLocationSetting = emptyLocationSetting;
-  }
-}
-
-void mm_default_empty_literal_directive() #MMDefaultEmptyLiteralSetting: 
-{
-  int emptyLiteralSetting;
-}
-{
-  <MM_DEFAULT_EMPTY_LITERAL> emptyLiteralSetting = empty_literal_directive()
-
-  {
-    jjtThis.emptyLiteralSetting = emptyLiteralSetting;
-    defaultEmptyLiteralSetting = emptyLiteralSetting;
-  }
-}
-
-void mm_default_if_exists_directive() #MMDefaultIfExistsSetting: 
-{
-  int ifExistsSetting;
-}
-{
-  <MM_DEFAULT_IF_OWL_ENTITY_EXISTS> ifExistsSetting = if_exists_directive()
-
-  {
-    jjtThis.ifExistsSetting = ifExistsSetting;
-    defaultIfOWLEntityExistsSetting = ifExistsSetting;
-  }
-}
-
-void mm_default_if_not_exists_directive() #MMDefaultIfNotExistsSetting: 
-{
-  int ifNotExistsSetting;
-}
-{
-  <MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST> ifNotExistsSetting = if_not_exists_directive()
-
-  {
-    jjtThis.ifNotExistsSetting = ifNotExistsSetting;
-    defaultIfOWLEntityDoesNotExistSetting = ifNotExistsSetting;
-  }
-}
-
-void mm_default_empty_rdf_id_directive() #MMDefaultEmptyRDFIDSetting: 
-{
-  int emptyRDFIDSetting;
-}
-{
-  <MM_DEFAULT_EMPTY_RDF_ID> emptyRDFIDSetting = empty_rdf_id_directive()
-
-  {
-    jjtThis.emptyRDFIDSetting = emptyRDFIDSetting;
-    defaultEmptyRDFIDSetting = emptyRDFIDSetting;
-  }
-}
-
-void mm_default_empty_rdfs_label_directive() #MMDefaultEmptyRDFSLabelSetting: 
-{
-  int emptyRDFSLabelSetting;
-}
-{
-  <MM_DEFAULT_EMPTY_RDFS_LABEL> emptyRDFSLabelSetting = empty_rdfs_label_directive()
-
-  {
-    jjtThis.emptyRDFSLabelSetting = emptyRDFSLabelSetting;
-    defaultEmptyRDFSLabelSetting = emptyRDFSLabelSetting;
-  }
-}
-
-
-void mm_default_reference_type_directive() #MMDefaultReferenceType: 
-{
-  int referenceType;
-}
-{
-  <MM_DEFAULT_REFERENCE_TYPE> referenceType = reference_type()
-
-  {
-    defaultReferenceType = referenceType;
-  }
-}
-
-void mm_default_language() #MMDefaultLanguage: 
-{
-  String language;
-}
-{
-  <MM_DEFAULT_LANGUAGE> language = identifier()
-
-  {
-    defaultLanguage = language;
-  }
-}
-
-void mm_default_prefix() #MMDefaultPrefix: 
-{
-  String prefix;
-}
-{
-  <MM_DEFAULT_PREFIX> prefix = string()
-
-  {
-    defaultPrefix = prefix;
-  }
-}
-
-void mm_default_namespace() #MMDefaultNamespace: 
-{
-  String namespace;
-}
-{
-  <MM_DEFAULT_NAMESPACE> namespace = string()
-
-  {
-    defaultNamespace = namespace;
-  }
-}
-
-void mm_default_property_value_type_directive() #MMDefaultPropertyValueType: 
-{
-  int defaultType;
-}
-{
-  <MM_DEFAULT_PROPERTY_VALUE_TYPE> defaultType = reference_type()
- {
-   jjtThis.defaultType = defaultType;
-   defaultPropertyValueType = defaultType;
- }
-}
-
-void mm_default_data_property_value_type_directive() #MMDefaultDatatypePropertyValueType: 
-{
-  int defaultType;
-}
-{
-  <MM_DEFAULT_DATA_PROPERTY_VALUE_TYPE> defaultType = datatype()
- {
-   jjtThis.defaultType = defaultType;
-   defaultDataPropertyValueType = defaultType;
- }
-}
-
-void mm_default_annotation_property_value_type_directive() #MMDefaultAnnotationPropertyValueType: 
-{
-  int defaultReferenceType;
-}
-{
-  <MM_DEFAULT_ANNOTATION_PROPERTY_VALUE_TYPE> defaultReferenceType = reference_type()
- {
-   jjtThis.defaultType = defaultReferenceType;
-   defaultAnnotationPropertyValueType = defaultReferenceType;
- }
-}
-
-void mm_default_property_type_directive() #MMDefaultPropertyType: 
-{
-  Token t;
-}
-{
-  <MM_DEFAULT_PROPERTY_TYPE> (  t = <OWL_DATA_PROPERTY> 
-                              | t = <OWL_OBJECT_PROPERTY>)
- {
-   jjtThis.defaultType = t.kind;;
-   defaultPropertyType = t.kind;
- }
-}
-
-void owl_class_declaration() #OWLClassDeclaration : {}
-{
-  <CLASS> owl_class(defaultClassValueEncoding)
-    ( <ANNOTATIONS> annotation_fact_list()
-     | owl_equivalent_classes() 
-     | owl_subclass_of()
-    ) *
+  class_declaration()
+  ( subclass_of()
+    | equivalent_classes()
+    | annotation_assertion()
+  )*
   // TODO Other clauses: DisjointWith, DisjoinUnionOf, HasKey
   // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
 
-void owl_equivalent_classes() #OWLEquivalentClasses : {}
+void class_declaration() #ClassDeclaration : {}
 {
-   <EQUIVALENT_TO> owl_class_expression_with_condition() ( "," owl_class_expression_with_condition() )*
-} 
-
-void owl_subclass_of() #OWLSubclassOf : {}
-{
-   <SUBCLASS_OF> owl_class_expression_with_condition() ( "," owl_class_expression_with_condition() )*
-} 
-
-void owl_individual_declaration() #OWLIndividualDeclaration : {}
-{
-  <INDIVIDUAL> owl_named_individual(defaultIndividualValueEncoding)
-  ( <FACTS> fact_list()
-     | <TYPES> type_list()
-     | <ANNOTATIONS> annotation_fact_list()
-     | owl_same_as()
-     | owl_different_from()
-  ) *
+  <CLASS> atomic_class()
 }
 
-void owl_same_as() #OWLSameAs : {}
+void subclass_of() #SubclassOf : {}
 {
-  <SAME_AS> owl_named_individual(defaultValueEncoding) ( "," owl_named_individual(defaultValueEncoding) )*
+  <SUBCLASS_OF> class_expression() ( "," class_expression() )*
 }
 
-void owl_different_from() #OWLDifferentFrom : {}
+void equivalent_classes() #EquivalentClasses : {}
 {
-  <DIFFERENT_FROM>  owl_named_individual(defaultValueEncoding) ( "," owl_named_individual(defaultValueEncoding) )*
+  <EQUIVALENT_TO> class_expression() ( "," class_expression() )*
 }
 
-void fact_list() : {}
+void annotation_assertion() #AnnotationAssertion : {}
 {
-  fact() ( "," fact() )*
+  <ANNOTATIONS> annotation() ( "," annotation() )*
 }
 
-void annotation_fact_list() : {}
+void annotation() #Annotation : {}
 {
-  annotation_fact() ( "," annotation_fact() )*
+  annotation_property() value(propertyValueType)
 }
 
-void fact() #Fact: {}
+//------------------------------------------------------------------------------------------
+// MM Individual Frame
+//------------------------------------------------------------------------------------------
+
+void individual_frame() #IndividualFrame : {}
 {
-  owl_property() owl_property_assertion_object(defaultPropertyValueType)
+  individual_declaration()
+  ( class_assertion()
+    | property_assertion()
+    | annotation_assertion()
+    | same_as()
+    | different_from()
+  )*
 }
 
-void annotation_fact() #AnnotationFact: {}
+void individual_declaration() #IndividualDeclaration : {}
 {
-  owl_annotation_property() owl_annotation_value(defaultAnnotationPropertyValueType)
+  <INDIVIDUAL> named_individual()
 }
 
-void owl_annotation_property() #OWLAnnotationProperty: {}
+void class_assertion() #ClassAssertion : {}
 {
-  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding, defaultIRIEncoding)
+  <TYPES> class_expression() ( "," class_expression() )*
 }
 
-void owl_class_name() : {}
+void property_assertion() #PropertyAssertion : {}
 {
-  name()
-}
-
-void owl_property_name() : {}
-{
-  name()
-}
-
-void owl_individual_name() : {}
-{
-  name()
-}
-
-void name() #Name:
-{
-  String name;
-  boolean isQuotedName = false;
-}
-{
-  (  <RDFS_LABEL> { name = "rdfs:label"; }
-   | name = identifier() 
-   | name = quoted_name() { isQuotedName = true; }
+  <FACTS> ( LOOKAHEAD(2) data_property_assertion_list()
+    | LOOKAHEAD(2) object_property_assertion_list()
   )
+}
 
-  { 
-    jjtThis.name = name; 
-    jjtThis.isQuotedName = isQuotedName; 
+void data_property_assertion_list() : {}
+{
+  data_property_assertion() ( "," data_property_assertion() )*
+}
+
+void object_property_assertion_list() : {}
+{
+  object_property_assertion() ( "," object_property_assertion() )*
+}
+
+void data_property_assertion() #DataPropertyAssertion : {}
+{
+  data_property() literal_value()
+}
+
+void object_property_assertion() #ObjectPropertyAssertion : {}
+{
+  object_property() object_value()
+}
+
+void same_as() #SameAs : {}
+{
+  <SAME_AS> named_individual() ( "," named_individual() )*
+}
+
+void different_from() #DifferentFrom : {}
+{
+  <DIFFERENT_FROM>  named_individual() ( "," named_individual() )*
+}
+
+//------------------------------------------------------------------------------------------
+// OWL Class Expression
+//------------------------------------------------------------------------------------------
+
+void class_expression() #ClassExpressionCategory : {}
+{
+  ( LOOKAHEAD(3) atomic_class()
+    | "(" boolean_class_expression() ")"
+    | object_one_of()
+    | restriction()
+  )
+}
+
+void atomic_class() #Class : {}
+{
+  value(OWL_CLASS)
+}
+
+void boolean_class_expression() : {}
+{
+  ( object_union_of()
+    | object_complement_of()
+  )
+}
+
+void object_union_of() #ObjectUnion : {}
+{
+  object_intersection_of() ( <OR> object_intersection_of() )*
+}
+
+void object_intersection_of() #ObjectIntersection : {}
+{
+  class_expression() ( <AND> class_expression() )*
+}
+
+void object_complement_of() #ObjectComplement : {}
+{
+  <NOT> class_expression()
+}
+
+void object_one_of() #ObjectOneOf : {}
+{
+  "{" named_individual() ( "," named_individual() )* "}"
+}
+
+//------------------------------------------------------------------------------------------
+// OWL Restriction
+//------------------------------------------------------------------------------------------
+
+void restriction() : {}
+{
+  ( LOOKAHEAD(2) exact_cardinality()
+    | LOOKAHEAD(2) max_cardinality()
+    | LOOKAHEAD(2) min_cardinality()
+    | LOOKAHEAD(2) has_value()
+    | LOOKAHEAD(2) all_values_from()
+    | some_values_from()
+  )
+}
+
+void exact_cardinality() : {}
+{
+  ( LOOKAHEAD(4) data_exact_cardinality()
+    | object_exact_cardinality()
+  )
+}
+
+void data_exact_cardinality() #DataExactCardinality :
+{
+  int cardinality;
+  int datatype;
+}
+{
+  data_property() <EXACTLY> cardinality = cardinality_value() datatype = datatype()
+  {
+    jjtThis.cardinality = cardinality;
+    jjtThis.datatype = datatype;
   }
 }
 
-void owl_annotation_value(int defaultPropertyValueType) #OWLAnnotationValue : {}
+void object_exact_cardinality() #ObjectExactCardinality :
 {
-  (  reference(defaultPropertyValueType, defaultValueEncoding, defaultIRIEncoding) 
-   | name() 
-   | owl_literal() 
-   | iri_ref()
+  int cardinality;
+  boolean hasExplicitClassExpression = false;
+}
+{
+  object_property() <EXACTLY> cardinality = cardinality_value()
+      ( "(" class_expression() ")" { hasExplicitClassExpression = true; } )?
+  {
+    jjtThis.cardinality = cardinality;
+    jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
+  }
+}
+
+void max_cardinality() : {}
+{
+  ( LOOKAHEAD(4) data_max_cardinality()
+    | object_max_cardinality()
   )
 }
 
-void owl_literal() #OWLLiteral : {}
+void data_max_cardinality() #DataMaxCardinality :
 {
-  (  integer_literal() 
-   | float_literal() 
-   | boolean_literal() 
-   | string_literal() 
+  int cardinality;
+  int datatype;
+}
+{
+  data_property() <MAX> cardinality = cardinality_value() datatype = datatype()
+  {
+    jjtThis.cardinality = cardinality;
+    jjtThis.datatype = datatype;
+  }
+}
+
+void object_max_cardinality() #ObjectMaxCardinality :
+{
+  int cardinality;
+  boolean hasExplicitClassExpression = false;
+}
+{
+  object_property() <MAX> cardinality = cardinality_value()
+      ( "(" class_expression() ")" { hasExplicitClassExpression = true; } )?
+      
+  {
+    jjtThis.cardinality = cardinality;
+    jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
+  }
+}
+
+void min_cardinality() : {}
+{
+  ( LOOKAHEAD(4) data_min_cardinality()
+    | object_min_cardinality()
+  )
+}
+
+void data_min_cardinality() #DataMinCardinality :
+{
+  int cardinality;
+  int datatype;
+}
+{
+  data_property() <MIN> cardinality = cardinality_value() datatype = datatype()
+  {
+    jjtThis.cardinality = cardinality;
+    jjtThis.datatype = datatype;
+  }
+}
+
+void object_min_cardinality() #ObjectMinCardinality :
+{
+  int cardinality;
+  boolean hasExplicitClassExpression = false;
+}
+{
+  object_property() <MIN> cardinality = cardinality_value()
+      ( "(" class_expression() ")" { hasExplicitClassExpression = true; } )?
+      
+  {
+    jjtThis.cardinality = cardinality;
+    jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
+  }
+}
+
+int cardinality_value() :
+{
+  int cardinality;
+}
+{
+  cardinality  = integer_value()
+  {
+    return cardinality;
+  }
+}
+
+void has_value() : {}
+{
+  ( LOOKAHEAD(3) data_has_value()
+    | object_has_value()
+  )
+}
+
+void data_has_value() #DataHasValue : {}
+{
+  data_property() <VALUE> literal_value()
+}
+
+void object_has_value() #ObjectHasValue : {}
+{
+  object_property() <VALUE> object_value()
+}
+
+void all_values_from() : {}
+{
+  ( LOOKAHEAD(3) data_all_values_from()
+    | object_all_values_from()
+  )
+}
+
+void data_all_values_from() #DataAllValuesFrom :
+{
+  int datatype;
+}
+{
+  property() <ONLY> datatype = datatype()
+  {
+    jjtThis.datatype = datatype;
+  }
+}
+
+void object_all_values_from() #ObjectAllValuesFrom : {}
+{
+  property() <ONLY> class_expression()
+}
+
+void some_values_from() : {}
+{
+  ( LOOKAHEAD(3) data_some_values_from()
+    | object_some_values_from()
+  )
+}
+
+void data_some_values_from() #DataSomeValuesFrom :
+{
+  int datatype;
+}
+{
+  property() <SOME> datatype = datatype()
+  {
+    jjtThis.datatype = datatype;
+  }
+}
+
+void object_some_values_from() #ObjectSomeValuesFrom : {}
+{
+  property() <SOME> class_expression()
+}
+
+//------------------------------------------------------------------------------------------
+// OWL Property
+//------------------------------------------------------------------------------------------
+
+void property() #Property : {}
+{
+  value(propertyType)
+}
+
+void data_property() #DataProperty : {}
+{
+  value(OWL_DATA_PROPERTY)
+}
+
+void object_property() #ObjectProperty : {}
+{
+  value(OWL_OBJECT_PROPERTY)
+}
+
+void annotation_property() #AnnotationProperty: {}
+{
+  value(OWL_ANNOTATION_PROPERTY)
+}
+
+//------------------------------------------------------------------------------------------
+// OWL Named Individual
+//------------------------------------------------------------------------------------------
+
+void named_individual() #NamedIndividual : {}
+{
+  value(OWL_NAMED_INDIVIDUAL)
+}
+
+//------------------------------------------------------------------------------------------
+// Value Category
+//------------------------------------------------------------------------------------------
+
+void value(int referenceType) #ValueCategory : {}
+{
+  ( reference(referenceType)
+    | name()
+    | iri()
+    | literal()
+  )
+}
+
+void literal_value() #LiteralValue : {}
+{
+  ( reference(OWL_LITERAL)
+    | literal()
+  )
+}
+
+void object_value() #ObjectValue() : {}
+{
+  ( reference(OWL_NAMED_INDIVIDUAL)
+    | name()
+  )
+}
+
+void reference(int type) #Reference :
+{
+  int localReferenceType = type;
+  ReferenceDirectives referenceDirectives;
+}
+{
+  "@" reference_notation()
+       ( LOOKAHEAD(2)
+         "(" ( localReferenceType = reference_type() )?
+             ( reference_directive() )*
+         ")"
+       )?
+  {
+    referenceType = localReferenceType;
+    jjtThis.referenceDirectives = new ReferenceDirectives(
+        prefix, namespace, language, labelValue, literalValue,
+        referenceType, propertyType, propertyValueType, propertyValueDatatype,
+        valueEncoding, iriEncoding, shiftDirection,
+        orderIfCellEmpty, orderIfEntityAbsent);
+  }
+}
+
+void name() #Name :
+{
+  Token t;
+}
+{
+  t = <NAME>
+  {
+    jjtThis.value = t.image;
+  }
+}
+
+void iri() #Iri :
+{
+  Token t;
+}
+{
+  t = <IRI_REF>
+  {
+    jjtThis.value = t.image;
+  }
+}
+
+void literal() #Literal : {}
+{
+  ( integer_literal()
+   | float_literal()
+   | string_literal()
+   | boolean_literal()
   )
 } 
 
 void integer_literal() #IntegerLiteral :
 {
-  Token t;
+  int value;
 }
 {
-  t = <INTEGER_LITERAL>
-
+  value = integer_value()
   {
-    jjtThis.value = Integer.valueOf(token.image);
+    jjtThis.value = value;
   }
 }
 
 void float_literal() #FloatLiteral :
 {
-  Token t;
+  float value;
 }
 {
-  t = <FLOAT_LITERAL>
-
+  value = float_value()
   {
-    jjtThis.value = Float.valueOf(token.image);
-  }
-}
-
-
-String string() : 
-{
-  Token t;
-}
-{
-  t = <STRING_LITERAL> 
-
-  {
-    String s = t.image;
-    return s.substring(1, s.length() - 1);
+    jjtThis.value = value;
   }
 }
 
@@ -756,8 +1022,7 @@ void string_literal() #StringLiteral :
   String value;
 }
 {
-  value = string()
-
+  value = string_value()
   {
     jjtThis.value = value;
   }
@@ -768,691 +1033,386 @@ void boolean_literal() #BooleanLiteral :
   boolean value;
 }
 {
-  ( <TRUE> { value = true; } | <FALSE> { value = false; } )
-
+  value = boolean_value()
   {
     jjtThis.value = value;
   }
 }
 
-void iri_ref() #IRIRef : 
+//------------------------------------------------------------------------------------------
+// Cell Reference
+//------------------------------------------------------------------------------------------
+
+void reference_notation() #ReferenceNotation :
+{
+  String sheetName = null;
+  String cellNotation;
+}
+{
+  ( ( sheetName = quoted_name() "!" )? cellNotation = cell_notation() )
+  {
+    jjtThis.referenceNotation = new ReferenceNotation(Optional.ofNullable(sheetName), cellNotation);
+  }
+}
+
+String quoted_name() :
 {
   Token t;
 }
 {
-  t = <IRI_REF> 
+  t = <QUOTED_NAME>
   {
-    jjtThis.value = t.image;
+    String s = t.image;
+    return s.substring(1, s.length() - 1);
   }
 }
 
-void owl_class_expression() #OWLClassExpression :
+String cell_notation() :
 {
-  boolean isNegated = false;
+  Token t;
 }
 {
-  ( <NOT> { isNegated = true; } )? ( LOOKAHEAD(owl_restriction()) owl_restriction() 
-                                     | owl_class(defaultClassValueEncoding) 
-                                     | "(" owl_union_class() ")" ) // parenthesized union expression
-                                   { jjtThis.isNegated = isNegated; }
+  t = <CELL_NOTATION>
+  {
+     return t.image;
+  }
 }
 
-void owl_class_expression_with_condition() #OWLClassExpression : {}
-{
-  owl_union_class()}
+//------------------------------------------------------------------------------------------
+// Reference Directives
+//------------------------------------------------------------------------------------------
 
-void owl_union_class() #OWLUnionClass : {}
+void reference_directive() :
 {
-  owl_intersection_class() ( <OR> owl_intersection_class() )*}
-
-void owl_intersection_class() #OWLIntersectionClass : {}
-{
-  owl_class_expression() ( <AND> owl_class_expression() )*
-}
-
-void owl_object_one_of() #OWLObjectOneOf : {}
-{
-  "{" owl_named_individual(defaultIndividualValueEncoding) ( "," owl_named_individual(defaultIndividualValueEncoding) )* "}"
-}
-
-void owl_class(int defaultValueEncoding) #OWLClass : {}
-{
-  owl_class_name() | reference(OWL_CLASS, defaultValueEncoding, defaultIRIEncoding)
-} 
-
-void owl_named_individual(int defaultValueEncoding) #OWLNamedIndividual : {}
-{
-  owl_individual_name() | reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding, defaultIRIEncoding)
-} 
-
-void owl_property() #OWLProperty : {}
-{
-  owl_property_name() | reference(defaultPropertyType, defaultPropertyValueEncoding, defaultIRIEncoding)
-} 
-
-void type_list() : {}
-{
-  type() ( "," type() )*
-}
-
-void type() #Type: {}
-{
-  owl_class_expression_with_condition()
-}
-
-void value_specification_item() #ValueSpecificationItem : 
-{
-  String stringLiteral = null;
-  String captureExpression = null;
+  int localValueEncoding;
+  int localIriEncoding;
+  int localShiftDirection;
+  int localOrderIfCellEmpty;
+  int localOrderIfEntityAbsent;
 }
 {
-  (  stringLiteral = string() 
-   | reference(XSD_STRING, defaultValueEncoding, defaultIRIEncoding) 
-   | value_extraction_function() 
-//   | ( "[" captureExpression = string() "]" )
+  ( prefix_directive()
+   | namespace_directive()
+   | language_directive()
+   | builtin_function()
+   | localValueEncoding = value_encoding() { valueEncoding = localValueEncoding; }
+   | localIriEncoding = iri_encoding() { iriEncoding = localIriEncoding; }
+   | localShiftDirection = shift_direction() { shiftDirection = localShiftDirection; }
+   | localOrderIfCellEmpty = order_if_cell_empty() { orderIfCellEmpty = localOrderIfCellEmpty; }
+   | localOrderIfEntityAbsent = order_if_entity_absent() { orderIfEntityAbsent = localOrderIfEntityAbsent; }
   )
+}
+
+void prefix_directive() :
+{
+  String prefixValue;
+}
+{
+  <MM_PREFIX> "=" prefixValue = string_value()
   {
-    jjtThis.stringLiteral = stringLiteral;
-    jjtThis.captureExpression = captureExpression;
+    prefix = prefixValue;
   }
 }
 
+void namespace_directive() :
+{
+  String namespaceValue;
+}
+{
+  <MM_NAMESPACE> "=" namespaceValue = string_value()
+  {
+    namespace = namespaceValue;
+  }
+}
 
-String identifier() :
+void language_directive() :
+{
+  String languageValue;
+}
+{
+  <XML_LANG> ( "=" ( <MM_NULL> { languageValue = ""; }
+                     | "*" { languageValue = "*"; }
+                     | languageValue = string_value()
+                   )
+               | ( "!" "=" <MM_NULL> { languageValue = "+"; } )
+             )
+  {
+    language = languageValue;
+  }
+}
+
+//------------------------------------------------------------------------------------------
+// Value Extraction Functions
+//------------------------------------------------------------------------------------------
+
+void builtin_function() #BuiltInFunction :
 {
   Token t;
+  int functionType;
 }
 {
-  t = <IDENTIFIER>
-
-  { return t.image; }
-}
-
-String location_specification() :
-{
-  Token t;
-}
-{
-  t = <LOCATION_SPECIFICATION>
-
-  { return t.image; }
-}
-
-void source_specification() #SourceSpecification : 
-{
-  String source = null;
-  String location = null;
-  String literal = null;
-  Token t;
-}
-{ 
   (
-     ( ( source = quoted_name() "!" )? ( location = location_specification() | location = identifier() ) )
-   | literal = string()
+    (
+      ( t = <MM_TO_UPPER_CASE> { functionType = t.kind; }
+        | t = <MM_TO_LOWER_CASE> { functionType = t.kind; }
+        | t = <MM_TRIM> { functionType = t.kind; }
+        | t = <MM_PRINTF> { functionType = t.kind; }
+        | t = <MM_DECIMAL_FORMAT> { functionType = t.kind; }
+        | t = <MM_REVERSE> { functionType = t.kind; }
+        | t = <MM_CAPTURING> { functionType = t.kind; }
+        | t = <MM_REPLACE> { functionType = t.kind; }
+        | t = <MM_REPLACE_ALL> { functionType = t.kind; }
+        | t = <MM_REPLACE_FIRST> { functionType = t.kind; }
+        | t = <MM_APPEND> { functionType = t.kind; }
+        | t = <MM_PREPEND> { functionType = t.kind; }
+      ) ( "(" argument_list() ")" )?
+    )
+    | ( "[" ( argument_list() )? "]" ) { functionType = MM_CAPTURING; }
   )
-
-  { 
-     jjtThis.source = source;
-     jjtThis.location = location;
-     jjtThis.literal = literal;
-  }
-}
-
-void owl_restriction() #OWLRestriction : {}
-{
-  owl_property() (  owl_max_cardinality_restriction()  
-                  | owl_min_cardinality_restriction() 
-                  | owl_exact_cardinality_restriction()
-                  | owl_has_value_restriction() 
-                  | owl_all_values_from_restriction() 
-                  | owl_some_values_from_restriction() 
-                 )
-}
-
-void owl_exact_cardinality_restriction() #OWLExactCardinalityRestriction :
-{
-  int cardinality;
-}
-{
-  <EXACTLY> cardinality = cardinality_value()
   {
-    jjtThis.cardinality = cardinality;
+    jjtThis.functionType = functionType;
   }
 }
 
-void owl_max_cardinality_restriction() #OWLMaxCardinalityRestriction :
+void argument_list() : {}
 {
-  int cardinality;
-}
-{
-  <MAX> cardinality = cardinality_value()
-
-  {
-    jjtThis.cardinality = cardinality;
-  }
+  argument() ( "," argument() )*
 }
 
-void owl_min_cardinality_restriction() #OWLMinCardinalityRestriction :
+void argument() #Argument : {}
 {
-  int cardinality;
-}
-{
-   <MIN> cardinality = cardinality_value()
-
-  {
-    jjtThis.cardinality = cardinality;
-  }
-}
-
-void owl_has_value_restriction() #OWLHasValueRestriction : {}
-{
-  <VALUE> (  reference(OWL_NAMED_INDIVIDUAL, defaultValueEncoding, defaultIRIEncoding) 
-           | name() 
-           | owl_literal() 
-          )
-}
-
-void owl_all_values_from_restriction() #OWLAllValuesFromRestriction : {}
-{
-  LOOKAHEAD(2) owl_data_all_values_from() | LOOKAHEAD(2) owl_object_all_values_from() 
-}
-
-void owl_data_all_values_from() #OWLDataAllValuesFrom :
-{
-  int datatype;
-}
-{
-  <ONLY> datatype = datatype()
-  {
-    jjtThis.datatype = datatype;
-  }
-}
-
-void owl_object_all_values_from() #OWLObjectAllValuesFrom : {}
-{
-  <ONLY> (owl_class(defaultClassValueEncoding) 
-          | "(" owl_class_expression() ")" // parenthesized class expression
-          | owl_object_one_of()
-         )
-}
-
-void owl_some_values_from_restriction() #OWLSomeValuesFromRestriction : {}
-{
-  LOOKAHEAD(2) owl_data_some_values_from() | LOOKAHEAD(2) owl_object_some_values_from() 
-}
-
-void owl_object_some_values_from() #OWLObjectSomeValuesFrom : {}
-{
-  <SOME> (owl_class(defaultClassValueEncoding) | "(" owl_class_expression() ")" )
-}
-
-void owl_data_some_values_from() #OWLDataSomeValuesFrom :
-{
-  int datatype;
-}
-{
-  <SOME> datatype = datatype()
-  {
-    jjtThis.datatype = datatype;
-  }
-}
-
-
-void owl_property_assertion_object(int defaultPropertyValueType) #OWLPropertyAssertionObject : {}
-{
-  (  reference(defaultPropertyValueType, defaultValueEncoding, defaultIRIEncoding) 
-   | name() 
-   | owl_literal() 
+  ( reference(XSD_STRING)
+    | literal()
   )
 }
+
+//------------------------------------------------------------------------------------------
+// Literal Values
+//------------------------------------------------------------------------------------------
 
 int integer_value() :
 {
   Token t;
 }
 {
-  t=<INTEGER_LITERAL>
+  t = <INTEGER_LITERAL>
   {
     return Integer.parseInt(t.image);
   }
 }
 
-int cardinality_value() :
+float float_value() :
 {
- int cardinality;
+  Token t;
 }
 {
-  cardinality  = integer_value()
-
+  t = <FLOAT_LITERAL>
   {
-    return cardinality;
+    return Float.valueOf(t.image);
   }
 }
 
-// Note that this is not an exhuastive list of datatypes
+String string_value() :
+{
+  Token t;
+  String str;
+}
+{
+  t = <STRING_LITERAL> 
+  {
+    str = t.image;
+    return str.substring(1, str.length() - 1);
+  }
+}
+
+boolean boolean_value() :
+{
+  Token t;
+  boolean value;
+}
+{
+  ( <TRUE> { value = true; } | <FALSE> { value = false; } )
+  {
+    return value;
+  }
+}
+
+//------------------------------------------------------------------------------------------
+// Literal Datatypes
+//------------------------------------------------------------------------------------------
 
 int datatype() :
 {
   Token t;
 }
 {
- (
-     t = <XSD_STRING>
-   | t = <XSD_DECIMAL>
-   | t = <XSD_BYTE>
-   | t = <XSD_SHORT> 
-   | t = <XSD_INTEGER>
-   | t = <XSD_LONG>
-   | t = <XSD_FLOAT>
-   | t = <XSD_DOUBLE>
-   | t = <XSD_BOOLEAN>
-   | t = <XSD_TIME>
-   | t = <XSD_DATETIME>
-   | t = <XSD_DATE>
-   | t = <XSD_DURATION>
-   | t = <RDF_PLAINLITERAL>
- )
+  ( t = <XSD_STRING>
+    | t = <XSD_DECIMAL>
+    | t = <XSD_BYTE>
+    | t = <XSD_SHORT> 
+    | t = <XSD_INTEGER>
+    | t = <XSD_LONG>
+    | t = <XSD_FLOAT>
+    | t = <XSD_DOUBLE>
+    | t = <XSD_BOOLEAN>
+    | t = <XSD_TIME>
+    | t = <XSD_DATETIME>
+    | t = <XSD_DATE>
+    | t = <XSD_DURATION>
+    | t = <RDF_PLAINLITERAL>
+  )
   {
     return t.kind;
   }
 }
 
-void reference(int defaultReferenceType, int defaultValueEncoding, int defaultIRIEncoding) #Reference : {}
-{
-   "@" source_specification()
-       ( LOOKAHEAD(2) 
-         "(" ( reference_type() )?
-             ( reference_directive(defaultValueEncoding, defaultIRIEncoding) )*
-         ")"
-       )?
-  {
-    jjtThis.defaultReferenceDirectives = new DefaultReferenceDirectives(
-                        defaultReferenceType, defaultValueEncoding, defaultIRIEncoding,
-                        defaultLocationValue, defaultLiteral, defaultID, defaultLabel,
-                        defaultLanguage, defaultPrefix, defaultNamespace,
-                        defaultShiftSetting, defaultEmptyLocationSetting,
-                        defaultEmptyLiteralSetting, defaultEmptyRDFIDSetting,
-                        defaultEmptyRDFSLabelSetting, defaultIfOWLEntityExistsSetting,
-                        defaultIfOWLEntityDoesNotExistSetting);
+//------------------------------------------------------------------------------------------
+// Enumeration Types
+//------------------------------------------------------------------------------------------
 
+int value_encoding() :
+{
+  Token t;
+  int encodingType;
+}
+{
+  ( t = <RDF_ID> { encodingType = t.kind; }
+    | t = <RDFS_LABEL> { encodingType = t.kind; }
+    | t = <OWL_LITERAL> { encodingType = t.kind; }
+  )
+  {
+    return encodingType;
   }
 }
 
-void reference_directive(int defaultValueEncoding, int defaultIRIEncoding) : {}
-{
-  (  namespace_directive()  
-   | prefix_directive() 
-   | language_directive()
-   | value_extraction_function() 
-   | value_encoding_directive(defaultValueEncoding) 
-   | iri_encoding_directive(defaultIRIEncoding) 
-   | default_location_value_directive() 
-   | default_literal_directive() 
-   | default_label_directive() 
-   | default_id_directive() 
-   | empty_literal_directive()
-   | empty_location_directive()
-   | empty_rdf_id_directive() 
-   | empty_rdfs_label_directive() 
-   | shift_directive() 
-   | if_exists_directive()
-   | if_not_exists_directive()
-  ) 
-}
-
-int reference_type() #ReferenceType : 
+int iri_encoding() :
 {
   Token t;
-  int referenceType = defaultReferenceType;
+  int encodingType;
 }
 {
-  (
-     t = <RDFS_CLASS> { referenceType = t.kind; }
-   | t = <RDF_PROPERTY> { referenceType = t.kind; }
-   | t = <OWL_CLASS> { referenceType = t.kind; }
+  ( t = <MM_NO_ENCODE> { encodingType = t.kind; }
+    | t = <MM_CAMELCASE_ENCODE> { encodingType = t.kind; }
+    | t = <MM_SNAKECASE_ENCODE> { encodingType = t.kind; }
+    | t = <MM_UUID_ENCODE> { encodingType = t.kind; }
+    | t = <MM_HASH_ENCODE> { encodingType = t.kind; }
+  )
+  {
+    return encodingType;
+  }
+}
+
+int reference_type() #ReferenceType :
+{
+  Token t;
+  int referenceType;
+}
+{
+  ( t = <OWL_CLASS> { referenceType = t.kind; }
    | t = <OWL_NAMED_INDIVIDUAL> { referenceType = t.kind; }
    | t = <OWL_OBJECT_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_DATA_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_ANNOTATION_PROPERTY> { referenceType = t.kind; }
-   | t = <MM_IRI> { referenceType = t.kind; }
    | t = <OWL_IRI> { referenceType = t.kind; }
    | t = <MM_ENTITY_IRI> { referenceType = t.kind; }
    | referenceType = datatype()
-  ) 
-
+  )
   {
-    jjtThis.referenceType = referenceType;
     return referenceType;
   }
 }
 
-int value_encoding_directive(int defaultValueEncoding) #ValueEncoding : 
-{
-  int encodingType = defaultValueEncoding;
-}
-{
-  (
-      <MM_LOCATION> { encodingType = MM_LOCATION; }
-    | <MM_LOCATION_WITH_DUPLICATES> { encodingType = MM_LOCATION_WITH_DUPLICATES; }
-    |
-     (
-      (  <RDF_ID> { encodingType = RDF_ID; } 
-       | <RDFS_LABEL> { encodingType = RDFS_LABEL; } 
-       | <MM_LITERAL> { encodingType = MM_LITERAL; } 
-      )
-      ( value_specification() )?
-    )
-  )
-  {
-    jjtThis.encodingType = encodingType;
-    return encodingType;
-  }
-}
-
-int iri_encoding_directive(int defaultIRIEncoding) #IRIEncoding :
-{
-  int encodingType = defaultIRIEncoding;
-}
-{
-  (
-      <MM_NO_ENCODE> { encodingType = MM_NO_ENCODE; }
-    | <MM_CAMELCASE_ENCODE> { encodingType = MM_CAMELCASE_ENCODE; }
-    | <MM_SNAKECASE_ENCODE> { encodingType = MM_SNAKECASE_ENCODE; }
-    | <MM_UUID_ENCODE> { encodingType = MM_UUID_ENCODE; }
-    | <MM_HASH_ENCODE> { encodingType = MM_HASH_ENCODE; }
-  )
-  {
-    jjtThis.encodingType = encodingType;
-    return encodingType;
-  }
-}
-
-int empty_location_directive() #EmptyLocationSetting :
+int property_type() :
 {
   Token t;
-  int emptyLocationSetting;
+  int propertyType;
 }
 {
-  (
-     t = <MM_ERROR_IF_EMPTY_LOCATION> { emptyLocationSetting = t.kind; }
-   | t = <MM_WARNING_IF_EMPTY_LOCATION> { emptyLocationSetting = t.kind; }
-   | t = <MM_SKIP_IF_EMPTY_LOCATION> { emptyLocationSetting = t.kind; }
-   | t = <MM_PROCESS_IF_EMPTY_LOCATION> { emptyLocationSetting = t.kind; }
-  )
-
-  {
-    jjtThis.emptyLocationSetting = emptyLocationSetting;
-    return emptyLocationSetting;
-  }
-}
-
-int if_exists_directive() #IfExistsDirective :
-{
-  Token t;
-  int ifExistsSetting;
-}
-{
-  (
-     t = <MM_RESOLVE_IF_OWL_ENTITY_EXISTS> { ifExistsSetting = t.kind; }
-   | t = <MM_SKIP_IF_OWL_ENTITY_EXISTS> { ifExistsSetting = t.kind; }
-   | t = <MM_WARNING_IF_OWL_ENTITY_EXISTS> { ifExistsSetting = t.kind; }
-   | t = <MM_ERROR_IF_OWL_ENTITY_EXISTS> { ifExistsSetting = t.kind; }
-  )
-
-  {
-    jjtThis.ifExistsSetting = ifExistsSetting;
-    return ifExistsSetting;
-  }
-}
-
-int if_not_exists_directive() #IfNotExistsDirective :
-{
-  Token t;
-  int ifNotExistsSetting;
-}
-{
-  (
-     t = <MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST> { ifNotExistsSetting = t.kind; }
-   | t = <MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST> { ifNotExistsSetting = t.kind; }
-   | t = <MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST> { ifNotExistsSetting = t.kind; }
-   | t = <MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST> { ifNotExistsSetting = t.kind; }
-  )
-
-  {
-    jjtThis.ifNotExistsSetting = ifNotExistsSetting;
-    return ifNotExistsSetting;
-  }
-}
-
-int empty_literal_directive() #EmptyLiteralSetting :
-{
-  Token t;
-  int emptyLiteralSetting;
-}
-{
-  (
-     t = <MM_ERROR_IF_EMPTY_LITERAL> { emptyLiteralSetting = t.kind; }
-   | t = <MM_WARNING_IF_EMPTY_LITERAL> { emptyLiteralSetting = t.kind; }
-   | t = <MM_SKIP_IF_EMPTY_LITERAL> { emptyLiteralSetting = t.kind; }
-   | t = <MM_PROCESS_IF_EMPTY_LITERAL> { emptyLiteralSetting = t.kind; }
-  )
-
-  {
-    jjtThis.emptyLiteralSetting = emptyLiteralSetting;
-    return emptyLiteralSetting;
-  }
-}
-
-int empty_rdfs_label_directive() #EmptyRDFSLabelSetting :
-{
-  Token t;
-  int emptyRDFSLabelSetting;
-}
-{
-  (
-     t = <MM_ERROR_IF_EMPTY_LABEL> { emptyRDFSLabelSetting = t.kind; }
-   | t = <MM_WARNING_IF_EMPTY_LABEL> { emptyRDFSLabelSetting = t.kind; }
-   | t = <MM_SKIP_IF_EMPTY_LABEL> { emptyRDFSLabelSetting = t.kind; }
-   | t = <MM_PROCESS_IF_EMPTY_LABEL> { emptyRDFSLabelSetting = t.kind; }
-  )
-
-  {
-    jjtThis.emptyRDFSLabelSetting = emptyRDFSLabelSetting;
-    return emptyRDFSLabelSetting;
-  }
-}
-
-int empty_rdf_id_directive() #EmptyRDFIDSetting :
-{
-  Token t;
-  int emptyRDFIDSetting;
-}
-{
-  (
-     t = <MM_ERROR_IF_EMPTY_ID> { emptyRDFIDSetting = t.kind; }
-   | t = <MM_WARNING_IF_EMPTY_ID> { emptyRDFIDSetting = t.kind; }
-   | t = <MM_SKIP_IF_EMPTY_ID> { emptyRDFIDSetting = t.kind; }
-   | t = <MM_PROCESS_IF_EMPTY_ID> { emptyRDFIDSetting = t.kind; }
-  )
-
-  {
-    jjtThis.emptyRDFIDSetting = emptyRDFIDSetting;
-    return emptyRDFIDSetting;
-  }
-}
-
-int shift_directive() #ShiftSetting :
-{
-  Token t;
-  int shiftSetting;
-}
-{
-  (
-     t = <MM_SHIFT_UP> { shiftSetting = t.kind; }
-   | t = <MM_SHIFT_DOWN> { shiftSetting = t.kind; }
-   | t = <MM_SHIFT_LEFT> { shiftSetting = t.kind; }
-   | t = <MM_SHIFT_RIGHT> { shiftSetting = t.kind; }
-   | t = <MM_NO_SHIFT> { shiftSetting = t.kind; }
-  )
-
-  {
-    jjtThis.shiftSetting = shiftSetting;
-    return shiftSetting;
-  }
-}
-
-void default_literal_directive() #DefaultLiteral :
-{
-  String defaultLiteral;
-}
-{
-  <MM_DEFAULT_LITERAL> "=" defaultLiteral = string()
-
-  {
-    jjtThis.defaultLiteral = defaultLiteral;
-  }
-}
-
-void default_location_value_directive() #DefaultLocationValue :
-{
-  String defaultLocationValue;
-}
-{
-  <MM_DEFAULT_LOCATION_VALUE> "=" defaultLocationValue = string()
-
-  {
-    jjtThis.defaultLocationValue = defaultLocationValue;
-  }
-}
-
-void default_id_directive() #DefaultID :
-{
-  String defaultRDFID;
-}
-{
-  <MM_DEFAULT_ID> "=" defaultRDFID = string()
-
-  {
-    jjtThis.defaultID = defaultRDFID;
-  }
-}
-
-void default_label_directive() #DefaultLabel :
-{
-  String defaultLabel;
-}
-{
-  <MM_DEFAULT_LABEL> "=" defaultLabel = string()
-
-  {
-    jjtThis.defaultLabel = defaultLabel;
-  }
-}
-
-void prefix_directive() #Prefix :
-{
-  String prefix;
-}
-{
-  <MM_PREFIX> "=" prefix = string()
-  {
-    jjtThis.prefix = prefix;
-  }
-}
-
-void language_directive() #Language :
-{
-  String language;
-}
-{
-  <XML_LANG>  ( "=" (  <MM_NULL> { language = ""; }
-                     | "*" { language = "*"; }
-                     | language = string()
-                    )
-               |
-                ( "!" "=" <MM_NULL> { language = "+"; } )
-              )
-  {
-    jjtThis.language = language;
-  }
-}
-
-void namespace_directive() #Namespace :
-{
-  String namespace;
-}
-{
-  <MM_NAMESPACE> "=" namespace = string()
-  {
-    jjtThis.namespace = namespace;
-  }
-}
-
-void value_specification() #ValueSpecification :
-{}
-{
-    "=" (  value_specification_item() 
-         | ( "(" value_specification_item() ( "," value_specification_item() )* ")" ) 
-        )
-}
-
-
-void value_extraction_function() #ValueExtractionFunction:
-{
-  Token t;
-  int functionID;
-}
-{
-  ((
-    ( 
-       t = <MM_TO_UPPER_CASE> { functionID = t.kind; }
-     | t = <MM_TO_LOWER_CASE> { functionID = t.kind; }
-     | t = <MM_TRIM> { functionID = t.kind; }
-     | t = <MM_PRINTF> { functionID = t.kind; }
-     | t = <MM_DECIMAL_FORMAT> { functionID = t.kind; }
-     | t = <MM_REVERSE> { functionID = t.kind; }
-     | t = <MM_CAPTURING> { functionID = t.kind; }
-     | t = <MM_REPLACE> { functionID = t.kind; }
-     | t = <MM_REPLACE_ALL> { functionID = t.kind; }
-     | t = <MM_REPLACE_FIRST> { functionID = t.kind; }
-     | t = <MM_APPEND> { functionID = t.kind; }
-     | t = <MM_PREPEND> { functionID = t.kind; }
-    ) ( LOOKAHEAD(2) "(" value_extraction_function_argument() ( "," value_extraction_function_argument() )* ")" )?
-   )
-   |
-   ( "[" ( LOOKAHEAD(2) value_extraction_function_argument() ( "," value_extraction_function_argument() )* )? "]" )  { functionID = MM_CAPTURING; } 
+  ( t = <OWL_DATA_PROPERTY> { propertyType = t.kind; }
+    | t = <OWL_OBJECT_PROPERTY> { propertyType = t.kind; }
+    | t = <OWL_ANNOTATION_PROPERTY> { propertyType = t.kind; }
   )
   {
-    jjtThis.functionID = functionID;
+    return propertyType;
   }
 }
 
-void value_extraction_function_argument() #ValueExtractionFunctionArgument : {}
-{
-  reference(XSD_STRING, defaultValueEncoding, defaultIRIEncoding) | owl_literal()
-}
-
-
-List<String> strings() :
-{
-  List<String> strings = new ArrayList<String>();
-  String s;
-}
-{
-  s = string() { strings.add(s); } ( "," s = string() { strings.add(s); } )*
-
-  { return strings; }
-} 
-
-String quoted_name() : 
+int property_value_type() :
 {
   Token t;
+  int propertyValueType;
 }
 {
-  t = <QUOTED_NAME_LITERAL> 
-
+  ( t = <OWL_IRI> { propertyValueType = t.kind; }
+    | t = <MM_ENTITY_IRI> { propertyValueType = t.kind; }
+    | propertyValueType = datatype()
+  )
   {
-    String s = t.image;
-    return s.substring(1, s.length() - 1);
+    return propertyValueType;
+  }
+}
+
+int shift_direction() :
+{
+  Token t;
+  int shiftDirection;
+}
+{
+  ( t = <MM_SHIFT_UP> { shiftDirection = t.kind; }
+    | t = <MM_SHIFT_DOWN> { shiftDirection = t.kind; }
+    | t = <MM_SHIFT_LEFT> { shiftDirection = t.kind; }
+    | t = <MM_SHIFT_RIGHT> { shiftDirection = t.kind; }
+    | t = <MM_NO_SHIFT> { shiftDirection = t.kind; }
+  )
+  {
+    return shiftDirection;
+  }
+}
+
+int order_if_cell_empty() :
+{
+  Token t;
+  int orderIfCellEmpty;
+}
+{
+  ( t = <MM_CREATE_IF_CELL_EMPTY> { orderIfCellEmpty = t.kind; }
+    | t = <MM_IGNORE_IF_CELL_EMPTY> { orderIfCellEmpty = t.kind; }
+    | t = <MM_WARNING_IF_CELL_EMPTY> { orderIfCellEmpty = t.kind; }
+    | t = <MM_ERROR_IF_CELL_EMPTY> { orderIfCellEmpty = t.kind; }
+  )
+  {
+    return orderIfCellEmpty;
+  }
+}
+
+int order_if_entity_absent() :
+{
+  Token t;
+  int orderIfEntityAbsent;
+}
+{
+  ( t = <MM_CREATE_IF_ENTITY_ABSENT> { orderIfEntityAbsent = t.kind; }
+    | t = <MM_IGNORE_IF_ENTITY_ABSENT> { orderIfEntityAbsent = t.kind; }
+    | t = <MM_WARNING_IF_ENTITY_ABSENT> { orderIfEntityAbsent = t.kind; }
+    | t = <MM_ERROR_IF_ENTITY_ABSENT> { orderIfEntityAbsent = t.kind; }
+  )
+  {
+    return orderIfEntityAbsent;
+  }
+}
+
+int order_type() :
+{
+  Token t;
+  int orderType;
+}
+{
+  ( t = <CREATE> { orderType = t.kind; }
+    | t = <IGNORE> { orderType = t.kind; }
+    | t = <WARNING> { orderType = t.kind; }
+    | t = <ERROR> { orderType = t.kind; }
+  )
+  {
+    return orderType;
   }
 }
