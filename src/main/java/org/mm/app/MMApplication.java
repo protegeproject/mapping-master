@@ -6,11 +6,10 @@ import java.io.File;
 
 import javax.annotation.Nonnull;
 
-import org.mm.core.OWLOntologySource;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.transformationrule.TransformationRuleSet;
 import org.mm.transformationrule.TransformationRuleSetManager;
-import org.mm.workbook.WorkbookLoader;
-import org.mm.workbook.Workbook;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -18,41 +17,41 @@ import org.mm.workbook.Workbook;
  */
 public class MMApplication {
 
-   private final OWLOntologySource ontologySource;
+   private final OWLOntology ontology;
    private final Workbook workbook;
    private final TransformationRuleSet ruleSet;
 
-   /* package */ MMApplication(@Nonnull OWLOntologySource ontologySource,
+   /* package */ MMApplication(@Nonnull OWLOntology ontology,
          @Nonnull Workbook workbook,
          @Nonnull TransformationRuleSet ruleSet) {
-      this.ontologySource = checkNotNull(ontologySource);
+      this.ontology = checkNotNull(ontology);
       this.workbook = checkNotNull(workbook);
       this.ruleSet = checkNotNull(ruleSet);
    }
 
    @Nonnull
-   public static MMApplication create(@Nonnull OWLOntologySource ontologySource,
+   public static MMApplication create(@Nonnull OWLOntology ontology,
          @Nonnull File workbookFile, @Nonnull File ruleFile) throws Exception {
-      checkNotNull(ontologySource);
+      checkNotNull(ontology);
       checkNotNull(workbookFile);
       checkNotNull(ruleFile);
-      return new MMApplication(ontologySource,
+      return new MMApplication(ontology,
             WorkbookLoader.loadWorkbook(workbookFile),
             TransformationRuleSetManager.loadTransformationRulesFromDocument(ruleFile));
    }
 
    @Nonnull
-   public static MMApplication create(@Nonnull OWLOntologySource ontologySource,
+   public static MMApplication create(@Nonnull OWLOntology ontology,
          @Nonnull File workbookFile) throws Exception {
-      checkNotNull(ontologySource);
+      checkNotNull(ontology);
       checkNotNull(workbookFile);
-      return new MMApplication(ontologySource,
+      return new MMApplication(ontology,
             WorkbookLoader.loadWorkbook(workbookFile),
             TransformationRuleSetManager.createEmptyTransformationRuleSet());
    }
 
    @Nonnull
-   public MMApplicationModel getApplicationModel() { // TODO: Rename to MappingMasterEngine?
-      return new MMApplicationModel(ontologySource, workbook, ruleSet);
+   public MMApplicationModel getApplicationModel() {
+      return new MMApplicationModel(ontology, workbook, ruleSet);
    }
 }

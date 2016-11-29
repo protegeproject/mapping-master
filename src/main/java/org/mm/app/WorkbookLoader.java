@@ -1,9 +1,10 @@
-package org.mm.workbook;
+package org.mm.app;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 /**
@@ -13,10 +14,10 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 public class WorkbookLoader {
 
    public static Workbook loadWorkbook(File file) throws Exception {
-      return new WorkbookImpl(WorkbookFactory.create(new FileInputStream(file)));
+      return WorkbookFactory.create(new FileInputStream(file));
    }
 
    public static Workbook loadWorkbook(InputStream inputStream) throws Exception {
-      return new WorkbookImpl(WorkbookFactory.create(inputStream));
+      return WorkbookFactory.create(inputStream);
    }
 }

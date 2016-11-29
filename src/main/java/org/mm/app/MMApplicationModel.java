@@ -4,12 +4,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import javax.annotation.Nonnull;
 
-import org.mm.core.OWLOntologySource;
-import org.mm.renderer.Renderer;
-import org.mm.renderer.owlapi.OWLRenderer;
-import org.mm.renderer.text.TextRenderer;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.transformationrule.TransformationRuleSet;
-import org.mm.workbook.Workbook;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -17,27 +14,27 @@ import org.mm.workbook.Workbook;
  */
 public class MMApplicationModel implements ApplicationModel {
 
-   private final OWLOntologySource ontologySource;
+   private final OWLOntology ontology;
    private final Workbook workbook;
 
    private TransformationRuleSet ruleSet;
 
-   public MMApplicationModel(@Nonnull OWLOntologySource ontologySource,
+   public MMApplicationModel(@Nonnull OWLOntology ontology,
          @Nonnull Workbook workbook,
          @Nonnull TransformationRuleSet ruleSet) {
-      this.ontologySource = checkNotNull(ontologySource);
+      this.ontology = checkNotNull(ontology);
       this.workbook = checkNotNull(workbook);
       this.ruleSet = checkNotNull(ruleSet);
    }
 
    @Override
-   public Workbook getWorkbook() {
-      return workbook;
+   public OWLOntology getOntology() {
+      return ontology;
    }
 
    @Override
-   public Renderer getTransformationRenderer() {
-      return new OWLRenderer(ontologySource, workbook);
+   public Workbook getWorkbook() {
+      return workbook;
    }
 
    @Override
@@ -47,11 +44,5 @@ public class MMApplicationModel implements ApplicationModel {
 
    public void setTransformationRules(@Nonnull TransformationRuleSet ruleSet) {
       this.ruleSet = ruleSet;
-   }
-
-   public TextRenderer getLogRenderer() {
-      TextRenderer renderer = new TextRenderer(workbook);
-      renderer.setComment(true);
-      return renderer;
    }
 }

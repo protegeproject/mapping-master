@@ -2,9 +2,9 @@ package org.mm.app;
 
 import java.util.Collection;
 
-import org.mm.renderer.Renderer;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.transformationrule.TransformationRule;
-import org.mm.workbook.Workbook;
+import org.semanticweb.owlapi.model.OWLOntology;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -13,14 +13,14 @@ import org.mm.workbook.Workbook;
 public interface ApplicationModel
 {
    /**
+    * Returns the ontology.
+    */
+   OWLOntology getOntology();
+
+   /**
     * Returns the workbook
     */
    Workbook getWorkbook();
-
-   /**
-    * Returns the default renderer.
-    */
-   Renderer getTransformationRenderer();
 
    /**
     * Returns the transformation rules.

@@ -7,12 +7,9 @@ import java.util.Properties;
 
 import javax.annotation.Nonnull;
 
-import org.mm.core.OWLAPIOntology;
-import org.mm.core.OWLOntologySource;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.transformationrule.TransformationRuleSet;
 import org.mm.transformationrule.TransformationRuleSetManager;
-import org.mm.workbook.WorkbookLoader;
-import org.mm.workbook.Workbook;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -88,7 +85,6 @@ public class MMApplicationFactory {
       String ontologySourceLocation = properties.getProperty(Environment.ONTOLOGY_SOURCE);
       OWLOntology ontology = OWLManager.createOWLOntologyManager().loadOntologyFromOntologyDocument(
             new FileInputStream(ontologySourceLocation));
-      OWLOntologySource ontologySource = new OWLAPIOntology(ontology);
 
       String workbookLocation = properties.getProperty(Environment.WORKBOOK_SOURCE);
       Workbook workbook = WorkbookLoader.loadWorkbook(new FileInputStream(workbookLocation));
@@ -97,7 +93,7 @@ public class MMApplicationFactory {
       TransformationRuleSet ruleSet = TransformationRuleSetManager.loadTransformationRulesFromDocument(
             new FileInputStream(ruleLocation));
 
-      return new Resources(ontologySource, workbook, ruleSet);
+      return new Resources(ontology, workbook, ruleSet);
    }
 
    private void validate(Properties properties) {
@@ -111,11 +107,11 @@ public class MMApplicationFactory {
 
    private class Resources {
 
-      private final OWLOntologySource ontology;
+      private final OWLOntology ontology;
       private final Workbook workbook;
       private final TransformationRuleSet ruleSet;
 
-      public Resources(@Nonnull OWLOntologySource ontology, @Nonnull Workbook workbook,
+      public Resources(@Nonnull OWLOntology ontology, @Nonnull Workbook workbook,
             @Nonnull TransformationRuleSet ruleSet) {
          this.ontology = checkNotNull(ontology);
          this.workbook = checkNotNull(workbook);
@@ -123,7 +119,7 @@ public class MMApplicationFactory {
       }
 
       @Nonnull
-      public OWLOntologySource getOntology() {
+      public OWLOntology getOntology() {
          return ontology;
       }
 
