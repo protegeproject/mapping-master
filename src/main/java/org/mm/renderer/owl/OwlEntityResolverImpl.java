@@ -1,7 +1,8 @@
-package org.mm.core;
+package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -14,27 +15,48 @@ import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.PrefixManager;
+import org.semanticweb.owlapi.util.DefaultPrefixManager;
 import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class OWLAPIEntityResolver implements OWLEntityResolver {
+public class OwlEntityResolverImpl implements OwlEntityResolver {
 
    private final OWLOntology ontology;
    private final PrefixManager prefixManager;
-   private final OWLDataFactory dataFactory;
 
-   public OWLAPIEntityResolver(@Nonnull OWLOntology ontology, @Nonnull PrefixManager prefixManager) {
+   public OwlEntityResolverImpl(@Nonnull OWLOntology ontology) {
       this.ontology = checkNotNull(ontology);
-      this.prefixManager = checkNotNull(prefixManager);
-      dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
+      prefixManager = buildPrefixManager();
+   }
+
+   private PrefixManager buildPrefixManager() {
+      PrefixManager prefixManager = new DefaultPrefixManager();
+      OWLDocumentFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
+      if (format.isPrefixOWLOntologyFormat()) {
+         Map<String, String> prefixMap = format.asPrefixOWLOntologyFormat()
+               .getPrefixName2PrefixMap();
+         for (String prefixName : prefixMap.keySet()) {
+            prefixManager.setPrefix(prefixName, prefixMap.get(prefixName));
+         }
+      }
+      setDefaultPrefix(prefixManager);
+      return prefixManager;
+   }
+
+   private void setDefaultPrefix(PrefixManager prefixManager) {
+      com.google.common.base.Optional<IRI> ontologyIri = ontology.getOntologyID().getDefaultDocumentIRI();
+      if (ontologyIri.isPresent()) {
+         prefixManager.setDefaultPrefix(ontologyIri.get().toString());
+      }
    }
 
    /**
@@ -142,6 +164,7 @@ public class OWLAPIEntityResolver implements OWLEntityResolver {
    }
 
    private <T extends OWLEntity> T createNew(String entityName, final Class<T> entityType) {
+      final OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
       if (OWLClass.class.isAssignableFrom(entityType)) {
          return entityType.cast(dataFactory.getOWLClass(entityName, prefixManager));
       } else if (OWLObjectProperty.class.isAssignableFrom(entityType)) {

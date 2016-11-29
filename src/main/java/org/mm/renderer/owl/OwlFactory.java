@@ -7,7 +7,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.mm.core.OWLEntityResolver;
 import org.mm.renderer.internal.EntityName;
 import org.mm.renderer.internal.IriValue;
 import org.mm.renderer.internal.LiteralValue;
@@ -66,11 +65,11 @@ import org.semanticweb.owlapi.vocab.OWL2Datatype;
  */
 public class OwlFactory {
 
-   private final OWLEntityResolver entityResolver;
+   private final OwlEntityResolver entityResolver;
 
    private final OWLDataFactory owlDataFactory = OWLManager.getOWLDataFactory();
 
-   public OwlFactory(@Nonnull OWLEntityResolver entityResolver) {
+   public OwlFactory(@Nonnull OwlEntityResolver entityResolver) {
       this.entityResolver = checkNotNull(entityResolver);
    }
 

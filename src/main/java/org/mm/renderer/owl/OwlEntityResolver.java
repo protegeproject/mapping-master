@@ -1,4 +1,4 @@
-package org.mm.core;
+package org.mm.renderer.owl;
 
 import org.mm.exceptions.EntityCreationException;
 import org.mm.exceptions.EntityNotFoundException;
@@ -12,7 +12,7 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public interface OWLEntityResolver {
+public interface OwlEntityResolver {
 
    /**
     * Resolves the given entity name and returns the OWL entity object with the specified type.
