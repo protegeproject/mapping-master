@@ -6,7 +6,7 @@ import javax.annotation.Nonnull; /* XXX: Manually added */
 
 import org.mm.parser.MappingMasterParser;
 import org.mm.parser.NodeVisitor;
-import org.mm.renderer.ReferenceNotation;
+import org.mm.renderer.internal.ReferenceNotation;
 
 public
 class ASTReferenceNotation extends SimpleNode {

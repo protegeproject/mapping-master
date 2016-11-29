@@ -1,10 +1,10 @@
-package org.mm.renderer;
+package org.mm.renderer.internal;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public interface Renderer<T> {
+public interface Value<T> {
 
-   T render(String ruleString, RenderingContext context);
+   T getActualObject();
 }

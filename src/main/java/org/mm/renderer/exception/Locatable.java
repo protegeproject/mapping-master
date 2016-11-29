@@ -1,10 +1,10 @@
-package org.mm.renderer;
+package org.mm.renderer.exception;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public interface Renderer<T> {
+public interface Locatable<T> {
 
-   T render(String ruleString, RenderingContext context);
+   void setErrorLocation(T location);
 }
