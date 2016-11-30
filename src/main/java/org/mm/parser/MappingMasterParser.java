@@ -3010,6 +3010,7 @@ encodingType = t.kind;
   ASTReferenceType jjtn000 = new ASTReferenceType(JJTREFERENCETYPE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);Token t;
+  int datatype;
   int referenceType;
     try {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -3062,7 +3063,10 @@ referenceType = t.kind;
       case XSD_DURATION:
       case XSD_DATE:
       case RDF_PLAINLITERAL:{
-        referenceType = datatype();
+        datatype = datatype();
+referenceType = datatype;
+       propertyValueDatatype = datatype; // assign as well as property value datatype
+
         break;
         }
       default:
@@ -3677,13 +3681,6 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3R_33()
- {
-    if (jj_3R_47()) return true;
-    if (jj_3R_48()) return true;
-    return false;
-  }
-
   private boolean jj_3R_119()
  {
     if (jj_scan_token(MM_WARNING_IF_ENTITY_ABSENT)) return true;
@@ -3696,22 +3693,16 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3R_124()
- {
-    if (jj_3R_140()) return true;
-    return false;
-  }
-
   private boolean jj_3R_117()
  {
     if (jj_scan_token(MM_CREATE_IF_ENTITY_ABSENT)) return true;
     return false;
   }
 
-  private boolean jj_3R_32()
+  private boolean jj_3R_33()
  {
-    if (jj_3R_40()) return true;
-    if (jj_3R_43()) return true;
+    if (jj_3R_47()) return true;
+    if (jj_3R_48()) return true;
     return false;
   }
 
@@ -3732,27 +3723,22 @@ orderType = t.kind;
     return false;
   }
 
+  private boolean jj_3R_124()
+ {
+    if (jj_3R_140()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_32()
+ {
+    if (jj_3R_40()) return true;
+    if (jj_3R_43()) return true;
+    return false;
+  }
+
   private boolean jj_3R_17()
  {
     if (jj_3R_33()) return true;
-    return false;
-  }
-
-  private boolean jj_3_1()
- {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_123()
- {
-    if (jj_3R_58()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_16()
- {
-    if (jj_3R_32()) return true;
     return false;
   }
 
@@ -3768,9 +3754,9 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3_2()
+  private boolean jj_3_1()
  {
-    if (jj_3R_17()) return true;
+    if (jj_3R_16()) return true;
     return false;
   }
 
@@ -3780,9 +3766,15 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3R_97()
+  private boolean jj_3R_123()
  {
-    if (jj_3R_126()) return true;
+    if (jj_3R_58()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_16()
+ {
+    if (jj_3R_32()) return true;
     return false;
   }
 
@@ -3792,15 +3784,9 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3R_96()
+  private boolean jj_3_2()
  {
-    if (jj_3R_125()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_95()
- {
-    if (jj_3R_124()) return true;
+    if (jj_3R_17()) return true;
     return false;
   }
 
@@ -3818,6 +3804,24 @@ orderType = t.kind;
     }
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_97()
+ {
+    if (jj_3R_126()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_96()
+ {
+    if (jj_3R_125()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_95()
+ {
+    if (jj_3R_124()) return true;
     return false;
   }
 
@@ -3862,12 +3866,6 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3R_82()
- {
-    if (jj_scan_token(IRI_REF)) return true;
-    return false;
-  }
-
   private boolean jj_3R_109()
  {
     if (jj_scan_token(MM_SHIFT_DOWN)) return true;
@@ -3877,6 +3875,12 @@ orderType = t.kind;
   private boolean jj_3R_108()
  {
     if (jj_scan_token(MM_SHIFT_UP)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_82()
+ {
+    if (jj_scan_token(IRI_REF)) return true;
     return false;
   }
 
@@ -3965,15 +3969,15 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3R_60()
- {
-    if (jj_3R_83()) return true;
-    return false;
-  }
-
   private boolean jj_3R_68()
  {
     if (jj_3R_42()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_60()
+ {
+    if (jj_3R_83()) return true;
     return false;
   }
 
@@ -3989,21 +3993,27 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3R_59()
- {
-    if (jj_3R_80()) return true;
-    return false;
-  }
-
   private boolean jj_3R_65()
  {
     if (jj_scan_token(OWL_ANNOTATION_PROPERTY)) return true;
     return false;
   }
 
+  private boolean jj_3R_59()
+ {
+    if (jj_3R_80()) return true;
+    return false;
+  }
+
   private boolean jj_3R_64()
  {
     if (jj_scan_token(OWL_DATA_PROPERTY)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63()
+ {
+    if (jj_scan_token(OWL_OBJECT_PROPERTY)) return true;
     return false;
   }
 
@@ -4015,12 +4025,6 @@ orderType = t.kind;
     jj_scanpos = xsp;
     if (jj_3R_60()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_63()
- {
-    if (jj_scan_token(OWL_OBJECT_PROPERTY)) return true;
     return false;
   }
 
@@ -4036,15 +4040,15 @@ orderType = t.kind;
     return false;
   }
 
-  private boolean jj_3R_51()
- {
-    if (jj_3R_82()) return true;
-    return false;
-  }
-
   private boolean jj_3R_61()
  {
     if (jj_scan_token(OWL_CLASS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_51()
+ {
+    if (jj_3R_82()) return true;
     return false;
   }
 

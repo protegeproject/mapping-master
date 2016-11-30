@@ -1307,6 +1307,7 @@ int iri_encoding() :
 int reference_type() #ReferenceType :
 {
   Token t;
+  int datatype;
   int referenceType;
 }
 {
@@ -1317,7 +1318,11 @@ int reference_type() #ReferenceType :
    | t = <OWL_ANNOTATION_PROPERTY> { referenceType = t.kind; }
    | t = <OWL_IRI> { referenceType = t.kind; }
    | t = <MM_ENTITY_IRI> { referenceType = t.kind; }
-   | referenceType = datatype()
+   | datatype = datatype()
+     {
+       referenceType = datatype;
+       propertyValueDatatype = datatype; // assign as well as property value datatype
+     }
   )
   {
     return referenceType;
