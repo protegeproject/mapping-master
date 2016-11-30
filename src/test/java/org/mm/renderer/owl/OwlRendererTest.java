@@ -1,6 +1,7 @@
 package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
 
 import java.util.Set;
 
@@ -44,9 +45,27 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
          ontologyManager = OWLManager.createOWLOntologyManager();
          dataFactory = ontologyManager.getOWLDataFactory();
          ontology = ontologyManager.createOntology(IRI.create(ONTOLOGY_ID));
+         declareDefaultOwl2Datatypes(ontology);
       } catch(OWLOntologyCreationException e) {
          throw new RuntimeException(e);
       }
+   }
+
+   private void declareDefaultOwl2Datatypes(OWLOntology ontology2) {
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.RDFS_LITERAL));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.RDF_PLAINLITERAL));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_STRING));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_BOOLEAN));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DOUBLE));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_FLOAT));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_LONG));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_INTEGER));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_SHORT));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_BYTE));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DECIMAL));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DATETIME));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_TIME));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DATE));
    }
 
    protected OWLOntology getOntology() {
