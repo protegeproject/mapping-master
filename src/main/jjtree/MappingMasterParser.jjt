@@ -932,7 +932,7 @@ void value(int referenceType) #ValueCategory : {}
 
 void literal_value() #LiteralValue : {}
 {
-  ( reference(OWL_LITERAL)
+  ( reference(propertyValueDatatype)
     | literal()
   )
 }

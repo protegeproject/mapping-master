@@ -2009,7 +2009,7 @@ if (jjtc000) {
     try {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
       case 132:{
-        reference(OWL_LITERAL);
+        reference(propertyValueDatatype);
         break;
         }
       case TRUE:
