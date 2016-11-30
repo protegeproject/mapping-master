@@ -11,7 +11,7 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTReference extends SimpleNode {
 
-  ReferenceDirectives referenceDirectives; /* XXX: Manually added */
+  public ReferenceDirectives referenceDirectives; /* XXX: Manually added */
 
   public ASTReference(int id) {
     super(id);

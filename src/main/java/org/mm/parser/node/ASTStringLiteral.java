@@ -8,12 +8,18 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTStringLiteral extends SimpleNode {
 
+  public String lexicalValue; /* XXX: Manually added */
+
   public ASTStringLiteral(int id) {
     super(id);
   }
 
   public ASTStringLiteral(MappingMasterParser p, int id) {
     super(p, id);
+  }
+
+  public String getLexicalValue() { /* XXX: Manually added */
+     return lexicalValue;
   }
 
   @Override

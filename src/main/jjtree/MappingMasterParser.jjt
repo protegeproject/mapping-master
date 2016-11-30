@@ -973,7 +973,7 @@ void name() #Name :
 {
   t = <NAME>
   {
-    jjtThis.value = t.image;
+    jjtThis.name = t.image;
   }
 }
 
@@ -984,7 +984,7 @@ void iri() #Iri :
 {
   t = <IRI_REF>
   {
-    jjtThis.value = t.image;
+    jjtThis.iri = t.image;
   }
 }
 
@@ -1004,7 +1004,7 @@ void integer_literal() #IntegerLiteral :
 {
   value = integer_value()
   {
-    jjtThis.value = value;
+    jjtThis.lexicalValue = value;
   }
 }
 
@@ -1015,7 +1015,7 @@ void float_literal() #FloatLiteral :
 {
   value = float_value()
   {
-    jjtThis.value = value;
+    jjtThis.lexicalValue = value;
   }
 }
 
@@ -1026,7 +1026,7 @@ void string_literal() #StringLiteral :
 {
   value = string_value()
   {
-    jjtThis.value = value;
+    jjtThis.lexicalValue = value;
   }
 }
 
@@ -1037,7 +1037,7 @@ void boolean_literal() #BooleanLiteral :
 {
   value = boolean_value()
   {
-    jjtThis.value = value;
+    jjtThis.lexicalValue = value;
   }
 }
 

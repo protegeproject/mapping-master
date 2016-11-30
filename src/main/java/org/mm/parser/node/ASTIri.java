@@ -7,12 +7,19 @@ import org.mm.parser.NodeVisitor;
 
 public
 class ASTIri extends SimpleNode {
+
+  public String iri; /* XXX: Manually added */
+
   public ASTIri(int id) {
     super(id);
   }
 
   public ASTIri(MappingMasterParser p, int id) {
     super(p, id);
+  }
+
+  public String getValue() { /* XXX: Manually added */
+     return iri;
   }
 
   @Override

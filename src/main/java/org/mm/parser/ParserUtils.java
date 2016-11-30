@@ -8,7 +8,6 @@ import javax.annotation.Nonnull;
 
 import org.mm.parser.node.MappingMasterParserTreeConstants;
 import org.mm.parser.node.Node;
-import org.mm.parser.node.SimpleNode;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -65,34 +64,6 @@ public class ParserUtils implements MappingMasterParserConstants {
 
    private static boolean hasName(@Nonnull Node node, @Nonnull String name) {
       return node.toString().equals(name);
-   }
-
-   public static int getIntegerValue(@Nonnull Node node) {
-      if (node instanceof SimpleNode) {
-         return (Integer) ((SimpleNode) node).jjtGetValue();
-      }
-      throw new RuntimeException("Unable to get integer value from node '" + node + "'");
-   }
-
-   public static float getFloatValue(@Nonnull Node node) {
-      if (node instanceof SimpleNode) {
-         return (Float) ((SimpleNode) node).jjtGetValue();
-      }
-      throw new RuntimeException("Unable to get float value from node '" + node + "'");
-   }
-
-   public static String getStringValue(@Nonnull Node node) {
-      if (node instanceof SimpleNode) {
-         return (String) ((SimpleNode) node).jjtGetValue();
-      }
-      throw new RuntimeException("Unable to get string value from node '" + node + "'");
-   }
-
-   public static boolean getBooleanValue(@Nonnull Node node) {
-      if (node instanceof SimpleNode) {
-         return (Boolean) ((SimpleNode) node).jjtGetValue();
-      }
-      throw new RuntimeException("Unable to get boolean value from node '" + node + "'");
    }
 
    public static String getTokenName(int tokenId) {

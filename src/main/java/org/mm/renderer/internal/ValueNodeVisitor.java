@@ -91,13 +91,13 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTName node) {
-      String name = ParserUtils.getStringValue(node);
+      String name = node.getValue();
       value = new EntityName(name);
    }
 
    @Override
    public void visit(ASTIri node) {
-      String iri = ParserUtils.getStringValue(node);
+      String iri = node.getValue();
       value = new IriValue(iri);
    }
 
@@ -109,25 +109,25 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTIntegerLiteral node) {
-      int literal = ParserUtils.getIntegerValue(node);
+      int literal = node.getLexicalValue();
       value = LiteralValue.createLiteral(literal);
    }
 
    @Override
    public void visit(ASTFloatLiteral node) {
-      float literal = ParserUtils.getFloatValue(node);
+      float literal = node.getLexicalValue();
       value = LiteralValue.createLiteral(literal);
    }
 
    @Override
    public void visit(ASTStringLiteral node) {
-      String literal = ParserUtils.getStringValue(node);
+      String literal = node.getLexicalValue();
       value = LiteralValue.createLiteral(literal);
    }
 
    @Override
    public void visit(ASTBooleanLiteral node) {
-      boolean literal = ParserUtils.getBooleanValue(node);
+      boolean literal = node.getLexicalValue();
       value = LiteralValue.createLiteral(literal);
    }
 }

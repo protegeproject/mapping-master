@@ -8,7 +8,7 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTDataSomeValuesFrom extends SimpleNode {
 
-  int datatype; /* XXX: Manually added */
+  public int datatype; /* XXX: Manually added */
 
   public ASTDataSomeValuesFrom(int id) {
     super(id);

@@ -8,7 +8,7 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTBuiltInFunction extends SimpleNode {
 
-  int functionType; /* Manually added */
+  public int functionType; /* Manually added */
 
   public ASTBuiltInFunction(int id) {
     super(id);

@@ -7,12 +7,19 @@ import org.mm.parser.NodeVisitor;
 
 public
 class ASTBooleanLiteral extends SimpleNode {
+
+  public boolean lexicalValue; /* XXX: Manually added */
+
   public ASTBooleanLiteral(int id) {
     super(id);
   }
 
   public ASTBooleanLiteral(MappingMasterParser p, int id) {
     super(p, id);
+  }
+
+  public boolean getLexicalValue() { /* XXX: Manually added */
+     return lexicalValue;
   }
 
   @Override

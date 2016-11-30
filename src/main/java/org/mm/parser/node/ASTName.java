@@ -7,12 +7,19 @@ import org.mm.parser.NodeVisitor;
 
 public
 class ASTName extends SimpleNode {
-  public ASTName(int id) {
+
+  public String name; 
+
+  public ASTName(int id) { /* XXX: Manually added */
     super(id);
   }
 
   public ASTName(MappingMasterParser p, int id) {
     super(p, id);
+  }
+
+  public String getValue() { /* XXX: Manually added */
+    return name;
   }
 
   @Override

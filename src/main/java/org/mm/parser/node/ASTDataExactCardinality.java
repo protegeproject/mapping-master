@@ -8,8 +8,8 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTDataExactCardinality extends SimpleNode {
 
-  int cardinality; /* XXX: Manually added */
-  int datatype; /* XXX: Manually added */
+  public int cardinality; /* XXX: Manually added */
+  public int datatype; /* XXX: Manually added */
 
   public ASTDataExactCardinality(int id) {
     super(id);

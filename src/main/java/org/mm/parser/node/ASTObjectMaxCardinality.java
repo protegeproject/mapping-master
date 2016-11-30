@@ -9,7 +9,7 @@ public
 class ASTObjectMaxCardinality extends SimpleNode {
 
   public int cardinality; /* XXX: Manually added */
-  boolean hasExplicitClassExpression; /* XXX: Manually added */
+  public boolean hasExplicitClassExpression; /* XXX: Manually added */
 
   public ASTObjectMaxCardinality(int id) {
     super(id);

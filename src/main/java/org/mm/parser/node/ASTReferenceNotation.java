@@ -11,7 +11,7 @@ import org.mm.renderer.internal.ReferenceNotation;
 public
 class ASTReferenceNotation extends SimpleNode {
 
-  ReferenceNotation referenceNotation; /* XXX: Manually added */
+  public ReferenceNotation referenceNotation; /* XXX: Manually added */
 
   public ASTReferenceNotation(int id) {
     super(id);

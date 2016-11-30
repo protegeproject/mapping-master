@@ -8,8 +8,8 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTObjectExactCardinality extends SimpleNode {
 
-  int cardinality; /* XXX: Manually added */
-  boolean hasExplicitClassExpression; /* XXX: Manually added */
+  public int cardinality; /* XXX: Manually added */
+  public boolean hasExplicitClassExpression; /* XXX: Manually added */
 
   public ASTObjectExactCardinality(int id) {
     super(id);

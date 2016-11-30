@@ -7,12 +7,19 @@ import org.mm.parser.NodeVisitor;
 
 public
 class ASTFloatLiteral extends SimpleNode {
+
+  public float lexicalValue; /* XXX: Manually added */
+
   public ASTFloatLiteral(int id) {
     super(id);
   }
 
   public ASTFloatLiteral(MappingMasterParser p, int id) {
     super(p, id);
+  }
+
+  public float getLexicalValue() { /* XXX: Manually added */
+     return lexicalValue;
   }
 
   @Override
