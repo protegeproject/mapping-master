@@ -4,12 +4,14 @@ options {
   STATIC = false;
   USER_TOKEN_MANAGER=false;
   USER_CHAR_STREAM=false;
+  OUTPUT_DIRECTORY = "../../../target/generated-sources/javacc";
 
   // JJTree options
 
   MULTI=true;
   NODE_DEFAULT_VOID = true;
   NODE_PACKAGE = "org.mm.parser.node";
+  JJTREE_OUTPUT_DIRECTORY = "../../../target/generated-sources/jjtree";
 }
 
 PARSER_BEGIN(MappingMasterParser)
