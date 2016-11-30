@@ -16,7 +16,7 @@ PARSER_BEGIN(MappingMasterParser)
 
 package org.mm.parser;
 
-import org.mm.renderer.ReferenceNotation;
+import org.mm.renderer.internal.ReferenceNotation;
 
 import org.mm.directive.ReferenceDirectives;
 import org.mm.directive.DefaultDirectives;
