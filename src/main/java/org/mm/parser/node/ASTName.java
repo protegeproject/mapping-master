@@ -8,9 +8,9 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTName extends SimpleNode {
 
-  public String name; 
+  public String name;  /* XXX: Manually added */
 
-  public ASTName(int id) { /* XXX: Manually added */
+  public ASTName(int id) {
     super(id);
   }
 
