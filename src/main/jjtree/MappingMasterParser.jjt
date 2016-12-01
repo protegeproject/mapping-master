@@ -611,29 +611,20 @@ void class_assertion() #ClassAssertion : {}
 
 void property_assertion() #PropertyAssertion : {}
 {
-  <FACTS> ( LOOKAHEAD(2) data_property_assertion_list()
-    | LOOKAHEAD(2) object_property_assertion_list()
+  <FACTS> fact() ( "," fact() )*
+}
+
+void fact() #Fact : {}
+{
+  property() property_value()
+}
+
+void property_value() #PropertyValue : {}
+{
+  ( reference(XSD_STRING)
+    | name()
+    | literal()
   )
-}
-
-void data_property_assertion_list() : {}
-{
-  data_property_assertion() ( "," data_property_assertion() )*
-}
-
-void object_property_assertion_list() : {}
-{
-  object_property_assertion() ( "," object_property_assertion() )*
-}
-
-void data_property_assertion() #DataPropertyAssertion : {}
-{
-  data_property() literal_value()
-}
-
-void object_property_assertion() #ObjectPropertyAssertion : {}
-{
-  object_property() object_value()
 }
 
 void same_as() #SameAs : {}
