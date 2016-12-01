@@ -188,12 +188,20 @@ public class ReferenceResolver implements MappingMasterParserConstants {
 
    private Value<?> processReferenceType(String cellValue, ReferenceDirectives directives) {
       int option = directives.getReferenceType();
-      if (option == OWL_CLASS
-            || option == OWL_DATA_PROPERTY
-            || option == OWL_OBJECT_PROPERTY
-            || option == OWL_ANNOTATION_PROPERTY
-            || option == OWL_NAMED_INDIVIDUAL) {
-         return processEntity(cellValue, directives);
+      if (option == OWL_CLASS) {
+         return processClassName(cellValue, directives);
+      } else if (option == OWL_DATA_PROPERTY) {
+         return processDataPropertyName(cellValue, directives);
+      } else if (option == OWL_OBJECT_PROPERTY) {
+         return processObjectPropertyName(cellValue, directives);
+      } else if (option == OWL_ANNOTATION_PROPERTY) {
+         return processAnnotationPropertyName(cellValue, directives);
+      } else if (option == OWL_NAMED_INDIVIDUAL) {
+         return processIndividualName(cellValue, directives);
+      } else if (option == OWL_IRI) {
+         return processIri(cellValue);
+      } else if (option == MM_ENTITY_IRI) {
+         return processEntityName(cellValue);
       } else if (option == XSD_STRING
             || option == XSD_DECIMAL
             || option == XSD_BYTE
@@ -209,22 +217,43 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             || option == XSD_DURATION
             || option == RDF_PLAINLITERAL) {
          return processLiteral(cellValue, directives);
-      } else if (option == OWL_IRI) {
-         return processIri(cellValue);
-      } else if (option == MM_ENTITY_IRI) {
-         return processEntityName(cellValue);
-      }
+      } 
       throw new RuntimeException("Programming error: Unknown directive to handle reference type"
             + " (" + tokenImage[option] + ")");
    }
 
-   private ReferredEntityName processEntity(String cellValue, ReferenceDirectives directives) {
+   private ClassName processClassName(String cellValue, ReferenceDirectives directives) {
       cellValue = processEntityName(cellValue, directives);
-      cellValue = processEntityPrefix(cellValue, directives);
-      return new ReferredEntityName(cellValue);
+      return new ClassName(cellValue);
+   }
+
+   private Value<?> processDataPropertyName(String cellValue, ReferenceDirectives directives) {
+      cellValue = processEntityName(cellValue, directives);
+      return new DataPropertyName(cellValue);
+   }
+
+   private Value<?> processObjectPropertyName(String cellValue, ReferenceDirectives directives) {
+      cellValue = processEntityName(cellValue, directives);
+      return new ObjectPropertyName(cellValue);
+   }
+
+   private Value<?> processAnnotationPropertyName(String cellValue, ReferenceDirectives directives) {
+      cellValue = processEntityName(cellValue, directives);
+      return new AnnotationPropertyName(cellValue);
+   }
+
+   private Value<?> processIndividualName(String cellValue, ReferenceDirectives directives) {
+      cellValue = processEntityName(cellValue, directives);
+      return new IndividualName(cellValue);
    }
 
    private String processEntityName(String cellValue, ReferenceDirectives directives) {
+      cellValue = processLocalName(cellValue, directives);
+      cellValue = processPrefix(cellValue, directives);
+      return cellValue;
+   }
+
+   private String processLocalName(String cellValue, ReferenceDirectives directives) {
       int option = directives.getIriEncoding();
       if (option == MM_CAMELCASE_ENCODE) {
          if (directives.getReferenceType() == OWL_CLASS) {
@@ -245,7 +274,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             + " (" + tokenImage[option] + ")");
    }
 
-   private String processEntityPrefix(String cellValue, ReferenceDirectives directives) {
+   private String processPrefix(String cellValue, ReferenceDirectives directives) {
       if (directives.useUserPrefix()) {
          return format("%s:%s", directives.getPrefix(), cellValue);
       }

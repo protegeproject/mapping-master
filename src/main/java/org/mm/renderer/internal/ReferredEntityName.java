@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class ReferredEntityName implements Value<String> {
+public abstract class ReferredEntityName implements Value<String> {
 
    private final String prefixedName;
 
@@ -38,4 +38,10 @@ public class ReferredEntityName implements Value<String> {
    public String getActualObject() {
       return prefixedName;
    }
+
+   public abstract boolean isClass();
+   public abstract boolean isDataProperty();
+   public abstract boolean isObjectProperty();
+   public abstract boolean isAnnotationProperty();
+   public abstract boolean isNamedIndividual();
 }

@@ -9,6 +9,7 @@ import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTObjectValue;
+import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTValueCategory;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.internal.Value;
@@ -28,6 +29,12 @@ public class AbstractNodeVisitor extends NodeVisitorAdapter {
 
    protected Value<?> getValue(SimpleNode node) {
       ASTValueCategory valueNode = ParserUtils.getChild(node, NodeType.VALUE);
+      valueNodeVisitor.visit(valueNode);
+      return valueNodeVisitor.getValue();
+   }
+
+   protected Value<?> getPropertyValue(SimpleNode node) {
+      ASTPropertyValue valueNode = ParserUtils.getChild(node, NodeType.PROPERTY_VALUE);
       valueNodeVisitor.visit(valueNode);
       return valueNodeVisitor.getValue();
    }

@@ -53,6 +53,7 @@ import org.semanticweb.owlapi.model.OWLObjectPropertyAssertionAxiom;
 import org.semanticweb.owlapi.model.OWLObjectPropertyExpression;
 import org.semanticweb.owlapi.model.OWLObjectSomeValuesFrom;
 import org.semanticweb.owlapi.model.OWLObjectUnionOf;
+import org.semanticweb.owlapi.model.OWLProperty;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 import org.semanticweb.owlapi.model.OWLSubClassOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
@@ -95,6 +96,31 @@ public class OwlFactory {
 
    private OWLClass createOWLClass(IRI classIri) {
       return owlDataFactory.getOWLClass(classIri);
+   }
+
+   public OWLProperty getOWLProperty(Value<?> value) {
+      if (value instanceof EntityName) {
+         return fetchOWLProperty(((EntityName) value).getActualObject());
+      } else if (value instanceof ReferredEntityName) {
+         return createOWLProperty((ReferredEntityName) value);
+      }
+      throw new RuntimeException("Programming error: Creating OWL property using "
+            + value.getClass() + " is not yet implemented");
+   }
+
+   private OWLProperty fetchOWLProperty(String prefixedName) {
+      return entityResolver.resolveUnchecked(prefixedName, OWLProperty.class);
+   }
+
+   private OWLProperty createOWLProperty(ReferredEntityName entityName) {
+      if (entityName.isDataProperty()) {
+         return createOWLDataProperty(entityName.getActualObject());
+      } else if (entityName.isObjectProperty()) {
+         return createOWLObjectProperty(entityName.getActualObject());
+      } else if (entityName.isAnnotationProperty()) {
+         return createOWLAnnotationProperty(entityName.getActualObject());
+      }
+      throw new RuntimeException("Programming error: Unknown property type");
    }
 
    public OWLDataProperty getOWLDataProperty(Value<?> value) {
