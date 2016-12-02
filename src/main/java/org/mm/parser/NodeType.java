@@ -53,8 +53,8 @@ public class NodeType<T extends Node> {
       return actualClass;
    }
 
-   public static final NodeType<ASTAnnotation> ANNOTATION = new NodeType<>("AnnotationAssertion", ASTAnnotation.class);
-   public static final NodeType<ASTAnnotationAssertion> ANNOTATION_ASSERTION = new NodeType<>("AnnotationAssertions", ASTAnnotationAssertion.class);
+   public static final NodeType<ASTAnnotation> ANNOTATION = new NodeType<>("Annotation", ASTAnnotation.class);
+   public static final NodeType<ASTAnnotationAssertion> ANNOTATION_ASSERTION = new NodeType<>("AnnotationAssertion", ASTAnnotationAssertion.class);
    public static final NodeType<ASTAnnotationProperty> ANNOTATION_PROPERTY = new NodeType<>("AnnotationProperty", ASTAnnotationProperty.class);
    public static final NodeType<ASTClass> CLASS = new NodeType<>("Class", ASTClass.class);
    public static final NodeType<ASTClassAssertion> CLASS_ASSERTION = new NodeType<>("ClassAssertion", ASTClassAssertion.class);
