@@ -206,17 +206,8 @@ TOKEN: { <MM_DEFAULT_IRI_ENCODING: "mm:DefaultIRIEncoding"> }
 TOKEN: { <MM_DEFAULT_SHIFT_DIRECTION: "mm:DefaultShiftDirection"> }
 TOKEN: { <MM_DEFAULT_REFERENCE_TYPE: "mm:DefaultReferenceType"> }
 TOKEN: { <MM_DEFAULT_PROPERTY_TYPE: "mm:DefaultPropertyType"> }
-//TOKEN: { <MM_DEFAULT_PROPERTY_VALUE_TYPE: "mm:DefaultPropertyValueType"> }
 TOKEN: { <MM_DEFAULT_VALUE_DATATYPE: "mm:DefaultValueDatatype"> }
 
-//TOKEN: { <MM_DEFAULT_SHIFT: "mm:DefaultShift"> }
-
-//TOKEN: { <MM_DEFAULT_EMPTY_RDFS_LABEL: "mm:DefaultEmptyLabel"> }
-//TOKEN: { <MM_DEFAULT_EMPTY_LITERAL: "mm:DefaultEmptyLiteral"> }
-//TOKEN: { <MM_DEFAULT_EMPTY_LOCATION: "mm:DefaultEmptyLocation"> }
-//TOKEN: { <MM_DEFAULT_EMPTY_RDF_ID: "mm:DefaultEmptyID"> }
-//TOKEN: { <MM_DEFAULT_IF_OWL_ENTITY_EXISTS: "mm:DefaultIfOWLEntityExists"> }
-//TOKEN: { <MM_DEFAULT_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:DefaultIfOWLEntityDoesNotExist"> }
 TOKEN: { <MM_DEFAULT_ORDER_IF_CELL_EMPTY: "mm:DefaultOrderIfCellEmpty"> }
 TOKEN: { <MM_DEFAULT_ORDER_IF_ENTITY_ABSENT: "mm:DefaultOrderIfEntityAbsent"> }
 
@@ -238,7 +229,6 @@ TOKEN: { <OWL_ANNOTATION_PROPERTY: "AnnotationProperty"> }
 TOKEN: { <OWL_LITERAL: "Literal"> }
 TOKEN: { <OWL_DATATYPE: "Datatype"> }
 TOKEN: { <OWL_IRI: "IRI"> }
-//TOKEN: { <MM_IRI: "mm:IRI"> }
 TOKEN: { <MM_ENTITY_IRI: "mm:entityIRI"> }
 
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
@@ -260,9 +250,7 @@ TOKEN: { <MM_SNAKECASE_ENCODE: "mm:snakeCaseEncode"> }
 TOKEN: { <MM_UUID_ENCODE: "mm:uuidEncode"> }
 TOKEN: { <MM_HASH_ENCODE: "mm:hashEncode"> }
 
-//TOKEN: { <MM_DEFAULT_LOCATION_VALUE: "mm:DefaultLocationValue"> }
 TOKEN: { <MM_DEFAULT_LITERAL: "mm:DefaultLiteral"> }
-//TOKEN: { <MM_DEFAULT_ID: "mm:DefaultID"> }
 TOKEN: { <MM_DEFAULT_LABEL: "mm:DefaultLabel"> }
 
 TOKEN: { <MM_DEFAULT_PREFIX: "mm:DefaultPrefix"> }
@@ -274,37 +262,6 @@ TOKEN: { <MM_SHIFT_UP: "mm:ShiftUp"> }
 TOKEN: { <MM_SHIFT_DOWN: "mm:ShiftDown"> }
 TOKEN: { <MM_SHIFT_LEFT: "mm:ShiftLeft"> }
 TOKEN: { <MM_SHIFT_RIGHT: "mm:ShiftRight"> }
-
-/*
-TOKEN: { <MM_ERROR_IF_EMPTY_LOCATION: "mm:ErrorIfEmptyLocation"> }
-TOKEN: { <MM_WARNING_IF_EMPTY_LOCATION: "mm:WarningIfEmptyLocation"> }
-TOKEN: { <MM_SKIP_IF_EMPTY_LOCATION: "mm:SkipIfEmptyLocation"> }
-TOKEN: { <MM_PROCESS_IF_EMPTY_LOCATION: "mm:ProcessIfEmptyLocation"> }
-
-TOKEN: { <MM_PROCESS_IF_EMPTY_LITERAL: "mm:ProcessIfEmptyLiteral"> }
-TOKEN: { <MM_ERROR_IF_EMPTY_LITERAL: "mm:ErrorIfEmptyLiteral"> }
-TOKEN: { <MM_WARNING_IF_EMPTY_LITERAL: "mm:WarningIfEmptyLiteral"> }
-TOKEN: { <MM_SKIP_IF_EMPTY_LITERAL: "mm:SkipIfEmptyLiteral"> }
-
-TOKEN: { <MM_PROCESS_IF_EMPTY_ID: "mm:ProcessIfEmptyID"> }
-TOKEN: { <MM_ERROR_IF_EMPTY_ID: "mm:ErrorIfEmptyID"> }
-TOKEN: { <MM_WARNING_IF_EMPTY_ID: "mm:WarningIfEmptyID"> }
-TOKEN: { <MM_SKIP_IF_EMPTY_ID: "mm:SkipIfEmptyID"> }
-
-TOKEN: { <MM_PROCESS_IF_EMPTY_LABEL: "mm:ProcessIfEmptyLabel"> }
-TOKEN: { <MM_ERROR_IF_EMPTY_LABEL: "mm:ErrorIfEmptyLabel"> }
-TOKEN: { <MM_WARNING_IF_EMPTY_LABEL: "mm:WarningIfEmptyLabel"> }
-TOKEN: { <MM_SKIP_IF_EMPTY_LABEL: "mm:SkipIfEmptyLabel"> }
-
-TOKEN: { <MM_RESOLVE_IF_OWL_ENTITY_EXISTS: "mm:ResolveIfOWLEntityExists"> }
-TOKEN: { <MM_SKIP_IF_OWL_ENTITY_EXISTS: "mm:SkipIfOWLEntityExists"> }
-TOKEN: { <MM_WARNING_IF_OWL_ENTITY_EXISTS: "mm:WarningIfOWLEntityExists"> }
-TOKEN: { <MM_ERROR_IF_OWL_ENTITY_EXISTS: "mm:ErrorIfOWLEntityExists"> }
-TOKEN: { <MM_CREATE_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:CreateIfOWLEntityDoesNotExist"> }
-TOKEN: { <MM_SKIP_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:SkipIfOWLEntityDoesNotExist"> }
-TOKEN: { <MM_WARNING_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:WarningIfOWLEntityDoesNotExist"> }
-TOKEN: { <MM_ERROR_IF_OWL_ENTITY_DOES_NOT_EXIST: "mm:ErrorIfOWLEntityDoesNotExist"> }
-*/
 
 TOKEN: { <MM_CREATE_IF_CELL_EMPTY: "mm:CreateIfCellEmpty"> }
 TOKEN: { <MM_IGNORE_IF_CELL_EMPTY: "mm:IgnoreIfCellEmpty"> }
