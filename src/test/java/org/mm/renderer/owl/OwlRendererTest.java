@@ -46,6 +46,7 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
          dataFactory = ontologyManager.getOWLDataFactory();
          ontology = ontologyManager.createOntology(IRI.create(ONTOLOGY_ID));
          declareDefaultOwl2Datatypes(ontology);
+         declareDefaultOwl2Annotations(ontology);
       } catch(OWLOntologyCreationException e) {
          throw new RuntimeException(e);
       }
@@ -66,6 +67,14 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DATETIME));
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_TIME));
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DATE));
+   }
+
+   private void declareDefaultOwl2Annotations(OWLOntology ontology) {
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.OWL_VERSION_INFO));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.RDFS_COMMENT));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.RDFS_LABEL));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.RDFS_SEE_ALSO));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.RDFS_IS_DEFINED_BY));
    }
 
    protected OWLOntology getOntology() {
@@ -91,7 +100,7 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
             sheet.getLastRowNum());
    }
 
-   protected void setPrefix(OWLOntology ontology, String prefixName, String prefix) {
+   protected void setPrefix(String prefixName, String prefix) {
       OWLDocumentFormat format = ontologyManager.getOntologyFormat(ontology);
       PrefixManager prefixManager = (PrefixManager) format.asPrefixOWLOntologyFormat();
       prefixManager.setPrefix(prefixName, prefix);
