@@ -290,7 +290,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    }
 
    private LiteralValue processLiteral(String cellValue, ReferenceDirectives directives) {
-      int option = directives.getPropertyValueDatatype();
+      int option = directives.getValueDatatype();
       if (option == XSD_STRING) {
          return LiteralValue.createLiteral(cellValue, Datatype.XSD_STRING);
       } else if (option == XSD_BOOLEAN) {

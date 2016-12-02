@@ -18,8 +18,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    private final int referenceType;
    private final int propertyType;
-   private final int propertyValueType;
-   private final int propertyValueDatatype;
+
+   private final int valueDatatype;
 
    private final int valueEncoding;
    private final int iriEncoding;
@@ -34,9 +34,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives(@Nonnull String prefix, @Nonnull String namespace,
          @Nonnull String language, @Nonnull String labelValue, @Nonnull String literalValue,
-         int referenceType, int propertyType, int propertyValueType, int propertyValueDatatype,
-         int valueEncoding, int iriEncoding, int shiftDirection, int orderIfCellEmpty,
-         int orderIfEntityAbsent) {
+         int referenceType, int propertyType, int valueDatatype, int valueEncoding, int iriEncoding,
+         int shiftDirection, int orderIfCellEmpty, int orderIfEntityAbsent) {
       this.prefix = checkNotNull(prefix);
       this.namespace = checkNotNull(namespace);
       this.language = checkNotNull(language);
@@ -44,8 +43,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
       this.literalValue = checkNotNull(literalValue);
       this.referenceType = referenceType;
       this.propertyType = propertyType;
-      this.propertyValueType = propertyValueType;
-      this.propertyValueDatatype = propertyValueDatatype;
+      this.valueDatatype = valueDatatype;
       this.valueEncoding = valueEncoding;
       this.iriEncoding = iriEncoding;
       this.shiftDirection = shiftDirection;
@@ -101,12 +99,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
       return propertyType;
    }
 
-   public int getPropertyValueType() {
-      return propertyValueType;
-   }
-
-   public int getPropertyValueDatatype() {
-      return propertyValueDatatype;
+   public int getValueDatatype() {
+      return valueDatatype;
    }
 
    public int getValueEncoding() {
