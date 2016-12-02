@@ -48,16 +48,17 @@ public interface MappingMasterParserTreeConstants
   public int JJTOBJECTVALUE = 42;
   public int JJTREFERENCE = 43;
   public int JJTNAME = 44;
-  public int JJTIRI = 45;
-  public int JJTLITERAL = 46;
-  public int JJTINTEGERLITERAL = 47;
-  public int JJTFLOATLITERAL = 48;
-  public int JJTSTRINGLITERAL = 49;
-  public int JJTBOOLEANLITERAL = 50;
-  public int JJTREFERENCENOTATION = 51;
-  public int JJTBUILTINFUNCTION = 52;
-  public int JJTARGUMENT = 53;
-  public int JJTREFERENCETYPE = 54;
+  public int JJTQNAME = 45;
+  public int JJTIRI = 46;
+  public int JJTLITERAL = 47;
+  public int JJTINTEGERLITERAL = 48;
+  public int JJTFLOATLITERAL = 49;
+  public int JJTSTRINGLITERAL = 50;
+  public int JJTBOOLEANLITERAL = 51;
+  public int JJTREFERENCENOTATION = 52;
+  public int JJTBUILTINFUNCTION = 53;
+  public int JJTARGUMENT = 54;
+  public int JJTREFERENCETYPE = 55;
 
 
   public String[] jjtNodeName = {
@@ -106,6 +107,7 @@ public interface MappingMasterParserTreeConstants
     "ObjectValue",
     "Reference",
     "Name",
+    "QName",
     "Iri",
     "Literal",
     "IntegerLiteral",
@@ -118,4 +120,4 @@ public interface MappingMasterParserTreeConstants
     "ReferenceType",
   };
 }
-/* JavaCC - OriginalChecksum=4a930b5dd7e2d6fd6d573797e2ba69fa (do not edit this line) */
+/* JavaCC - OriginalChecksum=7a436bdbe84f9ac3571866acbdd89a5d (do not edit this line) */

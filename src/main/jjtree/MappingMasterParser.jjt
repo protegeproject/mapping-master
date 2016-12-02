@@ -622,7 +622,7 @@ void fact() #Fact : {}
 void property_value() #PropertyValue : {}
 {
   ( reference(XSD_STRING)
-    | name()
+    | qname()
     | literal()
   )
 }
@@ -915,7 +915,7 @@ void named_individual() #NamedIndividual : {}
 void value(int referenceType) #ValueCategory : {}
 {
   ( reference(referenceType)
-    | name()
+    | qname()
     | iri()
     | literal()
   )
@@ -931,7 +931,7 @@ void literal_value() #LiteralValue : {}
 void object_value() #ObjectValue() : {}
 {
   ( reference(OWL_NAMED_INDIVIDUAL)
-    | name()
+    | qname()
   )
 }
 
@@ -965,6 +965,42 @@ void name() #Name :
   t = <NAME>
   {
     jjtThis.name = t.image;
+  }
+}
+
+void qname() #QName :
+{
+  String qname;
+}
+{
+  ( LOOKAHEAD(2) qname = prefixed_name()
+    | LOOKAHEAD(2) qname = unprefixed_name()
+  )
+  {
+    jjtThis.name = qname;
+  }
+}
+
+String prefixed_name() :
+{
+  Token t1;
+  Token t2;
+}
+{
+  t1 = <NAME> ":" t2 = <NAME>
+  {
+    return t1.image + ":" + t2.image;
+  }
+}
+
+String unprefixed_name() :
+{
+  Token t;
+}
+{
+  t = <NAME>
+  {
+    return t.image;
   }
 }
 

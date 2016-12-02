@@ -45,6 +45,7 @@ import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTPropertyValue;
+import org.mm.parser.node.ASTQName;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTReferenceType;
@@ -288,6 +289,11 @@ public class NodeVisitorAdapter implements NodeVisitor {
 
    @Override
    public void visit(ASTPropertyValue node) {
+      handleDefault(node);
+   }
+
+   @Override
+   public void visit(ASTQName node) {
       handleDefault(node);
    }
 

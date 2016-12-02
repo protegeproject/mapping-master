@@ -45,6 +45,7 @@ import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTPropertyValue;
+import org.mm.parser.node.ASTQName;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTReferenceType;
@@ -152,6 +153,8 @@ public interface NodeVisitor {
    void visit(ASTPropertyAssertion node);
 
    void visit(ASTPropertyValue node);
+
+   void visit(ASTQName node);
 
    void visit(ASTReference node);
 

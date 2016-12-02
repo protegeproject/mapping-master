@@ -15,6 +15,7 @@ import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTName;
 import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTPropertyValue;
+import org.mm.parser.node.ASTQName;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTStringLiteral;
@@ -96,8 +97,18 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
       return cellAddress;
    }
 
+   /**
+    * @deprecated use {@link visit(ASTQName)} instead. 
+    */
    @Override
+   @Deprecated
    public void visit(ASTName node) {
+      String name = node.getValue();
+      value = new EntityName(name);
+   }
+
+   @Override
+   public void visit(ASTQName node) {
       String name = node.getValue();
       value = new EntityName(name);
    }

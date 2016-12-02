@@ -387,6 +387,7 @@ public interface MappingMasterParserConstants {
     "\"{\"",
     "\"}\"",
     "\"@\"",
+    "\":\"",
     "\"!\"",
     "\"[\"",
     "\"]\"",
