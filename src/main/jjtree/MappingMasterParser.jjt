@@ -581,7 +581,7 @@ void annotation_assertion() #AnnotationAssertion : {}
 
 void annotation() #Annotation : {}
 {
-  annotation_property() value(propertyValueType)
+  annotation_property() value(propertyValueDatatype)
 }
 
 //------------------------------------------------------------------------------------------

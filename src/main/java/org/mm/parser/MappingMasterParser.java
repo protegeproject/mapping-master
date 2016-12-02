@@ -551,7 +551,7 @@ if (jjtc000) {
   jjtree.openNodeScope(jjtn000);
     try {
       annotation_property();
-      value(propertyValueType);
+      value(propertyValueDatatype);
     } catch (Throwable jjte000) {
 if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
