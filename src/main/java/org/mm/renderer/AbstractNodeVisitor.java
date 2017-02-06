@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import org.mm.parser.NodeType;
 import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
+import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTPropertyValue;
@@ -29,6 +30,12 @@ public class AbstractNodeVisitor extends NodeVisitorAdapter {
 
    protected Value<?> getValue(SimpleNode node) {
       ASTValueCategory valueNode = ParserUtils.getChild(node, NodeType.VALUE);
+      valueNodeVisitor.visit(valueNode);
+      return valueNodeVisitor.getValue();
+   }
+
+   protected Value<?> getAnnotationValue(SimpleNode node) {
+      ASTAnnotationValue valueNode = ParserUtils.getChild(node, NodeType.ANNOTATION_VALUE);
       valueNodeVisitor.visit(valueNode);
       return valueNodeVisitor.getValue();
    }

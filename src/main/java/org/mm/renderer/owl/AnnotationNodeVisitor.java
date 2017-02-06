@@ -57,7 +57,7 @@ public class AnnotationNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitAnnotationValueNode(ASTAnnotation annotationNode) {
-      Value<?> value = getValue(annotationNode);
+      Value<?> value = getAnnotationValue(annotationNode);
       annotationValue = owlObjectProvider.getOWLAnnotationValue(value);
    }
 }

@@ -3,6 +3,7 @@ package org.mm.parser;
 import org.mm.parser.node.ASTAnnotation;
 import org.mm.parser.node.ASTAnnotationAssertion;
 import org.mm.parser.node.ASTAnnotationProperty;
+import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTArgument;
 import org.mm.parser.node.ASTBooleanLiteral;
 import org.mm.parser.node.ASTBuiltInFunction;
@@ -79,6 +80,11 @@ public class NodeVisitorAdapter implements NodeVisitor {
 
    @Override
    public void visit(ASTAnnotationProperty node) {
+      handleDefault(node);
+   }
+
+   @Override
+   public void visit(ASTAnnotationValue node) {
       handleDefault(node);
    }
 

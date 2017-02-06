@@ -6,6 +6,7 @@ import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.NodeType;
 import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
+import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTBooleanLiteral;
 import org.mm.parser.node.ASTFloatLiteral;
 import org.mm.parser.node.ASTIntegerLiteral;
@@ -50,6 +51,12 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTValueCategory valueNode) {
+      Node valueTypeNode = ParserUtils.getChild(valueNode);
+      valueTypeNode.accept(this);
+   }
+
+   @Override
+   public void visit(ASTAnnotationValue valueNode) {
       Node valueTypeNode = ParserUtils.getChild(valueNode);
       valueTypeNode.accept(this);
    }

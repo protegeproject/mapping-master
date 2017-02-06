@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import org.mm.parser.node.ASTAnnotation;
 import org.mm.parser.node.ASTAnnotationAssertion;
 import org.mm.parser.node.ASTAnnotationProperty;
+import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassAssertion;
 import org.mm.parser.node.ASTClassDeclaration;
@@ -78,4 +79,5 @@ public class NodeType<T extends Node> {
    public static final NodeType<ASTSameAs> SAME_AS = new NodeType<>("SameAs", ASTSameAs.class);
    public static final NodeType<ASTSubclassOf> SUBCLASS_OF = new NodeType<>("SubclassOf", ASTSubclassOf.class);
    public static final NodeType<ASTValueCategory> VALUE = new NodeType<>("ValueCategory", ASTValueCategory.class);
+   public static final NodeType<ASTAnnotationValue> ANNOTATION_VALUE = new NodeType<>("AnnotationValue", ASTAnnotationValue.class);
 }
