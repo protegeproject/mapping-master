@@ -525,7 +525,15 @@ void annotation_assertion() #AnnotationAssertion : {}
 
 void annotation() #Annotation : {}
 {
-  annotation_property() value(valueDatatype)
+  annotation_property() annotation_value()
+}
+
+void annotation_value() #AnnotationValue : {}
+{
+  ( reference(valueDatatype)
+    | iri()
+    | literal()
+  )
 }
 
 //------------------------------------------------------------------------------------------
