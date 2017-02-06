@@ -32,7 +32,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
-   public void shoudRenderClassAssertion() {
+   public void shouldRenderClassAssertion() {
       // Arrange
       declareEntity(Vocabulary.PERSON);
       addCell("Sheet1", 1, 1, "fred");
@@ -45,7 +45,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
-   public void shoudRenderClassAssertion_Multiple() {
+   public void shouldRenderClassAssertion_UsingMultipleTypes() {
       // Arrange
       declareEntity(Vocabulary.PERSON);
       declareEntity(Vocabulary.STUDENT);
@@ -62,7 +62,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
-   public void shoudRenderDataPropertyAssertion() {
+   public void shouldRenderDataPropertyAssertion() {
       // Arrange
       declareEntity(Vocabulary.HAS_AGE);
       addCell("Sheet1", 1, 1, "fred");
@@ -77,7 +77,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
-   public void shoudRenderObjectPropertyAssertion() {
+   public void shouldRenderObjectPropertyAssertion() {
       // Arrange
       declareEntity(Vocabulary.HAS_PARENT);
       addCell("Sheet1", 1, 1, "fred");
@@ -91,7 +91,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
-   public void shoudRenderAnnotationPropertyAssertion() {
+   public void shouldRenderAnnotationPropertyAssertion() {
       // Arrange
       declareEntity(Vocabulary.COMMENT);
       String text = "Fred works for Stanford";
@@ -107,7 +107,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
-   public void shoudRenderAnnotationPropertyAssertion_HavingIriValue() {
+   public void shouldRenderAnnotationPropertyAssertion_HavingIriValue() {
       // Arrange
       setPrefix("foaf", Namespaces.FOAF.toString());
       declareEntity(Vocabulary.FOAF_DEPICTION);
@@ -124,7 +124,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
-   public void shoudRenderAnnotationPropertyAssertion_UsingRdfsComment() {
+   public void shouldRenderAnnotationPropertyAssertion_UsingRdfsComment() {
       // Arrange
       String text = "Fred works for Stanford";
       addCell("Sheet1", 1, 1, "fred");
@@ -154,7 +154,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
-   public void shoudRenderObjectPropertyAssertion_ColumnHeaderAsProperty() {
+   public void shouldRenderObjectPropertyAssertion_ColumnHeaderAsProperty() {
       // Arrange
       addCell("Sheet1", 1, 2, "fred");
       addCell("Sheet1", 2, 1, "hasParent");
