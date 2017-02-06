@@ -139,6 +139,30 @@ public class AssertionAxiomTest extends OwlRendererTest {
    }
 
    @Test
+   public void shoudRenderAnnotationPropertyAssertion_UsingMultipleAnnotations() {
+      // Arrange
+      String label = "Alfred";
+      String vCard = "http://example.org/people/fred.json";
+      String comment = "Fred works for Stanford";
+      addCell("Sheet1", 1, 1, "fred");
+      addCell("Sheet1", 2, 1, label);
+      addCell("Sheet1", 3, 1, vCard);
+      addCell("Sheet1", 4, 1, comment);
+      // Act
+      Set<OWLAxiom> results = evaluate("Individual: @A1 "
+            + "Annotations: rdfs:label @B1, rdfs:seeAlso @C1(IRI), rdfs:comment @D1");
+      // Assert
+      assertThat(results, hasSize(4));
+      assertThat(results, containsInAnyOrder(Declaration(Vocabulary.FRED),
+            AnnotationAssertion(Vocabulary.RDFS_LABEL, Vocabulary.FRED.getIRI(),
+                  Literal(label, Vocabulary.XSD_STRING)),
+            AnnotationAssertion(Vocabulary.RDFS_SEE_ALSO, Vocabulary.FRED.getIRI(),
+                  IRI(vCard)),
+            AnnotationAssertion(Vocabulary.RDFS_COMMENT, Vocabulary.FRED.getIRI(),
+                  Literal(comment, Vocabulary.XSD_STRING))));
+   }
+
+   @Test
    public void shouldRenderDataPropertyAssertion_ColumnHeaderAsPropertyName() {
       // Arrange
       addCell("Sheet1", 1, 2, "fred");
