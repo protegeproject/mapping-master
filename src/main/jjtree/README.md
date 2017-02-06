@@ -1,6 +1,6 @@
 # Compiling the Grammar
 
-We are going to compile the M2 transformation rule grammar using JavaCC version 6.1.2
+We are going to compile the MappingMaster transformation-rule grammar using JavaCC version 6.1.2
 
 ## Setup
 
@@ -8,7 +8,7 @@ Installing JavaCC 6.1.2 is a bit tricky due to the project is quite inactive (la
 
 * Download [JavaCC 5.0](https://java.net/projects/javacc/downloads/download/javacc-5.0.zip) and unzip it into your selected directory, .e.g, `[JAVACC_HOME]`
 
-> **NOTE**: There is a mistake when distributing JavaCC 6.0, such that, they forgot to include the script files to run javacc [[1](http://stackoverflow.com/questions/18674474/setting-javacc-to-work-with-command-prompt)]. We are going to reuse the scripts from the previous version.
+> **NOTE**: There is a slight mistake with the JavaCC 6.0 distribution, such that, the author forgot to include the script files to run javacc [[1](http://stackoverflow.com/questions/18674474/setting-javacc-to-work-with-command-prompt)]. We are going to reuse the scripts from the previous version.
 
 * Download the latest [JavaCC 6.1.2](https://java.net/projects/javacc/downloads/download/releases/Release%206.1.2/javacc-6.1.2.jar) library.
 
@@ -16,44 +16,50 @@ Installing JavaCC 6.1.2 is a bit tricky due to the project is quite inactive (la
 
 * (Optional) If you are working in UNIX system, create a symbolic link for your convenience [[2](http://stackoverflow.com/questions/1951742/how-to-symlink-a-file-in-linux)].
 
+## Parser Building Pipeline
 
-## Generate the tree nodes
+JavaCC is a parser generator that takes a context free grammar and generates a parser for that language. This parser is all what we need for our MappingMaster project. Follow the steps below every time you make changes to the grammar file.
 
-Before we are able to generate the parser file, we need to generate the tree nodes first.
+### 1. Generate the tree nodes
 
-* Type the command below in your command line prompt.
+The grammar file `MappingMasterParser.jjt` contains the structure definition of the rule language that is used by MappingMaster. The structure is based on the abstract syntax tree (AST) where each language construct is presented as a tree node.
+
+The `jjtree` command will generate those tree nodes as JAVA codes which will be the main sources for our parser tree module.
+
+Type the command below to run the process:
 
 ```
 $ [JAVACC_HOME]/bin/jjtree MappingMasterParser.jjt
 ```
 
-* Go to the `target/generated-sources` folder from the project root and you should see a new directory called `jjtree` with all tree node files inside.
+The command will create a new directory called `jjtree` in `target/generated-sources` folder. The folder will contain all the tree nodes (i.e., files with prefix AST-) and an annotated grammar called `MappingMasterParser.jj`.
+
+
+### 2. Generate the parser
+
+Once we have the annotated grammar, we can start generating the parser code. The `javacc` command will do the task for us automatically.
+
+Type the command below to run the process:
 
 ```
-$ ls -al [PROJECT_ROOT]/target/generated-sources/jjtree
+$ [JAVACC_HOME]/bin/javacc MappingMasterParser.jj
 ```
 
-## Generate the parser
-
-You are going to need a .jj file to generate the parser files. This file is generated when you compile the grammar file using `jjtree` command.
-
-* Type the command below in your command line promopt.
-
-```
-$ [JAVACC_HOME]/bin/javacc ../../../target/generated-sources/jjtree/MappingMasterParser.jj
+The command will create a new directory called `javacc` in `target/generated-sources` folder. The folder will contain all the parser source codes.
 ```
 
-* Go to the `target/generated-sources` folder from the project root and you should see a new directory called `javacc` with all parser files inside.
+## Working with Grammar
 
-```
-$ ls -al [PROJECT_ROOT]/target/generated-sources/javacc
-```
+This section will show you the regular procedure every time you change the grammar.
 
-## Renew the tree node files
+1. Run the pipeline as described above.
+2. Replace all the files located in `[PROJECT_ROOT]/src/main/java/org/mm/parser` with the new parser codes in `[PROJECT_ROOT]/target/generated-sources/javacc`.
+3. Replace the only file `[PROJECT_ROOT]/src/main/java/org/mm/parser/node/MappingMasterParserTreeConstants.java` with the new tree constants from `[PROJECT_ROOT]/target/generated-sources/jjtree/MappingMasterParserTreeConstants.java`
+4. **This fourth step is required iff you introduce a new tree node or rename an existing tree node**: Copy the corresponding AST- file to `[PROJECT_ROOT]/src/main/java/org/mm/parser/node`. Make sure you remove the old AST- file in case you do a tree node renaming.
 
-You ONLY need to replace the tree node files IF you make changes in the grammar file.
+**IMPORTANT NOTE**
 
-Currently, all the tree node files are located in `[PROJECT_ROOT]/src/main/java/org/mm/parser/node` directory. Please take care when you replace the files because some of them have a code manually inserted. Look at the annotated comment `/* XXX: ... */` that indicates the inserted code.
+Please take care when you replace a tree node files because some of them have codes manually inserted. These codes have an annotated comment `/* XXX: ... */` next to them. You need to maintain these extra codes carefully.
 
 For example:
 ```java
@@ -80,9 +86,3 @@ class ASTName extends SimpleNode {
   }
 }
 ```
-
-## Renew the parser files
-
-You ONLY need to replace the parser files IF you make changes in the grammar file.
-
-Currently, all the parser files are located in `[PROJECT_ROOT]/src/main/java/org/mm/parser` directory. In contrast with the tree node files, it is safe to copy and replace all the parser files.
