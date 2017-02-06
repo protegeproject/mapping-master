@@ -72,7 +72,7 @@ public class Vocabulary {
    public static final OWLAnnotationProperty RDFS_SEE_ALSO = AnnotationProperty(IRI(Namespaces.RDFS + "seeAlso"));
    public static final OWLAnnotationProperty RDFS_IS_DEFINED_BY = AnnotationProperty(IRI(Namespaces.RDFS + "isDefinedBy"));
    public static final OWLAnnotationProperty OWL_VERSION_INFO = AnnotationProperty(IRI(Namespaces.OWL + "versionInfo"));
-   public static final OWLAnnotationProperty HAS_AGE_ANNOTATION = AnnotationProperty(IRI(ONTOLOGY_ID, "hasAge"));
+   public static final OWLAnnotationProperty COMMENT = AnnotationProperty(IRI(ONTOLOGY_ID, "comment"));
 
    public static final OWLNamedIndividual P1 = NamedIndividual(IRI(ONTOLOGY_ID, "p1"));
    public static final OWLNamedIndividual DOUBLE_HULL = NamedIndividual(IRI(ONTOLOGY_ID, "double-hull"));
