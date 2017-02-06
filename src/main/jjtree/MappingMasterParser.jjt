@@ -925,12 +925,13 @@ void qname() #QName :
   String qname;
 }
 {
-  ( LOOKAHEAD(2) qname = prefixed_name()
-    | LOOKAHEAD(2) qname = unprefixed_name()
-  )
-  {
-    jjtThis.name = qname;
-  }
+  <RDFS_LABEL> { jjtThis.name = "rdfs:label"; } // TODO: Remove this after having a clear decision on "rdfs:label" directive
+  | ( LOOKAHEAD(2) qname = prefixed_name()
+      | LOOKAHEAD(2) qname = unprefixed_name()
+    )
+    {
+      jjtThis.name = qname;
+    }
 }
 
 String prefixed_name() :
