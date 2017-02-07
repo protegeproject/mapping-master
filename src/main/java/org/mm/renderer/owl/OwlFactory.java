@@ -7,10 +7,11 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import org.mm.renderer.internal.EntityName;
 import org.mm.renderer.internal.IriValue;
 import org.mm.renderer.internal.LiteralValue;
-import org.mm.renderer.internal.ReferredEntityName;
+import org.mm.renderer.internal.PropertyName;
+import org.mm.renderer.internal.QName;
+import org.mm.renderer.internal.ReferencedValue;
 import org.mm.renderer.internal.Value;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
@@ -75,10 +76,10 @@ public class OwlFactory {
    }
 
    public OWLClass getOWLClass(Value<?> value) {
-      if (value instanceof EntityName) {
-         return fetchOWLClass(((EntityName) value).getActualObject());
-      } else if (value instanceof ReferredEntityName) {
-         return createOWLClass(((ReferredEntityName) value).getActualObject());
+      if (value instanceof QName) {
+         return fetchOWLClass(((QName) value).getActualObject());
+      } else if (value instanceof ReferencedValue) {
+         return createOWLClass(((ReferencedValue) value).getActualObject());
       } else if (value instanceof IriValue) {
          return createOWLClass(((IriValue) value).getActualObject());
       }
@@ -99,10 +100,10 @@ public class OwlFactory {
    }
 
    public OWLProperty getOWLProperty(Value<?> value) {
-      if (value instanceof EntityName) {
-         return fetchOWLProperty(((EntityName) value).getActualObject());
-      } else if (value instanceof ReferredEntityName) {
-         return createOWLProperty((ReferredEntityName) value);
+      if (value instanceof QName) {
+         return fetchOWLProperty(((QName) value).getActualObject());
+      } else if (value instanceof ReferencedValue) {
+         return createOWLProperty((ReferencedValue) value);
       }
       throw new RuntimeException("Programming error: Creating OWL property using "
             + value.getClass() + " is not yet implemented");
@@ -112,22 +113,25 @@ public class OwlFactory {
       return entityResolver.resolveUnchecked(prefixedName, OWLProperty.class);
    }
 
-   private OWLProperty createOWLProperty(ReferredEntityName entityName) {
-      if (entityName.isDataProperty()) {
-         return createOWLDataProperty(entityName.getActualObject());
-      } else if (entityName.isObjectProperty()) {
-         return createOWLObjectProperty(entityName.getActualObject());
-      } else if (entityName.isAnnotationProperty()) {
-         return createOWLAnnotationProperty(entityName.getActualObject());
+   private OWLProperty createOWLProperty(ReferencedValue referencedValue) {
+      if (referencedValue instanceof PropertyName) {
+         PropertyName propertyName = (PropertyName) referencedValue;
+         if (propertyName.isDataProperty()) {
+            return createOWLDataProperty(propertyName.getActualObject());
+         } else if (propertyName.isObjectProperty()) {
+            return createOWLObjectProperty(propertyName.getActualObject());
+         } else if (propertyName.isAnnotationProperty()) {
+            return createOWLAnnotationProperty(propertyName.getActualObject());
+         }
       }
       throw new RuntimeException("Programming error: Unknown property type");
    }
 
    public OWLDataProperty getOWLDataProperty(Value<?> value) {
-      if (value instanceof EntityName) {
-         return fetchOWLDataProperty(((EntityName) value).getActualObject());
-      } else if (value instanceof ReferredEntityName) {
-         return createOWLDataProperty(((ReferredEntityName) value).getActualObject());
+      if (value instanceof QName) {
+         return fetchOWLDataProperty(((QName) value).getActualObject());
+      } else if (value instanceof ReferencedValue) {
+         return createOWLDataProperty(((ReferencedValue) value).getActualObject());
       } else if (value instanceof IriValue) {
          return createOWLDataProperty(((IriValue) value).getActualObject());
       }
@@ -148,10 +152,10 @@ public class OwlFactory {
    }
 
    public OWLObjectProperty getOWLObjectProperty(Value<?> value) {
-      if (value instanceof EntityName) {
-         return fetchOWLObjectProperty(((EntityName) value).getActualObject());
-      } else if (value instanceof ReferredEntityName) {
-         return createOWLObjectProperty(((ReferredEntityName) value).getActualObject());
+      if (value instanceof QName) {
+         return fetchOWLObjectProperty(((QName) value).getActualObject());
+      } else if (value instanceof ReferencedValue) {
+         return createOWLObjectProperty(((ReferencedValue) value).getActualObject());
       } else if (value instanceof IriValue) {
          return createOWLObjectProperty(((IriValue) value).getActualObject());
       }
@@ -172,10 +176,10 @@ public class OwlFactory {
    }
 
    public OWLAnnotationProperty getOWLAnnotationProperty(Value<?> value) {
-      if (value instanceof EntityName) {
-         return fetchOWLAnnotationProperty(((EntityName) value).getActualObject());
-      } else if (value instanceof ReferredEntityName) {
-         return createOWLAnnotationProperty(((ReferredEntityName) value).getActualObject());
+      if (value instanceof QName) {
+         return fetchOWLAnnotationProperty(((QName) value).getActualObject());
+      } else if (value instanceof ReferencedValue) {
+         return createOWLAnnotationProperty(((ReferencedValue) value).getActualObject());
       } else if (value instanceof IriValue) {
          return createOWLAnnotationProperty(((IriValue) value).getActualObject());
       }
@@ -196,10 +200,10 @@ public class OwlFactory {
    }
 
    public OWLNamedIndividual getOWLNamedIndividual(Value<?> value) {
-      if (value instanceof EntityName) {
-         return fetchOWLNamedIndividual(((EntityName) value).getActualObject());
-      } else if (value instanceof ReferredEntityName) {
-         return createOWLNamedIndividual(((ReferredEntityName) value).getActualObject());
+      if (value instanceof QName) {
+         return fetchOWLNamedIndividual(((QName) value).getActualObject());
+      } else if (value instanceof ReferencedValue) {
+         return createOWLNamedIndividual(((ReferencedValue) value).getActualObject());
       } else if (value instanceof IriValue) {
          return createOWLNamedIndividual(((IriValue) value).getActualObject());
       }
