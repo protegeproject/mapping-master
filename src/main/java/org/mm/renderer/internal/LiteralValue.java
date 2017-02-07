@@ -4,6 +4,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
@@ -49,6 +52,35 @@ public class LiteralValue implements Value<String> {
    @Override
    public String getActualObject() {
       return getLexicalString();
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (o == null) {
+         return false;
+      }
+      if (this == o) {
+         return true;
+      }
+      if (!(o instanceof LiteralValue)) {
+         return false;
+      }
+      LiteralValue other = (LiteralValue) o;
+      return Objects.equal(literalValue, other.getLexicalString())
+            && Objects.equal(datatype, other.getDatatype());
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hashCode(literalValue, datatype);
+   }
+
+   @Override
+   public String toString() {
+      return MoreObjects.toStringHelper(this)
+            .addValue(literalValue)
+            .addValue(datatype)
+            .toString();
    }
 
    public static class Datatype {
