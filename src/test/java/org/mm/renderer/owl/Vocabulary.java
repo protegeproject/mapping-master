@@ -64,6 +64,7 @@ public class Vocabulary {
    public static final OWLDataProperty HAS_SALARY = DataProperty(IRI(ONTOLOGY_ID, "hasSalary"));
    public static final OWLDataProperty HAS_DOB = DataProperty(IRI(ONTOLOGY_ID, "hasDOB"));
    public static final OWLDataProperty HAS_BEDTIME = DataProperty(IRI(ONTOLOGY_ID, "hasBedTime"));
+   public static final OWLDataProperty HAS_VALUE = DataProperty(IRI(ONTOLOGY_ID, "hasValue"));
 
    public static final OWLAnnotationProperty SKOS_PREFLABEL = AnnotationProperty(IRI(Namespaces.SKOS + "prefLabel"));
    public static final OWLAnnotationProperty FOAF_DEPICTION = AnnotationProperty(IRI(Namespaces.FOAF + "depiction"));
@@ -99,4 +100,5 @@ public class Vocabulary {
    public static final OWLDatatype XSD_DATETIME = Datatype(IRI(Namespaces.XSD + "dateTime"));
    public static final OWLDatatype XSD_TIME = Datatype(IRI(Namespaces.XSD + "time"));
    public static final OWLDatatype XSD_DATE = Datatype(IRI(Namespaces.XSD + "date"));
+   public static final OWLDatatype XSD_DURATION = Datatype(IRI(Namespaces.XSD + "duration"));
 }
