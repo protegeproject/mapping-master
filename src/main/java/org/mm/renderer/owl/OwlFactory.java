@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 
 import org.mm.renderer.internal.IriValue;
 import org.mm.renderer.internal.LiteralValue;
+import org.mm.renderer.internal.PlainLiteralValue;
 import org.mm.renderer.internal.PropertyName;
 import org.mm.renderer.internal.QName;
 import org.mm.renderer.internal.ReferencedValue;
@@ -227,46 +228,42 @@ public class OwlFactory {
       if (value instanceof IriValue) {
          return ((IriValue) value).getActualObject();
       } else if (value instanceof LiteralValue) {
-         return getOWLLiteral((LiteralValue) value);
+         return getOWLTypedLiteral((LiteralValue) value);
+      } else if (value instanceof PlainLiteralValue) {
+         return getOWLPlainLiteral((PlainLiteralValue) value);
       }
       throw new RuntimeException("Programming error: Creating OWL annotation using "
             + value.getClass() + " is not yet implemented");
    }
 
-   public OWLLiteral getOWLLiteral(@Nonnull Value<?> value, @Nonnull Optional<String> language) {
-      if (value instanceof LiteralValue) {
-         final LiteralValue literal = (LiteralValue) value;
-         final String lexicalString = literal.getLexicalString();
-         final String datatype = literal.getDatatype();
-         if (language.isPresent()) {
-            return createPlainLiteral(lexicalString, language.get());
-         } else {
-            if (datatype.equals(OWL2Datatype.RDF_PLAIN_LITERAL.getPrefixedName())) {
-               return createPlainLiteral(lexicalString);
-            } else {
-               return createTypedLiteral(lexicalString, datatype);
-            }
-         }
-      }
-      throw new RuntimeException(
-            "Unsupported feature to create OWLLiteral using " + value.getClass());
-   }
-
    public OWLLiteral getOWLLiteral(@Nonnull Value<?> value) {
-      return getOWLLiteral(value, Optional.empty());
+      if (value instanceof LiteralValue) {
+         return getOWLTypedLiteral((LiteralValue) value);
+      } else if (value instanceof PlainLiteralValue) {
+         return getOWLPlainLiteral((PlainLiteralValue) value);
+      }
+      throw new RuntimeException("Programming error: Creating OWL literal using "
+            + value.getClass() + " is not yet implemented");
    }
 
-   private OWLLiteral createPlainLiteral(@Nonnull String lexicalString, @Nonnull String language) {
-      return owlDataFactory.getOWLLiteral(lexicalString, language);
+   public OWLLiteral getOWLTypedLiteral(@Nonnull LiteralValue literal) {
+      final String lexicalString = literal.getLexicalString();
+      final String datatype = literal.getDatatype();
+      return owlDataFactory.getOWLLiteral(lexicalString, getOWLDatatype(datatype));
    }
 
-   private OWLLiteral createPlainLiteral(@Nonnull String lexicalString) {
-      return owlDataFactory.getOWLLiteral(lexicalString, OWL2Datatype.RDF_PLAIN_LITERAL);
+   private OWLDatatype getOWLDatatype(final String datatype) {
+      return entityResolver.resolveUnchecked(datatype, OWLDatatype.class);
    }
 
-   private OWLLiteral createTypedLiteral(@Nonnull String lexicalString, @Nonnull String prefixedType) {;
-      OWLDatatype datatype = entityResolver.resolveUnchecked(prefixedType, OWLDatatype.class);
-      return owlDataFactory.getOWLLiteral(lexicalString, datatype);
+   public OWLLiteral getOWLPlainLiteral(@Nonnull PlainLiteralValue literal) {
+      final String lexicalString = literal.getLexicalString();
+      final Optional<String> language = literal.getLanguage();
+      if (language.isPresent()) {
+         return owlDataFactory.getOWLLiteral(lexicalString, language.get());
+      } else {
+         return owlDataFactory.getOWLLiteral(lexicalString, OWL2Datatype.RDF_PLAIN_LITERAL);
+      }
    }
 
    /*

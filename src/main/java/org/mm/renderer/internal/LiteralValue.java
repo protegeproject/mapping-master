@@ -94,6 +94,5 @@ public class LiteralValue implements Value<String> {
       public static final String XSD_BYTE = "xsd:byte";
       public static final String XSD_DECIMAL = "xsd:decimal";
       public static final String XSD_DATETIME = "xsd:datetime";
-      public static final String RDF_PLAINLITERAL = "rdf:PlainLiteral";
    }
 }
