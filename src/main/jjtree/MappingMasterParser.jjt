@@ -1120,6 +1120,8 @@ void language_directive() :
              )
   {
     language = languageValue;
+    referenceType = RDF_PLAINLITERAL;
+    valueDatatype = RDF_PLAINLITERAL;
   }
 }
 

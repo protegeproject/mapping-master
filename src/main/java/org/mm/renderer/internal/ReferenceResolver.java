@@ -305,7 +305,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return new QName(cellValue);
    }
 
-   private LiteralValue processLiteral(String cellValue, ReferenceDirectives directives) {
+   private Value<?> processLiteral(String cellValue, ReferenceDirectives directives) {
       int option = directives.getValueDatatype();
       if (option == XSD_STRING) {
          return LiteralValue.createLiteral(cellValue, Datatype.XSD_STRING);
@@ -328,7 +328,11 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       } else if (option == XSD_DATETIME) {
          return LiteralValue.createLiteral(cellValue, Datatype.XSD_DATETIME);
       } else if (option == RDF_PLAINLITERAL) {
-         return LiteralValue.createLiteral(cellValue, Datatype.RDF_PLAINLITERAL);
+         if (directives.useUserLanguage()) {
+            return PlainLiteralValue.createPlainLiteral(cellValue, directives.getLanguage());
+         } else {
+            return PlainLiteralValue.createPlainLiteral(cellValue);
+         }
       }
       throw new RuntimeException("Programming error: Unknown datatype"
             + " (" + tokenImage[option] + ")");
