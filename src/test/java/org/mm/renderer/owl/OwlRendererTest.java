@@ -52,7 +52,7 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
       }
    }
 
-   private void declareDefaultOwl2Datatypes(OWLOntology ontology2) {
+   private void declareDefaultOwl2Datatypes(OWLOntology ontology) {
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.RDFS_LITERAL));
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.RDF_PLAINLITERAL));
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_STRING));
@@ -67,6 +67,7 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DATETIME));
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_TIME));
       ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DATE));
+      ontologyManager.addAxiom(ontology, Declaration(Vocabulary.XSD_DURATION));
    }
 
    private void declareDefaultOwl2Annotations(OWLOntology ontology) {
