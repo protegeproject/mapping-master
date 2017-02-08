@@ -325,8 +325,14 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          return LiteralValue.createLiteral(cellValue, Datatype.XSD_BYTE);
       } else if (option == XSD_DECIMAL) {
          return LiteralValue.createLiteral(cellValue, Datatype.XSD_DECIMAL);
+      } else if (option == XSD_TIME) {
+         return LiteralValue.createLiteral(cellValue, Datatype.XSD_TIME);
+      } else if (option == XSD_DATE) {
+         return LiteralValue.createLiteral(cellValue, Datatype.XSD_DATE);
       } else if (option == XSD_DATETIME) {
          return LiteralValue.createLiteral(cellValue, Datatype.XSD_DATETIME);
+      } else if (option == XSD_DURATION) {
+         return LiteralValue.createLiteral(cellValue, Datatype.XSD_DURATION);
       } else if (option == RDF_PLAINLITERAL) {
          if (directives.useUserLanguage()) {
             return PlainLiteralValue.createPlainLiteral(cellValue, directives.getLanguage());

@@ -93,6 +93,9 @@ public class LiteralValue implements Value<String> {
       public static final String XSD_SHORT = "xsd:short";
       public static final String XSD_BYTE = "xsd:byte";
       public static final String XSD_DECIMAL = "xsd:decimal";
-      public static final String XSD_DATETIME = "xsd:datetime";
+      public static final String XSD_TIME = "xsd:time";
+      public static final String XSD_DATE = "xsd:date";
+      public static final String XSD_DATETIME = "xsd:dateTime";
+      public static final String XSD_DURATION = "xsd:duration";
    }
 }
