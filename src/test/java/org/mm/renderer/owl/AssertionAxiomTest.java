@@ -199,11 +199,11 @@ public class AssertionAxiomTest extends OwlRendererTest {
       addCell("Sheet1", 2, 1, "comment");
       addCell("Sheet1", 2, 2, text);
       // Act
-      Set<OWLAxiom> results = evaluate("Individual: @A2 Annotations: @B1(mm:Prefix=\"rdfs\") @B2");
+      Set<OWLAxiom> results = evaluate("Individual: @A2 Annotations: @B1 @B2");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(Declaration(Vocabulary.FRED),
-            AnnotationAssertion(Vocabulary.RDFS_COMMENT, Vocabulary.FRED.getIRI(),
+            AnnotationAssertion(Vocabulary.COMMENT, Vocabulary.FRED.getIRI(),
                   Literal(text, Vocabulary.XSD_STRING))));
    }
 }
