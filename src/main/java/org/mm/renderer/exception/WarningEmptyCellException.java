@@ -22,7 +22,7 @@ public class WarningEmptyCellException extends RendererException implements Loca
    }
 
    @Override
-   public void setErrorLocation(@Nonnull CellAddress location) {
+   public void setErrorLocation(@Nonnull CellAddress cellAddress) {
       this.cellAddress = checkNotNull(cellAddress);
    }
 

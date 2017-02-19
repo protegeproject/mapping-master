@@ -22,7 +22,7 @@ public class IgnoreEmptyCellException extends RendererException implements Locat
    }
 
    @Override
-   public void setErrorLocation(@Nonnull CellAddress location) {
+   public void setErrorLocation(@Nonnull CellAddress cellAddress) {
       this.cellAddress = checkNotNull(cellAddress);
    }
 

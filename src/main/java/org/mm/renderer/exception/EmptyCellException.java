@@ -22,7 +22,7 @@ public class EmptyCellException extends RendererException implements Locatable<C
    }
 
    @Override
-   public void setErrorLocation(@Nonnull CellAddress location) {
+   public void setErrorLocation(@Nonnull CellAddress cellAddress) {
       this.cellAddress = checkNotNull(cellAddress);
    }
 
