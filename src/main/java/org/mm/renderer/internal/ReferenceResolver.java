@@ -117,7 +117,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int topMostRow = 0;
       int currentRow = rowIndex;
       while (currentRow >= topMostRow) {
-         String cellValue = getCellValue(sheet, columnIndex, rowIndex);
+         String cellValue = getCellValue(sheet, columnIndex, currentRow);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
@@ -127,10 +127,10 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    }
 
    private String processShiftingCellLeft(Sheet sheet, int columnIndex, int rowIndex) {
-      final int leftMostColumn = 1;
+      final int leftMostColumn = 0;
       int currentColumn = columnIndex;
       while (currentColumn >= leftMostColumn) {
-         String cellValue = getCellValue(sheet, columnIndex, rowIndex);
+         String cellValue = getCellValue(sheet, currentColumn, rowIndex);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
@@ -143,7 +143,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int bottomMostRow = sheet.getLastRowNum();
       int currentRow = rowIndex;
       while (currentRow <= bottomMostRow) {
-         String cellValue = getCellValue(sheet, columnIndex, rowIndex);
+         String cellValue = getCellValue(sheet, columnIndex, currentRow);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
@@ -156,7 +156,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int rightMostColumn = sheet.getRow(rowIndex).getLastCellNum();
       int currentColumn = columnIndex;
       while (currentColumn <= rightMostColumn) {
-         String cellValue = getCellValue(sheet, columnIndex, rowIndex);
+         String cellValue = getCellValue(sheet, currentColumn, rowIndex);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
