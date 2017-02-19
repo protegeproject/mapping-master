@@ -258,10 +258,10 @@ TOKEN: { <MM_DEFAULT_NAMESPACE: "mm:DefaultNamespace"> }
 TOKEN: { <MM_DEFAULT_LANGUAGE: "mm:DefaultLanguage"> }
 
 TOKEN: { <MM_NO_SHIFT: "mm:NoShift"> }
-TOKEN: { <MM_SHIFT_UP: "mm:ShiftUp"> }
-TOKEN: { <MM_SHIFT_DOWN: "mm:ShiftDown"> }
-TOKEN: { <MM_SHIFT_LEFT: "mm:ShiftLeft"> }
-TOKEN: { <MM_SHIFT_RIGHT: "mm:ShiftRight"> }
+TOKEN: { <MM_SHIFT_UP: "mm:shiftUp"> }
+TOKEN: { <MM_SHIFT_DOWN: "mm:shiftDown"> }
+TOKEN: { <MM_SHIFT_LEFT: "mm:shiftLeft"> }
+TOKEN: { <MM_SHIFT_RIGHT: "mm:shiftRight"> }
 
 TOKEN: { <MM_CREATE_IF_CELL_EMPTY: "mm:CreateIfCellEmpty"> }
 TOKEN: { <MM_IGNORE_IF_CELL_EMPTY: "mm:IgnoreIfCellEmpty"> }
