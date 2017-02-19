@@ -96,7 +96,7 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
       return new RenderingContext(
             sheet.getSheetName(),
             sheet.getRow(0).getFirstCellNum(),
-            sheet.getRow(0).getLastCellNum(),
+            sheet.getRow(0).getLastCellNum()-1,
             sheet.getFirstRowNum(),
             sheet.getLastRowNum());
    }
