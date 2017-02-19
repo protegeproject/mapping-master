@@ -263,10 +263,10 @@ TOKEN: { <MM_SHIFT_DOWN: "mm:shiftDown"> }
 TOKEN: { <MM_SHIFT_LEFT: "mm:shiftLeft"> }
 TOKEN: { <MM_SHIFT_RIGHT: "mm:shiftRight"> }
 
-TOKEN: { <MM_CREATE_IF_CELL_EMPTY: "mm:CreateIfCellEmpty"> }
-TOKEN: { <MM_IGNORE_IF_CELL_EMPTY: "mm:IgnoreIfCellEmpty"> }
-TOKEN: { <MM_WARNING_IF_CELL_EMPTY: "mm:WarningIfCellEmpty"> }
-TOKEN: { <MM_ERROR_IF_CELL_EMPTY: "mm:ErrorIfCellEmpty"> }
+TOKEN: { <MM_CREATE_IF_CELL_EMPTY: "mm:createIfCellEmpty"> }
+TOKEN: { <MM_IGNORE_IF_CELL_EMPTY: "mm:ignoreIfCellEmpty"> }
+TOKEN: { <MM_WARNING_IF_CELL_EMPTY: "mm:warningIfCellEmpty"> }
+TOKEN: { <MM_ERROR_IF_CELL_EMPTY: "mm:errorIfCellEmpty"> }
 
 TOKEN: { <MM_CREATE_IF_ENTITY_ABSENT: "mm:CreateIfEntityAbsent"> }
 TOKEN: { <MM_IGNORE_IF_ENTITY_ABSENT: "mm:IgnoreIfEntityAbsent"> }
