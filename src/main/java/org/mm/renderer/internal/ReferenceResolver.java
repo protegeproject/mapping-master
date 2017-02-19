@@ -27,14 +27,17 @@ public class ReferenceResolver implements MappingMasterParserConstants {
 
    private final Workbook workbook;
 
+   private CellAddress cellAddress;
+
    public ReferenceResolver(@Nonnull Workbook workbook) {
       this.workbook = checkNotNull(workbook);
    }
 
    public Value<?> resolve(CellAddress cellAddress, ReferenceDirectives directives) {
       try {
+         this.cellAddress = cellAddress;
          String cellValue = getCellValue(cellAddress);
-         cellValue = processCellShifting(cellValue, cellAddress, directives);
+         cellValue = processCellShifting(cellValue, directives);
          cellValue = processEmptyValue(cellValue, directives);
          return processReferenceType(cellValue, directives);
       } catch (RuntimeException e) {
@@ -90,8 +93,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       }
    }
 
-   private String processCellShifting(String cellValue, CellAddress cellAddress,
-         ReferenceDirectives directives) {
+   private String processCellShifting(String cellValue, ReferenceDirectives directives) {
       int option = directives.getShiftDirection();
       if (option == MM_NO_SHIFT) {
          return cellValue;
@@ -287,7 +289,8 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       } else if (option == MM_SNAKECASE_ENCODE) {
          return NameUtils.toSnakeCase(cellValue);
       } else if (option == MM_UUID_ENCODE) {
-         return NameUtils.toUUID();
+         String cellValueWithAddress = cellValue.concat(cellAddress.toString());
+         return NameUtils.toUUID(cellValueWithAddress);
       } else if (option == MM_HASH_ENCODE) {
          return NameUtils.toMD5(cellValue);
       } else if (option == MM_NO_ENCODE) {

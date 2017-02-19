@@ -82,8 +82,8 @@ public class NameUtils {
       return text.replaceAll("\\s+", "_");
    }
 
-   public static String toUUID() {
-      return UUID.randomUUID().toString();
+   public static String toUUID(final String text) {
+      return UUID.nameUUIDFromBytes(text.getBytes()).toString();
    }
 
    public static String toMD5(final String text) {
