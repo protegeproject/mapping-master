@@ -34,6 +34,7 @@ public class Vocabulary {
    public static final OWLClass PERSON = Class(IRI(ONTOLOGY_ID, "Person"));
    public static final OWLClass HUMAN = Class(IRI(ONTOLOGY_ID, "Human"));
    public static final OWLClass A = Class(IRI(ONTOLOGY_ID, "A"));
+   public static final OWLClass SHEET1_A1_UUID = Class(IRI(ONTOLOGY_ID, "71b3e3df-1b0e-3f34-869e-f25398971852"));
    public static final OWLClass STUDENT = Class(IRI(ONTOLOGY_ID, "Student"));
    public static final OWLClass CAR_OWNER = Class(IRI(ONTOLOGY_ID, "CarOwner"));
    public static final OWLClass BMW = Class(IRI(ONTOLOGY_ID, "BMW"));

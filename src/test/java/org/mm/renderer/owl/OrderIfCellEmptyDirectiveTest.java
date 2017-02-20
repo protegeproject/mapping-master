@@ -1,7 +1,9 @@
 package org.mm.renderer.owl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
 
 import java.util.Set;
 
@@ -56,6 +58,7 @@ public class OrderIfCellEmptyDirectiveTest extends OwlRendererTest {
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:createIfCellEmpty)");
       // Assert
       assertThat(result, hasSize(1));
+      assertThat(result, containsInAnyOrder(Declaration(Vocabulary.SHEET1_A1_UUID)));
    }
 
    @Test
