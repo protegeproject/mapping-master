@@ -268,10 +268,10 @@ TOKEN: { <MM_IGNORE_IF_CELL_EMPTY: "mm:ignoreIfCellEmpty"> }
 TOKEN: { <MM_WARNING_IF_CELL_EMPTY: "mm:warningIfCellEmpty"> }
 TOKEN: { <MM_ERROR_IF_CELL_EMPTY: "mm:errorIfCellEmpty"> }
 
-TOKEN: { <MM_CREATE_IF_ENTITY_ABSENT: "mm:CreateIfEntityAbsent"> }
-TOKEN: { <MM_IGNORE_IF_ENTITY_ABSENT: "mm:IgnoreIfEntityAbsent"> }
-TOKEN: { <MM_WARNING_IF_ENTITY_ABSENT: "mm:WarningIfEntityAbsent"> }
-TOKEN: { <MM_ERROR_IF_ENTITY_ABSENT: "mm:ErrorIfEntityAbsent"> }
+TOKEN: { <MM_CREATE_IF_ENTITY_ABSENT: "mm:createIfEntityAbsent"> }
+TOKEN: { <MM_IGNORE_IF_ENTITY_ABSENT: "mm:ignoreIfEntityAbsent"> }
+TOKEN: { <MM_WARNING_IF_ENTITY_ABSENT: "mm:warningIfEntityAbsent"> }
+TOKEN: { <MM_ERROR_IF_ENTITY_ABSENT: "mm:errorIfEntityAbsent"> }
 
 TOKEN: { <CREATE: "CREATE"> }
 TOKEN: { <IGNORE: "IGNORE"> }
