@@ -167,15 +167,15 @@ public class ReferenceResolver implements MappingMasterParserConstants {
 
    private String processEmptyValue(String cellValue, ReferenceDirectives directives) {
       if (cellValue.isEmpty()) {
-         cellValue = applyOrderForEmptyCell(cellValue, directives);
+         cellValue = applyOrderForEmptyCell(directives);
       }
       return cellValue;
    }
 
-   private String applyOrderForEmptyCell(String cellValue, ReferenceDirectives directives) {
+   private String applyOrderForEmptyCell(ReferenceDirectives directives) {
       int option = directives.getOrderIfCellEmpty();
       if (option == MM_CREATE_IF_CELL_EMPTY) {
-         return "";
+         return getDefaultCellValue();
       } else if (option == MM_IGNORE_IF_CELL_EMPTY) {
          throw new IgnoreEmptyCellException();
       } else if (option == MM_WARNING_IF_CELL_EMPTY) {
@@ -185,6 +185,11 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       }
       throw new RuntimeException("Programming error: Unknown directive to handle empty cell"
             + " (" + tokenImage[option] + ")");
+   }
+
+   private String getDefaultCellValue() {
+      String cellAddressUuid = NameUtils.toUUID(cellAddress.toString());
+      return cellAddressUuid;
    }
 
    private Value<?> processReferenceType(String cellValue, ReferenceDirectives directives) {
