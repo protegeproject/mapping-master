@@ -889,18 +889,15 @@ void object_value() #ObjectValue() : {}
 
 void reference(int type) #Reference :
 {
-  int localReferenceType = type;
+  referenceType = type;
   ReferenceDirectives referenceDirectives;
 }
 {
   "@" reference_notation()
        ( LOOKAHEAD(2)
-         "(" ( localReferenceType = reference_type() )?
-             ( reference_directive() )*
-         ")"
+         "(" ( reference_directive() )* ")"
        )?
   {
-    referenceType = localReferenceType;
     jjtThis.referenceDirectives = new ReferenceDirectives(
         prefix, namespace, language, labelValue, literalValue,
         referenceType, propertyType, valueDatatype,
@@ -1066,22 +1063,19 @@ String cell_notation() :
 
 void reference_directive() :
 {
-  int localValueEncoding;
-  int localIriEncoding;
-  int localShiftDirection;
-  int localOrderIfCellEmpty;
-  int localOrderIfEntityAbsent;
+  int value;
 }
 {
   ( prefix_directive()
    | namespace_directive()
    | language_directive()
    | builtin_function()
-   | localValueEncoding = value_encoding() { valueEncoding = localValueEncoding; }
-   | localIriEncoding = iri_encoding() { iriEncoding = localIriEncoding; }
-   | localShiftDirection = shift_direction() { shiftDirection = localShiftDirection; }
-   | localOrderIfCellEmpty = order_if_cell_empty() { orderIfCellEmpty = localOrderIfCellEmpty; }
-   | localOrderIfEntityAbsent = order_if_entity_absent() { orderIfEntityAbsent = localOrderIfEntityAbsent; }
+   | value = reference_type() { referenceType = value; }
+   | value = value_encoding() { valueEncoding = value; }
+   | value = iri_encoding() { iriEncoding = value; }
+   | value = shift_direction() { shiftDirection = value; }
+   | value = order_if_cell_empty() { orderIfCellEmpty = value; }
+   | value = order_if_entity_absent() { orderIfEntityAbsent = value; }
   )
 }
 

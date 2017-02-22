@@ -349,7 +349,7 @@ public interface MappingMasterParserConstants {
     "\"mm:DefaultPrefix\"",
     "\"mm:DefaultNamespace\"",
     "\"mm:DefaultLanguage\"",
-    "\"mm:noShift\"",
+    "\"mm:NoShift\"",
     "\"mm:shiftUp\"",
     "\"mm:shiftDown\"",
     "\"mm:shiftLeft\"",
