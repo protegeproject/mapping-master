@@ -29,7 +29,7 @@ The `jjtree` command will generate those tree nodes as JAVA codes which will be 
 Type the command below to run the process:
 
 ```
-$ [JAVACC_HOME]/bin/jjtree MappingMasterParser.jjt
+$ jjtree MappingMasterParser.jjt
 ```
 
 The command will create a new directory called `jjtree` in `target/generated-sources` folder. The folder will contain all the tree nodes (i.e., files with prefix 'AST') and an annotated grammar called `MappingMasterParser.jj`.
@@ -42,7 +42,8 @@ Once we have the annotated grammar, we can start generating the parser code. The
 Type the command below to run the process:
 
 ```
-$ [JAVACC_HOME]/bin/javacc MappingMasterParser.jj
+$ cd target/target/generated-sources/jjtree
+$ javacc MappingMasterParser.jj
 ```
 
 The command will create a new directory called `javacc` in `target/generated-sources` folder. The folder will contain all the parser source codes.
