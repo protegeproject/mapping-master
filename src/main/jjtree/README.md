@@ -32,7 +32,7 @@ Type the command below to run the process:
 $ [JAVACC_HOME]/bin/jjtree MappingMasterParser.jjt
 ```
 
-The command will create a new directory called `jjtree` in `target/generated-sources` folder. The folder will contain all the tree nodes (i.e., files with prefix AST-) and an annotated grammar called `MappingMasterParser.jj`.
+The command will create a new directory called `jjtree` in `target/generated-sources` folder. The folder will contain all the tree nodes (i.e., files with prefix 'AST') and an annotated grammar called `MappingMasterParser.jj`.
 
 
 ### 2. Generate the parser
@@ -46,22 +46,21 @@ $ [JAVACC_HOME]/bin/javacc MappingMasterParser.jj
 ```
 
 The command will create a new directory called `javacc` in `target/generated-sources` folder. The folder will contain all the parser source codes.
-```
 
 ## Working with Grammar
 
 This section will show you the regular procedure every time you change the grammar.
 
 1. Run the pipeline as described above.
-2. Replace all the files located in `[PROJECT_ROOT]/src/main/java/org/mm/parser` with the new parser codes in `[PROJECT_ROOT]/target/generated-sources/javacc`.
-3. Replace the only file `[PROJECT_ROOT]/src/main/java/org/mm/parser/node/MappingMasterParserTreeConstants.java` with the new tree constants from `[PROJECT_ROOT]/target/generated-sources/jjtree/MappingMasterParserTreeConstants.java`
-4. **This fourth step is required iff you introduce a new tree node or rename an existing tree node**: Copy the corresponding AST- file to `[PROJECT_ROOT]/src/main/java/org/mm/parser/node`. Make sure you remove the old AST- file in case you do a tree node renaming.
+2. Replace all the files located in `src/main/java/org/mm/parser` with the new parser codes in `target/generated-sources/javacc`.
+3. Replace the file `src/main/java/org/mm/parser/node/MappingMasterParserTreeConstants.java` with the new one `target/generated-sources/jjtree/MappingMasterParserTreeConstants.java`
+4. **This fourth step is required iff you introduce a new tree node or rename the existing node in the grammar**: Copy the generated 'AST' files located in the `jjtree` folder to `src/main/java/org/mm/parser/node`. Remove any unused 'AST' files if neccessary.
 
 **IMPORTANT NOTE**
 
-Please take care when you replace a tree node files because some of them have codes manually inserted. These codes have an annotated comment `/* XXX: ... */` next to them. You need to maintain these extra codes carefully.
+Please take care when you replace the `AST` files because some of them have codes manually inserted. These codes have an annotated comment `/* XXX: ... */` next to them. You need to maintain these extra codes carefully.
 
-For example:
+The example below shows the instance variable `name`, and the methods `getValue()` and `accept(NodeVisitor)` are manually added. You might lose them if you are not careful when updating the files.
 ```java
 public
 class ASTName extends SimpleNode {
