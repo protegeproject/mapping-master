@@ -85,9 +85,7 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
    protected Set<OWLAxiom> evaluate(@Nonnull String ruleString) {
       checkNotNull(ruleString);
       final OwlEntityResolver entityResolver = new OwlEntityResolverImpl(ontology);
-      OwlRenderer owlRenderer = new OwlRenderer(
-            new ReferenceResolver(getWorkbook()),
-            new OwlFactory(entityResolver));
+      OwlRenderer owlRenderer = new OwlRenderer(new OwlFactory(entityResolver));
       return owlRenderer.render(ruleString, getDefaultRenderingContext());
    }
 
