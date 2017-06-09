@@ -11,7 +11,7 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class LiteralValue implements Value<String> {
+public class LiteralValue implements Value<String>, Argument {
 
    private final String literalValue;
    private final String datatype;

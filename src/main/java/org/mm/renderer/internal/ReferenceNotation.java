@@ -3,8 +3,6 @@ package org.mm.renderer.internal;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
@@ -12,87 +10,78 @@ import javax.annotation.Nonnull;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class ReferenceNotation {
+public class ReferenceNotation implements Argument {
 
    public static final String INDEX_WILDCARD = "*";
 
-   private final Optional<String> specifiedSheetName;
-   private final String cellNotation;
+   public static final String DEFAULT_SHEET_NAME = "Sheet1";
+   public static final int DEFAULT_COLUMN_NUMBER = 1;
+   public static final int DEFAULT_ROW_NUMBER = 1;
 
-   public ReferenceNotation(@Nonnull Optional<String> specifiedSheetName, @Nonnull String cellNotation) {
-      this.specifiedSheetName = checkNotNull(specifiedSheetName);
-      this.cellNotation = checkNotNull(cellNotation);
+   private final Optional<String> sheetName;
+   private final String columnNotation;
+   private final String rowNotation;
+
+   private String defaultSheetName = DEFAULT_SHEET_NAME;
+   private int defaultColumnNumber = DEFAULT_COLUMN_NUMBER;
+   private int defaultRowNumber = DEFAULT_ROW_NUMBER;
+
+   public ReferenceNotation(@Nonnull Optional<String> sheetName, @Nonnull String columnNotation,
+         @Nonnull String rowNotation) {
+      this.sheetName = checkNotNull(sheetName);
+      this.columnNotation = checkNotNull(columnNotation);
+      this.rowNotation = checkNotNull(rowNotation);
    }
 
-   public Optional<String> getSheetName() {
-      return specifiedSheetName;
+   public String getSheetName() {
+      return sheetName.orElse("");
    }
 
-   public String getCellNotation() {
-      return cellNotation;
+   public String getColumnName() {
+      return columnNotation;
    }
 
-   public CellAddress apply(@Nonnull String sheetName, int column, int row) {
-      NotationSolver notationSolver = new NotationSolver().apply(sheetName, column, row);
+   public String getRowNumber() {
+      return rowNotation;
+   }
+
+   public ReferenceNotation setContext(@Nonnull String sheetName, int columnNumber, int rowNumber) {
+      defaultSheetName = checkNotNull(sheetName);
+      defaultColumnNumber = columnNumber;
+      defaultRowNumber = rowNumber;
+      return this;
+   }
+
+   public CellAddress toCellAddress() {
       return new CellAddress(
-            notationSolver.getSheetName(),
-            notationSolver.getColumn(),
-            notationSolver.getRow());
+            getSheetNameOrDefault(),
+            getColumnNumberOrDefault(),
+            getRowNumberOrDefault());
    }
 
-   private class NotationSolver {
+   private String getSheetNameOrDefault() {
+      return sheetName.orElse(defaultSheetName);
+   }
 
-      private final Pattern cellNotationPattern = Pattern.compile("([A-Z]+|\\*)(\\d+|\\*)");
+   private int getColumnNumberOrDefault() {
+      return !isWildcard(columnNotation) ? columnName2Number(columnNotation) : defaultColumnNumber;
+   }
 
-      private String sheetName;
-      private int column;
-      private int row;
+   private int getRowNumberOrDefault() {
+      return !isWildcard(rowNotation) ? Integer.parseInt(rowNotation) : defaultRowNumber;
+   }
 
-      private NotationSolver apply(@Nonnull String sheetName, int column, int row) {
-         this.sheetName = checkNotNull(sheetName);
-         this.column = column;
-         this.row = row;
-         return this;
+   private int columnName2Number(String columnName) {
+      int columnNumber = 0;
+      for (int i = 0; i < columnName.length(); i++) {
+         columnNumber *= 26;
+         char c = columnName.charAt(i);
+         columnNumber += Integer.parseInt(String.valueOf(c), 36) - 9;
       }
+      return columnNumber;
+   }
 
-      private String getSheetName() {
-         return specifiedSheetName.orElse(sheetName);
-      }
-
-      private int getColumn() {
-         Matcher matcher = cellNotationPattern.matcher(cellNotation);
-         if (matcher.matches()) {
-            String columnSymbol = matcher.group(1);
-            if (columnSymbol.equals(INDEX_WILDCARD)) {
-               return column;
-            } else {
-               return columnName2Number(columnSymbol);
-            }
-         }
-         throw new RuntimeException("Unable to read the cell reference notation: " + cellNotation);
-      }
-
-      private int columnName2Number(String columnName) {
-         int columnNumber = 0;
-         for (int i = 0; i < columnName.length(); i++) {
-            columnNumber *= 26;
-            char c = columnName.charAt(i);
-            columnNumber += Integer.parseInt(String.valueOf(c), 36) - 9;
-         }
-         return columnNumber;
-      }
-
-      private int getRow() {
-         Matcher matcher = cellNotationPattern.matcher(cellNotation);
-         if (matcher.matches()) {
-            String rowSymbol = matcher.group(2);
-            if (rowSymbol.equals(INDEX_WILDCARD)) {
-               return row;
-            } else {
-               return Integer.parseInt(rowSymbol);
-            }
-         }
-         throw new RuntimeException("Unable to read the cell reference notation: " + cellNotation);
-      }
+   private boolean isWildcard(String notation) {
+      return notation.equals(INDEX_WILDCARD);
    }
 }

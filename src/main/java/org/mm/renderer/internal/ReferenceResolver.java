@@ -4,18 +4,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import javax.annotation.Nonnull;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.MappingMasterParserConstants;
+import org.mm.renderer.RenderingContext;
+import org.mm.renderer.Workbook;
 import org.mm.renderer.exception.EmptyCellException;
 import org.mm.renderer.exception.IgnoreEmptyCellException;
 import org.mm.renderer.exception.Locatable;
 import org.mm.renderer.exception.WarningEmptyCellException;
 import org.mm.renderer.internal.LiteralValue.Datatype;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -23,67 +21,32 @@ import org.slf4j.LoggerFactory;
  */
 public class ReferenceResolver implements MappingMasterParserConstants {
 
-   private static final Logger logger = LoggerFactory.getLogger(ReferenceResolver.class);
-
    private final Workbook workbook;
+   private final RenderingContext context;
 
-   private CellAddress cellAddress;
-
-   public ReferenceResolver(@Nonnull Workbook workbook) {
+   public ReferenceResolver(@Nonnull Workbook workbook, @Nonnull RenderingContext context) {
       this.workbook = checkNotNull(workbook);
+      this.context = checkNotNull(context);
    }
 
-   public Value<?> resolve(CellAddress cellAddress, ReferenceDirectives directives) {
+   public Value<?> resolve(ReferenceNotation referenceNotation, ReferenceDirectives directives) {
+      CellAddress cellAddress = toCellAddress(referenceNotation);
       try {
-         this.cellAddress = cellAddress;
-         String cellValue = getCellValue(cellAddress);
-         cellValue = processCellShifting(cellValue, directives);
-         cellValue = processEmptyValue(cellValue, directives);
-         return processReferenceType(cellValue, directives);
+         String cellValue = workbook.getCellValue(cellAddress);
+         cellValue = processCellShifting(cellAddress, cellValue, directives);
+         cellValue = processEmptyValue(cellAddress, cellValue, directives);
+         return processReferenceType(cellAddress, cellValue, directives);
       } catch (RuntimeException e) {
          supplyErrorLocation(e, cellAddress);
          throw e;
       }
    }
 
-   private String getCellValue(CellAddress cellAddress) {
-      final Sheet sheet = workbook.getSheet(cellAddress.getSheetName());
-      return getCellValue(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-   }
-
-   private String getCellValue(Sheet sheet, int columnIndex, int rowIndex) {
-      final Cell cell = sheet.getRow(rowIndex).getCell(columnIndex);
-      return getCellValue(cell);
-   }
-
-   private String getCellValue(Cell cell) {
-      Object cellValueObject = null;
-      try {
-         int cellType = cell.getCellType();
-         if (cellType == Cell.CELL_TYPE_STRING) {
-            cellValueObject = cell.getStringCellValue();
-         } else if (cellType == Cell.CELL_TYPE_NUMERIC) {
-            // Check if the numeric is double or integer
-            if (isInteger(cell.getNumericCellValue())) {
-               cellValueObject = (int) cell.getNumericCellValue();
-            } else {
-               cellValueObject = cell.getNumericCellValue();
-            }
-         } else if (cellType == Cell.CELL_TYPE_BOOLEAN) {
-            cellValueObject = cell.getBooleanCellValue();
-         } else if (cellType == Cell.CELL_TYPE_FORMULA) {
-            cellValueObject = cell.getNumericCellValue();
-         } else {
-            cellValueObject = "";
-         }
-      } catch (NullPointerException e) {
-         logger.warn("Looking for a cell beyond the maximum row and column range");
-      }
-      return (cellValueObject == null) ? "" : String.valueOf(cellValueObject);
-   }
-
-   private boolean isInteger(double number) {
-      return (number == Math.floor(number) && !Double.isInfinite(number));
+   private CellAddress toCellAddress(ReferenceNotation referenceNotation) {
+      return referenceNotation.setContext(
+            context.getSheetName(),
+            context.getCurrentColumn(),
+            context.getCurrentRow()).toCellAddress();
    }
 
    @SuppressWarnings("unchecked")
@@ -93,7 +56,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       }
    }
 
-   private String processCellShifting(String cellValue, ReferenceDirectives directives) {
+   private String processCellShifting(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       int option = directives.getShiftDirection();
       if (option == MM_NO_SHIFT) {
          return cellValue;
@@ -117,7 +80,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int topMostRow = 0;
       int currentRow = rowIndex;
       while (currentRow >= topMostRow) {
-         String cellValue = getCellValue(sheet, columnIndex, currentRow);
+         String cellValue = workbook.getCellValue(sheet, columnIndex, currentRow);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
@@ -130,7 +93,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int leftMostColumn = 0;
       int currentColumn = columnIndex;
       while (currentColumn >= leftMostColumn) {
-         String cellValue = getCellValue(sheet, currentColumn, rowIndex);
+         String cellValue = workbook.getCellValue(sheet, currentColumn, rowIndex);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
@@ -143,7 +106,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int bottomMostRow = sheet.getLastRowNum();
       int currentRow = rowIndex;
       while (currentRow <= bottomMostRow) {
-         String cellValue = getCellValue(sheet, columnIndex, currentRow);
+         String cellValue = workbook.getCellValue(sheet, columnIndex, currentRow);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
@@ -156,7 +119,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int rightMostColumn = sheet.getRow(rowIndex).getLastCellNum();
       int currentColumn = columnIndex;
       while (currentColumn <= rightMostColumn) {
-         String cellValue = getCellValue(sheet, currentColumn, rowIndex);
+         String cellValue = workbook.getCellValue(sheet, currentColumn, rowIndex);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
@@ -165,17 +128,18 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return "";
    }
 
-   private String processEmptyValue(String cellValue, ReferenceDirectives directives) {
+   private String processEmptyValue(CellAddress cellAddress, String cellValue,
+         ReferenceDirectives directives) {
       if (cellValue.isEmpty()) {
-         cellValue = applyOrderForEmptyCell(directives);
+         cellValue = applyOrderForEmptyCell(cellAddress, directives);
       }
       return cellValue;
    }
 
-   private String applyOrderForEmptyCell(ReferenceDirectives directives) {
+   private String applyOrderForEmptyCell(CellAddress cellAddress, ReferenceDirectives directives) {
       int option = directives.getOrderIfCellEmpty();
       if (option == MM_CREATE_IF_CELL_EMPTY) {
-         return getDefaultCellValue();
+         return getDefaultCellValue(cellAddress);
       } else if (option == MM_IGNORE_IF_CELL_EMPTY) {
          throw new IgnoreEmptyCellException();
       } else if (option == MM_WARNING_IF_CELL_EMPTY) {
@@ -187,23 +151,24 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             + " (" + tokenImage[option] + ")");
    }
 
-   private String getDefaultCellValue() {
+   private String getDefaultCellValue(CellAddress cellAddress) {
       String cellAddressUuid = NameUtils.toUUID(cellAddress.toString());
       return cellAddressUuid;
    }
 
-   private Value<?> processReferenceType(String cellValue, ReferenceDirectives directives) {
+   private Value<?> processReferenceType(CellAddress cellAddress, String cellValue,
+         ReferenceDirectives directives) {
       int option = directives.getReferenceType();
       if (option == OWL_CLASS) {
-         return processClassName(cellValue, directives);
+         return processClassName(cellAddress, cellValue, directives);
       } else if (option == OWL_DATA_PROPERTY) {
-         return processDataPropertyName(cellValue, directives);
+         return processDataPropertyName(cellAddress, cellValue, directives);
       } else if (option == OWL_OBJECT_PROPERTY) {
-         return processObjectPropertyName(cellValue, directives);
+         return processObjectPropertyName(cellAddress, cellValue, directives);
       } else if (option == OWL_ANNOTATION_PROPERTY) {
-         return processAnnotationPropertyName(cellValue, directives);
+         return processAnnotationPropertyName(cellAddress, cellValue, directives);
       } else if (option == OWL_NAMED_INDIVIDUAL) {
-         return processIndividualName(cellValue, directives);
+         return processIndividualName(cellAddress, cellValue, directives);
       } else if (option == OWL_IRI) {
          return getIriValue(cellValue);
       } else if (option == MM_ENTITY_IRI) {
@@ -228,8 +193,9 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             + " (" + tokenImage[option] + ")");
    }
 
-   private Value<?> processClassName(String cellValue, ReferenceDirectives directives) {
-      String localName = getLocalName(cellValue, directives);
+   private Value<?> processClassName(CellAddress cellAddress, String cellValue,
+         ReferenceDirectives directives) {
+      String localName = getLocalName(cellAddress, cellValue, directives);
       Value<?> className = new ClassName(localName);
       if (directives.useUserPrefix()) {
          className = new ClassName(directives.getPrefix() + ":" + localName);
@@ -239,8 +205,9 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return className;
    }
 
-   private Value<?> processDataPropertyName(String cellValue, ReferenceDirectives directives) {
-      String localName = getLocalName(cellValue, directives);
+   private Value<?> processDataPropertyName(CellAddress cellAddress, String cellValue,
+         ReferenceDirectives directives) {
+      String localName = getLocalName(cellAddress, cellValue, directives);
       Value<?> propertyName = new DataPropertyName(localName);
       if (directives.useUserPrefix()) {
          propertyName = new DataPropertyName(directives.getPrefix() + ":" + localName);
@@ -250,8 +217,9 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value<?> processObjectPropertyName(String cellValue, ReferenceDirectives directives) {
-      String localName = getLocalName(cellValue, directives);
+   private Value<?> processObjectPropertyName(CellAddress cellAddress, String cellValue,
+         ReferenceDirectives directives) {
+      String localName = getLocalName(cellAddress, cellValue, directives);
       Value<?> propertyName = new ObjectPropertyName(localName);
       if (directives.useUserPrefix()) {
          propertyName = new ObjectPropertyName(directives.getPrefix() + ":" + localName);
@@ -261,8 +229,9 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value<?> processAnnotationPropertyName(String cellValue, ReferenceDirectives directives) {
-      String localName = getLocalName(cellValue, directives);
+   private Value<?> processAnnotationPropertyName(CellAddress cellAddress, String cellValue,
+         ReferenceDirectives directives) {
+      String localName = getLocalName(cellAddress, cellValue, directives);
       Value<?> propertyName = new AnnotationPropertyName(localName);
       if (directives.useUserPrefix()) {
          propertyName = new AnnotationPropertyName(directives.getPrefix() + ":" + localName);
@@ -272,8 +241,9 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value<?> processIndividualName(String cellValue, ReferenceDirectives directives) {
-      String localName = getLocalName(cellValue, directives);
+   private Value<?> processIndividualName(CellAddress cellAddress, String cellValue,
+         ReferenceDirectives directives) {
+      String localName = getLocalName(cellAddress, cellValue, directives);
       Value<?> propertyName = new IndividualName(localName);
       if (directives.useUserPrefix()) {
          propertyName = new IndividualName(directives.getPrefix() + ":" + localName);
@@ -283,7 +253,8 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private String getLocalName(String cellValue, ReferenceDirectives directives) {
+   private String getLocalName(CellAddress cellAddress, String cellValue,
+         ReferenceDirectives directives) {
       int option = directives.getIriEncoding();
       if (option == MM_CAMELCASE_ENCODE) {
          if (directives.getReferenceType() == OWL_CLASS) {

@@ -292,7 +292,8 @@ TOKEN:
 | <#LETTER: [ "a"-"z", "A"-"Z" ]>
 | <#DIGIT: ["0"-"9"] >
 | <#EXPONENT: ["e", "E"] (["+", "-"])? (<DIGIT>)+ >
-| <CELL_NOTATION: ( (<LETTER>)+ | "*" ) ( (<DIGIT>)+ | "*" ) >
+| <COLUMN_NAME: ( (<LETTER>)+ | "*" )>
+| <ROW_NUMBER: ( (<DIGIT>)+ | "*" )>
 | <NAME: <LETTER> ( <LETTER> | <DIGIT> | "_" | "-" | "." )* >
 }
 
@@ -891,12 +892,13 @@ void reference(int type) #Reference :
 {
   referenceType = type;
   ReferenceDirectives referenceDirectives;
+  boolean hasBuiltInFunctions = false;
 }
 {
-  "@" reference_notation()
-       ( LOOKAHEAD(2)
-         "(" ( reference_directive() )* ")"
-       )?
+  reference_notation()
+    ( LOOKAHEAD(2)
+       "(" ( builtin_function_pipe() { hasBuiltInFunctions = true; })? ( reference_directive() )* ")"
+    )?
   {
     jjtThis.referenceDirectives = new ReferenceDirectives(
         prefix, namespace, language, labelValue, literalValue,
@@ -1025,12 +1027,13 @@ void boolean_literal() #BooleanLiteral :
 void reference_notation() #ReferenceNotation :
 {
   String sheetName = null;
-  String cellNotation;
+  String columnName;
+  String rowNumber;
 }
 {
-  ( ( sheetName = quoted_name() "!" )? cellNotation = cell_notation() )
+  "@" ( sheetName = quoted_name() "!" )? columnName = column_name() rowNumber = rowNumber()
   {
-    jjtThis.referenceNotation = new ReferenceNotation(Optional.ofNullable(sheetName), cellNotation);
+    jjtThis.referenceNotation = new ReferenceNotation(Optional.ofNullable(sheetName), columnName, rowNumber);
   }
 }
 
@@ -1046,12 +1049,23 @@ String quoted_name() :
   }
 }
 
-String cell_notation() :
+String column_name() :
 {
   Token t;
 }
 {
-  t = <CELL_NOTATION>
+  t = <COLUMN_NAME>
+  {
+     return t.image;
+  }
+}
+
+String row_number() :
+{
+  Token t;
+}
+{
+  t = <ROW_NUMBER>
   {
      return t.image;
   }
@@ -1069,7 +1083,6 @@ void reference_directive() :
   ( prefix_directive()
    | namespace_directive()
    | language_directive()
-   | builtin_function()
    | value = reference_type() { referenceType = value; }
    | value = value_encoding() { valueEncoding = value; }
    | value = iri_encoding() { iriEncoding = value; }
@@ -1123,6 +1136,11 @@ void language_directive() :
 // Value Extraction Functions
 //------------------------------------------------------------------------------------------
 
+void builtin_function_pipe() #BuiltInFunctionPipe : {}
+{
+  builtin_function() ( "|" builtin_function() )*
+}
+
 void builtin_function() #BuiltInFunction :
 {
   Token t;
@@ -1152,14 +1170,14 @@ void builtin_function() #BuiltInFunction :
   }
 }
 
-void argument_list() : {}
+void argument_list() #ArgumentList : {}
 {
   argument() ( "," argument() )*
 }
 
 void argument() #Argument : {}
 {
-  ( reference(XSD_STRING)
+  ( reference_notation()
     | literal()
   )
 }

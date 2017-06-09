@@ -59,9 +59,11 @@ public interface MappingMasterParserTreeConstants
   public int JJTSTRINGLITERAL = 51;
   public int JJTBOOLEANLITERAL = 52;
   public int JJTREFERENCENOTATION = 53;
-  public int JJTBUILTINFUNCTION = 54;
-  public int JJTARGUMENT = 55;
-  public int JJTREFERENCETYPE = 56;
+  public int JJTBUILTINFUNCTIONPIPE = 54;
+  public int JJTBUILTINFUNCTION = 55;
+  public int JJTARGUMENTLIST = 56;
+  public int JJTARGUMENT = 57;
+  public int JJTREFERENCETYPE = 58;
 
 
   public String[] jjtNodeName = {
@@ -119,9 +121,11 @@ public interface MappingMasterParserTreeConstants
     "StringLiteral",
     "BooleanLiteral",
     "ReferenceNotation",
+    "BuiltInFunctionPipe",
     "BuiltInFunction",
+    "ArgumentList",
     "Argument",
     "ReferenceType",
   };
 }
-/* JavaCC - OriginalChecksum=247c323f4e417257619b634d4f6ed6ae (do not edit this line) */
+/* JavaCC - OriginalChecksum=63af3db15e5d69c7daae174194ddaf56 (do not edit this line) */

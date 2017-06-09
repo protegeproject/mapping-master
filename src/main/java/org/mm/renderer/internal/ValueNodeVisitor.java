@@ -1,5 +1,7 @@
 package org.mm.renderer.internal;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import javax.annotation.Nonnull;
 
 import org.mm.directive.ReferenceDirectives;
@@ -8,6 +10,7 @@ import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTBooleanLiteral;
+import org.mm.parser.node.ASTBuiltInFunctionPipe;
 import org.mm.parser.node.ASTFloatLiteral;
 import org.mm.parser.node.ASTIntegerLiteral;
 import org.mm.parser.node.ASTIri;
@@ -30,19 +33,14 @@ import org.mm.parser.node.Node;
 public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    private final ReferenceResolver referenceResolver;
-
-   private final String sheetName;
-   private final int column;
-   private final int row;
+   private final BuiltInFunctionHandler functionHandler;
 
    private Value<?> value;
 
-   public ValueNodeVisitor(@Nonnull ReferenceResolver referenceResolver, @Nonnull String sheetName,
-         int columnLabel, int rowIndex) {
-      this.referenceResolver = referenceResolver;
-      this.sheetName = sheetName;
-      this.column = columnLabel;
-      this.row = rowIndex;
+   public ValueNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
+         @Nonnull BuiltInFunctionHandler functionHandler) {
+      this.referenceResolver = checkNotNull(referenceResolver);
+      this.functionHandler = checkNotNull(functionHandler);
    }
 
    public Value<?> getValue() {
@@ -81,27 +79,49 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTReference referenceNode) {
-      CellAddress cellAddress = getCellAddress(referenceNode);
+      String resolvedValue = resolveReference(referenceNode);
+      resolvedValue = applyFunction(resolvedValue, referenceNode);
+      value = produceValue(resolvedValue, referenceNode);
+   }
+
+   private void resolveReference(ASTReference referenceNode) {
+      ReferenceNotation referenceNotation = getReferenceNotation(referenceNode);
       ReferenceDirectives referenceDirectives = getReferenceDirectives(referenceNode);
-      value = referenceResolver.resolve(cellAddress, referenceDirectives);
+      value = referenceResolver.resolve(referenceNotation, referenceDirectives);
+   }
+
+   private void applyFunction(ASTReference referenceNode, String inputValue) {
+      FunctionPipe functionPipe = getFunctionPipe(referenceNode);
+      FunctionPipeHandler functionPipeHandler = new FunctionPipeHandler(functionHandler);
+      value = functionPipeHandler.evaluate(functionPipe, inputValue);
    }
 
    private ReferenceDirectives getReferenceDirectives(ASTReference referenceNode) {
       return referenceNode.getDirectives();
    }
 
-   private CellAddress getCellAddress(ASTReference referenceNode) {
+   private ReferenceNotation getReferenceNotation(ASTReference referenceNode) {
       ASTReferenceNotation referenceNotationNode = ParserUtils.getChild(
             referenceNode,
             NodeType.REFERENCE_NOTATION);
-      ReferenceNotation cellNotation = referenceNotationNode.getReferenceNotation();
-      return applyParametersAndGetCellAddress(cellNotation, sheetName, column, row);
+      ReferenceNotation referenceNotation = referenceNotationNode.getReferenceNotation();
+      return referenceNotation;
    }
 
-   private CellAddress applyParametersAndGetCellAddress(ReferenceNotation cellNotation, String sheetName,
-         int column, int row) {
-      CellAddress cellAddress = cellNotation.apply(sheetName, column, row);
-      return cellAddress;
+   private FunctionPipe getFunctionPipe(ASTReference referenceNode) {
+      FunctionPipe functionPipe = new FunctionPipe();
+      for (ASTBuiltInFunctionPipe builtInFunctionPipeNode
+            : ParserUtils.getChildren(referenceNode, NodeType.BUILTIN_FUNCTION_PIPE)) {
+         BuiltInFunction bif = visitInnerBuiltInFunctionPipe(builtInFunctionPipeNode);
+         functionPipe.add(bif);
+      }
+      return functionPipe;
+   }
+
+   private BuiltInFunction visitInnerBuiltInFunctionPipe(
+         ASTBuiltInFunctionPipe builtInFunctionPipeNode) {
+      // TODO Auto-generated method stub
+      return null;
    }
 
    /**
