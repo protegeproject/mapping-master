@@ -20,8 +20,10 @@ import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RenderingContext;
+import org.mm.renderer.Workbook;
 import org.mm.renderer.exception.IgnoreEmptyCellException;
 import org.mm.renderer.exception.WarningEmptyCellException;
+import org.mm.renderer.internal.BuiltInFunctionHandler;
 import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -36,64 +38,78 @@ public class OwlRenderer implements Renderer<Set<OWLAxiom>> {
 
    private static final Logger logger = LoggerFactory.getLogger(OwlRenderer.class);
 
-   private final ReferenceResolver referenceResolver;
    private final OwlFactory owlFactory;
 
-   public OwlRenderer(@Nonnull ReferenceResolver referenceResolver, @Nonnull OwlFactory owlFactory) {
-      this.referenceResolver = checkNotNull(referenceResolver);
+   public OwlRenderer(@Nonnull OwlFactory owlFactory) {
       this.owlFactory = checkNotNull(owlFactory);
    }
 
    @Override
-   public Set<OWLAxiom> render(@Nonnull String ruleString, @Nonnull RenderingContext context) {
-      final SimpleNode rootNode = parse(checkNotNull(ruleString));
-      final Node frameNode = getFrameNode(rootNode);
-      return performRendering(frameNode, checkNotNull(context));
+   public Set<OWLAxiom> render(@Nonnull String transformationRule, @Nonnull Workbook workbook,
+         @Nonnull RenderingContext context) {
+      checkNotNull(transformationRule);
+      checkNotNull(workbook);
+      checkNotNull(context);
+      final SimpleNode rootNode = parse(transformationRule);
+      return performRendering(
+            getFrameNode(rootNode),
+            new ReferenceResolver(workbook, context),
+            new BuiltInFunctionHandler(workbook, context),
+            context);
    }
 
-   private Set<OWLAxiom> performRendering(Node frameNode, RenderingContext context) {
-      return iterateRenderingAndCollectOutputAxioms(frameNode,
-            context.getSheetName(),
-            context.getStartColumn(),
-            context.getEndColumn(),
-            context.getStartRow(),
-            context.getEndRow());
-   }
-
-   private Set<OWLAxiom> iterateRenderingAndCollectOutputAxioms(Node frameNode, String sheetName,
-         int startColumn, int endColumn, int startRow, int endRow) {
+   private Set<OWLAxiom> performRendering(Node frameNode, ReferenceResolver referenceResolver,
+         BuiltInFunctionHandler functionHandler, RenderingContext context) {
       Set<OWLAxiom> axioms = new HashSet<>();
-      for (int column = startColumn; column <= endColumn; column++) {
-         for (int row = startRow; row <= endRow; row++) {
-            try {
-               final ValueNodeVisitor valueNodeVisitor = createValueNodeVisitor(sheetName, column, row);
-               if (frameNode instanceof ASTClassFrame) {
-                  axioms.addAll(visitClassFrameNode((ASTClassFrame) frameNode, valueNodeVisitor));
-               } else if (frameNode instanceof ASTIndividualFrame) {
-                  axioms.addAll(visitIndividualFrameNode((ASTIndividualFrame) frameNode, valueNodeVisitor));
-               }
-            } catch (IgnoreEmptyCellException e) {
-               // NO-OP: Ignore the exception
-            } catch (WarningEmptyCellException e) {
-               logger.warn(e.getMessage());
-            }
+      while (context.hasNextCell()) {
+         ValueNodeVisitor valueNodeVisitor = new ValueNodeVisitor(referenceResolver, functionHandler);
+         if (frameNode instanceof ASTClassFrame) {
+            performClassFrameRendering((ASTClassFrame) frameNode, valueNodeVisitor, axioms);
+         } else if (frameNode instanceof ASTIndividualFrame) {
+            performIndividualFrameRendering((ASTIndividualFrame) frameNode, valueNodeVisitor, axioms);
          }
       }
       return axioms;
    }
 
-   private Collection<OWLAxiom> visitClassFrameNode(final ASTClassFrame classFrameNode,
-         final ValueNodeVisitor valueNodeVisitor) {
-      ClassFrameNodeVisitor frameVisitor = createClassFrameNodeVisitor(valueNodeVisitor);
-      frameVisitor.visit(classFrameNode);
-      return frameVisitor.getAxioms();
+   private void performClassFrameRendering(ASTClassFrame classFrame,
+         ValueNodeVisitor valueNodeVisitor, final Set<OWLAxiom> collector) {
+      try {
+         collector.addAll(
+               visitClassFrameNode(
+                     classFrame,
+                     createClassFrameNodeVisitor(valueNodeVisitor)));
+      } catch (IgnoreEmptyCellException e) {
+         // NO-OP: Ignore the exception
+      } catch (WarningEmptyCellException e) {
+         logger.warn(e.getMessage());
+      }
    }
 
-   private Collection<OWLAxiom> visitIndividualFrameNode(final ASTIndividualFrame individualFrameNode,
-         final ValueNodeVisitor valueNodeVisitor) {
-      IndividualFrameNodeVisitor frameVisitor = createIndividualFrameNodeVisitor(valueNodeVisitor);
-      frameVisitor.visit(individualFrameNode);
-      return frameVisitor.getAxioms();
+   private void performIndividualFrameRendering(ASTIndividualFrame individualFrame,
+         ValueNodeVisitor valueNodeVisitor, final Set<OWLAxiom> collector) {
+      try {
+         collector.addAll(
+               visitIndividualFrameNode(
+                     individualFrame,
+                     createIndividualFrameNodeVisitor(valueNodeVisitor)));
+      } catch (IgnoreEmptyCellException e) {
+         // NO-OP: Ignore the exception
+      } catch (WarningEmptyCellException e) {
+         logger.warn(e.getMessage());
+      }
+   }
+
+   private Collection<OWLAxiom> visitClassFrameNode(ASTClassFrame classFrameNode,
+         ClassFrameNodeVisitor classFrameVisitor) {
+      classFrameVisitor.visit(classFrameNode);
+      return classFrameVisitor.getAxioms();
+   }
+
+   private Collection<OWLAxiom> visitIndividualFrameNode(ASTIndividualFrame individualFrameNode,
+         IndividualFrameNodeVisitor individualFrameVisitor) {
+      individualFrameVisitor.visit(individualFrameNode);
+      return individualFrameVisitor.getAxioms();
    }
 
    private SimpleNode parse(String ruleString) {
@@ -113,10 +129,6 @@ public class OwlRenderer implements Renderer<Set<OWLAxiom>> {
    private Node getFrameNode(SimpleNode rootNode) {
       ASTRuleExpression expressionNode = ParserUtils.getChild(rootNode, NodeType.RULE_EXPRESSION);
       return ParserUtils.getChild(expressionNode);
-   }
-
-   private ValueNodeVisitor createValueNodeVisitor(String sheetName, int column, int row) {
-      return new ValueNodeVisitor(referenceResolver, sheetName, column, row);
    }
 
    private ClassFrameNodeVisitor createClassFrameNodeVisitor(ValueNodeVisitor valueNodeVisitor) {

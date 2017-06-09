@@ -16,6 +16,8 @@ public class RenderingContext {
    private final int startRow;
    private final int endRow;
 
+   private Iterator iterator = new Iterator();
+
    public RenderingContext(@Nonnull String sheetName, int startColumn, int endColumn, int startRow,
          int endRow) {
       this.sheetName = checkNotNull(sheetName);
@@ -43,5 +45,68 @@ public class RenderingContext {
 
    public int getEndRow() {
       return endRow;
+   }
+
+   public int getCurrentColumn() {
+      return iterator.getColumn();
+   }
+   
+   public int getCurrentRow() {
+      return iterator.getRow();
+   }
+
+   public boolean hasNextCell() {
+      return iterator.hasNextCell();
+   }
+
+   private class Iterator {
+
+      private int currentColumn = startColumn;
+      private int currentRow = startRow;
+
+      private int getColumn() {
+         return currentColumn;
+      }
+
+      private int getRow() {
+         return currentRow;
+      }
+
+      private void setColumn(int column) {
+         currentColumn = column;
+      }
+
+      private void setRow(int row) {
+         currentRow = row;
+      }
+
+      public boolean hasNextCell() {
+         boolean hasNext = true;
+         
+         int lastColumn = getColumn();
+         int lastRow = getRow();
+         
+         int nextRow = lastRow++;
+         if (isRowOutOfBoundary(nextRow)) {
+            int nextColumn = lastColumn++;
+            if (isColumnOutOfBoundary(nextColumn)) {
+               hasNext = false;
+            }
+            nextRow = startRow;
+         }
+         if (hasNext) {
+            setColumn(lastColumn);
+            setRow(lastRow);
+         }
+         return hasNext;
+      }
+
+      private boolean isColumnOutOfBoundary(int nextColumn) {
+         return nextColumn > endColumn;
+      }
+
+      private boolean isRowOutOfBoundary(int nextRow) {
+         return nextRow > endRow;
+      }
    }
 }

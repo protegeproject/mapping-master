@@ -6,5 +6,5 @@ package org.mm.renderer;
  */
 public interface Renderer<T> {
 
-   T render(String ruleString, RenderingContext context);
+   T render(String transformationRule, Workbook workbook, RenderingContext context);
 }
