@@ -9,7 +9,7 @@
 
    <groupId>edu.stanford.protege</groupId>
    <artifactId>mapping-master</artifactId>
-   <version>1.7-SNAPSHOT</version>
+   <version>1.6</version>
    <packaging>bundle</packaging>
 
    <properties>
