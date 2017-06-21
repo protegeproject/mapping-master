@@ -1,5 +1,6 @@
 package org.mm.ss;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -115,9 +116,9 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
          case Cell.CELL_TYPE_STRING :
             return cell.getStringCellValue();
          case Cell.CELL_TYPE_NUMERIC :
-            // Check if the numeric is an integer or double
+            // Check if the numeric is a decimal or floating-point
             if (isInteger(cell.getNumericCellValue())) {
-               return Integer.toString((int) cell.getNumericCellValue());
+               return new BigDecimal(cell.getNumericCellValue()).toPlainString();
             } else {
                return Double.toString(cell.getNumericCellValue());
             }
