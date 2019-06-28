@@ -25,7 +25,7 @@ public class PrefixDirectiveTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
       setPrefix("ex", EX_PREFIX);
    }
@@ -34,7 +34,7 @@ public class PrefixDirectiveTest extends OwlRendererTest {
    public void shouldAppendUserPrefix_InClassDeclaration() {
       // Arrange
       String text = "Person";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:Prefix=\"ex\")");
       // Assert
@@ -46,7 +46,7 @@ public class PrefixDirectiveTest extends OwlRendererTest {
    public void shouldAppendUserPrefix_InIndividualDeclaration() {
       // Arrange
       String text = "wilma";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1(mm:Prefix=\"ex\")");
       // Assert

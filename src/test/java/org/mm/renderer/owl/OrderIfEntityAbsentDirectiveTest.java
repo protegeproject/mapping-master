@@ -26,14 +26,14 @@ public class OrderIfEntityAbsentDirectiveTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
    @Test
    public void shouldUseDefaultResponse() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1");
       // Assert
@@ -45,7 +45,7 @@ public class OrderIfEntityAbsentDirectiveTest extends OwlRendererTest {
    @Ignore("Unsupported by the API")
    public void shouldIgnoreIfEntityIsAbsent() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:ignoreIfEntityAbsent)");
       // Assert
@@ -55,7 +55,7 @@ public class OrderIfEntityAbsentDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldCreateIfEntityIsAbsent() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:createIfEntityAbsent)");
       // Assert
@@ -67,7 +67,7 @@ public class OrderIfEntityAbsentDirectiveTest extends OwlRendererTest {
    @Ignore("Unsupported by the API")
    public void shouldWarnIfEntityIsAbsent() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:warningIfEntityAbsent)");
       // Assert
@@ -78,7 +78,7 @@ public class OrderIfEntityAbsentDirectiveTest extends OwlRendererTest {
    @Ignore("Unsupported by the API")
    public void shouldFailIfEntityIsAbsent() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:errorIfEntityAbsent)");
       // Assert

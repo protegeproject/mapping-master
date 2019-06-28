@@ -20,14 +20,14 @@ public class EntityDeclarationTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
    @Test
    public void shouldRenderClassDeclaration() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1");
       // Assert
@@ -37,7 +37,7 @@ public class EntityDeclarationTest extends OwlRendererTest {
 
    @Test
    public void shouldRenderIndividualDeclaration() {
-      addCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 1, 1, "fred");
 
       Set<OWLAxiom> result = evaluate("Individual: @A1");
 

@@ -20,7 +20,7 @@ public class IriEncodingDirectiveTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
@@ -28,7 +28,7 @@ public class IriEncodingDirectiveTest extends OwlRendererTest {
    public void shouldUseDefaultEncoding() throws Exception {
       // Arrange
       String text = "Barbara's Puffins Honey-Rice Cereal - 10.5oz box";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1");
       // Assert
@@ -40,7 +40,7 @@ public class IriEncodingDirectiveTest extends OwlRendererTest {
    public void shouldUseCamelCaseEncoding() throws Exception {
       // Arrange
       String text = "Barbara's Puffins Honey-Rice Cereal - 10.5oz box";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:camelCaseEncode)");
       // Assert
@@ -52,7 +52,7 @@ public class IriEncodingDirectiveTest extends OwlRendererTest {
    public void shouldUseSnakeCaseEncoding() throws Exception {
       // Arrange
       String text = "Barbara's Puffins Honey-Rice Cereal - 10.5oz box";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:snakeCaseEncode)");
       // Assert
@@ -64,7 +64,7 @@ public class IriEncodingDirectiveTest extends OwlRendererTest {
    public void shouldUseUuidEncoding() throws Exception {
       // Arrange
       String text = "Barbara's Puffins Honey-Rice Cereal - 10.5oz box";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:uuidEncode)");
       // Assert
@@ -76,7 +76,7 @@ public class IriEncodingDirectiveTest extends OwlRendererTest {
    public void shouldUseHashEncoding() throws Exception {
       // Arrange
       String text = "Barbara's Puffins Honey-Rice Cereal - 10.5oz box";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:hashEncode)");
       // Assert

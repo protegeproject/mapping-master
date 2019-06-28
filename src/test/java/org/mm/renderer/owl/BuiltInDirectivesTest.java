@@ -22,14 +22,14 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
    @Test
    public void shouldTransformTextToLowerCase() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:toLowerCase)");
       // Assert
@@ -40,7 +40,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
    @Test
    public void shouldTransformTextToUpperCase() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:toUpperCase)");
       // Assert
@@ -51,7 +51,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
    @Test
    public void shouldReverseLetterByLetter() {
       // Arrange
-      addCell("Sheet1", 1, 1, "raC");
+      createCell("Sheet1", 1, 1, "raC");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:reverse)");
       // Assert
@@ -62,7 +62,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
    @Test
    public void shouldTrimWhitespaces() {
       // Arrange
-      addCell("Sheet1", 1, 1, "   Car   ");
+      createCell("Sheet1", 1, 1, "   Car   ");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:trim)");
       // Assert
@@ -73,7 +73,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
    @Test
    public void shouldAppendText_Prefix() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Barbara's Puffins Honey");
+      createCell("Sheet1", 1, 1, "Barbara's Puffins Honey");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"%s - Rice Cereal - 10.5 oz Box\"))");
       // Assert
@@ -84,7 +84,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
    @Test
    public void shouldAppendText_Suffix() {
       // Arrange
-      addCell("Sheet1", 1, 1, "10.5 oz Box");
+      createCell("Sheet1", 1, 1, "10.5 oz Box");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara's Puffins Honey - Rice Cereal - %s\"))");
       // Assert
@@ -95,7 +95,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
    @Test
    public void shouldAppendText_Infix() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Rice Cereal");
+      createCell("Sheet1", 1, 1, "Rice Cereal");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara's Puffins Honey - %s - 10.5 oz Box\"))");
       // Assert
@@ -107,8 +107,8 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
    public void shouldApplyDecimalFormat() {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, "23000.2");
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, "23000.2");
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1(mm:decimalFormat(\"###,###.00\") xsd:decimal)");
       // Assert
@@ -124,8 +124,8 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_NAME);
       String text = "Barbara's Puffins Honey - Rice Cereal - 10.5 oz Box";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, text);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasName @B1(mm:replaceAll(\"Rice Cereal - \", \"\"))");
       // Assert
@@ -141,8 +141,8 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String text = "Barbara's Puffins Honey - Rice Cereal - 10.5 oz Box";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, text);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1(mm:capturing(\"([0-9]+.[0-9]+)\") xsd:decimal)");
       // Assert
@@ -158,8 +158,8 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String text = "Barbara's Puffins Honey - Rice Cereal - 10.5 oz Box";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, text);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1([\"([0-9]+.[0-9]+)\"] xsd:decimal)");
       // Assert

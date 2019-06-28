@@ -2,15 +2,11 @@ package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
-
 import java.util.Set;
-
 import javax.annotation.Nonnull;
-
-import org.apache.poi.ss.usermodel.Sheet;
 import org.mm.renderer.AbstractRendererTest;
 import org.mm.renderer.RenderingContext;
-import org.mm.renderer.internal.ReferenceResolver;
+import org.mm.renderer.Sheet;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
@@ -86,17 +82,17 @@ public abstract class OwlRendererTest extends AbstractRendererTest {
       checkNotNull(ruleString);
       final OwlEntityResolver entityResolver = new OwlEntityResolverImpl(ontology);
       OwlRenderer owlRenderer = new OwlRenderer(new OwlFactory(entityResolver));
-      return owlRenderer.render(ruleString, getDefaultRenderingContext());
+      return owlRenderer.render(ruleString, getWorkbook(), getDefaultRenderingContext());
    }
 
    private RenderingContext getDefaultRenderingContext() {
-      final Sheet sheet = getWorkbook().getSheetAt(0);
+      final Sheet sheet = getWorkbook().getSheet(0);
       return new RenderingContext(
             sheet.getSheetName(),
-            sheet.getRow(0).getFirstCellNum(),
-            sheet.getRow(0).getLastCellNum()-1,
-            sheet.getFirstRowNum(),
-            sheet.getLastRowNum());
+            sheet.getStartColumnIndex(),
+            sheet.getEndColumnIndex(),
+            sheet.getStartRowIndex(),
+            sheet.getEndRowIndex());
    }
 
    protected void setPrefix(String prefixName, String prefix) {

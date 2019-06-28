@@ -26,14 +26,14 @@ public class OrderIfCellEmptyDirectiveTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
    @Test
    public void shouldUseDefaultOrder() {
       // Arrange
-      addCell("Sheet1", 1, 1, "");
+      createCell("Sheet1", 1, 1, "");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1");
       // Assert
@@ -43,7 +43,7 @@ public class OrderIfCellEmptyDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldIgnoreIfCellIsEmpty() {
       // Arrange
-      addCell("Sheet1", 1, 1, "");
+      createCell("Sheet1", 1, 1, "");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:ignoreIfCellEmpty)");
       // Assert
@@ -53,7 +53,7 @@ public class OrderIfCellEmptyDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldCreateIfCellIsEmpty() {
       // Arrange
-      addCell("Sheet1", 1, 1, "");
+      createCell("Sheet1", 1, 1, "");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:createIfCellEmpty)");
       // Assert
@@ -64,7 +64,7 @@ public class OrderIfCellEmptyDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldWarnIfCellIsEmpty() {
       // Arrange
-      addCell("Sheet1", 1, 1, "");
+      createCell("Sheet1", 1, 1, "");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:warningIfCellEmpty)");
       // Assert
@@ -75,7 +75,7 @@ public class OrderIfCellEmptyDirectiveTest extends OwlRendererTest {
    public void shouldFailIfCellIsEmpty() {
       thrown.expect(EmptyCellException.class);
       // Arrange
-      addCell("Sheet1", 1, 1, "");
+      createCell("Sheet1", 1, 1, "");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:errorIfCellEmpty)");
       // Assert

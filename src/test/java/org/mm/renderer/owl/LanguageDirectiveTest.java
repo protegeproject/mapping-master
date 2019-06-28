@@ -23,7 +23,7 @@ public class LanguageDirectiveTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
@@ -31,8 +31,8 @@ public class LanguageDirectiveTest extends OwlRendererTest {
    public void shouldAppendLanguage_InAnnotationAssertion() {
       // Arrange
       String label1 = "Auto";
-      addCell("Sheet1", 1, 1, "Car");
-      addCell("Sheet1", 2, 1, label1);
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, label1);
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1 Annotations: rdfs:label @B1(xml:lang=\"de\")");
       // Assert
@@ -48,8 +48,8 @@ public class LanguageDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String label1 = "Auto";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, label1);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, label1);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xml:lang=\"de\")");
       // Assert
@@ -65,9 +65,9 @@ public class LanguageDirectiveTest extends OwlRendererTest {
       // Arrange
       String label1 = "Auto";
       String label2 = "Mobil";
-      addCell("Sheet1", 1, 1, "Car");
-      addCell("Sheet1", 2, 1, label1);
-      addCell("Sheet1", 3, 1, label2);
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, label1);
+      createCell("Sheet1", 3, 1, label2);
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1 "
             + "Annotations: rdfs:label @B1(xml:lang=\"de\"), rdfs:label @C1(xml:lang=\"id\")");

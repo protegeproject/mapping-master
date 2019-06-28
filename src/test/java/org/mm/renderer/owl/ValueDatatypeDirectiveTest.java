@@ -22,7 +22,7 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
@@ -31,8 +31,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "text";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:string)");
       // Assert
@@ -46,8 +46,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "100.0";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:decimal)");
       // Assert
@@ -61,8 +61,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "100";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:byte)");
       // Assert
@@ -76,8 +76,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "100";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:short)");
       // Assert
@@ -91,8 +91,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "100";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:integer)");
       // Assert
@@ -106,8 +106,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "100";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:long)");
       // Assert
@@ -121,8 +121,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "3.14";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:float)");
       // Assert
@@ -136,8 +136,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "3.14";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:double)");
       // Assert
@@ -151,8 +151,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "true";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:boolean)");
       // Assert
@@ -166,8 +166,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "03:14:15";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:time)");
       // Assert
@@ -181,8 +181,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "2017-01-19";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:date)");
       // Assert
@@ -196,8 +196,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "2017-01-19T03:14:15";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:dateTime)");
       // Assert
@@ -211,8 +211,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "P5Y2M10D";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:duration)");
       // Assert
@@ -226,8 +226,8 @@ public class ValueDatatypeDirectiveTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.HAS_VALUE);
       String value = "text";
-      addCell("Sheet1", 1, 1, "p1");
-      addCell("Sheet1", 2, 1, value);
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, value);
       // Act
       Set<OWLAxiom> result = evaluate("Individual: @A1 Facts: hasValue @B1(rdf:plainLiteral)");
       // Assert

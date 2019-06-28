@@ -27,7 +27,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
@@ -35,7 +35,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
    public void shouldRenderClassAssertion() {
       // Arrange
       declareEntity(Vocabulary.PERSON);
-      addCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 1, 1, "fred");
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Types: Person");
       // Assert
@@ -50,7 +50,7 @@ public class AssertionAxiomTest extends OwlRendererTest {
       declareEntity(Vocabulary.PERSON);
       declareEntity(Vocabulary.STUDENT);
       declareEntity(Vocabulary.CAR_OWNER);
-      addCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 1, 1, "fred");
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Types: Person, Student, CarOwner");
       // Assert
@@ -65,8 +65,8 @@ public class AssertionAxiomTest extends OwlRendererTest {
    public void shouldRenderDataPropertyAssertion() {
       // Arrange
       declareEntity(Vocabulary.HAS_AGE);
-      addCell("Sheet1", 1, 1, "fred");
-      addCell("Sheet1", 2, 1, "25");
+      createCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 2, 1, "25");
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasAge @B1(xsd:integer)");
       // Assert
@@ -80,8 +80,8 @@ public class AssertionAxiomTest extends OwlRendererTest {
    public void shouldRenderObjectPropertyAssertion() {
       // Arrange
       declareEntity(Vocabulary.HAS_PARENT);
-      addCell("Sheet1", 1, 1, "fred");
-      addCell("Sheet1", 2, 1, "bob");
+      createCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 2, 1, "bob");
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasParent @B1");
       // Assert
@@ -95,8 +95,8 @@ public class AssertionAxiomTest extends OwlRendererTest {
       // Arrange
       declareEntity(Vocabulary.COMMENT);
       String text = "Fred works for Stanford";
-      addCell("Sheet1", 1, 1, "fred");
-      addCell("Sheet1", 2, 1, text);
+      createCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 2, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Annotations: comment @B1");
       // Assert
@@ -112,8 +112,8 @@ public class AssertionAxiomTest extends OwlRendererTest {
       setPrefix("foaf", Namespaces.FOAF.toString());
       declareEntity(Vocabulary.FOAF_DEPICTION);
       String text = "https://upload.wikimedia.org/wikipedia/en/a/ad/Fred_Flintstone.png";
-      addCell("Sheet1", 1, 1, "fred");
-      addCell("Sheet1", 2, 1, text);
+      createCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 2, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Annotations: foaf:depiction @B1(IRI)");
       // Assert
@@ -127,8 +127,8 @@ public class AssertionAxiomTest extends OwlRendererTest {
    public void shouldRenderAnnotationPropertyAssertion_UsingRdfsComment() {
       // Arrange
       String text = "Fred works for Stanford";
-      addCell("Sheet1", 1, 1, "fred");
-      addCell("Sheet1", 2, 1, text);
+      createCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 2, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 Annotations: rdfs:comment @B1");
       // Assert
@@ -144,10 +144,10 @@ public class AssertionAxiomTest extends OwlRendererTest {
       String label = "Alfred";
       String vCard = "http://example.org/people/fred.json";
       String comment = "Fred works for Stanford";
-      addCell("Sheet1", 1, 1, "fred");
-      addCell("Sheet1", 2, 1, label);
-      addCell("Sheet1", 3, 1, vCard);
-      addCell("Sheet1", 4, 1, comment);
+      createCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 2, 1, label);
+      createCell("Sheet1", 3, 1, vCard);
+      createCell("Sheet1", 4, 1, comment);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1 "
             + "Annotations: rdfs:label @B1, rdfs:seeAlso @C1(IRI), rdfs:comment @D1");
@@ -165,9 +165,9 @@ public class AssertionAxiomTest extends OwlRendererTest {
    @Test
    public void shouldRenderDataPropertyAssertion_ColumnHeaderAsPropertyName() {
       // Arrange
-      addCell("Sheet1", 1, 2, "fred");
-      addCell("Sheet1", 2, 1, "hasAge");
-      addCell("Sheet1", 2, 2, "25");
+      createCell("Sheet1", 1, 2, "fred");
+      createCell("Sheet1", 2, 1, "hasAge");
+      createCell("Sheet1", 2, 2, "25");
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A2 Facts: @B1 @B2(xsd:integer)");
       // Assert
@@ -180,9 +180,9 @@ public class AssertionAxiomTest extends OwlRendererTest {
    @Test
    public void shouldRenderObjectPropertyAssertion_ColumnHeaderAsProperty() {
       // Arrange
-      addCell("Sheet1", 1, 2, "fred");
-      addCell("Sheet1", 2, 1, "hasParent");
-      addCell("Sheet1", 2, 2, "bob");
+      createCell("Sheet1", 1, 2, "fred");
+      createCell("Sheet1", 2, 1, "hasParent");
+      createCell("Sheet1", 2, 2, "bob");
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A2 Facts: @B1(ObjectProperty) @B2");
       // Assert
@@ -195,9 +195,9 @@ public class AssertionAxiomTest extends OwlRendererTest {
    public void shouldRenderAnnotationPropertyAssertion_ColumnHeaderAsPropertyName() {
       // Arrange
       String text = "Fred works for Stanford";
-      addCell("Sheet1", 1, 2, "fred");
-      addCell("Sheet1", 2, 1, "comment");
-      addCell("Sheet1", 2, 2, text);
+      createCell("Sheet1", 1, 2, "fred");
+      createCell("Sheet1", 2, 1, "comment");
+      createCell("Sheet1", 2, 2, text);
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A2 Annotations: @B1 @B2");
       // Assert

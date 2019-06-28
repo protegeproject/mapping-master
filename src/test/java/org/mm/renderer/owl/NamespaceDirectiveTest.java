@@ -25,7 +25,7 @@ public class NamespaceDirectiveTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
       setPrefix("ex", EX_PREFIX);
    }
@@ -34,7 +34,7 @@ public class NamespaceDirectiveTest extends OwlRendererTest {
    public void shouldAppendUserNamespace_InClassDeclaration() {
       // Arrange
       String text = "Person";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:Namespace=\"http://example.org/prefix#\")");
       // Assert
@@ -46,7 +46,7 @@ public class NamespaceDirectiveTest extends OwlRendererTest {
    public void shouldAppendUserNamespace_InIndividualDeclaration() {
       // Arrange
       String text = "wilma";
-      addCell("Sheet1", 1, 1, text);
+      createCell("Sheet1", 1, 1, text);
       // Act
       Set<OWLAxiom> results = evaluate(
             "Individual: @A1(mm:Namespace=\"http://example.org/prefix#\")");

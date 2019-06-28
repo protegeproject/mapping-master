@@ -20,17 +20,17 @@ public class ShiftDirectiveTest extends OwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {
-      createEmptyExcelWorkbook();
+      createEmptyWorkbook();
       createEmptyOWLOntology();
    }
 
    @Test
    public void shouldShiftTowardUpDirection() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
-      addCell("Sheet1", 1, 2, "");
-      addCell("Sheet1", 1, 3, "");
-      addCell("Sheet1", 1, 4, "");
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 2, "");
+      createCell("Sheet1", 1, 3, "");
+      createCell("Sheet1", 1, 4, "");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A4(mm:shiftUp)");
       // Assert
@@ -41,10 +41,10 @@ public class ShiftDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldShiftTowardDownDirection() {
       // Arrange
-      addCell("Sheet1", 1, 1, "");
-      addCell("Sheet1", 1, 2, "");
-      addCell("Sheet1", 1, 3, "");
-      addCell("Sheet1", 1, 4, "Car");
+      createCell("Sheet1", 1, 1, "");
+      createCell("Sheet1", 1, 2, "");
+      createCell("Sheet1", 1, 3, "");
+      createCell("Sheet1", 1, 4, "Car");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:shiftDown)");
       // Assert
@@ -55,10 +55,10 @@ public class ShiftDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldShiftTowardLeftDirection() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
-      addCell("Sheet1", 2, 1, "");
-      addCell("Sheet1", 3, 1, "");
-      addCell("Sheet1", 4, 1, "");
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "");
+      createCell("Sheet1", 3, 1, "");
+      createCell("Sheet1", 4, 1, "");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @D1(mm:shiftLeft)");
       // Assert
@@ -69,10 +69,10 @@ public class ShiftDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldShiftTowardRightDirection() {
       // Arrange
-      addCell("Sheet1", 1, 1, "Car");
-      addCell("Sheet1", 2, 1, "");
-      addCell("Sheet1", 3, 1, "");
-      addCell("Sheet1", 4, 1, "Car");
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "");
+      createCell("Sheet1", 3, 1, "");
+      createCell("Sheet1", 4, 1, "Car");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:shiftRight)");
       // Assert
