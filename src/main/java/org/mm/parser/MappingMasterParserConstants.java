@@ -237,9 +237,11 @@ public interface MappingMasterParserConstants {
   /** RegularExpression Id. */
   int EXPONENT = 122;
   /** RegularExpression Id. */
-  int CELL_NOTATION = 123;
+  int COLUMN_NAME = 123;
   /** RegularExpression Id. */
-  int NAME = 124;
+  int ROW_NUMBER = 124;
+  /** RegularExpression Id. */
+  int NAME = 125;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -375,7 +377,8 @@ public interface MappingMasterParserConstants {
     "<LETTER>",
     "<DIGIT>",
     "<EXPONENT>",
-    "<CELL_NOTATION>",
+    "<COLUMN_NAME>",
+    "<ROW_NUMBER>",
     "<NAME>",
     "\"=\"",
     "\",\"",
