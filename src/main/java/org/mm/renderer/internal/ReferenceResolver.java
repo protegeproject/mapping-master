@@ -1,13 +1,11 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
-
-import org.apache.poi.ss.usermodel.Sheet;
 import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.renderer.RenderingContext;
+import org.mm.renderer.Sheet;
 import org.mm.renderer.Workbook;
 import org.mm.renderer.exception.EmptyCellException;
 import org.mm.renderer.exception.IgnoreEmptyCellException;
@@ -77,53 +75,53 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    }
 
    private String processShiftingCellUp(Sheet sheet, int columnIndex, int rowIndex) {
-      final int topMostRow = 0;
-      int currentRow = rowIndex;
-      while (currentRow >= topMostRow) {
-         String cellValue = workbook.getCellValue(sheet, columnIndex, currentRow);
+      final int topMostRowIndex = 0;
+      int currentRowIndex = rowIndex;
+      while (currentRowIndex >= topMostRowIndex) {
+         String cellValue = sheet.getValueFromCell(currentRowIndex, columnIndex);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
-         currentRow--; // move 1 row up
+         currentRowIndex--; // move 1 row up
       }
       return "";
    }
 
    private String processShiftingCellLeft(Sheet sheet, int columnIndex, int rowIndex) {
-      final int leftMostColumn = 0;
-      int currentColumn = columnIndex;
-      while (currentColumn >= leftMostColumn) {
-         String cellValue = workbook.getCellValue(sheet, currentColumn, rowIndex);
+      final int leftMostColumnIndex = 0;
+      int currentColumnIndex = columnIndex;
+      while (currentColumnIndex >= leftMostColumnIndex) {
+         String cellValue = sheet.getValueFromCell(rowIndex, currentColumnIndex);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
-         currentColumn--; // move 1 column left
+         currentColumnIndex--; // move 1 column left
       }
       return "";
    }
 
    private String processShiftingCellDown(Sheet sheet, int columnIndex, int rowIndex) {
-      final int bottomMostRow = sheet.getLastRowNum();
-      int currentRow = rowIndex;
-      while (currentRow <= bottomMostRow) {
-         String cellValue = workbook.getCellValue(sheet, columnIndex, currentRow);
+      final int bottomMostRowIndex = sheet.getEndRowIndex();
+      int currentRowIndex = rowIndex;
+      while (currentRowIndex <= bottomMostRowIndex) {
+         String cellValue = sheet.getValueFromCell(currentRowIndex, columnIndex);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
-         currentRow++; // move 1 row down
+         currentRowIndex++; // move 1 row down
       }
       return "";
    }
 
    private String processShiftingCellRight(Sheet sheet, int columnIndex, int rowIndex) {
-      final int rightMostColumn = sheet.getRow(rowIndex).getLastCellNum();
-      int currentColumn = columnIndex;
-      while (currentColumn <= rightMostColumn) {
-         String cellValue = workbook.getCellValue(sheet, currentColumn, rowIndex);
+      final int rightMostColumn = sheet.getStartColumnIndex();
+      int currentColumnIndex = columnIndex;
+      while (currentColumnIndex <= rightMostColumn) {
+         String cellValue = sheet.getValueFromCell(rowIndex, currentColumnIndex);
          if (!cellValue.isEmpty()) {
             return cellValue;
          }
-         currentColumn++; // move 1 column right
+         currentColumnIndex++; // move 1 column right
       }
       return "";
    }
