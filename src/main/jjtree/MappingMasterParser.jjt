@@ -890,14 +890,14 @@ void object_value() #ObjectValue() : {}
 
 void reference(int type) #Reference :
 {
-  referenceType = type;
+  int referenceType = type;
   ReferenceDirectives referenceDirectives;
   boolean hasBuiltInFunctions = false;
 }
 {
   reference_notation()
     ( LOOKAHEAD(2)
-       "(" ( builtin_function_pipe() { hasBuiltInFunctions = true; })? ( reference_directive() )* ")"
+       "(" ( builtin_function_pipe() { jjtThis.hasBuiltInFunctions = true; })? ( reference_directive() )* ")"
     )?
   {
     jjtThis.referenceDirectives = new ReferenceDirectives(
@@ -1031,7 +1031,7 @@ void reference_notation() #ReferenceNotation :
   String rowNumber;
 }
 {
-  "@" ( sheetName = quoted_name() "!" )? columnName = column_name() rowNumber = rowNumber()
+  "@" ( sheetName = quoted_name() "!" )? columnName = column_name() rowNumber = row_number()
   {
     jjtThis.referenceNotation = new ReferenceNotation(Optional.ofNullable(sheetName), columnName, rowNumber);
   }
