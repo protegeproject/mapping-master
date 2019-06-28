@@ -8,7 +8,7 @@ public class FunctionPipeHandler {
       this.functionHandler = functionHandler;
    }
 
-   public Value<?> evaluate(FunctionPipe functionPipe, String inputValue) {
+   public Value<?> evaluate(FunctionPipe functionPipe, Value<?> inputValue) {
       // TODO Auto-generated method stub
       return null;
    }

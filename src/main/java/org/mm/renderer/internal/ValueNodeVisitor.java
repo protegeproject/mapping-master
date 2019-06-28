@@ -79,21 +79,22 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTReference referenceNode) {
-      String resolvedValue = resolveReference(referenceNode);
-      resolvedValue = applyFunction(resolvedValue, referenceNode);
-      value = produceValue(resolvedValue, referenceNode);
+      value = resolveReference(referenceNode);
+      if (referenceNode.hasBuiltInFunctions()) {
+        value = applyFunction(referenceNode, value);
+      }
    }
 
-   private void resolveReference(ASTReference referenceNode) {
+   private Value<?> resolveReference(ASTReference referenceNode) {
       ReferenceNotation referenceNotation = getReferenceNotation(referenceNode);
       ReferenceDirectives referenceDirectives = getReferenceDirectives(referenceNode);
-      value = referenceResolver.resolve(referenceNotation, referenceDirectives);
+      return referenceResolver.resolve(referenceNotation, referenceDirectives);
    }
 
-   private void applyFunction(ASTReference referenceNode, String inputValue) {
+   private Value<?> applyFunction(ASTReference referenceNode, Value<?> inputValue) {
       FunctionPipe functionPipe = getFunctionPipe(referenceNode);
       FunctionPipeHandler functionPipeHandler = new FunctionPipeHandler(functionHandler);
-      value = functionPipeHandler.evaluate(functionPipe, inputValue);
+      return functionPipeHandler.evaluate(functionPipe, inputValue);
    }
 
    private ReferenceDirectives getReferenceDirectives(ASTReference referenceNode) {
