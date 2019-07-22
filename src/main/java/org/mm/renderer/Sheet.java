@@ -41,19 +41,19 @@ public class Sheet {
    }
 
    public int getEndRowIndex() {
-      return poiSheet.getLastRowNum();
+      return poiSheet.getLastRowNum() - 1;
    }
 
-   public void addValueToCell(int rowIndex, int columnIndex, String value) {
-      Row row = poiSheet.getRow(rowIndex);
-      if (row == null) {
-         row = poiSheet.createRow(rowIndex);
+   public void addValueToCell(int row, int column, String value) {
+      Row poiRow = poiSheet.getRow(row);
+      if (poiRow == null) {
+         poiRow = poiSheet.createRow(row);
       }
-      row.createCell(columnIndex).setCellValue(value);
+      poiRow.createCell(column).setCellValue(value);
    }
 
-   public String getValueFromCell(int rowIndex, int columnIndex) {
-      final Cell cell = poiSheet.getRow(rowIndex).getCell(columnIndex);
+   public String getValueFromCell(int row, int column) {
+      final Cell cell = poiSheet.getRow(row).getCell(column);
       return getCellValue(cell);
    }
    
