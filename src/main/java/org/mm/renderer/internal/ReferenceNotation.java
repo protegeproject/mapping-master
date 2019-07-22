@@ -1,9 +1,8 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.Optional;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 
 /**
@@ -12,76 +11,78 @@ import javax.annotation.Nonnull;
  */
 public class ReferenceNotation implements Argument {
 
-   public static final String INDEX_WILDCARD = "*";
+   private final String cellReference;
 
-   public static final String DEFAULT_SHEET_NAME = "Sheet1";
-   public static final int DEFAULT_COLUMN_NUMBER = 1;
-   public static final int DEFAULT_ROW_NUMBER = 1;
+   private static final Pattern CELL_REF_PATTERN =
+         Pattern.compile("([A-Za-z]+|\\*)([0-9]+|\\*)");
 
-   private final Optional<String> sheetName;
-   private final String columnNotation;
-   private final String rowNotation;
-
-   private String defaultSheetName = DEFAULT_SHEET_NAME;
-   private int defaultColumnNumber = DEFAULT_COLUMN_NUMBER;
-   private int defaultRowNumber = DEFAULT_ROW_NUMBER;
-
-   public ReferenceNotation(@Nonnull Optional<String> sheetName, @Nonnull String columnNotation,
-         @Nonnull String rowNotation) {
-      this.sheetName = checkNotNull(sheetName);
-      this.columnNotation = checkNotNull(columnNotation);
-      this.rowNotation = checkNotNull(rowNotation);
+   public ReferenceNotation(@Nonnull String cellReference) {
+      this.cellReference = checkNotNull(cellReference);
    }
 
-   public String getSheetName() {
-      return sheetName.orElse("");
+   public ColumnReference getColumnReference() {
+      Matcher m = checkPatternValid(cellReference);
+      return new ColumnReference(m.group(1));
    }
 
-   public String getColumnName() {
-      return columnNotation;
+   public RowReference getRowReference() {
+      Matcher m = checkPatternValid(cellReference);
+      return new RowReference(m.group(2));
    }
 
-   public String getRowNumber() {
-      return rowNotation;
-   }
-
-   public ReferenceNotation setContext(@Nonnull String sheetName, int columnNumber, int rowNumber) {
-      defaultSheetName = checkNotNull(sheetName);
-      defaultColumnNumber = columnNumber;
-      defaultRowNumber = rowNumber;
-      return this;
-   }
-
-   public CellAddress toCellAddress() {
-      return new CellAddress(
-            getSheetNameOrDefault(),
-            getColumnNumberOrDefault(),
-            getRowNumberOrDefault());
-   }
-
-   private String getSheetNameOrDefault() {
-      return sheetName.orElse(defaultSheetName);
-   }
-
-   private int getColumnNumberOrDefault() {
-      return !isWildcard(columnNotation) ? columnName2Number(columnNotation) : defaultColumnNumber;
-   }
-
-   private int getRowNumberOrDefault() {
-      return !isWildcard(rowNotation) ? Integer.parseInt(rowNotation) : defaultRowNumber;
-   }
-
-   private int columnName2Number(String columnName) {
-      int columnNumber = 0;
-      for (int i = 0; i < columnName.length(); i++) {
-         columnNumber *= 26;
-         char c = columnName.charAt(i);
-         columnNumber += Integer.parseInt(String.valueOf(c), 36) - 9;
+   private static Matcher checkPatternValid(String s) {
+      Matcher cellRefPatternMatcher = CELL_REF_PATTERN.matcher(s);
+      if (!cellRefPatternMatcher.matches()) {
+         throw new RuntimeException("Cell reference notation is invalid");
       }
-      return columnNumber;
+      return cellRefPatternMatcher;
    }
 
-   private boolean isWildcard(String notation) {
-      return notation.equals(INDEX_WILDCARD);
+   public class ColumnReference {
+
+      public static final String INDEX_WILDCARD = "*";
+
+      private final String columnReference;
+
+      public ColumnReference(@Nonnull String columnReference) {
+         this.columnReference = checkNotNull(columnReference);
+      }
+
+      public String getString() {
+         return columnReference;
+      }
+
+      public boolean isWildcard() {
+         return columnReference.equals(INDEX_WILDCARD);
+      }
+
+      @Override
+      public String toString() {
+         return columnReference;
+      }
+   }
+
+   public class RowReference {
+
+      public static final String INDEX_WILDCARD = "*";
+
+      private final String rowReference;
+
+      public RowReference(@Nonnull String rowReference) {
+         this.rowReference = checkNotNull(rowReference);
+      }
+
+      public String getString() {
+         return rowReference;
+      }
+
+      public boolean isWildcard() {
+         return rowReference.equals(INDEX_WILDCARD);
+      }
+
+      @Override
+      public String toString() {
+         return rowReference;
+      }
    }
 }
