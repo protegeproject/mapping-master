@@ -21,6 +21,6 @@ public abstract class AbstractRendererTest {
       if (sheet == null) {
          sheet = workbook.createSheet(sheetName);
       }
-      sheet.addValueToCell(columnNumber-1, columnNumber-1, value);
+      sheet.addValueToCell(columnNumber-1, rowNumber-1, value);
    }
 }
