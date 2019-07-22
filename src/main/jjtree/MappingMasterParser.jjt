@@ -292,8 +292,7 @@ TOKEN:
 | <#LETTER: [ "a"-"z", "A"-"Z" ]>
 | <#DIGIT: ["0"-"9"] >
 | <#EXPONENT: ["e", "E"] (["+", "-"])? (<DIGIT>)+ >
-| <COLUMN_NAME: ( (<LETTER>)+ | "*" )>
-| <ROW_NUMBER: ( (<DIGIT>)+ | "*" )>
+| <CELL_REFERENCE: ((<LETTER>)+ | "*") ((<DIGIT>)+ | "*")>
 | <NAME: <LETTER> ( <LETTER> | <DIGIT> | "_" | "-" | "." )* >
 }
 
@@ -890,7 +889,7 @@ void object_value() #ObjectValue() : {}
 
 void reference(int type) #Reference :
 {
-  int referenceType = type;
+  referenceType = type;
   ReferenceDirectives referenceDirectives;
   boolean hasBuiltInFunctions = false;
 }
@@ -1026,14 +1025,12 @@ void boolean_literal() #BooleanLiteral :
 
 void reference_notation() #ReferenceNotation :
 {
-  String sheetName = null;
-  String columnName;
-  String rowNumber;
+  String cellReference;
 }
 {
-  "@" ( sheetName = quoted_name() "!" )? columnName = column_name() rowNumber = row_number()
+  ( "@" cellReference = cell_reference() )
   {
-    jjtThis.referenceNotation = new ReferenceNotation(Optional.ofNullable(sheetName), columnName, rowNumber);
+    jjtThis.referenceNotation = new ReferenceNotation(cellReference);
   }
 }
 
@@ -1049,25 +1046,14 @@ String quoted_name() :
   }
 }
 
-String column_name() :
+String cell_reference() :
 {
   Token t;
 }
 {
-  t = <COLUMN_NAME>
+  t = <CELL_REFERENCE>
   {
-     return t.image;
-  }
-}
-
-String row_number() :
-{
-  Token t;
-}
-{
-  t = <ROW_NUMBER>
-  {
-     return t.image;
+    return t.image;
   }
 }
 
@@ -1302,7 +1288,6 @@ int reference_type() #ReferenceType :
 {
   Token t;
   int datatype;
-  int referenceType;
 }
 {
   ( t = <OWL_CLASS> { referenceType = t.kind; }
