@@ -1,9 +1,7 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
-
 import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.NodeType;
 import org.mm.parser.NodeVisitorAdapter;
@@ -25,6 +23,7 @@ import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.ASTValueCategory;
 import org.mm.parser.node.Node;
+import org.mm.renderer.CellCursor;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -32,13 +31,16 @@ import org.mm.parser.node.Node;
  */
 public class ValueNodeVisitor extends NodeVisitorAdapter {
 
+   private final CellCursor cellCursor;
    private final ReferenceResolver referenceResolver;
    private final BuiltInFunctionHandler functionHandler;
 
    private Value<?> value;
 
-   public ValueNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
+   public ValueNodeVisitor(@Nonnull CellCursor cellCursor,
+         @Nonnull ReferenceResolver referenceResolver,
          @Nonnull BuiltInFunctionHandler functionHandler) {
+      this.cellCursor = checkNotNull(cellCursor);
       this.referenceResolver = checkNotNull(referenceResolver);
       this.functionHandler = checkNotNull(functionHandler);
    }
@@ -81,14 +83,14 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    public void visit(ASTReference referenceNode) {
       value = resolveReference(referenceNode);
       if (referenceNode.hasBuiltInFunctions()) {
-        value = applyFunction(referenceNode, value);
+         value = applyFunction(referenceNode, value);
       }
    }
 
    private Value<?> resolveReference(ASTReference referenceNode) {
-      ReferenceNotation referenceNotation = getReferenceNotation(referenceNode);
-      ReferenceDirectives referenceDirectives = getReferenceDirectives(referenceNode);
-      return referenceResolver.resolve(referenceNotation, referenceDirectives);
+      CellAddress cellAddress = getCellAddress(referenceNode);
+      ReferenceDirectives directives = getReferenceDirectives(referenceNode);
+      return referenceResolver.resolve(cellAddress, directives);
    }
 
    private Value<?> applyFunction(ASTReference referenceNode, Value<?> inputValue) {
@@ -101,18 +103,28 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
       return referenceNode.getDirectives();
    }
 
+   private CellAddress getCellAddress(ASTReference referenceNode) {
+      final ReferenceNotation referenceNotation = getReferenceNotation(referenceNode);
+      ReferenceNotation.ColumnReference columnReference = referenceNotation.getColumnReference();
+      ReferenceNotation.RowReference rowReference = referenceNotation.getRowReference();
+      int columnNumber = columnReference.isWildcard() ? cellCursor.getColumn()
+            : CellUtils.toColumnNumber(columnReference.getString());
+      int rowNumber = rowReference.isWildcard() ? cellCursor.getRow()
+            : CellUtils.toRowNumber(rowReference.getString());
+      return new CellAddress(cellCursor.getSheetName(), columnNumber, rowNumber);
+   }
+
    private ReferenceNotation getReferenceNotation(ASTReference referenceNode) {
-      ASTReferenceNotation referenceNotationNode = ParserUtils.getChild(
-            referenceNode,
-            NodeType.REFERENCE_NOTATION);
+      ASTReferenceNotation referenceNotationNode =
+            ParserUtils.getChild(referenceNode, NodeType.REFERENCE_NOTATION);
       ReferenceNotation referenceNotation = referenceNotationNode.getReferenceNotation();
       return referenceNotation;
    }
 
    private FunctionPipe getFunctionPipe(ASTReference referenceNode) {
       FunctionPipe functionPipe = new FunctionPipe();
-      for (ASTBuiltInFunctionPipe builtInFunctionPipeNode
-            : ParserUtils.getChildren(referenceNode, NodeType.BUILTIN_FUNCTION_PIPE)) {
+      for (ASTBuiltInFunctionPipe builtInFunctionPipeNode : ParserUtils.getChildren(referenceNode,
+            NodeType.BUILTIN_FUNCTION_PIPE)) {
          BuiltInFunction bif = visitInnerBuiltInFunctionPipe(builtInFunctionPipeNode);
          functionPipe.add(bif);
       }
@@ -126,7 +138,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    }
 
    /**
-    * @deprecated use {@link visit(ASTQName)} instead. 
+    * @deprecated use {@link visit(ASTQName)} instead.
     */
    @Override
    @Deprecated
