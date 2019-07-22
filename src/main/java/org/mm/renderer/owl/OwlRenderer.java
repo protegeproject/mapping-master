@@ -61,8 +61,12 @@ public class OwlRenderer implements Renderer<Set<OWLAxiom>> {
    private Set<OWLAxiom> performRendering(Node frameNode, ReferenceResolver referenceResolver,
          BuiltInFunctionHandler functionHandler, RenderingContext context) {
       Set<OWLAxiom> axioms = new HashSet<>();
-      while (context.hasNextCell()) {
-         ValueNodeVisitor valueNodeVisitor = new ValueNodeVisitor(referenceResolver, functionHandler);
+      RenderingContext.Iterator contextIterator = context.getIterator();
+      while (contextIterator.next()) {
+         ValueNodeVisitor valueNodeVisitor = new ValueNodeVisitor(
+               contextIterator.getCursor(),
+               referenceResolver,
+               functionHandler);
          if (frameNode instanceof ASTClassFrame) {
             performClassFrameRendering((ASTClassFrame) frameNode, valueNodeVisitor, axioms);
          } else if (frameNode instanceof ASTIndividualFrame) {

@@ -1,7 +1,6 @@
 package org.mm.renderer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -11,20 +10,18 @@ import javax.annotation.Nonnull;
 public class RenderingContext {
 
    private final String sheetName;
-   private final int startColumn;
-   private final int endColumn;
-   private final int startRow;
-   private final int endRow;
+   private final int fromColumn;
+   private final int toColumn;
+   private final int fromRow;
+   private final int toRow;
 
-   private Iterator iterator = new Iterator();
-
-   public RenderingContext(@Nonnull String sheetName, int startColumn, int endColumn, int startRow,
-         int endRow) {
+   public RenderingContext(@Nonnull String sheetName, int fromColumn, int toColumn, int fromRow,
+         int toRow) {
       this.sheetName = checkNotNull(sheetName);
-      this.startColumn = startColumn;
-      this.endColumn = endColumn;
-      this.startRow = startRow;
-      this.endRow = endRow;
+      this.fromColumn = fromColumn;
+      this.toColumn = toColumn;
+      this.fromRow = fromRow;
+      this.toRow = toRow;
    }
 
    public String getSheetName() {
@@ -32,81 +29,58 @@ public class RenderingContext {
    }
 
    public int getStartColumn() {
-      return startColumn;
+      return fromColumn;
    }
 
    public int getEndColumn() {
-      return endColumn;
+      return toColumn;
    }
 
    public int getStartRow() {
-      return startRow;
+      return fromRow;
    }
 
    public int getEndRow() {
-      return endRow;
+      return toRow;
    }
 
-   public int getCurrentColumn() {
-      return iterator.getColumn();
-   }
-   
-   public int getCurrentRow() {
-      return iterator.getRow();
+   public Iterator getIterator() {
+      return new Iterator(fromColumn-1, fromRow);
    }
 
-   public boolean hasNextCell() {
-      return iterator.hasNextCell();
-   }
+   public class Iterator {
 
-   private class Iterator {
+      private int column;
+      private int row;
 
-      private int currentColumn = startColumn;
-      private int currentRow = startRow;
-
-      private int getColumn() {
-         return currentColumn;
+      public Iterator(int column, int row) {
+         this.column = column;
+         this.row = row;
       }
 
-      private int getRow() {
-         return currentRow;
+      public CellCursor getCursor() {
+         return new CellCursor(sheetName, column, row);
       }
 
-      private void setColumn(int column) {
-         currentColumn = column;
-      }
-
-      private void setRow(int row) {
-         currentRow = row;
-      }
-
-      public boolean hasNextCell() {
+      public boolean next() {
          boolean hasNext = true;
-         
-         int lastColumn = getColumn();
-         int lastRow = getRow();
-         
-         int nextRow = lastRow++;
-         if (isRowOutOfBoundary(nextRow)) {
-            int nextColumn = lastColumn++;
-            if (isColumnOutOfBoundary(nextColumn)) {
+         if (moveToNextColumn()) {
+            column = fromColumn-1;
+            if (moveToNextRow()) {
                hasNext = false;
             }
-            nextRow = startRow;
-         }
-         if (hasNext) {
-            setColumn(lastColumn);
-            setRow(lastRow);
          }
          return hasNext;
       }
 
-      private boolean isColumnOutOfBoundary(int nextColumn) {
-         return nextColumn > endColumn;
+      private boolean moveToNextColumn() {
+         column++;
+         return column > getEndColumn();
       }
 
-      private boolean isRowOutOfBoundary(int nextRow) {
-         return nextRow > endRow;
+      private boolean moveToNextRow() {
+         row++;
+         return row > getEndRow();
       }
    }
 }
