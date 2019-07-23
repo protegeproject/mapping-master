@@ -24,7 +24,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       this.workbook = checkNotNull(workbook);
    }
    
-   public Value<?> resolve(CellAddress cellAddress, ReferenceDirectives directives) {
+   public Value resolve(CellAddress cellAddress, ReferenceDirectives directives) {
       try {
          String cellValue = workbook.getCellValue(cellAddress);
          cellValue = processCellShifting(cellAddress, cellValue, directives);
@@ -143,7 +143,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return cellAddressUuid;
    }
 
-   private Value<?> processReferenceType(CellAddress cellAddress, String cellValue,
+   private Value processReferenceType(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       int option = directives.getReferenceType();
       if (option == OWL_CLASS) {
@@ -180,10 +180,10 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             + " (" + tokenImage[option] + ")");
    }
 
-   private Value<?> processClassName(CellAddress cellAddress, String cellValue,
+   private Value processClassName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value<?> className = new ClassName(localName);
+      Value className = new ClassName(localName);
       if (directives.useUserPrefix()) {
          className = new ClassName(directives.getPrefix() + ":" + localName);
       } else if (directives.useUserNamespace()) {
@@ -192,10 +192,10 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return className;
    }
 
-   private Value<?> processDataPropertyName(CellAddress cellAddress, String cellValue,
+   private Value processDataPropertyName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value<?> propertyName = new DataPropertyName(localName);
+      Value propertyName = new DataPropertyName(localName);
       if (directives.useUserPrefix()) {
          propertyName = new DataPropertyName(directives.getPrefix() + ":" + localName);
       } else if (directives.useUserNamespace()) {
@@ -204,10 +204,10 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value<?> processObjectPropertyName(CellAddress cellAddress, String cellValue,
+   private Value processObjectPropertyName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value<?> propertyName = new ObjectPropertyName(localName);
+      Value propertyName = new ObjectPropertyName(localName);
       if (directives.useUserPrefix()) {
          propertyName = new ObjectPropertyName(directives.getPrefix() + ":" + localName);
       } else if (directives.useUserNamespace()) {
@@ -216,10 +216,10 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value<?> processAnnotationPropertyName(CellAddress cellAddress, String cellValue,
+   private Value processAnnotationPropertyName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value<?> propertyName = new AnnotationPropertyName(localName);
+      Value propertyName = new AnnotationPropertyName(localName);
       if (directives.useUserPrefix()) {
          propertyName = new AnnotationPropertyName(directives.getPrefix() + ":" + localName);
       } else if (directives.useUserNamespace()) {
@@ -228,10 +228,10 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value<?> processIndividualName(CellAddress cellAddress, String cellValue,
+   private Value processIndividualName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value<?> propertyName = new IndividualName(localName);
+      Value propertyName = new IndividualName(localName);
       if (directives.useUserPrefix()) {
          propertyName = new IndividualName(directives.getPrefix() + ":" + localName);
       } else if (directives.useUserNamespace()) {
@@ -271,7 +271,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return new QName(cellValue);
    }
 
-   private Value<?> processLiteral(String cellValue, ReferenceDirectives directives) {
+   private Value processLiteral(String cellValue, ReferenceDirectives directives) {
       int option = directives.getValueDatatype();
       if (option == XSD_STRING) {
          return LiteralValue.createLiteral(cellValue, Datatype.XSD_STRING);

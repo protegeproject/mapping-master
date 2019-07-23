@@ -1,11 +1,7 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
-
-import org.semanticweb.owlapi.model.IRI;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
@@ -13,7 +9,7 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class IriValue implements Value<IRI> {
+public class IriValue implements Value {
 
    private final String iriString;
 
@@ -21,9 +17,8 @@ public class IriValue implements Value<IRI> {
       this.iriString = checkNotNull(iriString);
    }
 
-   @Override
-   public IRI getActualObject() {
-      return IRI.create(iriString);
+   public String getString() {
+      return iriString;
    }
 
    @Override
@@ -38,7 +33,7 @@ public class IriValue implements Value<IRI> {
          return false;
       }
       IriValue other = (IriValue) o;
-      return Objects.equal(iriString, other.getActualObject());
+      return Objects.equal(iriString, other.getString());
    }
 
    @Override

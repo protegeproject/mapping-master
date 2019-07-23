@@ -1,11 +1,8 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Optional;
-
 import javax.annotation.Nonnull;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
@@ -13,7 +10,7 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class PlainLiteralValue implements Value<String> {
+public class PlainLiteralValue implements Value {
 
    private final String value;
    private final String language;
@@ -31,7 +28,8 @@ public class PlainLiteralValue implements Value<String> {
       return new PlainLiteralValue(value, "");
    }
 
-   public String getLexicalString() {
+   @Override
+   public String getString() {
       return value;
    }
 
@@ -41,11 +39,6 @@ public class PlainLiteralValue implements Value<String> {
 
    public String getDatatype() {
       return "rdf:PlainLiteral";
-   }
-
-   @Override
-   public String getActualObject() {
-      return getLexicalString();
    }
 
    @Override
@@ -60,7 +53,7 @@ public class PlainLiteralValue implements Value<String> {
          return false;
       }
       PlainLiteralValue other = (PlainLiteralValue) o;
-      return Objects.equal(value, other.getLexicalString())
+      return Objects.equal(value, other.getString())
             && Objects.equal(language, other.getLanguage());
    }
 

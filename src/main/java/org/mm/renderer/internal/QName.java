@@ -1,9 +1,7 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
@@ -11,7 +9,7 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class QName implements Value<String> {
+public class QName implements Value {
 
    private final String prefixedName;
 
@@ -20,7 +18,7 @@ public class QName implements Value<String> {
    }
 
    @Override
-   public String getActualObject() {
+   public String getString() {
       return prefixedName;
    }
 
@@ -36,7 +34,7 @@ public class QName implements Value<String> {
          return false;
       }
       QName other = (QName) o;
-      return Objects.equal(prefixedName, other.getActualObject());
+      return Objects.equal(prefixedName, other.getString());
    }
 
    @Override

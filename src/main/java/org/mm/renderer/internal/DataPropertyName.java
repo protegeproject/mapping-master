@@ -42,18 +42,18 @@ public class DataPropertyName extends PropertyName {
          return false;
       }
       DataPropertyName other = (DataPropertyName) o;
-      return Objects.equal(this.getActualObject(), other.getActualObject());
+      return Objects.equal(this.getString(), other.getString());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hashCode(this.getActualObject());
+      return Objects.hashCode(this.getString());
    }
 
    @Override
    public String toString() {
       return MoreObjects.toStringHelper(this)
-            .addValue(this.getActualObject())
+            .addValue(this.getString())
             .toString();
    }
 }

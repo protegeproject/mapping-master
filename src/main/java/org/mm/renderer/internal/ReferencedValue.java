@@ -1,10 +1,9 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
 
-public abstract class ReferencedValue implements Value<String> {
+public abstract class ReferencedValue implements Value {
 
    private final String prefixedName;
 
@@ -13,7 +12,7 @@ public abstract class ReferencedValue implements Value<String> {
    }
 
    @Override
-   public String getActualObject() {
+   public String getString() {
       return prefixedName;
    }
 }

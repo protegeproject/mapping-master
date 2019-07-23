@@ -1,9 +1,7 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
-
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
@@ -11,7 +9,7 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class LiteralValue implements Value<String>, Argument {
+public class LiteralValue implements Value, Argument {
 
    private final String literalValue;
    private final String datatype;
@@ -41,17 +39,13 @@ public class LiteralValue implements Value<String>, Argument {
       return new LiteralValue(String.valueOf(booleanValue), Datatype.XSD_BOOLEAN);
    }
 
-   public String getLexicalString() {
+   @Override
+   public String getString() {
       return literalValue;
    }
 
    public String getDatatype() {
       return datatype;
-   }
-
-   @Override
-   public String getActualObject() {
-      return getLexicalString();
    }
 
    @Override
@@ -66,7 +60,7 @@ public class LiteralValue implements Value<String>, Argument {
          return false;
       }
       LiteralValue other = (LiteralValue) o;
-      return Objects.equal(literalValue, other.getLexicalString())
+      return Objects.equal(literalValue, other.getString())
             && Objects.equal(datatype, other.getDatatype());
    }
 
