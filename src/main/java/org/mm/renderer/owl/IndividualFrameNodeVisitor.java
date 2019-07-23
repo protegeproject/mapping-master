@@ -42,18 +42,17 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
  */
 public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
 
-   private final OwlFactory owlFactory;
    private final ValueNodeVisitor valueNodeVisitor;
+   private final OwlFactory owlFactory;
 
    private OWLNamedIndividual subject;
 
    private Set<OWLAxiom> axioms = new HashSet<>();
 
-   protected IndividualFrameNodeVisitor(@Nonnull OwlFactory owlFactory,
-         @Nonnull ValueNodeVisitor valueNodeVisitor) {
+   protected IndividualFrameNodeVisitor(@Nonnull ValueNodeVisitor valueNodeVisitor, @Nonnull OwlFactory owlFactory) {
       super(valueNodeVisitor);
-      this.owlFactory = checkNotNull(owlFactory);
       this.valueNodeVisitor = checkNotNull(valueNodeVisitor);
+      this.owlFactory = checkNotNull(owlFactory);
    }
 
    public Collection<OWLAxiom> getAxioms() {

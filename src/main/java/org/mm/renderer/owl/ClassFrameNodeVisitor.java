@@ -31,18 +31,17 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
  */
 public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
 
-   private final OwlFactory owlFactory;
    private final ValueNodeVisitor valueNodeVisitor;
+   private final OwlFactory owlFactory;
 
    private OWLClass subject;
 
    private Set<OWLAxiom> axioms = new HashSet<>();
 
-   public ClassFrameNodeVisitor(@Nonnull OwlFactory owlFactory,
-         @Nonnull ValueNodeVisitor valueNodeVisitor) {
+   public ClassFrameNodeVisitor(@Nonnull ValueNodeVisitor valueNodeVisitor, @Nonnull OwlFactory owlFactory) {
       super(valueNodeVisitor);
-      this.owlFactory = checkNotNull(owlFactory);
       this.valueNodeVisitor = checkNotNull(valueNodeVisitor);
+      this.owlFactory = checkNotNull(owlFactory);
    }
 
    public Collection<OWLAxiom> getAxioms() {
