@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import javax.annotation.Nonnull;
 import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.MappingMasterParserConstants;
-import org.mm.renderer.RenderingContext;
 import org.mm.renderer.Sheet;
 import org.mm.renderer.Workbook;
 import org.mm.renderer.exception.EmptyCellException;
@@ -20,15 +19,12 @@ import org.mm.renderer.internal.LiteralValue.Datatype;
 public class ReferenceResolver implements MappingMasterParserConstants {
 
    private final Workbook workbook;
-   private final RenderingContext context;
 
-   public ReferenceResolver(@Nonnull Workbook workbook, @Nonnull RenderingContext context) {
+   public ReferenceResolver(@Nonnull Workbook workbook) {
       this.workbook = checkNotNull(workbook);
-      this.context = checkNotNull(context);
    }
-
-   public Value<?> resolve(ReferenceNotation referenceNotation, ReferenceDirectives directives) {
-      CellAddress cellAddress = toCellAddress(referenceNotation);
+   
+   public Value<?> resolve(CellAddress cellAddress, ReferenceDirectives directives) {
       try {
          String cellValue = workbook.getCellValue(cellAddress);
          cellValue = processCellShifting(cellAddress, cellValue, directives);
@@ -38,13 +34,6 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          supplyErrorLocation(e, cellAddress);
          throw e;
       }
-   }
-
-   private CellAddress toCellAddress(ReferenceNotation referenceNotation) {
-      return referenceNotation.setContext(
-            context.getSheetName(),
-            context.getCurrentColumn(),
-            context.getCurrentRow()).toCellAddress();
    }
 
    @SuppressWarnings("unchecked")

@@ -53,7 +53,7 @@ public class OwlRenderer implements Renderer<Set<OWLAxiom>> {
       final SimpleNode rootNode = parse(transformationRule);
       return performRendering(
             getFrameNode(rootNode),
-            new ReferenceResolver(workbook, context),
+            new ReferenceResolver(workbook),
             new BuiltInFunctionHandler(workbook, context),
             context);
    }
