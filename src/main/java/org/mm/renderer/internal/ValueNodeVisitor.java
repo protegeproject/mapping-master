@@ -35,7 +35,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    private final ReferenceResolver referenceResolver;
    private final BuiltInFunctionHandler functionHandler;
 
-   private Value<?> value;
+   private Value value;
 
    public ValueNodeVisitor(@Nonnull CellCursor cellCursor,
          @Nonnull ReferenceResolver referenceResolver,
@@ -45,7 +45,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
       this.functionHandler = checkNotNull(functionHandler);
    }
 
-   public Value<?> getValue() {
+   public Value getValue() {
       return value;
    }
 
@@ -87,13 +87,13 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
       }
    }
 
-   private Value<?> resolveReference(ASTReference referenceNode) {
+   private Value resolveReference(ASTReference referenceNode) {
       CellAddress cellAddress = getCellAddress(referenceNode);
       ReferenceDirectives directives = getReferenceDirectives(referenceNode);
       return referenceResolver.resolve(cellAddress, directives);
    }
 
-   private Value<?> applyFunction(ASTReference referenceNode, Value<?> inputValue) {
+   private Value applyFunction(ASTReference referenceNode, Value inputValue) {
       FunctionPipe functionPipe = getFunctionPipe(referenceNode);
       FunctionPipeHandler functionPipeHandler = new FunctionPipeHandler(functionHandler);
       return functionPipeHandler.evaluate(functionPipe, inputValue);

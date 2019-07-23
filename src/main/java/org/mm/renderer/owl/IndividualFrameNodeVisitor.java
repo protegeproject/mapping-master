@@ -71,7 +71,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
 
    @Override
    public void visit(ASTNamedIndividual node) {
-      Value<?> individualNameValue = getValue(node);
+      Value individualNameValue = getValue(node);
       subject = owlFactory.getOWLNamedIndividual(individualNameValue);
    }
 
@@ -136,7 +136,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    @Override
    public void visit(ASTFact node) {
       OWLEntity property = visitPropertyNode(node);
-      Value<?> value = getPropertyValue(node);
+      Value value = getPropertyValue(node);
       if (property.isOWLDataProperty()) {
          visitDataPropertyAssertion((OWLDataProperty) property, value);
       } else if (property.isOWLObjectProperty()) {
@@ -154,22 +154,22 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
       return visitor.getEntity();
    }
 
-   private void visitDataPropertyAssertion(OWLDataProperty property, Value<?> value) {
+   private void visitDataPropertyAssertion(OWLDataProperty property, Value value) {
       OWLLiteral literal = owlFactory.getOWLLiteral(value);
       axioms.add(owlFactory.createOWLDataPropertyAssertionAxiom(property, subject, literal));
    }
 
-   private void visitObjectPropertyAssertion(OWLObjectProperty property, Value<?> value) {
+   private void visitObjectPropertyAssertion(OWLObjectProperty property, Value value) {
       value = changeLiteralValueToIndividualName(value);
       OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(value);
       axioms.add(owlFactory.createOWLObjectPropertyAssertionAxiom(property, subject, individual));
    }
 
-   private Value<?> changeLiteralValueToIndividualName(Value<?> value) {
+   private Value changeLiteralValueToIndividualName(Value value) {
       // Since we know we are dealing with object property, thus any literal value produced
       // by the value visitor must be an object value (i.e., named individual).
       if (value instanceof LiteralValue) {
-         return new IndividualName(((LiteralValue) value).getActualObject());
+         return new IndividualName(((LiteralValue) value).getString());
       }
       return value;
    }

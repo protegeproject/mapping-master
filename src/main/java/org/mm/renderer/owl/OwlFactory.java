@@ -1,12 +1,9 @@
 package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Optional;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
-
 import org.mm.renderer.internal.IriValue;
 import org.mm.renderer.internal.LiteralValue;
 import org.mm.renderer.internal.PlainLiteralValue;
@@ -76,13 +73,13 @@ public class OwlFactory {
       this.entityResolver = checkNotNull(entityResolver);
    }
 
-   public OWLClass getOWLClass(Value<?> value) {
+   public OWLClass getOWLClass(Value value) {
       if (value instanceof QName) {
-         return fetchOWLClass(((QName) value).getActualObject());
+         return fetchOWLClass(((QName) value).getString());
       } else if (value instanceof ReferencedValue) {
-         return createOWLClass(((ReferencedValue) value).getActualObject());
+         return createOWLClass(((ReferencedValue) value).getString());
       } else if (value instanceof IriValue) {
-         return createOWLClass(((IriValue) value).getActualObject());
+         return createOWLClass(((IriValue) value).getString());
       }
       throw new RuntimeException("Programming error: Creating OWL class using "
             + value.getClass() + " is not yet implemented");
@@ -100,9 +97,9 @@ public class OwlFactory {
       return owlDataFactory.getOWLClass(classIri);
    }
 
-   public OWLProperty getOWLProperty(Value<?> value) {
+   public OWLProperty getOWLProperty(Value value) {
       if (value instanceof QName) {
-         return fetchOWLProperty(((QName) value).getActualObject());
+         return fetchOWLProperty(((QName) value).getString());
       } else if (value instanceof ReferencedValue) {
          return createOWLProperty((ReferencedValue) value);
       }
@@ -118,23 +115,23 @@ public class OwlFactory {
       if (referencedValue instanceof PropertyName) {
          PropertyName propertyName = (PropertyName) referencedValue;
          if (propertyName.isDataProperty()) {
-            return createOWLDataProperty(propertyName.getActualObject());
+            return createOWLDataProperty(propertyName.getString());
          } else if (propertyName.isObjectProperty()) {
-            return createOWLObjectProperty(propertyName.getActualObject());
+            return createOWLObjectProperty(propertyName.getString());
          } else if (propertyName.isAnnotationProperty()) {
-            return createOWLAnnotationProperty(propertyName.getActualObject());
+            return createOWLAnnotationProperty(propertyName.getString());
          }
       }
       throw new RuntimeException("Programming error: Unknown property type");
    }
 
-   public OWLDataProperty getOWLDataProperty(Value<?> value) {
+   public OWLDataProperty getOWLDataProperty(Value value) {
       if (value instanceof QName) {
-         return fetchOWLDataProperty(((QName) value).getActualObject());
+         return fetchOWLDataProperty(((QName) value).getString());
       } else if (value instanceof ReferencedValue) {
-         return createOWLDataProperty(((ReferencedValue) value).getActualObject());
+         return createOWLDataProperty(((ReferencedValue) value).getString());
       } else if (value instanceof IriValue) {
-         return createOWLDataProperty(((IriValue) value).getActualObject());
+         return createOWLDataProperty(((IriValue) value).getString());
       }
       throw new RuntimeException("Programming error: Creating OWL data property using "
             + value.getClass() + " is not yet implemented");
@@ -152,13 +149,13 @@ public class OwlFactory {
       return owlDataFactory.getOWLDataProperty(propertyIri);
    }
 
-   public OWLObjectProperty getOWLObjectProperty(Value<?> value) {
+   public OWLObjectProperty getOWLObjectProperty(Value value) {
       if (value instanceof QName) {
-         return fetchOWLObjectProperty(((QName) value).getActualObject());
+         return fetchOWLObjectProperty(((QName) value).getString());
       } else if (value instanceof ReferencedValue) {
-         return createOWLObjectProperty(((ReferencedValue) value).getActualObject());
+         return createOWLObjectProperty(((ReferencedValue) value).getString());
       } else if (value instanceof IriValue) {
-         return createOWLObjectProperty(((IriValue) value).getActualObject());
+         return createOWLObjectProperty(((IriValue) value).getString());
       }
       throw new RuntimeException("Programming error: Creating OWL data property using "
             + value.getClass() + " is not yet implemented");
@@ -176,13 +173,13 @@ public class OwlFactory {
       return owlDataFactory.getOWLObjectProperty(propertyIri);
    }
 
-   public OWLAnnotationProperty getOWLAnnotationProperty(Value<?> value) {
+   public OWLAnnotationProperty getOWLAnnotationProperty(Value value) {
       if (value instanceof QName) {
-         return fetchOWLAnnotationProperty(((QName) value).getActualObject());
+         return fetchOWLAnnotationProperty(((QName) value).getString());
       } else if (value instanceof ReferencedValue) {
-         return createOWLAnnotationProperty(((ReferencedValue) value).getActualObject());
+         return createOWLAnnotationProperty(((ReferencedValue) value).getString());
       } else if (value instanceof IriValue) {
-         return createOWLAnnotationProperty(((IriValue) value).getActualObject());
+         return createOWLAnnotationProperty(((IriValue) value).getString());
       }
       throw new RuntimeException("Programming error: Creating OWL data property using "
             + value.getClass() + " is not yet implemented");
@@ -200,13 +197,13 @@ public class OwlFactory {
       return owlDataFactory.getOWLAnnotationProperty(propertyIri);
    }
 
-   public OWLNamedIndividual getOWLNamedIndividual(Value<?> value) {
+   public OWLNamedIndividual getOWLNamedIndividual(Value value) {
       if (value instanceof QName) {
-         return fetchOWLNamedIndividual(((QName) value).getActualObject());
+         return fetchOWLNamedIndividual(((QName) value).getString());
       } else if (value instanceof ReferencedValue) {
-         return createOWLNamedIndividual(((ReferencedValue) value).getActualObject());
+         return createOWLNamedIndividual(((ReferencedValue) value).getString());
       } else if (value instanceof IriValue) {
-         return createOWLNamedIndividual(((IriValue) value).getActualObject());
+         return createOWLNamedIndividual(((IriValue) value).getString());
       }
       throw new RuntimeException("Programming error: Creating OWL data property using "
             + value.getClass() + " is not yet implemented");
@@ -224,9 +221,9 @@ public class OwlFactory {
       return owlDataFactory.getOWLNamedIndividual(propertyIri);
    }
 
-   public OWLAnnotationValue getOWLAnnotationValue(Value<?> value) {
+   public OWLAnnotationValue getOWLAnnotationValue(Value value) {
       if (value instanceof IriValue) {
-         return ((IriValue) value).getActualObject();
+         return getIri((IriValue) value);
       } else if (value instanceof LiteralValue) {
          return getOWLTypedLiteral((LiteralValue) value);
       } else if (value instanceof PlainLiteralValue) {
@@ -236,7 +233,11 @@ public class OwlFactory {
             + value.getClass() + " is not yet implemented");
    }
 
-   public OWLLiteral getOWLLiteral(@Nonnull Value<?> value) {
+   private OWLAnnotationValue getIri(IriValue value) {
+      return IRI.create(value.getString());
+   }
+
+   public OWLLiteral getOWLLiteral(@Nonnull Value value) {
       if (value instanceof LiteralValue) {
          return getOWLTypedLiteral((LiteralValue) value);
       } else if (value instanceof PlainLiteralValue) {
@@ -247,7 +248,7 @@ public class OwlFactory {
    }
 
    public OWLLiteral getOWLTypedLiteral(@Nonnull LiteralValue literal) {
-      final String lexicalString = literal.getLexicalString();
+      final String lexicalString = literal.getString();
       final String datatype = literal.getDatatype();
       return owlDataFactory.getOWLLiteral(lexicalString, getOWLDatatype(datatype));
    }
@@ -257,7 +258,7 @@ public class OwlFactory {
    }
 
    public OWLLiteral getOWLPlainLiteral(@Nonnull PlainLiteralValue literal) {
-      final String lexicalString = literal.getLexicalString();
+      final String lexicalString = literal.getString();
       final Optional<String> language = literal.getLanguage();
       if (language.isPresent()) {
          return owlDataFactory.getOWLLiteral(lexicalString, language.get());

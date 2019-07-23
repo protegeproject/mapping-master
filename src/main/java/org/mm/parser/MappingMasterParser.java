@@ -2149,7 +2149,7 @@ if (jjtc000) {
         case MM_PREPEND:
         case 135:{
           builtin_function_pipe();
-jjtn000.hasBuiltInFunctions = true;
+jjtn000.hasBuiltInFunction = true;
           break;
           }
         default:

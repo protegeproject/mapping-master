@@ -1,9 +1,7 @@
 package org.mm.renderer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
-
 import org.mm.parser.NodeType;
 import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
@@ -28,31 +26,31 @@ public class AbstractNodeVisitor extends NodeVisitorAdapter {
       this.valueNodeVisitor = checkNotNull(valueNodeVisitor);
    }
 
-   protected Value<?> getValue(SimpleNode node) {
+   protected Value getValue(SimpleNode node) {
       ASTValueCategory valueNode = ParserUtils.getChild(node, NodeType.VALUE);
       valueNodeVisitor.visit(valueNode);
       return valueNodeVisitor.getValue();
    }
 
-   protected Value<?> getAnnotationValue(SimpleNode node) {
+   protected Value getAnnotationValue(SimpleNode node) {
       ASTAnnotationValue valueNode = ParserUtils.getChild(node, NodeType.ANNOTATION_VALUE);
       valueNodeVisitor.visit(valueNode);
       return valueNodeVisitor.getValue();
    }
 
-   protected Value<?> getPropertyValue(SimpleNode node) {
+   protected Value getPropertyValue(SimpleNode node) {
       ASTPropertyValue valueNode = ParserUtils.getChild(node, NodeType.PROPERTY_VALUE);
       valueNodeVisitor.visit(valueNode);
       return valueNodeVisitor.getValue();
    }
 
-   protected Value<?> getLiteralValue(SimpleNode node) {
+   protected Value getLiteralValue(SimpleNode node) {
       ASTLiteralValue literalValueNode = ParserUtils.getChild(node, NodeType.LITERAL_VALUE);
       valueNodeVisitor.visit(literalValueNode);
       return valueNodeVisitor.getValue();
    }
 
-   protected Value<?> getObjectValue(SimpleNode node) {
+   protected Value getObjectValue(SimpleNode node) {
       ASTObjectValue objectValueNode = ParserUtils.getChild(node, NodeType.OBJECT_VALUE);
       valueNodeVisitor.visit(objectValueNode);
       return valueNodeVisitor.getValue();

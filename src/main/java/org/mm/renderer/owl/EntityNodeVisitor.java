@@ -37,37 +37,37 @@ public class EntityNodeVisitor extends AbstractNodeVisitor {
 
    @Override
    public void visit(ASTClass classNode) {
-      Value<?> classNameValue = getValue(classNode);
+      Value classNameValue = getValue(classNode);
       entity = owlFactory.getOWLClass(classNameValue);
    }
 
    @Override
    public void visit(ASTProperty propertyNode) {
-      Value<?> propertyNameValue = getValue(propertyNode);
+      Value propertyNameValue = getValue(propertyNode);
       entity = owlFactory.getOWLProperty(propertyNameValue);
    }
 
    @Override
    public void visit(ASTDataProperty propertyNode) {
-      Value<?> propertyNameValue = getValue(propertyNode);
+      Value propertyNameValue = getValue(propertyNode);
       entity = owlFactory.getOWLDataProperty(propertyNameValue);
    }
 
    @Override
    public void visit(ASTObjectProperty propertyNode) {
-      Value<?> propertyNameValue = getValue(propertyNode);
+      Value propertyNameValue = getValue(propertyNode);
       entity = owlFactory.getOWLObjectProperty(propertyNameValue);
    }
 
    @Override
    public void visit(ASTAnnotationProperty propertyNode) {
-      Value<?> propertyNameValue = getValue(propertyNode);
+      Value propertyNameValue = getValue(propertyNode);
       entity = owlFactory.getOWLAnnotationProperty(propertyNameValue);
    }
 
    @Override
    public void visit(ASTNamedIndividual individualNode) {
-      Value<?> individualNameValue = getValue(individualNode);
+      Value individualNameValue = getValue(individualNode);
       entity = owlFactory.getOWLNamedIndividual(individualNameValue);
    }
 }

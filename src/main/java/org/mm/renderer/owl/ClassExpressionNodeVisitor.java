@@ -1,12 +1,9 @@
 package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
-
 import org.mm.parser.NodeType;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTClass;
@@ -195,7 +192,7 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
    @Override
    public void visit(ASTDataHasValue node) {
       OWLDataProperty property = getOWLDataProperty(node);
-      Value<?> value = getLiteralValue(node);
+      Value value = getLiteralValue(node);
       OWLLiteral literal = owlFactory.getOWLLiteral(value);
       classExpression = owlFactory.createOWLDataHasValue(property, literal);
    }
@@ -203,7 +200,7 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
    @Override
    public void visit(ASTObjectHasValue node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
-      Value<?> value = getObjectValue(node);
+      Value value = getObjectValue(node);
       OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(value);
       classExpression = owlFactory.createOWLObjectHasValue(property, individual);
    }
