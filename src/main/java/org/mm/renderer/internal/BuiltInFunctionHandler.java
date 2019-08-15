@@ -13,6 +13,7 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
       switch (functionType) {
          case MM_TO_UPPER_CASE: return handleToUpperCase(inputValue);
          case MM_TO_LOWER_CASE: return handleToLowerCase(inputValue);
+         case MM_REVERSE: return handleReverse(inputValue);
          default: return inputValue;
       }
    }
@@ -25,6 +26,13 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
 
    private Value handleToLowerCase(Value inputValue) {
       String newString = inputValue.getString().toLowerCase();
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
+   }
+
+   private Value handleReverse(Value inputValue) {
+      String inputString = inputValue.getString();
+      String newString = new StringBuilder(inputString).reverse().toString();
       Value outputValue = inputValue.update(newString);
       return outputValue;
    }
