@@ -14,6 +14,11 @@ public class IndividualName extends ReferencedValue {
    }
 
    @Override
+   public IndividualName update(String newPrefixedName) {
+      return new IndividualName(newPrefixedName);
+   }
+
+   @Override
    public boolean equals(Object o) {
       if (o == null) {
          return false;

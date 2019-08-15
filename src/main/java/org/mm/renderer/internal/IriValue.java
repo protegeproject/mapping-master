@@ -17,8 +17,14 @@ public class IriValue implements Value {
       this.iriString = checkNotNull(iriString);
    }
 
+   @Override
    public String getString() {
       return iriString;
+   }
+
+   @Override
+   public IriValue update(String newIriString) {
+      return new IriValue(newIriString);
    }
 
    @Override

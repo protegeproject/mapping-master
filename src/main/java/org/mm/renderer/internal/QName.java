@@ -23,6 +23,11 @@ public class QName implements Value {
    }
 
    @Override
+   public QName update(String newPrefixedName) {
+      return new QName(newPrefixedName);
+   }
+
+   @Override
    public boolean equals(Object o) {
       if (o == null) {
          return false;

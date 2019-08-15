@@ -14,6 +14,11 @@ public class ObjectPropertyName extends PropertyName {
    }
 
    @Override
+   public ObjectPropertyName update(String newPrefixedName) {
+      return new ObjectPropertyName(newPrefixedName);
+   }
+
+   @Override
    public boolean isDataProperty() {
       return false;
    }

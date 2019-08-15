@@ -7,4 +7,6 @@ package org.mm.renderer.internal;
 public interface Value {
 
    String getString();
+
+   Value update(String newValue);
 }

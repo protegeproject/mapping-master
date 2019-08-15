@@ -23,7 +23,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    public ReferenceResolver(@Nonnull Workbook workbook) {
       this.workbook = checkNotNull(workbook);
    }
-   
+
    public Value resolve(CellAddress cellAddress, ReferenceDirectives directives) {
       try {
          String cellValue = workbook.getCellValue(cellAddress);

@@ -16,6 +16,11 @@ public class ClassName extends ReferencedValue  {
    }
 
    @Override
+   public ClassName update(String newPrefixedName) {
+      return new ClassName(newPrefixedName);
+   }
+
+   @Override
    public boolean equals(Object o) {
       if (o == null) {
          return false;

@@ -33,6 +33,11 @@ public class PlainLiteralValue implements Value {
       return value;
    }
 
+   @Override
+   public PlainLiteralValue update(String newValue) {
+      return createPlainLiteral(newValue, this.language);
+   }
+
    public Optional<String> getLanguage() {
       return language.isEmpty() ? Optional.empty() : Optional.of(language);
    }

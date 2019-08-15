@@ -16,6 +16,11 @@ public class DataPropertyName extends PropertyName {
    }
 
    @Override
+   public DataPropertyName update(String newPrefixedName) {
+      return new DataPropertyName(newPrefixedName);
+   }
+
+   @Override
    public boolean isDataProperty() {
       return true;
    }

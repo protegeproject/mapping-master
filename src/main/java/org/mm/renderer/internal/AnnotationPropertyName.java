@@ -14,6 +14,11 @@ public class AnnotationPropertyName extends PropertyName {
    }
 
    @Override
+   public AnnotationPropertyName update(String newPrefixedName) {
+      return new AnnotationPropertyName(newPrefixedName);
+   }
+
+   @Override
    public boolean isDataProperty() {
       return false;
    }

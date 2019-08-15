@@ -44,6 +44,11 @@ public class LiteralValue implements Value, Argument {
       return literalValue;
    }
 
+   @Override
+   public LiteralValue update(String newLiteralValue) {
+      return createLiteral(newLiteralValue, this.datatype);
+   }
+
    public String getDatatype() {
       return datatype;
    }
