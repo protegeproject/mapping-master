@@ -8,7 +8,7 @@ import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTBooleanLiteral;
-import org.mm.parser.node.ASTBuiltInFunctionPipe;
+import org.mm.parser.node.ASTBuiltInFunction;
 import org.mm.parser.node.ASTFloatLiteral;
 import org.mm.parser.node.ASTIntegerLiteral;
 import org.mm.parser.node.ASTIri;
@@ -31,18 +31,21 @@ import org.mm.renderer.CellCursor;
  */
 public class ValueNodeVisitor extends NodeVisitorAdapter {
 
-   private final CellCursor cellCursor;
    private final ReferenceResolver referenceResolver;
-   private final BuiltInFunctionHandler functionHandler;
+   private final BuiltInFunctionHandler builtInFunctionHandler;
+
+   private CellCursor cellCursor = CellCursor.getDefaultCursor();
 
    private Value value;
 
-   public ValueNodeVisitor(@Nonnull CellCursor cellCursor,
-         @Nonnull ReferenceResolver referenceResolver,
-         @Nonnull BuiltInFunctionHandler functionHandler) {
-      this.cellCursor = checkNotNull(cellCursor);
+   public ValueNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
+         @Nonnull BuiltInFunctionHandler builtInFunctionHandler) {
       this.referenceResolver = checkNotNull(referenceResolver);
-      this.functionHandler = checkNotNull(functionHandler);
+      this.builtInFunctionHandler = checkNotNull(builtInFunctionHandler);
+   }
+
+   public void setCellCursor(@Nonnull CellCursor cellCursor) {
+      this.cellCursor = cellCursor;
    }
 
    public Value getValue() {
@@ -82,25 +85,22 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTReference referenceNode) {
       value = resolveReference(referenceNode);
-      if (referenceNode.hasBuiltInFunctions()) {
-         value = applyFunction(referenceNode, value);
+      if (referenceNode.hasBuiltInFunction()) {
+         ASTBuiltInFunction builtInFunctionNode =
+               ParserUtils.getChild(referenceNode, NodeType.BUILTIN_FUNCTION);
+         BuiltInFunction function = getBuiltInFunction(builtInFunctionNode);
+         value = applyFunction(function, value);
       }
+   }
+
+   private Value applyFunction(BuiltInFunction function, Value inputValue) {
+      return builtInFunctionHandler.evaluate(function, inputValue);
    }
 
    private Value resolveReference(ASTReference referenceNode) {
       CellAddress cellAddress = getCellAddress(referenceNode);
-      ReferenceDirectives directives = getReferenceDirectives(referenceNode);
+      ReferenceDirectives directives = referenceNode.getDirectives();
       return referenceResolver.resolve(cellAddress, directives);
-   }
-
-   private Value applyFunction(ASTReference referenceNode, Value inputValue) {
-      FunctionPipe functionPipe = getFunctionPipe(referenceNode);
-      FunctionPipeHandler functionPipeHandler = new FunctionPipeHandler(functionHandler);
-      return functionPipeHandler.evaluate(functionPipe, inputValue);
-   }
-
-   private ReferenceDirectives getReferenceDirectives(ASTReference referenceNode) {
-      return referenceNode.getDirectives();
    }
 
    private CellAddress getCellAddress(ASTReference referenceNode) {
@@ -121,20 +121,11 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
       return referenceNotation;
    }
 
-   private FunctionPipe getFunctionPipe(ASTReference referenceNode) {
-      FunctionPipe functionPipe = new FunctionPipe();
-      for (ASTBuiltInFunctionPipe builtInFunctionPipeNode : ParserUtils.getChildren(referenceNode,
-            NodeType.BUILTIN_FUNCTION_PIPE)) {
-         BuiltInFunction bif = visitInnerBuiltInFunctionPipe(builtInFunctionPipeNode);
-         functionPipe.add(bif);
-      }
-      return functionPipe;
-   }
-
-   private BuiltInFunction visitInnerBuiltInFunctionPipe(
-         ASTBuiltInFunctionPipe builtInFunctionPipeNode) {
-      // TODO Auto-generated method stub
-      return null;
+   private BuiltInFunction getBuiltInFunction(ASTBuiltInFunction builtInFunctionNode) {
+      BuiltInFunctionNodeVisitor builtInFunctionNodeVisitor =
+            new BuiltInFunctionNodeVisitor(cellCursor, referenceResolver);
+      builtInFunctionNodeVisitor.visit(builtInFunctionNode);
+      return builtInFunctionNodeVisitor.getBuiltInFunction();
    }
 
    /**

@@ -2,6 +2,7 @@
 /* JavaCCOptions:MULTI=true,NODE_USES_PARSER=false,VISITOR=false,TRACK_TOKENS=false,NODE_PREFIX=AST,NODE_EXTENDS=,NODE_FACTORY=,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package org.mm.parser.node;
 
+import javax.annotation.Nonnull;
 import org.mm.parser.MappingMasterParser;
 import org.mm.parser.NodeVisitor;
 
@@ -16,6 +17,11 @@ class ASTBuiltInFunction extends SimpleNode {
 
   public ASTBuiltInFunction(MappingMasterParser p, int id) {
     super(p, id);
+  }
+
+  @Nonnull
+  public int getFunctionType() { /* XXX: Manually added */
+     return functionType;
   }
 
   @Override

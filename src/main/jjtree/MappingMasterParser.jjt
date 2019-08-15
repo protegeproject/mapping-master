@@ -891,12 +891,12 @@ void reference(int type) #Reference :
 {
   referenceType = type;
   ReferenceDirectives referenceDirectives;
-  boolean hasBuiltInFunctions = false;
+  boolean hasBuiltInFunction = false;
 }
 {
   reference_notation()
     ( LOOKAHEAD(2)
-       "(" ( builtin_function_pipe() { jjtThis.hasBuiltInFunctions = true; })? ( reference_directive() )* ")"
+       "(" ( builtin_function() { jjtThis.hasBuiltInFunction = true; })? ( reference_directive() )* ")"
     )?
   {
     jjtThis.referenceDirectives = new ReferenceDirectives(
@@ -1121,11 +1121,6 @@ void language_directive() :
 //------------------------------------------------------------------------------------------
 // Value Extraction Functions
 //------------------------------------------------------------------------------------------
-
-void builtin_function_pipe() #BuiltInFunctionPipe : {}
-{
-  builtin_function() ( "|" builtin_function() )*
-}
 
 void builtin_function() #BuiltInFunction :
 {

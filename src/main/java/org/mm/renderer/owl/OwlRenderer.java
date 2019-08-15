@@ -13,12 +13,12 @@ import org.mm.parser.node.ASTIndividualFrame;
 import org.mm.parser.node.ASTRuleExpression;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
-import org.mm.renderer.CellCursor;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RenderingContext;
 import org.mm.renderer.Workbook;
 import org.mm.renderer.exception.IgnoreEmptyCellException;
 import org.mm.renderer.exception.WarningEmptyCellException;
+import org.mm.renderer.internal.BuiltInFunctionHandler;
 import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -52,8 +52,8 @@ public class OwlRenderer implements Renderer<Set<OWLAxiom>> {
       Set<OWLAxiom> axioms = Sets.newHashSet();
       RenderingContext.Iterator contextIterator = context.getIterator();
       while (contextIterator.next()) {
-         CellCursor cellCursor = contextIterator.getCursor();
-         ValueNodeVisitor valueNodeVisitor = new ValueNodeVisitor(cellCursor, referenceResolver);
+         ValueNodeVisitor valueNodeVisitor = new ValueNodeVisitor(referenceResolver, new BuiltInFunctionHandler());
+         valueNodeVisitor.setCellCursor(contextIterator.getCursor());
          try {
             if (transformationRuleNode instanceof ASTClassFrame) {
                ClassFrameNodeVisitor classFrameNodeVisitor = new ClassFrameNodeVisitor(valueNodeVisitor, owlFactory);

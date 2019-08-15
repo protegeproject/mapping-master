@@ -15,7 +15,7 @@ class ASTReference extends SimpleNode {
 
   public int referenceType; /* XXX: Manually added */
 
-  public boolean hasBuiltInFunctions = false; /* XXX: Manually added */
+  public boolean hasBuiltInFunction = false; /* XXX: Manually added */
 
   public ASTReference(int id) {
     super(id);
@@ -34,8 +34,8 @@ class ASTReference extends SimpleNode {
      return referenceType;
   }
 
-  public boolean hasBuiltInFunctions() { /* XXX: Manually added */
-     return hasBuiltInFunctions;
+  public boolean hasBuiltInFunction() { /* XXX: Manually added */
+     return hasBuiltInFunction;
   }
 
   @Override

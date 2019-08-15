@@ -19,6 +19,10 @@ public class CellCursor {
       this.row = row;
    }
 
+   public static CellCursor getDefaultCursor() {
+      return new CellCursor("Sheet1", 0, 0);
+   }
+
    /**
     * Returns the sheet name.
     * 

@@ -1,14 +1,13 @@
 package org.mm.parser;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
-
 import org.mm.parser.node.ASTAnnotation;
 import org.mm.parser.node.ASTAnnotationAssertion;
 import org.mm.parser.node.ASTAnnotationProperty;
 import org.mm.parser.node.ASTAnnotationValue;
-import org.mm.parser.node.ASTBuiltInFunctionPipe;
+import org.mm.parser.node.ASTArgument;
+import org.mm.parser.node.ASTBuiltInFunction;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassAssertion;
 import org.mm.parser.node.ASTClassDeclaration;
@@ -81,5 +80,6 @@ public class NodeType<T extends Node> {
    public static final NodeType<ASTSubclassOf> SUBCLASS_OF = new NodeType<>("SubclassOf", ASTSubclassOf.class);
    public static final NodeType<ASTValueCategory> VALUE = new NodeType<>("ValueCategory", ASTValueCategory.class);
    public static final NodeType<ASTAnnotationValue> ANNOTATION_VALUE = new NodeType<>("AnnotationValue", ASTAnnotationValue.class);
-   public static final NodeType<ASTBuiltInFunctionPipe> BUILTIN_FUNCTION_PIPE = new NodeType<>("BuiltInFunctionPipe", ASTBuiltInFunctionPipe.class);
+   public static final NodeType<ASTBuiltInFunction> BUILTIN_FUNCTION = new NodeType<>("BuiltInFunction", ASTBuiltInFunction.class);
+   public static final NodeType<ASTArgument> ARGUMENT = new NodeType<>("Argument", ASTArgument.class);
 }
