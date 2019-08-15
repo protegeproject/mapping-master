@@ -75,7 +75,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
       // Arrange
       createCell("Sheet1", 1, 1, "Barbara's Puffins Honey");
       // Act
-      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"%s - Rice Cereal - 10.5 oz Box\"))");
+      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"%s-RiceCereal-10.5OzBox\"))");
       // Assert
       assertThat(results, hasSize(1));
       assertThat(results, containsInAnyOrder(Declaration(Vocabulary.BARBARA_PUFFINS_CAMELCASE)));
@@ -86,7 +86,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
       // Arrange
       createCell("Sheet1", 1, 1, "10.5 oz Box");
       // Act
-      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara's Puffins Honey - Rice Cereal - %s\"))");
+      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara'sPuffinsHoney-RiceCereal-%s\"))");
       // Assert
       assertThat(results, hasSize(1));
       assertThat(results, containsInAnyOrder(Declaration(Vocabulary.BARBARA_PUFFINS_CAMELCASE)));
@@ -97,7 +97,7 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
       // Arrange
       createCell("Sheet1", 1, 1, "Rice Cereal");
       // Act
-      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara's Puffins Honey - %s - 10.5 oz Box\"))");
+      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara'sPuffinsHoney-%s-10.5OzBox\"))");
       // Assert
       assertThat(results, hasSize(1));
       assertThat(results, containsInAnyOrder(Declaration(Vocabulary.BARBARA_PUFFINS_CAMELCASE)));

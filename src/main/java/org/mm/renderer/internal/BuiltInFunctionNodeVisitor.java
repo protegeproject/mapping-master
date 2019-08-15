@@ -8,6 +8,7 @@ import org.mm.parser.NodeType;
 import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTArgument;
+import org.mm.parser.node.ASTArgumentList;
 import org.mm.parser.node.ASTBooleanLiteral;
 import org.mm.parser.node.ASTBuiltInFunction;
 import org.mm.parser.node.ASTFloatLiteral;
@@ -41,8 +42,10 @@ public class BuiltInFunctionNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTBuiltInFunction builtInFunctionNode) {
       functionType = builtInFunctionNode.getFunctionType();
-      for (ASTArgument argumentNode : ParserUtils.getChildren(builtInFunctionNode, NodeType.ARGUMENT)) {
-         argumentNode.accept(this);
+      for (ASTArgumentList argumentListNode : ParserUtils.getChildren(builtInFunctionNode, NodeType.ARGUMENT_LIST)) {
+         for (ASTArgument argumentNode : ParserUtils.getChildren(argumentListNode, NodeType.ARGUMENT)) {
+            argumentNode.accept(this);
+         }
       }
    }
 
@@ -75,6 +78,12 @@ public class BuiltInFunctionNodeVisitor extends NodeVisitorAdapter {
             ParserUtils.getChild(referenceNode, NodeType.REFERENCE_NOTATION);
       ReferenceNotation referenceNotation = referenceNotationNode.getReferenceNotation();
       return referenceNotation;
+   }
+
+   @Override
+   public void visit(ASTArgument node) {
+      Node literalNode = ParserUtils.getChild(node);
+      literalNode.accept(this);
    }
 
    @Override

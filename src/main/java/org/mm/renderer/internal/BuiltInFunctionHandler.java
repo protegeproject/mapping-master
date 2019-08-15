@@ -1,5 +1,6 @@
 package org.mm.renderer.internal;
 
+import java.util.List;
 import org.mm.parser.MappingMasterParserConstants;
 
 /**
@@ -14,6 +15,7 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
          case MM_TO_UPPER_CASE: return handleToUpperCase(inputValue);
          case MM_TO_LOWER_CASE: return handleToLowerCase(inputValue);
          case MM_REVERSE: return handleReverse(inputValue);
+         case MM_PRINTF: return handlePrintf(inputValue, function.getArguments());
          default: return inputValue;
       }
    }
@@ -33,6 +35,13 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
    private Value handleReverse(Value inputValue) {
       String inputString = inputValue.getString();
       String newString = new StringBuilder(inputString).reverse().toString();
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
+   }
+
+   private Value handlePrintf(Value inputValue, List<Argument> arguments) {
+      String stringFormat = ((LiteralValue) arguments.get(0)).getString();
+      String newString = String.format(stringFormat, inputValue.getString());
       Value outputValue = inputValue.update(newString);
       return outputValue;
    }

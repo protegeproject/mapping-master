@@ -7,6 +7,7 @@ import org.mm.parser.node.ASTAnnotationAssertion;
 import org.mm.parser.node.ASTAnnotationProperty;
 import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTArgument;
+import org.mm.parser.node.ASTArgumentList;
 import org.mm.parser.node.ASTBuiltInFunction;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassAssertion;
@@ -81,5 +82,6 @@ public class NodeType<T extends Node> {
    public static final NodeType<ASTValueCategory> VALUE = new NodeType<>("ValueCategory", ASTValueCategory.class);
    public static final NodeType<ASTAnnotationValue> ANNOTATION_VALUE = new NodeType<>("AnnotationValue", ASTAnnotationValue.class);
    public static final NodeType<ASTBuiltInFunction> BUILTIN_FUNCTION = new NodeType<>("BuiltInFunction", ASTBuiltInFunction.class);
+   public static final NodeType<ASTArgumentList> ARGUMENT_LIST = new NodeType<>("ArgumentList", ASTArgumentList.class);
    public static final NodeType<ASTArgument> ARGUMENT = new NodeType<>("Argument", ASTArgument.class);
 }
