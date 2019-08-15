@@ -9,6 +9,16 @@ import org.mm.parser.MappingMasterParserConstants;
 public class BuiltInFunctionHandler implements MappingMasterParserConstants {
 
    public Value evaluate(BuiltInFunction function, Value inputValue) {
-      return null; // NO-OP
+      int functionType = function.getFunctionType();
+      switch (functionType) {
+         case MM_TO_UPPER_CASE: return handleToUpperCase(inputValue);
+         default: return inputValue;
+      }
+   }
+
+   private Value handleToUpperCase(Value inputValue) {
+      String newString = inputValue.getString().toUpperCase();
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
    }
 }
