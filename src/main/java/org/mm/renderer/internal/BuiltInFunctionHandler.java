@@ -15,6 +15,7 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
          case MM_TO_UPPER_CASE: return handleToUpperCase(inputValue);
          case MM_TO_LOWER_CASE: return handleToLowerCase(inputValue);
          case MM_REVERSE: return handleReverse(inputValue);
+         case MM_TRIM: return handleTrim(inputValue);
          case MM_PRINTF: return handlePrintf(inputValue, function.getArguments());
          case MM_REPLACE: return handleReplace(inputValue, function.getArguments());
          case MM_REPLACE_FIRST: return handleReplaceFirst(inputValue, function.getArguments());
@@ -38,6 +39,13 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
    private Value handleReverse(Value inputValue) {
       String inputString = inputValue.getString();
       String newString = new StringBuilder(inputString).reverse().toString();
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
+   }
+
+   private Value handleTrim(Value inputValue) {
+      String inputString = inputValue.getString();
+      String newString = inputString.trim();
       Value outputValue = inputValue.update(newString);
       return outputValue;
    }
