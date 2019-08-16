@@ -1,5 +1,7 @@
 package org.mm.renderer.internal;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import org.mm.parser.MappingMasterParserConstants;
 
@@ -20,6 +22,7 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
          case MM_REPLACE: return handleReplace(inputValue, function.getArguments());
          case MM_REPLACE_FIRST: return handleReplaceFirst(inputValue, function.getArguments());
          case MM_REPLACE_ALL: return handleReplaceAll(inputValue, function.getArguments());
+         case MM_DECIMAL_FORMAT: return handleDecimalFormat(inputValue, function.getArguments());
          default: return inputValue;
       }
    }
@@ -77,6 +80,15 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
       String regex = ((LiteralValue) arguments.get(0)).getString();
       String replacement = ((LiteralValue) arguments.get(1)).getString();
       String newString = inputValue.getString().replaceAll(regex, replacement);
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
+   }
+
+   private Value handleDecimalFormat(Value inputValue, List<Argument> arguments) {
+      String decimalFormat = ((LiteralValue) arguments.get(0)).getString();
+      DecimalFormat formatter = new DecimalFormat(decimalFormat);
+      BigDecimal number = new BigDecimal(inputValue.getString());
+      String newString = formatter.format(number);
       Value outputValue = inputValue.update(newString);
       return outputValue;
    }
