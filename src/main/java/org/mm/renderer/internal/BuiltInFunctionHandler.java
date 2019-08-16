@@ -3,6 +3,8 @@ package org.mm.renderer.internal;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.mm.parser.MappingMasterParserConstants;
 
 /**
@@ -23,6 +25,7 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
          case MM_REPLACE_FIRST: return handleReplaceFirst(inputValue, function.getArguments());
          case MM_REPLACE_ALL: return handleReplaceAll(inputValue, function.getArguments());
          case MM_DECIMAL_FORMAT: return handleDecimalFormat(inputValue, function.getArguments());
+         case MM_CAPTURING: return handleCapturing(inputValue, function.getArguments());
          default: return inputValue;
       }
    }
@@ -89,6 +92,19 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
       DecimalFormat formatter = new DecimalFormat(decimalFormat);
       BigDecimal number = new BigDecimal(inputValue.getString());
       String newString = formatter.format(number);
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
+   }
+
+   private Value handleCapturing(Value inputValue, List<Argument> arguments) {
+      String regex = ((LiteralValue) arguments.get(0)).getString();
+      Pattern p = Pattern.compile(regex);
+      Matcher m = p.matcher(inputValue.getString());
+      String newString = "";
+      if (m.find()) {
+        for (int groupIndex = 1; groupIndex <= m.groupCount(); groupIndex++)
+           newString += m.group(groupIndex);
+      }
       Value outputValue = inputValue.update(newString);
       return outputValue;
    }
