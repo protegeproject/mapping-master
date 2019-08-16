@@ -1,13 +1,11 @@
 package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
-
 import org.mm.parser.NodeType;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotation;
@@ -78,7 +76,7 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitSubClassOfNode(ASTClassFrame classSectionNode) {
-      final Set<ASTSubclassOf> subClassNodes = ParserUtils.getChildren(
+      final List<ASTSubclassOf> subClassNodes = ParserUtils.getChildren(
             classSectionNode,
             NodeType.SUBCLASS_OF);
       for (ASTSubclassOf subClassNode : subClassNodes) {
@@ -87,7 +85,7 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitEachSubClassOfNode(ASTSubclassOf subClassNode) {
-      final Set<ASTClassExpressionCategory> classExpressionNodes = ParserUtils.getChildren(
+      final List<ASTClassExpressionCategory> classExpressionNodes = ParserUtils.getChildren(
             subClassNode,
             NodeType.CLASS_EXPRESSION);
       for (ASTClassExpressionCategory classExpressionNode : classExpressionNodes) {
@@ -104,7 +102,7 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitEquivalentClassesNode(ASTClassFrame classSectionNode) {
-      final Set<ASTEquivalentClasses> equivalentClassesNodes = ParserUtils.getChildren(
+      final List<ASTEquivalentClasses> equivalentClassesNodes = ParserUtils.getChildren(
             classSectionNode,
             NodeType.EQUIVALENT_CLASSES);
       for (ASTEquivalentClasses equivalentClassesNode : equivalentClassesNodes) {
@@ -113,7 +111,7 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitEachEquivalentClassesNode(ASTEquivalentClasses equivalentClassesNode) {
-      final Set<ASTClassExpressionCategory> classExpressionNodes = ParserUtils.getChildren(
+      final List<ASTClassExpressionCategory> classExpressionNodes = ParserUtils.getChildren(
             equivalentClassesNode,
             NodeType.CLASS_EXPRESSION);
       for (ASTClassExpressionCategory classExpressionNode : classExpressionNodes) {
@@ -130,7 +128,7 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitAnnotationAssertionNode(ASTClassFrame classSectionNode) {
-      final Set<ASTAnnotationAssertion> annotationAssertionNodes = ParserUtils.getChildren(
+      final List<ASTAnnotationAssertion> annotationAssertionNodes = ParserUtils.getChildren(
             classSectionNode,
             NodeType.ANNOTATION_ASSERTION);
       for (ASTAnnotationAssertion annotationAssertionNode : annotationAssertionNodes) {
@@ -139,7 +137,7 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitEachAnnotationAssertionNode(ASTAnnotationAssertion annotationAssertionNode) {
-      final Set<ASTAnnotation> annotationNodes = ParserUtils.getChildren(
+      final List<ASTAnnotation> annotationNodes = ParserUtils.getChildren(
             annotationAssertionNode,
             NodeType.ANNOTATION);
       AnnotationNodeVisitor visitor = createNewAnnotationNodeVisitor();

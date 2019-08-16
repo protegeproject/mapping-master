@@ -2,12 +2,12 @@ package org.mm.parser;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
-
 import org.mm.parser.node.MappingMasterParserTreeConstants;
 import org.mm.parser.node.Node;
+import com.google.common.collect.Lists;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -31,8 +31,8 @@ public class ParserUtils implements MappingMasterParserConstants {
       return type.getActualClass().cast(childNode);
    }
 
-   public static <T extends Node> Set<T> getChildren(@Nonnull Node parent, NodeType<T> type) {
-      Set<T> childrenNodes = new HashSet<>();
+   public static <T extends Node> List<T> getChildren(@Nonnull Node parent, NodeType<T> type) {
+      List<T> childrenNodes = Lists.newArrayList();
       for (Node childNode : getChildren(parent, type.getName())) {
          T castedChildNode = type.getActualClass().cast(childNode);
          childrenNodes.add(castedChildNode);
@@ -51,8 +51,8 @@ public class ParserUtils implements MappingMasterParserConstants {
       throw new RuntimeException(errorMessage);
    }
 
-   private static Set<Node> getChildren(@Nonnull Node parent, @Nonnull String childName) {
-      Set<Node> childrenNodes = new HashSet<>();
+   private static List<Node> getChildren(@Nonnull Node parent, @Nonnull String childName) {
+      List<Node> childrenNodes = Lists.newArrayList();
       for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
          Node child = parent.jjtGetChild(i);
          if (hasName(child, childName)) {

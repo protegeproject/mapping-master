@@ -2,6 +2,7 @@ package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import org.mm.parser.NodeType;
@@ -260,7 +261,7 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
    }
 
    private Set<OWLNamedIndividual> getOWLIndividuals(SimpleNode node) {
-      final Set<ASTNamedIndividual> individualNodes = ParserUtils.getChildren(
+      final List<ASTNamedIndividual> individualNodes = ParserUtils.getChildren(
             node,
             NodeType.INDIVIDUAL);
       Set<OWLNamedIndividual> individuals = new HashSet<>();

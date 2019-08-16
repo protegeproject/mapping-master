@@ -1,13 +1,11 @@
 package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
-
 import org.mm.parser.NodeType;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotation;
@@ -90,7 +88,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitClassAssertionNode(ASTIndividualFrame individualSectionNode) {
-      final Set<ASTClassAssertion> classAssertionNodes = ParserUtils.getChildren(
+      final List<ASTClassAssertion> classAssertionNodes = ParserUtils.getChildren(
             individualSectionNode,
             NodeType.CLASS_ASSERTION);
       for (ASTClassAssertion classAssertionNode : classAssertionNodes) {
@@ -99,7 +97,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitEachClassAssertionNode(ASTClassAssertion classAssertionNode) {
-      final Set<ASTClassExpressionCategory> classExpressionNodes = ParserUtils.getChildren(
+      final List<ASTClassExpressionCategory> classExpressionNodes = ParserUtils.getChildren(
             classAssertionNode,
             NodeType.CLASS_EXPRESSION);
       for (ASTClassExpressionCategory classExpressionNode : classExpressionNodes) {
@@ -116,7 +114,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitPropertyAssertionNode(ASTIndividualFrame individualSectionNode) {
-      final Set<ASTPropertyAssertion> propertyAssertionNodes = ParserUtils.getChildren(
+      final List<ASTPropertyAssertion> propertyAssertionNodes = ParserUtils.getChildren(
             individualSectionNode,
             NodeType.PROPERTY_ASSERTION);
       for (ASTPropertyAssertion propertyAssertionNode : propertyAssertionNodes) {
@@ -125,7 +123,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitPropertyAssertionNode(ASTPropertyAssertion propertyAssertionNode) {
-      Set<ASTFact> factNodes = ParserUtils.getChildren(
+      final List<ASTFact> factNodes = ParserUtils.getChildren(
             propertyAssertionNode,
             NodeType.FACT);
       for (ASTFact factNode : factNodes) {
@@ -175,7 +173,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitAnnotationAssertionNode(ASTIndividualFrame individualSectionNode) {
-      final Set<ASTAnnotationAssertion> annotationAssertionNodes = ParserUtils.getChildren(
+      final List<ASTAnnotationAssertion> annotationAssertionNodes = ParserUtils.getChildren(
             individualSectionNode,
             NodeType.ANNOTATION_ASSERTION);
       for (ASTAnnotationAssertion annotationAssertionNode : annotationAssertionNodes) {
@@ -184,7 +182,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitEachAnnotationAssertionNode(ASTAnnotationAssertion annotationAssertionNode) {
-      final Set<ASTAnnotation> annotationNodes = ParserUtils.getChildren(
+      final List<ASTAnnotation> annotationNodes = ParserUtils.getChildren(
             annotationAssertionNode,
             NodeType.ANNOTATION);
       AnnotationNodeVisitor visitor = createNewAnnotationNodeVisitor();
@@ -196,7 +194,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitSameAsNode(ASTIndividualFrame individualSectionNode) {
-      final Set<ASTSameAs> sameAsNodes = ParserUtils.getChildren(
+      final List<ASTSameAs> sameAsNodes = ParserUtils.getChildren(
             individualSectionNode,
             NodeType.SAME_AS);
       for (ASTSameAs sameAsNode : sameAsNodes) {
@@ -205,7 +203,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitEachSameAsNode(ASTSameAs sameAsNode) {
-      final Set<ASTNamedIndividual> individualNodes = ParserUtils.getChildren(
+      final List<ASTNamedIndividual> individualNodes = ParserUtils.getChildren(
             sameAsNode,
             NodeType.INDIVIDUAL);
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
@@ -217,7 +215,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitDifferentFrom(ASTIndividualFrame individualSectionNode) {
-      final Set<ASTDifferentFrom> differentFromNodes = ParserUtils.getChildren(
+      final List<ASTDifferentFrom> differentFromNodes = ParserUtils.getChildren(
             individualSectionNode,
             NodeType.DIFFERENT_FROM);
       for (ASTDifferentFrom differentFromNode : differentFromNodes) {
@@ -226,7 +224,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitEachDifferentFromNode(ASTDifferentFrom differentFromNode) {
-      final Set<ASTNamedIndividual> individualNodes = ParserUtils.getChildren(
+      final List<ASTNamedIndividual> individualNodes = ParserUtils.getChildren(
             differentFromNode,
             NodeType.INDIVIDUAL);
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
