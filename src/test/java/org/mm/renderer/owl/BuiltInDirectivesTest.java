@@ -127,13 +127,47 @@ public class BuiltInDirectivesTest extends OwlRendererTest {
       createCell("Sheet1", 1, 1, "p1");
       createCell("Sheet1", 2, 1, text);
       // Act
-      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasName @B1(mm:replaceAll(\"Rice Cereal - \", \"\"))");
+      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasName @B1(mm:replace(\"bar\", \"\"))");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.P1),
             DataPropertyAssertion(Vocabulary.HAS_NAME, Vocabulary.P1,
-                  Literal("Barbara's Puffins Honey - 10.5 oz Box", Vocabulary.XSD_STRING))));
+                  Literal("Bara's Puffins Honey - Rice Cereal - 10.5 oz Box", Vocabulary.XSD_STRING))));
+   }
+
+   @Test
+   public void shouldReplaceFirstSubstring() {
+      // Arrange
+      declareEntity(Vocabulary.HAS_NAME);
+      String text = "Barbara's Puffins Honey - Rice Cereal - 10.5 oz Box";
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, text);
+      // Act
+      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasName @B1(mm:replaceFirst(\"(?i)bar\", \"\"))");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.P1),
+            DataPropertyAssertion(Vocabulary.HAS_NAME, Vocabulary.P1,
+                  Literal("bara's Puffins Honey - Rice Cereal - 10.5 oz Box", Vocabulary.XSD_STRING))));
+   }
+
+   @Test
+   public void shouldReplaceAllSubstring() {
+      // Arrange
+      declareEntity(Vocabulary.HAS_NAME);
+      String text = "Barbara's Puffins Honey - Rice Cereal - 10.5 oz Box";
+      createCell("Sheet1", 1, 1, "p1");
+      createCell("Sheet1", 2, 1, text);
+      // Act
+      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasName @B1(mm:replaceAll(\"(?i)bar\", \"\"))");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.P1),
+            DataPropertyAssertion(Vocabulary.HAS_NAME, Vocabulary.P1,
+                  Literal("a's Puffins Honey - Rice Cereal - 10.5 oz Box", Vocabulary.XSD_STRING))));
    }
 
    @Test

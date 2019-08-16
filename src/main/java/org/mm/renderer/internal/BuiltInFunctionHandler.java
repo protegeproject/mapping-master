@@ -16,6 +16,9 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
          case MM_TO_LOWER_CASE: return handleToLowerCase(inputValue);
          case MM_REVERSE: return handleReverse(inputValue);
          case MM_PRINTF: return handlePrintf(inputValue, function.getArguments());
+         case MM_REPLACE: return handleReplace(inputValue, function.getArguments());
+         case MM_REPLACE_FIRST: return handleReplaceFirst(inputValue, function.getArguments());
+         case MM_REPLACE_ALL: return handleReplaceAll(inputValue, function.getArguments());
          default: return inputValue;
       }
    }
@@ -42,6 +45,30 @@ public class BuiltInFunctionHandler implements MappingMasterParserConstants {
    private Value handlePrintf(Value inputValue, List<Argument> arguments) {
       String stringFormat = ((LiteralValue) arguments.get(0)).getString();
       String newString = String.format(stringFormat, inputValue.getString());
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
+   }
+
+   private Value handleReplace(Value inputValue, List<Argument> arguments) {
+      String oldChar = ((LiteralValue) arguments.get(0)).getString();
+      String newChar = ((LiteralValue) arguments.get(1)).getString();
+      String newString = inputValue.getString().replace(oldChar, newChar);
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
+   }
+
+   private Value handleReplaceFirst(Value inputValue, List<Argument> arguments) {
+      String regex = ((LiteralValue) arguments.get(0)).getString();
+      String replacement = ((LiteralValue) arguments.get(1)).getString();
+      String newString = inputValue.getString().replaceFirst(regex, replacement);
+      Value outputValue = inputValue.update(newString);
+      return outputValue;
+   }
+
+   private Value handleReplaceAll(Value inputValue, List<Argument> arguments) {
+      String regex = ((LiteralValue) arguments.get(0)).getString();
+      String replacement = ((LiteralValue) arguments.get(1)).getString();
+      String newString = inputValue.getString().replaceAll(regex, replacement);
       Value outputValue = inputValue.update(newString);
       return outputValue;
    }
