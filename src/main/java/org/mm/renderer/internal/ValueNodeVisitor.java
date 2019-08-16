@@ -100,7 +100,8 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    private Value resolveReference(ASTReference referenceNode) {
       CellAddress cellAddress = getCellAddress(referenceNode);
       ReferenceDirectives directives = referenceNode.getDirectives();
-      return referenceResolver.resolve(cellAddress, directives);
+      Value resolvedValue = referenceResolver.resolve(cellAddress, directives);
+      return resolvedValue;
    }
 
    private CellAddress getCellAddress(ASTReference referenceNode) {
