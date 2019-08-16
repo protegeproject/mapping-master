@@ -1,7 +1,15 @@
 package org.mm.renderer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK;
+import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN;
+import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_ERROR;
+import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_FORMULA;
+import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC;
+import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING;
+import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
@@ -28,9 +36,12 @@ public class Sheet {
    public int getEndColumnIndex() {
       int endColumnIndex = 0;
       for (int rowIndex = 0; rowIndex <= getEndRowIndex(); rowIndex++) {
-         int columnIndex = poiSheet.getRow(rowIndex).getLastCellNum()-1;
-         if (columnIndex > endColumnIndex) {
-            endColumnIndex = columnIndex;
+         Row poiRow = poiSheet.getRow(rowIndex);
+         if (poiRow != null) {
+            int currentEndColumnIndex = poiRow.getLastCellNum() - 1;
+            if (currentEndColumnIndex > endColumnIndex) {
+               endColumnIndex = currentEndColumnIndex;
+            }
          }
       }
       return endColumnIndex;
@@ -41,10 +52,10 @@ public class Sheet {
    }
 
    public int getEndRowIndex() {
-      return poiSheet.getLastRowNum() - 1;
+      return poiSheet.getLastRowNum();
    }
 
-   public void addValueToCell(int row, int column, String value) {
+   public void addValueToCell(int column, int row, String value) {
       Row poiRow = poiSheet.getRow(row);
       if (poiRow == null) {
          poiRow = poiSheet.createRow(row);
@@ -52,33 +63,36 @@ public class Sheet {
       poiRow.createCell(column).setCellValue(value);
    }
 
-   public String getValueFromCell(int row, int column) {
-      final Cell cell = poiSheet.getRow(row).getCell(column);
-      return getCellValue(cell);
-   }
-   
-   private String getCellValue(Cell cell) {
-      Object cellValueObject = null;
-      try {
-         int cellType = cell.getCellType();
-         if (cellType == Cell.CELL_TYPE_STRING) {
-            cellValueObject = cell.getStringCellValue();
-         } else if (cellType == Cell.CELL_TYPE_NUMERIC) {
-            // Check if the numeric is double or integer
-            if (isInteger(cell.getNumericCellValue())) {
-               cellValueObject = (int) cell.getNumericCellValue();
-            } else {
-               cellValueObject = cell.getNumericCellValue();
-            }
-         } else if (cellType == Cell.CELL_TYPE_BOOLEAN) {
-            cellValueObject = cell.getBooleanCellValue();
-         } else if (cellType == Cell.CELL_TYPE_FORMULA) {
-            cellValueObject = cell.getNumericCellValue();
+   public Optional<String> getValueFromCell(int column, int row) {
+      final Row poiRow = poiSheet.getRow(row);
+      Optional<String> value = Optional.empty();
+      if (poiRow != null) {
+         final Cell cell = poiRow.getCell(column);
+         if (cell != null) {
+            final String stringValue = getCellValue(cell);
+            value = Optional.of(stringValue);
          }
-      } catch (NullPointerException e) {
-         cellValueObject = null;
       }
-      return (cellValueObject == null) ? "" : String.valueOf(cellValueObject);
+      return value;
+   }
+
+   @Nullable
+   private String getCellValue(Cell cell) {
+      int cellType = cell.getCellType();
+      switch (cellType) {
+         case CELL_TYPE_BLANK: return null;
+         case CELL_TYPE_NUMERIC:
+            if (isInteger(cell.getNumericCellValue())) {
+               return String.valueOf((int) cell.getNumericCellValue());
+            } else {
+               return String.valueOf(cell.getNumericCellValue());
+            }
+         case CELL_TYPE_STRING: return cell.getStringCellValue();
+         case CELL_TYPE_FORMULA: return String.valueOf(cell.getStringCellValue());
+         case CELL_TYPE_BOOLEAN: return String.valueOf(cell.getBooleanCellValue());
+         case CELL_TYPE_ERROR: return null;
+         default: return null;
+      }
    }
 
    private boolean isInteger(double number) {

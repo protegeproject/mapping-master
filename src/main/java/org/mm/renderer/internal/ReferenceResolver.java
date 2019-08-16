@@ -1,13 +1,13 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.MappingMasterParserConstants;
 import org.mm.renderer.Sheet;
 import org.mm.renderer.Workbook;
 import org.mm.renderer.exception.EmptyCellException;
-import org.mm.renderer.exception.IgnoreEmptyCellException;
 import org.mm.renderer.exception.Locatable;
 import org.mm.renderer.exception.WarningEmptyCellException;
 import org.mm.renderer.internal.LiteralValue.Datatype;
@@ -26,10 +26,16 @@ public class ReferenceResolver implements MappingMasterParserConstants {
 
    public Value resolve(CellAddress cellAddress, ReferenceDirectives directives) {
       try {
-         String cellValue = workbook.getCellValue(cellAddress);
-         cellValue = processCellShifting(cellAddress, cellValue, directives);
-         cellValue = processEmptyValue(cellAddress, cellValue, directives);
-         return processReferenceType(cellAddress, cellValue, directives);
+         Optional<String> cellValue = workbook.getCellValue(cellAddress);
+         String cellValueString = "";
+         if (cellValue.isEmpty()) {
+            cellValueString = processEmptyValue(cellAddress, directives);
+            cellValueString = processCellShifting(cellAddress, directives);
+         } else {
+            cellValueString = cellValue.get();
+         }
+         Value resolvedValue = getValueObject(cellAddress, cellValueString, directives);
+         return resolvedValue;
       } catch (RuntimeException e) {
          supplyErrorLocation(e, cellAddress);
          throw e;
@@ -43,33 +49,26 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       }
    }
 
-   private String processCellShifting(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
+   private String processCellShifting(CellAddress cellAddress, ReferenceDirectives directives) {
+      final Sheet sheet = workbook.getSheet(cellAddress.getSheetName());
       int option = directives.getShiftDirection();
-      if (option == MM_NO_SHIFT) {
-         return cellValue;
-      } else {
-         final Sheet sheet = workbook.getSheet(cellAddress.getSheetName());
-         if (option == MM_SHIFT_UP) {
-            return processShiftingCellUp(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-         } else if (option == MM_SHIFT_LEFT) {
-            return processShiftingCellLeft(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-         } else if (option == MM_SHIFT_DOWN) {
-            return processShiftingCellDown(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-         } else if (option == MM_SHIFT_RIGHT) {
-            return processShiftingCellRight(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-         }
+      switch (option) {
+         case MM_NO_SHIFT: return "";
+         case MM_SHIFT_UP: return processShiftingCellUp(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
+         case MM_SHIFT_LEFT: return processShiftingCellLeft(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
+         case MM_SHIFT_DOWN: return processShiftingCellDown(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
+         case MM_SHIFT_RIGHT: return processShiftingCellRight(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
+         default: return "";
       }
-      throw new RuntimeException("Programming error: Unknown directive to handle shifting cell"
-            + " (" + tokenImage[option] + ")");
    }
 
    private String processShiftingCellUp(Sheet sheet, int columnIndex, int rowIndex) {
       final int topMostRowIndex = 0;
       int currentRowIndex = rowIndex;
       while (currentRowIndex >= topMostRowIndex) {
-         String cellValue = sheet.getValueFromCell(currentRowIndex, columnIndex);
-         if (!cellValue.isEmpty()) {
-            return cellValue;
+         Optional<String> cellValue = sheet.getValueFromCell(columnIndex, currentRowIndex);
+         if (cellValue.isPresent()) {
+            return cellValue.get();
          }
          currentRowIndex--; // move 1 row up
       }
@@ -80,9 +79,9 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int leftMostColumnIndex = 0;
       int currentColumnIndex = columnIndex;
       while (currentColumnIndex >= leftMostColumnIndex) {
-         String cellValue = sheet.getValueFromCell(rowIndex, currentColumnIndex);
-         if (!cellValue.isEmpty()) {
-            return cellValue;
+         Optional<String> cellValue = sheet.getValueFromCell(currentColumnIndex, rowIndex);
+         if (cellValue.isPresent()) {
+            return cellValue.get();
          }
          currentColumnIndex--; // move 1 column left
       }
@@ -93,9 +92,9 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final int bottomMostRowIndex = sheet.getEndRowIndex();
       int currentRowIndex = rowIndex;
       while (currentRowIndex <= bottomMostRowIndex) {
-         String cellValue = sheet.getValueFromCell(currentRowIndex, columnIndex);
-         if (!cellValue.isEmpty()) {
-            return cellValue;
+         Optional<String> cellValue = sheet.getValueFromCell(columnIndex, currentRowIndex);
+         if (cellValue.isPresent()) {
+            return cellValue.get();
          }
          currentRowIndex++; // move 1 row down
       }
@@ -103,32 +102,24 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    }
 
    private String processShiftingCellRight(Sheet sheet, int columnIndex, int rowIndex) {
-      final int rightMostColumn = sheet.getStartColumnIndex();
+      final int rightMostColumn = sheet.getEndColumnIndex();
       int currentColumnIndex = columnIndex;
       while (currentColumnIndex <= rightMostColumn) {
-         String cellValue = sheet.getValueFromCell(rowIndex, currentColumnIndex);
-         if (!cellValue.isEmpty()) {
-            return cellValue;
+         Optional<String> cellValue = sheet.getValueFromCell(currentColumnIndex, rowIndex);
+         if (cellValue.isPresent()) {
+            return cellValue.get();
          }
          currentColumnIndex++; // move 1 column right
       }
       return "";
    }
 
-   private String processEmptyValue(CellAddress cellAddress, String cellValue,
-         ReferenceDirectives directives) {
-      if (cellValue.isEmpty()) {
-         cellValue = applyOrderForEmptyCell(cellAddress, directives);
-      }
-      return cellValue;
-   }
-
-   private String applyOrderForEmptyCell(CellAddress cellAddress, ReferenceDirectives directives) {
+   private String processEmptyValue(CellAddress cellAddress, ReferenceDirectives directives) {
       int option = directives.getOrderIfCellEmpty();
       if (option == MM_CREATE_IF_CELL_EMPTY) {
          return getDefaultCellValue(cellAddress);
       } else if (option == MM_IGNORE_IF_CELL_EMPTY) {
-         throw new IgnoreEmptyCellException();
+         return "";
       } else if (option == MM_WARNING_IF_CELL_EMPTY) {
          throw new WarningEmptyCellException();
       } else if (option == MM_ERROR_IF_CELL_EMPTY) {
@@ -143,23 +134,22 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return cellAddressUuid;
    }
 
-   private Value processReferenceType(CellAddress cellAddress, String cellValue,
-         ReferenceDirectives directives) {
+   private Value getValueObject(CellAddress cellAddress, String cellValueString, ReferenceDirectives directives) {
       int option = directives.getReferenceType();
       if (option == OWL_CLASS) {
-         return processClassName(cellAddress, cellValue, directives);
+         return processClassName(cellAddress, cellValueString, directives);
       } else if (option == OWL_DATA_PROPERTY) {
-         return processDataPropertyName(cellAddress, cellValue, directives);
+         return processDataPropertyName(cellAddress, cellValueString, directives);
       } else if (option == OWL_OBJECT_PROPERTY) {
-         return processObjectPropertyName(cellAddress, cellValue, directives);
+         return processObjectPropertyName(cellAddress, cellValueString, directives);
       } else if (option == OWL_ANNOTATION_PROPERTY) {
-         return processAnnotationPropertyName(cellAddress, cellValue, directives);
+         return processAnnotationPropertyName(cellAddress, cellValueString, directives);
       } else if (option == OWL_NAMED_INDIVIDUAL) {
-         return processIndividualName(cellAddress, cellValue, directives);
+         return processIndividualName(cellAddress, cellValueString, directives);
       } else if (option == OWL_IRI) {
-         return getIriValue(cellValue);
+         return getIriValue(cellValueString);
       } else if (option == MM_ENTITY_IRI) {
-         return getEntityName(cellValue);
+         return getEntityName(cellValueString);
       } else if (option == XSD_STRING
             || option == XSD_DECIMAL
             || option == XSD_BYTE
@@ -174,7 +164,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             || option == XSD_DATE
             || option == XSD_DURATION
             || option == RDF_PLAINLITERAL) {
-         return processLiteral(cellValue, directives);
+         return processLiteral(cellValueString, directives);
       } 
       throw new RuntimeException("Programming error: Unknown directive to handle reference type"
             + " (" + tokenImage[option] + ")");

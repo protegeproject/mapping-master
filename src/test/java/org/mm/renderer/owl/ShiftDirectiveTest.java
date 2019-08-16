@@ -27,10 +27,7 @@ public class ShiftDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldShiftTowardUpDirection() {
       // Arrange
-      createCell("Sheet1", 1, 1, "Car");
-      createCell("Sheet1", 1, 2, "");
-      createCell("Sheet1", 1, 3, "");
-      createCell("Sheet1", 1, 4, "");
+      createCell("Sheet1", 1, 1, "Car");  // A1
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A4(mm:shiftUp)");
       // Assert
@@ -41,10 +38,7 @@ public class ShiftDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldShiftTowardDownDirection() {
       // Arrange
-      createCell("Sheet1", 1, 1, "");
-      createCell("Sheet1", 1, 2, "");
-      createCell("Sheet1", 1, 3, "");
-      createCell("Sheet1", 1, 4, "Car");
+      createCell("Sheet1", 1, 4, "Car");  // A4
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:shiftDown)");
       // Assert
@@ -55,10 +49,7 @@ public class ShiftDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldShiftTowardLeftDirection() {
       // Arrange
-      createCell("Sheet1", 1, 1, "Car");
-      createCell("Sheet1", 2, 1, "");
-      createCell("Sheet1", 3, 1, "");
-      createCell("Sheet1", 4, 1, "");
+      createCell("Sheet1", 1, 1, "Car");  // A1
       // Act
       Set<OWLAxiom> result = evaluate("Class: @D1(mm:shiftLeft)");
       // Assert
@@ -69,10 +60,7 @@ public class ShiftDirectiveTest extends OwlRendererTest {
    @Test
    public void shouldShiftTowardRightDirection() {
       // Arrange
-      createCell("Sheet1", 1, 1, "Car");
-      createCell("Sheet1", 2, 1, "");
-      createCell("Sheet1", 3, 1, "");
-      createCell("Sheet1", 4, 1, "Car");
+      createCell("Sheet1", 4, 1, "Car");  // D1
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:shiftRight)");
       // Assert

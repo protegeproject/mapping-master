@@ -1,6 +1,7 @@
 package org.mm.renderer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -36,7 +37,7 @@ public class Workbook {
       return new Sheet(workbook.getSheetAt(sheetIndex));
    }
 
-   public String getCellValue(CellAddress cellAddress) {
+   public Optional<String> getCellValue(CellAddress cellAddress) {
       final Sheet sheet = getSheet(cellAddress.getSheetName());
       return sheet.getValueFromCell(cellAddress.getColumnIndex(), cellAddress.getRowIndex());
    }
