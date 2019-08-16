@@ -1129,21 +1129,19 @@ void builtin_function() #BuiltInFunction :
 }
 {
   (
-    (
-      ( t = <MM_TO_UPPER_CASE> { functionType = t.kind; }
-        | t = <MM_TO_LOWER_CASE> { functionType = t.kind; }
-        | t = <MM_TRIM> { functionType = t.kind; }
-        | t = <MM_PRINTF> { functionType = t.kind; }
-        | t = <MM_DECIMAL_FORMAT> { functionType = t.kind; }
-        | t = <MM_REVERSE> { functionType = t.kind; }
-        | t = <MM_CAPTURING> { functionType = t.kind; }
-        | t = <MM_REPLACE> { functionType = t.kind; }
-        | t = <MM_REPLACE_ALL> { functionType = t.kind; }
-        | t = <MM_REPLACE_FIRST> { functionType = t.kind; }
-        | t = <MM_APPEND> { functionType = t.kind; }
-        | t = <MM_PREPEND> { functionType = t.kind; }
-      ) ( "(" argument_list() ")" )?
-    )
+    ( t = <MM_TO_UPPER_CASE> { functionType = t.kind; }
+      | t = <MM_TO_LOWER_CASE> { functionType = t.kind; }
+      | t = <MM_TRIM> { functionType = t.kind; }
+      | t = <MM_PRINTF> { functionType = t.kind; }
+      | t = <MM_DECIMAL_FORMAT> { functionType = t.kind; }
+      | t = <MM_REVERSE> { functionType = t.kind; }
+      | t = <MM_CAPTURING> { functionType = t.kind; }
+      | t = <MM_REPLACE> { functionType = t.kind; }
+      | t = <MM_REPLACE_ALL> { functionType = t.kind; }
+      | t = <MM_REPLACE_FIRST> { functionType = t.kind; }
+      | t = <MM_APPEND> { functionType = t.kind; }
+      | t = <MM_PREPEND> { functionType = t.kind; }
+    ) ( "(" argument_list() ")" )?
     | ( "[" ( argument_list() )? "]" ) { functionType = MM_CAPTURING; }
   )
   {
