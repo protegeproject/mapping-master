@@ -75,7 +75,7 @@ public class BuiltInFunctionsTest extends AbstractOwlRendererTest {
       // Arrange
       createCell("Sheet1", 1, 1, "Barbara's Puffins Honey");
       // Act
-      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"%s-RiceCereal-10.5OzBox\"))");
+      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"%s-RiceCereal-10.5ozBox\"))");
       // Assert
       assertThat(results, hasSize(1));
       assertThat(results, containsInAnyOrder(Declaration(Vocabulary.BARBARA_PUFFINS_CAMELCASE)));
@@ -84,7 +84,7 @@ public class BuiltInFunctionsTest extends AbstractOwlRendererTest {
    @Test
    public void shouldAppendText_Suffix() {
       // Arrange
-      createCell("Sheet1", 1, 1, "10.5 oz Box");
+      createCell("Sheet1", 1, 1, "10.5oz Box");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara'sPuffinsHoney-RiceCereal-%s\"))");
       // Assert
@@ -97,7 +97,7 @@ public class BuiltInFunctionsTest extends AbstractOwlRendererTest {
       // Arrange
       createCell("Sheet1", 1, 1, "Rice Cereal");
       // Act
-      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara'sPuffinsHoney-%s-10.5OzBox\"))");
+      Set<OWLAxiom> results = evaluate("Class: @A1(mm:printf(\"Barbara'sPuffinsHoney-%s-10.5ozBox\"))");
       // Assert
       assertThat(results, hasSize(1));
       assertThat(results, containsInAnyOrder(Declaration(Vocabulary.BARBARA_PUFFINS_CAMELCASE)));
