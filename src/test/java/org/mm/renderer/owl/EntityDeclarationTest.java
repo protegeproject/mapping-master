@@ -16,7 +16,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class EntityDeclarationTest extends OwlRendererTest {
+public class EntityDeclarationTest extends AbstractOwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {

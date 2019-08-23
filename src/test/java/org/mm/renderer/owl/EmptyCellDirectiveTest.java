@@ -8,10 +8,10 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Decla
 import java.util.Set;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mm.renderer.exception.EmptyCellException;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 
@@ -19,7 +19,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class OrderIfEntityAbsentDirectiveTest extends OwlRendererTest {
+public class EmptyCellDirectiveTest extends AbstractOwlRendererTest {
 
    @Rule
    public final ExpectedException thrown = ExpectedException.none();
@@ -31,56 +31,53 @@ public class OrderIfEntityAbsentDirectiveTest extends OwlRendererTest {
    }
 
    @Test
-   public void shouldUseDefaultResponse() {
+   public void shouldUseDefaultOrder() {
       // Arrange
-      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "");
       // Act
       Set<OWLAxiom> result = evaluate("Class: @A1");
       // Assert
-      assertThat(result, hasSize(1));
-      assertThat(result, containsInAnyOrder(Declaration(Vocabulary.CAR)));
+      assertThat(result, hasSize(0));
    }
 
    @Test
-   @Ignore("Unsupported by the API")
-   public void shouldIgnoreIfEntityIsAbsent() {
+   public void shouldIgnoreIfCellIsEmpty() {
       // Arrange
-      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "");
       // Act
-      Set<OWLAxiom> result = evaluate("Class: @A1(mm:ignoreIfEntityAbsent)");
+      Set<OWLAxiom> result = evaluate("Class: @A1(mm:ignoreIfCellEmpty)");
       // Assert
       assertThat(result, hasSize(0));
    }
 
    @Test
-   public void shouldCreateIfEntityIsAbsent() {
+   public void shouldCreateIfCellIsEmpty() {
       // Arrange
-      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "");
       // Act
-      Set<OWLAxiom> result = evaluate("Class: @A1(mm:createIfEntityAbsent)");
+      Set<OWLAxiom> result = evaluate("Class: @A1(mm:createIfCellEmpty)");
       // Assert
       assertThat(result, hasSize(1));
-      assertThat(result, containsInAnyOrder(Declaration(Vocabulary.CAR)));
+      assertThat(result, containsInAnyOrder(Declaration(Vocabulary.SHEET1_A1_UUID)));
    }
 
    @Test
-   @Ignore("Unsupported by the API")
-   public void shouldWarnIfEntityIsAbsent() {
+   public void shouldWarnIfCellIsEmpty() {
       // Arrange
-      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "");
       // Act
-      Set<OWLAxiom> result = evaluate("Class: @A1(mm:warningIfEntityAbsent)");
+      Set<OWLAxiom> result = evaluate("Class: @A1(mm:warningIfCellEmpty)");
       // Assert
       assertThat(result, hasSize(0));
    }
 
    @Test
-   @Ignore("Unsupported by the API")
-   public void shouldFailIfEntityIsAbsent() {
+   public void shouldFailIfCellIsEmpty() {
+      thrown.expect(EmptyCellException.class);
       // Arrange
-      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 1, 1, "");
       // Act
-      Set<OWLAxiom> result = evaluate("Class: @A1(mm:errorIfEntityAbsent)");
+      Set<OWLAxiom> result = evaluate("Class: @A1(mm:errorIfCellEmpty)");
       // Assert
       assertThat(result, hasSize(0));
    }

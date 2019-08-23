@@ -28,7 +28,7 @@ import org.semanticweb.owlapi.model.PrefixManager;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public abstract class OwlRendererTest extends AbstractRendererTest {
+public abstract class AbstractOwlRendererTest extends AbstractRendererTest {
 
    private static final String ONTOLOGY_ID = "http://protege.stanford.edu/mapping-master/test/";
 

@@ -23,7 +23,7 @@ import org.semanticweb.owlapi.vocab.Namespaces;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class AssertionAxiomTest extends OwlRendererTest {
+public class AssertionAxiomTest extends AbstractOwlRendererTest {
 
    @Before
    public void setUp() throws OWLOntologyCreationException {

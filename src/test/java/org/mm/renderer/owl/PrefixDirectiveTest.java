@@ -19,7 +19,7 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class PrefixDirectiveTest extends OwlRendererTest {
+public class PrefixDirectiveTest extends AbstractOwlRendererTest {
 
    private static final String EX_PREFIX = "http://example.org/prefix#";
 
