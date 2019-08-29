@@ -9,7 +9,7 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class ClassName extends ReferencedValue  {
+public class ClassName extends ReferencedEntityName  {
 
    public ClassName(@Nonnull String prefixedName) {
       super(prefixedName);

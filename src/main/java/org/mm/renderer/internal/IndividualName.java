@@ -7,7 +7,7 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class IndividualName extends ReferencedValue {
+public class IndividualName extends ReferencedEntityName {
 
    public IndividualName(String prefixedName) {
       super(prefixedName);

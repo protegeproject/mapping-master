@@ -3,11 +3,11 @@ package org.mm.renderer.internal;
 import static com.google.common.base.Preconditions.checkNotNull;
 import javax.annotation.Nonnull;
 
-public abstract class ReferencedValue implements Value {
+public abstract class ReferencedEntityName implements Value {
 
    private final String prefixedName;
 
-   public ReferencedValue(@Nonnull String prefixedName) {
+   public ReferencedEntityName(@Nonnull String prefixedName) {
       this.prefixedName = checkNotNull(prefixedName);
    }
 
