@@ -6,11 +6,11 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.mm.renderer.internal.EmptyValue;
+import org.mm.renderer.internal.EntityName;
 import org.mm.renderer.internal.IriValue;
 import org.mm.renderer.internal.LiteralValue;
 import org.mm.renderer.internal.PlainLiteralValue;
 import org.mm.renderer.internal.PropertyName;
-import org.mm.renderer.internal.QName;
 import org.mm.renderer.internal.ReferencedValue;
 import org.mm.renderer.internal.Value;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -79,8 +79,8 @@ public class OwlFactory {
    public OWLClass getOWLClass(@Nonnull Value value) {
       if (value instanceof EmptyValue) {
          return null;
-      } else if (value instanceof QName) {
-         return fetchOWLClass((QName) value);
+      } else if (value instanceof EntityName) {
+         return fetchOWLClass((EntityName) value);
       } else if (value instanceof ReferencedValue) {
          return createOWLClass((ReferencedValue) value);
       } else if (value instanceof IriValue) {
@@ -90,8 +90,8 @@ public class OwlFactory {
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLClass fetchOWLClass(QName prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLClass.class);
+   private OWLClass fetchOWLClass(EntityName entityName) {
+      return entityResolver.resolveUnchecked(entityName.getString(), OWLClass.class);
    }
 
    private OWLClass createOWLClass(ReferencedValue referencedValue) {
@@ -106,8 +106,8 @@ public class OwlFactory {
    public OWLProperty getOWLProperty(@Nonnull Value value) {
       if (value instanceof EmptyValue) {
          return null;
-      } else if (value instanceof QName) {
-         return fetchOWLProperty(((QName) value));
+      } else if (value instanceof EntityName) {
+         return fetchOWLProperty(((EntityName) value));
       } else if (value instanceof ReferencedValue) {
          return createOWLProperty((ReferencedValue) value);
       }
@@ -115,8 +115,8 @@ public class OwlFactory {
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLProperty fetchOWLProperty(QName prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLProperty.class);
+   private OWLProperty fetchOWLProperty(EntityName entityName) {
+      return entityResolver.resolveUnchecked(entityName.getString(), OWLProperty.class);
    }
 
    private OWLProperty createOWLProperty(ReferencedValue referencedValue) {
@@ -137,8 +137,8 @@ public class OwlFactory {
    public OWLDataProperty getOWLDataProperty(@Nonnull Value value) {
       if (value instanceof EmptyValue) {
          return null;
-      } else if (value instanceof QName) {
-         return fetchOWLDataProperty((QName) value);
+      } else if (value instanceof EntityName) {
+         return fetchOWLDataProperty((EntityName) value);
       } else if (value instanceof ReferencedValue) {
          return createOWLDataProperty((ReferencedValue) value);
       } else if (value instanceof IriValue) {
@@ -148,8 +148,8 @@ public class OwlFactory {
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLDataProperty fetchOWLDataProperty(QName prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLDataProperty.class);
+   private OWLDataProperty fetchOWLDataProperty(EntityName entityName) {
+      return entityResolver.resolveUnchecked(entityName.getString(), OWLDataProperty.class);
    }
 
    private OWLDataProperty createOWLDataProperty(ReferencedValue referencedValue) {
@@ -164,8 +164,8 @@ public class OwlFactory {
    public OWLObjectProperty getOWLObjectProperty(@Nonnull Value value) {
       if (value instanceof EmptyValue) {
          return null;
-      } else if (value instanceof QName) {
-         return fetchOWLObjectProperty((QName) value);
+      } else if (value instanceof EntityName) {
+         return fetchOWLObjectProperty((EntityName) value);
       } else if (value instanceof ReferencedValue) {
          return createOWLObjectProperty((ReferencedValue) value);
       } else if (value instanceof IriValue) {
@@ -175,8 +175,8 @@ public class OwlFactory {
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLObjectProperty fetchOWLObjectProperty(QName prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLObjectProperty.class);
+   private OWLObjectProperty fetchOWLObjectProperty(EntityName entityName) {
+      return entityResolver.resolveUnchecked(entityName.getString(), OWLObjectProperty.class);
    }
 
    private OWLObjectProperty createOWLObjectProperty(ReferencedValue referencedValue) {
@@ -191,8 +191,8 @@ public class OwlFactory {
    public OWLAnnotationProperty getOWLAnnotationProperty(@Nonnull Value value) {
       if (value instanceof EmptyValue) {
          return null;
-      } else if (value instanceof QName) {
-         return fetchOWLAnnotationProperty((QName) value);
+      } else if (value instanceof EntityName) {
+         return fetchOWLAnnotationProperty((EntityName) value);
       } else if (value instanceof ReferencedValue) {
          return createOWLAnnotationProperty((ReferencedValue) value);
       } else if (value instanceof IriValue) {
@@ -202,8 +202,8 @@ public class OwlFactory {
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLAnnotationProperty fetchOWLAnnotationProperty(QName prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLAnnotationProperty.class);
+   private OWLAnnotationProperty fetchOWLAnnotationProperty(EntityName entityName) {
+      return entityResolver.resolveUnchecked(entityName.getString(), OWLAnnotationProperty.class);
    }
 
    private OWLAnnotationProperty createOWLAnnotationProperty(ReferencedValue referencedValue) {
@@ -218,8 +218,8 @@ public class OwlFactory {
    public OWLNamedIndividual getOWLNamedIndividual(@Nonnull Value value) {
       if (value instanceof EmptyValue) {
          return null;
-      } else if (value instanceof QName) {
-         return fetchOWLNamedIndividual((QName) value);
+      } else if (value instanceof EntityName) {
+         return fetchOWLNamedIndividual((EntityName) value);
       } else if (value instanceof ReferencedValue) {
          return createOWLNamedIndividual((ReferencedValue) value);
       } else if (value instanceof IriValue) {
@@ -229,8 +229,8 @@ public class OwlFactory {
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLNamedIndividual fetchOWLNamedIndividual(QName prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLNamedIndividual.class);
+   private OWLNamedIndividual fetchOWLNamedIndividual(EntityName entityName) {
+      return entityResolver.resolveUnchecked(entityName.getString(), OWLNamedIndividual.class);
    }
 
    private OWLNamedIndividual createOWLNamedIndividual(ReferencedValue referencedValue) {

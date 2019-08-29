@@ -257,8 +257,8 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return new IriValue(cellValue);
    }
 
-   private QName getEntityName(String cellValue) {
-      return new QName(cellValue);
+   private EntityName getEntityName(String cellValue) {
+      return new EntityName(cellValue);
    }
 
    private Value processLiteral(String cellValue, ReferenceDirectives directives) {
