@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.mm.parser.NodeType;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTClass;
@@ -36,6 +37,7 @@ import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
@@ -58,6 +60,7 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
       this.valueNodeVisitor = checkNotNull(valueNodeVisitor);
    }
 
+   @Nullable
    public OWLClassExpression getClassExpression() {
       return classExpression;
    }
@@ -72,7 +75,10 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
    public void visit(ASTClass classNode) {
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
       visitor.visit(classNode);
-      classExpression = visitor.getEntity().asOWLClass();
+      OWLEntity entity = visitor.getEntity();
+      if (entity != null) {
+         classExpression = entity.asOWLClass();
+      }
    }
 
    @Override
@@ -81,7 +87,12 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
       for (ASTObjectIntersection objectIntersectionNode
             : ParserUtils.getChildren(node, NodeType.OBJECT_INTERSECTION)) {
          OWLClassExpression ce = visitInnerObjectIntersectionNode(objectIntersectionNode);
-         classExpressions.add(ce);
+         if (ce != null) {
+            classExpressions.add(ce);
+         }
+      }
+      if (classExpressions.size() > 1) {
+         classExpression = owlFactory.createOWLObjectUnionOf(classExpressions);
       }
       classExpression = owlFactory.createOWLObjectUnionOf(classExpressions);
    }
@@ -89,7 +100,9 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
    @Override
    public void visit(ASTObjectOneOf node) {
       Set<OWLNamedIndividual> individuals = getOWLIndividuals(node);
-      owlFactory.createOWLObjectOneOf(individuals);
+      if (individuals.size() > 1) {
+         classExpression = owlFactory.createOWLObjectOneOf(individuals);
+      }
    }
 
    @Override
@@ -98,7 +111,12 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
       for (ASTClassExpressionCategory classExpressionNode
             : ParserUtils.getChildren(node, NodeType.CLASS_EXPRESSION)) {
          OWLClassExpression ce = visitInnerClassExpressionNode(classExpressionNode);
-         classExpressions.add(ce);
+         if (ce != null) {
+            classExpressions.add(ce);
+         }
+      }
+      if (classExpressions.size() > 1) {
+         classExpression = owlFactory.createOWLObjectIntersectionOf(classExpressions);
       }
       classExpression = owlFactory.createOWLObjectIntersectionOf(classExpressions);
    }
@@ -106,134 +124,171 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
    @Override
    public void visit(ASTObjectComplement node) {
       OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-      classExpression = owlFactory.createOWLObjectComplementOf(innerClassExpression);
+      if (innerClassExpression != null) {
+         classExpression = owlFactory.createOWLObjectComplementOf(innerClassExpression);
+      }
    }
 
    @Override
    public void visit(ASTDataExactCardinality node) {
       OWLDataProperty property = getOWLDataProperty(node);
-      int cardinality = node.getCardinality();
-      classExpression = owlFactory.createOWLDataExactCardinality(
-            cardinality,
-            property,
-            DatatypeUtils.getOWLDatatype(node.getDatatype()));
+      if (property != null) {
+         int cardinality = node.getCardinality();
+         classExpression = owlFactory.createOWLDataExactCardinality(
+               cardinality,
+               property,
+               DatatypeUtils.getOWLDatatype(node.getDatatype()));
+      }
    }
 
    @Override
    public void visit(ASTObjectExactCardinality node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
-      int cardinality = node.getCardinality();
-      if (node.hasExplicitClassExpression()) {
-         OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-         classExpression = owlFactory.createOWLObjectExactCardinality(
-               cardinality,
-               property,
-               innerClassExpression);
-      } else {
-         classExpression = owlFactory.createOWLObjectExactCardinality(
-               cardinality,
-               property);
+      if (property != null) {
+         int cardinality = node.getCardinality();
+         if (node.hasExplicitClassExpression()) {
+            OWLClassExpression innerClassExpression = getOWLClassExpression(node);
+            if (innerClassExpression != null) {
+               classExpression = owlFactory.createOWLObjectExactCardinality(
+                     cardinality,
+                     property,
+                     innerClassExpression);
+            }
+         } else {
+            classExpression = owlFactory.createOWLObjectExactCardinality(
+                  cardinality,
+                  property);
+         }
       }
    }
 
    @Override
    public void visit(ASTDataMaxCardinality node) {
       OWLDataProperty property = getOWLDataProperty(node);
-      int cardinality = node.getCardinality();
-      classExpression = owlFactory.createOWLDataMaxCardinality(
-            cardinality,
-            property,
-            DatatypeUtils.getOWLDatatype(node.getDatatype()));
+      if (property != null) {
+         int cardinality = node.getCardinality();
+         classExpression = owlFactory.createOWLDataMaxCardinality(
+               cardinality,
+               property,
+               DatatypeUtils.getOWLDatatype(node.getDatatype()));
+      }
    }
 
    @Override
    public void visit(ASTObjectMaxCardinality node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
-      int cardinality = node.getCardinality();
-      if (node.hasExplicitClassExpression()) {
-         OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-         classExpression = owlFactory.createOWLObjectMaxCardinality(
-               cardinality,
-               property,
-               innerClassExpression);
-      } else {
-         classExpression = owlFactory.createOWLObjectMaxCardinality(
-               cardinality,
-               property);
+      if (property != null) {
+         int cardinality = node.getCardinality();
+         if (node.hasExplicitClassExpression()) {
+            OWLClassExpression innerClassExpression = getOWLClassExpression(node);
+            if (innerClassExpression != null) {
+               classExpression = owlFactory.createOWLObjectMaxCardinality(
+                     cardinality,
+                     property,
+                     innerClassExpression);
+            }
+         } else {
+            classExpression = owlFactory.createOWLObjectMaxCardinality(
+                  cardinality,
+                  property);
+         }
       }
    }
 
    @Override
    public void visit(ASTDataMinCardinality node) {
       OWLDataProperty property = getOWLDataProperty(node);
-      int cardinality = node.getCardinality();
-      classExpression = owlFactory.createOWLDataMinCardinality(
-            cardinality,
-            property,
-            DatatypeUtils.getOWLDatatype(node.getDatatype()));
+      if (property != null) {
+         int cardinality = node.getCardinality();
+         classExpression = owlFactory.createOWLDataMinCardinality(
+               cardinality,
+               property,
+               DatatypeUtils.getOWLDatatype(node.getDatatype()));
+      }
    }
 
    @Override
    public void visit(ASTObjectMinCardinality node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
-      int cardinality = node.getCardinality();
-      if (node.hasExplicitClassExpression()) {
-         OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-         classExpression = owlFactory.createOWLObjectMinCardinality(
-               cardinality,
-               property,
-               innerClassExpression);
-      } else {
-         classExpression = owlFactory.createOWLObjectMinCardinality(
-               cardinality,
-               property);
+      if (property != null) {
+         int cardinality = node.getCardinality();
+         if (node.hasExplicitClassExpression()) {
+            OWLClassExpression innerClassExpression = getOWLClassExpression(node);
+            if (innerClassExpression != null) {
+               classExpression = owlFactory.createOWLObjectMinCardinality(
+                     cardinality,
+                     property,
+                     innerClassExpression);
+            }
+         } else {
+            classExpression = owlFactory.createOWLObjectMinCardinality(
+                  cardinality,
+                  property);
+         }
       }
    }
 
    @Override
    public void visit(ASTDataHasValue node) {
       OWLDataProperty property = getOWLDataProperty(node);
-      Value value = getLiteralValue(node);
-      OWLLiteral literal = owlFactory.getOWLLiteral(value);
-      classExpression = owlFactory.createOWLDataHasValue(property, literal);
+      if (property != null) {
+         Value value = getLiteralValue(node);
+         OWLLiteral literal = owlFactory.getOWLLiteral(value);
+         if (literal != null) {
+            classExpression = owlFactory.createOWLDataHasValue(property, literal);
+         }
+      }
    }
 
    @Override
    public void visit(ASTObjectHasValue node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
-      Value value = getObjectValue(node);
-      OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(value);
-      classExpression = owlFactory.createOWLObjectHasValue(property, individual);
+      if (property != null) {
+         Value value = getObjectValue(node);
+         OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(value);
+         if (individual != null) {
+            classExpression = owlFactory.createOWLObjectHasValue(property, individual);
+         }
+      }
    }
 
    @Override
    public void visit(ASTDataAllValuesFrom node) {
       OWLDataProperty property = getOWLDataProperty(node);
-      OWLDatatype datatype = DatatypeUtils.getOWLDatatype(node.getDatatype());
-      classExpression = owlFactory.createOWLDataAllValuesFrom(property, datatype);
+      if (property != null) {
+         OWLDatatype datatype = DatatypeUtils.getOWLDatatype(node.getDatatype());
+         classExpression = owlFactory.createOWLDataAllValuesFrom(property, datatype);
+      }
    }
 
    @Override
    public void visit(ASTObjectAllValuesFrom node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
       OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-      classExpression = owlFactory.createOWLObjectAllValuesFrom(property, innerClassExpression);
+      if (property != null && innerClassExpression != null) {
+         classExpression = owlFactory.createOWLObjectAllValuesFrom(property, innerClassExpression);
+      }
    }
 
    @Override
    public void visit(ASTDataSomeValuesFrom node) {
       OWLDataProperty property = getOWLDataProperty(node);
-      OWLDatatype datatype = DatatypeUtils.getOWLDatatype(node.getDatatype());
-      classExpression = owlFactory.createOWLDataSomeValuesFrom(property, datatype);
+      if (property != null) {
+         OWLDatatype datatype = DatatypeUtils.getOWLDatatype(node.getDatatype());
+         classExpression = owlFactory.createOWLDataSomeValuesFrom(property, datatype);
+      }
    }
 
    @Override
    public void visit(ASTObjectSomeValuesFrom node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
       OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-      classExpression = owlFactory.createOWLObjectSomeValuesFrom(property, innerClassExpression);
+      if (property != null && innerClassExpression != null) {
+         classExpression = owlFactory.createOWLObjectSomeValuesFrom(property, innerClassExpression);
+      }
    }
 
+   @Nullable
    private OWLDataProperty getOWLDataProperty(SimpleNode node) {
       ASTDataProperty propertyNode = ParserUtils.getChild(
             node,
@@ -241,12 +296,15 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
       return visitDataPropertyNode(propertyNode);
    }
 
+   @Nullable
    private OWLDataProperty visitDataPropertyNode(ASTDataProperty propertyNode) {
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
       visitor.visit(propertyNode);
-      return visitor.getEntity().asOWLDataProperty();
+      OWLEntity entity = visitor.getEntity();
+      return (entity != null) ? entity.asOWLDataProperty() : null;
    }
 
+   @Nullable
    private OWLObjectProperty getOWLObjectProperty(SimpleNode node) {
       ASTObjectProperty propertyNode = ParserUtils.getChild(
             node,
@@ -257,7 +315,8 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
    private OWLObjectProperty visitObjectPropertyNode(ASTObjectProperty propertyNode) {
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
       visitor.visit(propertyNode);
-      return visitor.getEntity().asOWLObjectProperty();
+      OWLEntity entity = visitor.getEntity();
+      return (entity != null) ? entity.asOWLObjectProperty() : null;
    }
 
    private Set<OWLNamedIndividual> getOWLIndividuals(SimpleNode node) {
@@ -267,17 +326,22 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
       Set<OWLNamedIndividual> individuals = new HashSet<>();
       for (ASTNamedIndividual individualNode : individualNodes) {
          OWLNamedIndividual ind = visitIndividualNode(individualNode);
-         individuals.add(ind);
+         if (ind != null) {
+            individuals.add(ind);
+         }
       }
       return individuals;
    }
 
+   @Nullable
    private OWLNamedIndividual visitIndividualNode(ASTNamedIndividual individualNode) {
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
       visitor.visit(individualNode);
-      return visitor.getEntity().asOWLNamedIndividual();
+      OWLEntity entity = visitor.getEntity();
+      return (entity != null) ? entity.asOWLNamedIndividual() : null;
    }
 
+   @Nullable
    private OWLClassExpression getOWLClassExpression(SimpleNode node) {
       ASTClassExpressionCategory classExpressionNode = ParserUtils.getChild(
             node,
@@ -285,12 +349,14 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
       return visitInnerClassExpressionNode(classExpressionNode);
    }
 
+   @Nullable
    private OWLClassExpression visitInnerObjectIntersectionNode(ASTObjectIntersection objectIntersectionNode) {
       ClassExpressionNodeVisitor innerVisitor = createNewClassExpressionNodeVisitor();
       innerVisitor.visit(objectIntersectionNode);
       return innerVisitor.getClassExpression();
    }
 
+   @Nullable
    private OWLClassExpression visitInnerClassExpressionNode(ASTClassExpressionCategory classExpressionNode) {
       ClassExpressionNodeVisitor innerVisitor = createNewClassExpressionNodeVisitor();
       innerVisitor.visit(classExpressionNode);

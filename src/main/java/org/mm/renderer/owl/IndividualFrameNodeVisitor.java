@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.mm.parser.NodeType;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotation;
@@ -43,7 +44,7 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    private final ValueNodeVisitor valueNodeVisitor;
    private final OwlFactory owlFactory;
 
-   private OWLNamedIndividual subject;
+   @Nullable private OWLNamedIndividual subject;
 
    private Set<OWLAxiom> axioms = new HashSet<>();
 
@@ -77,7 +78,9 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    public void visit(ASTIndividualDeclaration node) {
       ASTNamedIndividual individualNode = ParserUtils.getChild(node, NodeType.INDIVIDUAL);
       individualNode.accept(this);
-      axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
+      if (subject != null) {
+         axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
+      }
    }
 
    private void visitIndividualDeclarationNode(ASTIndividualFrame individualSectionNode) {
@@ -110,7 +113,9 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
       ClassExpressionNodeVisitor visitor = createNewClassExpressionNodeVisitor();
       visitor.visit(classExpressionNode);
       OWLClassExpression classExpression = visitor.getClassExpression();
-      axioms.add(owlFactory.createOWLClassAssertionAxiom(classExpression, subject));
+      if (classExpression != null && subject != null) {
+         axioms.add(owlFactory.createOWLClassAssertionAxiom(classExpression, subject));
+      }
    }
 
    private void visitPropertyAssertionNode(ASTIndividualFrame individualSectionNode) {
@@ -134,17 +139,20 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    @Override
    public void visit(ASTFact node) {
       OWLEntity property = visitPropertyNode(node);
-      Value value = getPropertyValue(node);
-      if (property.isOWLDataProperty()) {
-         visitDataPropertyAssertion((OWLDataProperty) property, value);
-      } else if (property.isOWLObjectProperty()) {
-         visitObjectPropertyAssertion((OWLObjectProperty) property, value);
-      } else {
-         throw new RuntimeException("Programming error: Fact can only be data property assertion or "
-               + "object property assertion");
+      if (property != null) {
+         Value value = getPropertyValue(node);
+         if (property.isOWLDataProperty()) {
+            visitDataPropertyAssertion((OWLDataProperty) property, value);
+         } else if (property.isOWLObjectProperty()) {
+            visitObjectPropertyAssertion((OWLObjectProperty) property, value);
+         } else {
+            throw new RuntimeException("Programming error: Fact can only be data property assertion or "
+                  + "object property assertion");
+         }
       }
    }
 
+   @Nullable
    private OWLEntity visitPropertyNode(ASTFact node) {
       ASTProperty propertyNode = ParserUtils.getChild(node, NodeType.PROPERTY);
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
@@ -154,13 +162,17 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
 
    private void visitDataPropertyAssertion(OWLDataProperty property, Value value) {
       OWLLiteral literal = owlFactory.getOWLLiteral(value);
-      axioms.add(owlFactory.createOWLDataPropertyAssertionAxiom(property, subject, literal));
+      if (literal != null) {
+         axioms.add(owlFactory.createOWLDataPropertyAssertionAxiom(property, subject, literal));
+      }
    }
 
    private void visitObjectPropertyAssertion(OWLObjectProperty property, Value value) {
       value = changeLiteralValueToIndividualName(value);
       OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(value);
-      axioms.add(owlFactory.createOWLObjectPropertyAssertionAxiom(property, subject, individual));
+      if (individual != null) {
+         axioms.add(owlFactory.createOWLObjectPropertyAssertionAxiom(property, subject, individual));
+      }
    }
 
    private Value changeLiteralValueToIndividualName(Value value) {
@@ -189,7 +201,9 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
       for (ASTAnnotation annotationNode : annotationNodes) {
          visitor.visit(annotationNode);
          OWLAnnotation annotation = visitor.getAnnotation();
-         axioms.add(owlFactory.createOWLAnnotationAssertionAxiom(subject, annotation));
+         if (annotation != null && subject != null) {
+            axioms.add(owlFactory.createOWLAnnotationAssertionAxiom(subject, annotation));
+         }
       }
    }
 
@@ -209,8 +223,13 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
       for (ASTNamedIndividual individualNode : individualNodes) {
          visitor.visit(individualNode);
-         OWLNamedIndividual individual = visitor.getEntity().asOWLNamedIndividual();
-         axioms.add(owlFactory.createOWLSameIndividualAxiom(subject, individual));
+         OWLEntity entity = visitor.getEntity();
+         if (entity != null) {
+            OWLNamedIndividual individual = entity.asOWLNamedIndividual();
+            if (subject != null) {
+               axioms.add(owlFactory.createOWLSameIndividualAxiom(subject, individual));
+            }
+         }
       }
    }
 
@@ -230,8 +249,13 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
       EntityNodeVisitor visitor = createNewEntityNodeVisitor();
       for (ASTNamedIndividual individualNode : individualNodes) {
          visitor.visit(individualNode);
-         OWLNamedIndividual individual = visitor.getEntity().asOWLNamedIndividual();
-         axioms.add(owlFactory.createOWLDifferentIndividualsAxiom(subject, individual));
+         OWLEntity entity = visitor.getEntity();
+         if (entity != null) {
+            OWLNamedIndividual individual = entity.asOWLNamedIndividual();
+            if (subject != null) {
+               axioms.add(owlFactory.createOWLDifferentIndividualsAxiom(subject, individual));
+            }
+         }
       }
    }
 

@@ -10,6 +10,7 @@ public abstract class AbstractRendererTest {
 
    protected void createEmptyWorkbook() {
       workbook = Workbook.createEmptyWorkbook();
+      workbook.createSheet("Sheet1");
    }
 
    protected Workbook getWorkbook() {

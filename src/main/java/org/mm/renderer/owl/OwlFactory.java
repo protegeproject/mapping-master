@@ -4,6 +4,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.mm.renderer.internal.EmptyValue;
 import org.mm.renderer.internal.IriValue;
 import org.mm.renderer.internal.LiteralValue;
 import org.mm.renderer.internal.PlainLiteralValue;
@@ -73,33 +75,39 @@ public class OwlFactory {
       this.entityResolver = checkNotNull(entityResolver);
    }
 
-   public OWLClass getOWLClass(Value value) {
-      if (value instanceof QName) {
-         return fetchOWLClass(((QName) value).getString());
+   @Nullable
+   public OWLClass getOWLClass(@Nonnull Value value) {
+      if (value instanceof EmptyValue) {
+         return null;
+      } else if (value instanceof QName) {
+         return fetchOWLClass((QName) value);
       } else if (value instanceof ReferencedValue) {
-         return createOWLClass(((ReferencedValue) value).getString());
+         return createOWLClass((ReferencedValue) value);
       } else if (value instanceof IriValue) {
-         return createOWLClass(((IriValue) value).getString());
+         return createOWLClass(((IriValue) value));
       }
       throw new RuntimeException("Programming error: Creating OWL class using "
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLClass fetchOWLClass(String prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName, OWLClass.class);
+   private OWLClass fetchOWLClass(QName prefixedName) {
+      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLClass.class);
    }
 
-   private OWLClass createOWLClass(String prefixedName) {
-      return entityResolver.createUnchecked(prefixedName, OWLClass.class);
+   private OWLClass createOWLClass(ReferencedValue referencedValue) {
+      return entityResolver.createUnchecked(referencedValue.getString(), OWLClass.class);
    }
 
-   private OWLClass createOWLClass(IRI classIri) {
-      return owlDataFactory.getOWLClass(classIri);
+   private OWLClass createOWLClass(IriValue iriValue) {
+      return owlDataFactory.getOWLClass(IRI.create(iriValue.getString()));
    }
 
-   public OWLProperty getOWLProperty(Value value) {
-      if (value instanceof QName) {
-         return fetchOWLProperty(((QName) value).getString());
+   @Nullable
+   public OWLProperty getOWLProperty(@Nonnull Value value) {
+      if (value instanceof EmptyValue) {
+         return null;
+      } else if (value instanceof QName) {
+         return fetchOWLProperty(((QName) value));
       } else if (value instanceof ReferencedValue) {
          return createOWLProperty((ReferencedValue) value);
       }
@@ -107,122 +115,137 @@ public class OwlFactory {
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLProperty fetchOWLProperty(String prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName, OWLProperty.class);
+   private OWLProperty fetchOWLProperty(QName prefixedName) {
+      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLProperty.class);
    }
 
    private OWLProperty createOWLProperty(ReferencedValue referencedValue) {
       if (referencedValue instanceof PropertyName) {
          PropertyName propertyName = (PropertyName) referencedValue;
          if (propertyName.isDataProperty()) {
-            return createOWLDataProperty(propertyName.getString());
+            return createOWLDataProperty(propertyName);
          } else if (propertyName.isObjectProperty()) {
-            return createOWLObjectProperty(propertyName.getString());
+            return createOWLObjectProperty(propertyName);
          } else if (propertyName.isAnnotationProperty()) {
-            return createOWLAnnotationProperty(propertyName.getString());
+            return createOWLAnnotationProperty(propertyName);
          }
       }
       throw new RuntimeException("Programming error: Unknown property type");
    }
 
-   public OWLDataProperty getOWLDataProperty(Value value) {
-      if (value instanceof QName) {
-         return fetchOWLDataProperty(((QName) value).getString());
+   @Nullable
+   public OWLDataProperty getOWLDataProperty(@Nonnull Value value) {
+      if (value instanceof EmptyValue) {
+         return null;
+      } else if (value instanceof QName) {
+         return fetchOWLDataProperty((QName) value);
       } else if (value instanceof ReferencedValue) {
-         return createOWLDataProperty(((ReferencedValue) value).getString());
+         return createOWLDataProperty((ReferencedValue) value);
       } else if (value instanceof IriValue) {
-         return createOWLDataProperty(((IriValue) value).getString());
+         return createOWLDataProperty((IriValue) value);
       }
       throw new RuntimeException("Programming error: Creating OWL data property using "
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLDataProperty fetchOWLDataProperty(String prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName, OWLDataProperty.class);
+   private OWLDataProperty fetchOWLDataProperty(QName prefixedName) {
+      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLDataProperty.class);
    }
 
-   private OWLDataProperty createOWLDataProperty(String prefixedName) {
-      return entityResolver.createUnchecked(prefixedName, OWLDataProperty.class);
+   private OWLDataProperty createOWLDataProperty(ReferencedValue referencedValue) {
+      return entityResolver.createUnchecked(referencedValue.getString(), OWLDataProperty.class);
    }
 
-   private OWLDataProperty createOWLDataProperty(IRI propertyIri) {
-      return owlDataFactory.getOWLDataProperty(propertyIri);
+   private OWLDataProperty createOWLDataProperty(IriValue iriValue) {
+      return owlDataFactory.getOWLDataProperty(IRI.create(iriValue.getString()));
    }
 
-   public OWLObjectProperty getOWLObjectProperty(Value value) {
-      if (value instanceof QName) {
-         return fetchOWLObjectProperty(((QName) value).getString());
+   @Nullable
+   public OWLObjectProperty getOWLObjectProperty(@Nonnull Value value) {
+      if (value instanceof EmptyValue) {
+         return null;
+      } else if (value instanceof QName) {
+         return fetchOWLObjectProperty((QName) value);
       } else if (value instanceof ReferencedValue) {
-         return createOWLObjectProperty(((ReferencedValue) value).getString());
+         return createOWLObjectProperty((ReferencedValue) value);
       } else if (value instanceof IriValue) {
-         return createOWLObjectProperty(((IriValue) value).getString());
+         return createOWLObjectProperty((IriValue) value);
       }
       throw new RuntimeException("Programming error: Creating OWL data property using "
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLObjectProperty fetchOWLObjectProperty(String prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName, OWLObjectProperty.class);
+   private OWLObjectProperty fetchOWLObjectProperty(QName prefixedName) {
+      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLObjectProperty.class);
    }
 
-   private OWLObjectProperty createOWLObjectProperty(String prefixedName) {
-      return entityResolver.createUnchecked(prefixedName, OWLObjectProperty.class);
+   private OWLObjectProperty createOWLObjectProperty(ReferencedValue referencedValue) {
+      return entityResolver.createUnchecked(referencedValue.getString(), OWLObjectProperty.class);
    }
 
-   private OWLObjectProperty createOWLObjectProperty(IRI propertyIri) {
-      return owlDataFactory.getOWLObjectProperty(propertyIri);
+   private OWLObjectProperty createOWLObjectProperty(IriValue iriValue) {
+      return owlDataFactory.getOWLObjectProperty(IRI.create(iriValue.getString()));
    }
 
-   public OWLAnnotationProperty getOWLAnnotationProperty(Value value) {
-      if (value instanceof QName) {
-         return fetchOWLAnnotationProperty(((QName) value).getString());
+   @Nullable
+   public OWLAnnotationProperty getOWLAnnotationProperty(@Nonnull Value value) {
+      if (value instanceof EmptyValue) {
+         return null;
+      } else if (value instanceof QName) {
+         return fetchOWLAnnotationProperty((QName) value);
       } else if (value instanceof ReferencedValue) {
-         return createOWLAnnotationProperty(((ReferencedValue) value).getString());
+         return createOWLAnnotationProperty((ReferencedValue) value);
       } else if (value instanceof IriValue) {
-         return createOWLAnnotationProperty(((IriValue) value).getString());
+         return createOWLAnnotationProperty((IriValue) value);
       }
       throw new RuntimeException("Programming error: Creating OWL data property using "
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLAnnotationProperty fetchOWLAnnotationProperty(String prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName, OWLAnnotationProperty.class);
+   private OWLAnnotationProperty fetchOWLAnnotationProperty(QName prefixedName) {
+      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLAnnotationProperty.class);
    }
 
-   private OWLAnnotationProperty createOWLAnnotationProperty(String prefixedName) {
-      return entityResolver.createUnchecked(prefixedName, OWLAnnotationProperty.class);
+   private OWLAnnotationProperty createOWLAnnotationProperty(ReferencedValue referencedValue) {
+      return entityResolver.createUnchecked(referencedValue.getString(), OWLAnnotationProperty.class);
    }
 
-   private OWLAnnotationProperty createOWLAnnotationProperty(IRI propertyIri) {
-      return owlDataFactory.getOWLAnnotationProperty(propertyIri);
+   private OWLAnnotationProperty createOWLAnnotationProperty(IriValue iriValue) {
+      return owlDataFactory.getOWLAnnotationProperty(IRI.create(iriValue.getString()));
    }
 
-   public OWLNamedIndividual getOWLNamedIndividual(Value value) {
-      if (value instanceof QName) {
-         return fetchOWLNamedIndividual(((QName) value).getString());
+   @Nullable
+   public OWLNamedIndividual getOWLNamedIndividual(@Nonnull Value value) {
+      if (value instanceof EmptyValue) {
+         return null;
+      } else if (value instanceof QName) {
+         return fetchOWLNamedIndividual((QName) value);
       } else if (value instanceof ReferencedValue) {
-         return createOWLNamedIndividual(((ReferencedValue) value).getString());
+         return createOWLNamedIndividual((ReferencedValue) value);
       } else if (value instanceof IriValue) {
-         return createOWLNamedIndividual(((IriValue) value).getString());
+         return createOWLNamedIndividual((IriValue) value);
       }
       throw new RuntimeException("Programming error: Creating OWL data property using "
             + value.getClass() + " is not yet implemented");
    }
 
-   private OWLNamedIndividual fetchOWLNamedIndividual(String prefixedName) {
-      return entityResolver.resolveUnchecked(prefixedName, OWLNamedIndividual.class);
+   private OWLNamedIndividual fetchOWLNamedIndividual(QName prefixedName) {
+      return entityResolver.resolveUnchecked(prefixedName.getString(), OWLNamedIndividual.class);
    }
 
-   private OWLNamedIndividual createOWLNamedIndividual(String prefixedName) {
-      return entityResolver.createUnchecked(prefixedName, OWLNamedIndividual.class);
+   private OWLNamedIndividual createOWLNamedIndividual(ReferencedValue referencedValue) {
+      return entityResolver.createUnchecked(referencedValue.getString(), OWLNamedIndividual.class);
    }
 
-   private OWLNamedIndividual createOWLNamedIndividual(IRI propertyIri) {
-      return owlDataFactory.getOWLNamedIndividual(propertyIri);
+   private OWLNamedIndividual createOWLNamedIndividual(IriValue iriValue) {
+      return owlDataFactory.getOWLNamedIndividual(IRI.create(iriValue.getString()));
    }
 
-   public OWLAnnotationValue getOWLAnnotationValue(Value value) {
-      if (value instanceof IriValue) {
+   @Nullable
+   public OWLAnnotationValue getOWLAnnotationValue(@Nonnull Value value) {
+      if (value instanceof EmptyValue) {
+         return null;
+      } else if (value instanceof IriValue) {
          return getIri((IriValue) value);
       } else if (value instanceof LiteralValue) {
          return getOWLTypedLiteral((LiteralValue) value);
@@ -237,8 +260,11 @@ public class OwlFactory {
       return IRI.create(value.getString());
    }
 
+   @Nullable
    public OWLLiteral getOWLLiteral(@Nonnull Value value) {
-      if (value instanceof LiteralValue) {
+      if (value instanceof EmptyValue) {
+         return null;
+      } else if (value instanceof LiteralValue) {
          return getOWLTypedLiteral((LiteralValue) value);
       } else if (value instanceof PlainLiteralValue) {
          return getOWLPlainLiteral((PlainLiteralValue) value);
@@ -253,7 +279,7 @@ public class OwlFactory {
       return owlDataFactory.getOWLLiteral(lexicalString, getOWLDatatype(datatype));
    }
 
-   private OWLDatatype getOWLDatatype(final String datatype) {
+   private OWLDatatype getOWLDatatype(@Nonnull String datatype) {
       return entityResolver.resolveUnchecked(datatype, OWLDatatype.class);
    }
 
@@ -271,157 +297,197 @@ public class OwlFactory {
     * Public methods to create a various number of OWL expression and axioms
     */
 
-   public OWLAnnotation createOWLAnnotation(OWLAnnotationProperty property, OWLAnnotationValue value) {
+   public OWLAnnotation createOWLAnnotation(
+         @Nonnull OWLAnnotationProperty property,
+         @Nonnull OWLAnnotationValue value) {
       return owlDataFactory.getOWLAnnotation(property, value);
    }
 
-   public OWLDeclarationAxiom createOWLDeclarationAxiom(OWLEntity entity) {
+   public OWLDeclarationAxiom createOWLDeclarationAxiom(@Nonnull OWLEntity entity) {
       return owlDataFactory.getOWLDeclarationAxiom(entity);
    }
 
-   public OWLObjectComplementOf createOWLObjectComplementOf(OWLClassExpression ce) {
+   public OWLObjectComplementOf createOWLObjectComplementOf(@Nonnull OWLClassExpression ce) {
       return owlDataFactory.getOWLObjectComplementOf(ce);
    }
 
-   public OWLObjectIntersectionOf createOWLObjectIntersectionOf(Set<OWLClassExpression> ces) {
+   public OWLObjectIntersectionOf createOWLObjectIntersectionOf(@Nonnull Set<OWLClassExpression> ces) {
       return owlDataFactory.getOWLObjectIntersectionOf(ces);
    }
 
-   public OWLObjectUnionOf createOWLObjectUnionOf(Set<OWLClassExpression> ces) {
+   public OWLObjectUnionOf createOWLObjectUnionOf(@Nonnull Set<OWLClassExpression> ces) {
       return owlDataFactory.getOWLObjectUnionOf(ces);
    }
 
-   public OWLObjectOneOf createOWLObjectOneOf(Set<OWLNamedIndividual> inds) {
+   public OWLObjectOneOf createOWLObjectOneOf(@Nonnull Set<OWLNamedIndividual> inds) {
       return owlDataFactory.getOWLObjectOneOf(inds);
    }
 
-   public OWLSubClassOfAxiom createOWLSubClassOfAxiom(OWLClassExpression child,
-         OWLClassExpression parent) {
+   public OWLSubClassOfAxiom createOWLSubClassOfAxiom(
+         @Nonnull OWLClassExpression child,
+         @Nonnull OWLClassExpression parent) {
       return owlDataFactory.getOWLSubClassOfAxiom(child, parent);
    }
 
    public OWLSubObjectPropertyOfAxiom createOWLSubObjectPropertyOfAxiom(
-         OWLObjectPropertyExpression child, OWLObjectPropertyExpression parent) {
+         @Nonnull OWLObjectPropertyExpression child,
+         @Nonnull OWLObjectPropertyExpression parent) {
       return owlDataFactory.getOWLSubObjectPropertyOfAxiom(child, parent);
    }
 
-   public OWLSubDataPropertyOfAxiom createOWLSubDataPropertyOfAxiom(OWLDataPropertyExpression child,
-         OWLDataPropertyExpression parent) {
+   public OWLSubDataPropertyOfAxiom createOWLSubDataPropertyOfAxiom(
+         @Nonnull OWLDataPropertyExpression child,
+         @Nonnull OWLDataPropertyExpression parent) {
       return owlDataFactory.getOWLSubDataPropertyOfAxiom(child, parent);
    }
 
-   public OWLEquivalentClassesAxiom createOWLEquivalentClassesAxiom(Set<OWLClassExpression> ces) {
+   public OWLEquivalentClassesAxiom createOWLEquivalentClassesAxiom(@Nonnull Set<OWLClassExpression> ces) {
       return owlDataFactory.getOWLEquivalentClassesAxiom(ces);
    }
 
-   public OWLEquivalentClassesAxiom createOWLEquivalentClassesAxiom(OWLClassExpression ce1,
-         OWLClassExpression ce2) {
+   public OWLEquivalentClassesAxiom createOWLEquivalentClassesAxiom(
+         @Nonnull OWLClassExpression ce1,
+         @Nonnull OWLClassExpression ce2) {
       return owlDataFactory.getOWLEquivalentClassesAxiom(ce1, ce2);
    }
 
-   public OWLAnnotationAssertionAxiom createOWLAnnotationAssertionAxiom(OWLEntity entity,
-         OWLAnnotation annotation) {
+   public OWLAnnotationAssertionAxiom createOWLAnnotationAssertionAxiom(
+         @Nonnull OWLEntity entity,
+         @Nonnull OWLAnnotation annotation) {
       return owlDataFactory.getOWLAnnotationAssertionAxiom(entity.getIRI(), annotation);
    }
 
    public OWLAnnotationAssertionAxiom createOWLAnnotationAssertionAxiom(
-         OWLAnnotationSubject subject, OWLAnnotation annotation) {
+         @Nonnull OWLAnnotationSubject subject,
+         @Nonnull OWLAnnotation annotation) {
       return owlDataFactory.getOWLAnnotationAssertionAxiom(subject, annotation);
    }
 
-   public OWLClassAssertionAxiom createOWLClassAssertionAxiom(OWLClassExpression ce,
-         OWLNamedIndividual ind) {
+   public OWLClassAssertionAxiom createOWLClassAssertionAxiom(
+         @Nonnull OWLClassExpression ce,
+         @Nonnull OWLNamedIndividual ind) {
       return owlDataFactory.getOWLClassAssertionAxiom(ce, ind);
    }
 
    public OWLObjectPropertyAssertionAxiom createOWLObjectPropertyAssertionAxiom(
-         OWLObjectProperty op, OWLIndividual source, OWLIndividual target) {
+         @Nonnull OWLObjectProperty op,
+         @Nonnull OWLIndividual source,
+         @Nonnull OWLIndividual target) {
       return owlDataFactory.getOWLObjectPropertyAssertionAxiom(op, source, target);
    }
 
-   public OWLDataPropertyAssertionAxiom createOWLDataPropertyAssertionAxiom(OWLDataProperty dp,
-         OWLIndividual source, OWLLiteral target) {
+   public OWLDataPropertyAssertionAxiom createOWLDataPropertyAssertionAxiom(
+         @Nonnull OWLDataProperty dp,
+         @Nonnull OWLIndividual source,
+         @Nonnull OWLLiteral target) {
       return owlDataFactory.getOWLDataPropertyAssertionAxiom(dp, source, target);
    }
 
-   public OWLSameIndividualAxiom createOWLSameIndividualAxiom(OWLIndividual ind1,
-         OWLIndividual ind2) {
+   public OWLSameIndividualAxiom createOWLSameIndividualAxiom(
+         @Nonnull OWLIndividual ind1,
+         @Nonnull OWLIndividual ind2) {
       return owlDataFactory.getOWLSameIndividualAxiom(ind1, ind2);
    }
 
-   public OWLDifferentIndividualsAxiom createOWLDifferentIndividualsAxiom(OWLIndividual ind1,
-         OWLIndividual ind2) {
+   public OWLDifferentIndividualsAxiom createOWLDifferentIndividualsAxiom(
+         @Nonnull OWLIndividual ind1,
+         @Nonnull OWLIndividual ind2) {
       return owlDataFactory.getOWLDifferentIndividualsAxiom(ind1, ind2);
    }
 
-   public OWLObjectAllValuesFrom createOWLObjectAllValuesFrom(OWLObjectProperty op,
-         OWLClassExpression ce) {
+   public OWLObjectAllValuesFrom createOWLObjectAllValuesFrom(
+         @Nonnull OWLObjectProperty op,
+         @Nonnull OWLClassExpression ce) {
       return owlDataFactory.getOWLObjectAllValuesFrom(op, ce);
    }
 
-   public OWLObjectSomeValuesFrom createOWLObjectSomeValuesFrom(OWLObjectProperty op,
-         OWLClassExpression ce) {
+   public OWLObjectSomeValuesFrom createOWLObjectSomeValuesFrom(
+         @Nonnull OWLObjectProperty op,
+         @Nonnull OWLClassExpression ce) {
       return owlDataFactory.getOWLObjectSomeValuesFrom(op, ce);
    }
 
-   public OWLDataAllValuesFrom createOWLDataAllValuesFrom(OWLDataProperty dp, OWLDatatype dt) {
+   public OWLDataAllValuesFrom createOWLDataAllValuesFrom(
+         @Nonnull OWLDataProperty dp,
+         @Nonnull OWLDatatype dt) {
       return owlDataFactory.getOWLDataAllValuesFrom(dp, dt);
    }
 
-   public OWLDataSomeValuesFrom createOWLDataSomeValuesFrom(OWLDataProperty dp, OWLDatatype dt) {
+   public OWLDataSomeValuesFrom createOWLDataSomeValuesFrom(
+         @Nonnull OWLDataProperty dp,
+         @Nonnull OWLDatatype dt) {
       return owlDataFactory.getOWLDataSomeValuesFrom(dp, dt);
    }
 
-   public OWLObjectExactCardinality createOWLObjectExactCardinality(int cardinality,
-         OWLObjectProperty op) {
+   public OWLObjectExactCardinality createOWLObjectExactCardinality(
+         int cardinality,
+         @Nonnull OWLObjectProperty op) {
       return owlDataFactory.getOWLObjectExactCardinality(cardinality, op);
    }
 
-   public OWLObjectExactCardinality createOWLObjectExactCardinality(int cardinality,
-         OWLObjectProperty property, OWLClassExpression classExpression) {
+   public OWLObjectExactCardinality createOWLObjectExactCardinality(
+         int cardinality,
+         @Nonnull OWLObjectProperty property,
+         @Nonnull OWLClassExpression classExpression) {
       return owlDataFactory.getOWLObjectExactCardinality(cardinality, property, classExpression);
    }
 
-   public OWLDataExactCardinality createOWLDataExactCardinality(int cardinality,
-         OWLDataProperty property, OWLDatatype datatype) {
+   public OWLDataExactCardinality createOWLDataExactCardinality(
+         int cardinality,
+         @Nonnull OWLDataProperty property,
+         @Nonnull OWLDatatype datatype) {
       return owlDataFactory.getOWLDataExactCardinality(cardinality, property, datatype);
    }
 
-   public OWLObjectMaxCardinality createOWLObjectMaxCardinality(int cardinality,
-         OWLObjectProperty op) {
+   public OWLObjectMaxCardinality createOWLObjectMaxCardinality(
+         int cardinality,
+         @Nonnull OWLObjectProperty op) {
       return owlDataFactory.getOWLObjectMaxCardinality(cardinality, op);
    }
 
-   public OWLObjectMaxCardinality createOWLObjectMaxCardinality(int cardinality,
-         OWLObjectProperty property, OWLClassExpression classExpression) {
+   public OWLObjectMaxCardinality createOWLObjectMaxCardinality(
+         int cardinality,
+         @Nonnull OWLObjectProperty property,
+         @Nonnull OWLClassExpression classExpression) {
       return owlDataFactory.getOWLObjectMaxCardinality(cardinality, property, classExpression);
    }
 
-   public OWLDataMaxCardinality createOWLDataMaxCardinality(int cardinality,
-         OWLDataProperty property, OWLDatatype datatype) {
+   public OWLDataMaxCardinality createOWLDataMaxCardinality(
+         int cardinality,
+         @Nonnull OWLDataProperty property,
+         @Nonnull OWLDatatype datatype) {
       return owlDataFactory.getOWLDataMaxCardinality(cardinality, property, datatype);
    }
 
-   public OWLObjectMinCardinality createOWLObjectMinCardinality(int cardinality,
-         OWLObjectProperty op) {
+   public OWLObjectMinCardinality createOWLObjectMinCardinality(
+         int cardinality,
+         @Nonnull OWLObjectProperty op) {
       return owlDataFactory.getOWLObjectMinCardinality(cardinality, op);
    }
 
-   public OWLObjectMinCardinality createOWLObjectMinCardinality(int cardinality,
-         OWLObjectProperty property, OWLClassExpression classExpression) {
+   public OWLObjectMinCardinality createOWLObjectMinCardinality(
+         int cardinality,
+         @Nonnull OWLObjectProperty property,
+         @Nonnull OWLClassExpression classExpression) {
       return owlDataFactory.getOWLObjectMinCardinality(cardinality, property, classExpression);
    }
 
-   public OWLDataMinCardinality createOWLDataMinCardinality(int cardinality,
-         OWLDataProperty property, OWLDatatype datatype) {
+   public OWLDataMinCardinality createOWLDataMinCardinality(
+         int cardinality,
+         @Nonnull OWLDataProperty property,
+         @Nonnull OWLDatatype datatype) {
       return owlDataFactory.getOWLDataMinCardinality(cardinality, property, datatype);
    }
 
-   public OWLObjectHasValue createOWLObjectHasValue(OWLObjectProperty op, OWLNamedIndividual ind) {
+   public OWLObjectHasValue createOWLObjectHasValue(
+         @Nonnull OWLObjectProperty op,
+         @Nonnull OWLNamedIndividual ind) {
       return owlDataFactory.getOWLObjectHasValue(op, ind);
    }
 
-   public OWLDataHasValue createOWLDataHasValue(OWLDataProperty dp, OWLLiteral lit) {
+   public OWLDataHasValue createOWLDataHasValue(
+         @Nonnull OWLDataProperty dp,
+         @Nonnull OWLLiteral lit) {
       return owlDataFactory.getOWLDataHasValue(dp, lit);
    }
 }

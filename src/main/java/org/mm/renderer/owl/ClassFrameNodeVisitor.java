@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.mm.parser.NodeType;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotation;
@@ -22,6 +23,7 @@ import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLEntity;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -32,7 +34,7 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    private final ValueNodeVisitor valueNodeVisitor;
    private final OwlFactory owlFactory;
 
-   private OWLClass subject;
+   @Nullable private OWLClass subject;
 
    private Set<OWLAxiom> axioms = new HashSet<>();
 
@@ -58,14 +60,19 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    public void visit(ASTClassDeclaration node) {
       ASTClass classNode = ParserUtils.getChild(node, NodeType.CLASS);
       classNode.accept(this);
-      axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
+      if (subject != null) {
+         axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
+      }
    }
 
    @Override
    public void visit(ASTClass classNode) {
       EntityNodeVisitor visitor = new EntityNodeVisitor(owlFactory, valueNodeVisitor);
       visitor.visit(classNode);
-      subject = visitor.getEntity().asOWLClass();
+      OWLEntity entity = visitor.getEntity();
+      if (entity != null) {
+         subject = entity.asOWLClass();
+      }
    }
 
    private void visitClassDeclarationNode(ASTClassFrame classSectionNode) {
@@ -98,7 +105,9 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
       ClassExpressionNodeVisitor visitor = createNewClassExpressionNodeVisitor();
       visitor.visit(classExpressionNode);
       OWLClassExpression classExpression = visitor.getClassExpression();
-      axioms.add(owlFactory.createOWLSubClassOfAxiom(classExpression, subject));
+      if (classExpression != null && subject != null) {
+         axioms.add(owlFactory.createOWLSubClassOfAxiom(classExpression, subject));
+      }
    }
 
    private void visitEquivalentClassesNode(ASTClassFrame classSectionNode) {
@@ -124,7 +133,9 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
       ClassExpressionNodeVisitor visitor = createNewClassExpressionNodeVisitor();
       visitor.visit(classExpressionNode);
       OWLClassExpression classExpression = visitor.getClassExpression();
-      axioms.add(owlFactory.createOWLEquivalentClassesAxiom(classExpression, subject));
+      if (classExpression != null && subject != null) {
+         axioms.add(owlFactory.createOWLEquivalentClassesAxiom(classExpression, subject));
+      }
    }
 
    private void visitAnnotationAssertionNode(ASTClassFrame classSectionNode) {

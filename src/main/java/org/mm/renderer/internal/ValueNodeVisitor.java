@@ -36,7 +36,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    private CellCursor cellCursor = CellCursor.getDefaultCursor();
 
-   private Value value;
+   private Value value = EmptyValue.create();
 
    public ValueNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
          @Nonnull BuiltInFunctionHandler builtInFunctionHandler) {
@@ -85,7 +85,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTReference referenceNode) {
       value = resolveReference(referenceNode);
-      if (referenceNode.hasBuiltInFunction()) {
+      if (!(value instanceof EmptyValue) && referenceNode.hasBuiltInFunction()) {
          ASTBuiltInFunction builtInFunctionNode =
                ParserUtils.getChild(referenceNode, NodeType.BUILTIN_FUNCTION);
          BuiltInFunction function = getBuiltInFunction(builtInFunctionNode);
@@ -100,8 +100,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    private Value resolveReference(ASTReference referenceNode) {
       CellAddress cellAddress = getCellAddress(referenceNode);
       ReferenceDirectives directives = referenceNode.getDirectives();
-      Value resolvedValue = referenceResolver.resolve(cellAddress, directives);
-      return resolvedValue;
+      return referenceResolver.resolve(cellAddress, directives);
    }
 
    private CellAddress getCellAddress(ASTReference referenceNode) {

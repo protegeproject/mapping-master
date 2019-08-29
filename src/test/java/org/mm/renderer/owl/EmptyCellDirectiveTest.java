@@ -31,54 +31,34 @@ public class EmptyCellDirectiveTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldUseDefaultOrder() {
-      // Arrange
-      createCell("Sheet1", 1, 1, "");
-      // Act
+   public void shouldIgnoreIfCellIsEmpty_DefaultSetting() {
       Set<OWLAxiom> result = evaluate("Class: @A1");
-      // Assert
       assertThat(result, hasSize(0));
    }
 
    @Test
    public void shouldIgnoreIfCellIsEmpty() {
-      // Arrange
-      createCell("Sheet1", 1, 1, "");
-      // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:ignoreIfCellEmpty)");
-      // Assert
       assertThat(result, hasSize(0));
    }
 
    @Test
    public void shouldCreateIfCellIsEmpty() {
-      // Arrange
-      createCell("Sheet1", 1, 1, "");
-      // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:createIfCellEmpty)");
-      // Assert
       assertThat(result, hasSize(1));
       assertThat(result, containsInAnyOrder(Declaration(Vocabulary.SHEET1_A1_UUID)));
    }
 
    @Test
    public void shouldWarnIfCellIsEmpty() {
-      // Arrange
-      createCell("Sheet1", 1, 1, "");
-      // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:warningIfCellEmpty)");
-      // Assert
       assertThat(result, hasSize(0));
    }
 
    @Test
    public void shouldFailIfCellIsEmpty() {
       thrown.expect(EmptyCellException.class);
-      // Arrange
-      createCell("Sheet1", 1, 1, "");
-      // Act
       Set<OWLAxiom> result = evaluate("Class: @A1(mm:errorIfCellEmpty)");
-      // Assert
       assertThat(result, hasSize(0));
    }
 }

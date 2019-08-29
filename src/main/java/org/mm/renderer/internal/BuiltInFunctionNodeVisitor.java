@@ -51,15 +51,17 @@ public class BuiltInFunctionNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTReference referenceNode) {
-      String stringValue = resolveReference(referenceNode).getString();
-      arguments.add(LiteralValue.createLiteral(stringValue));
+      Value resolvedValue = resolveReference(referenceNode);
+      String stringValue = resolvedValue.getString();
+      if (stringValue != null) {
+         arguments.add(LiteralValue.createLiteral(stringValue));
+      }
    }
 
    private Value resolveReference(ASTReference referenceNode) {
       CellAddress cellAddress = getCellAddress(referenceNode);
       ReferenceDirectives directives = referenceNode.getDirectives();
-      Value resolvedValue = referenceResolver.resolve(cellAddress, directives);
-      return resolvedValue;
+      return referenceResolver.resolve(cellAddress, directives);
    }
 
    private CellAddress getCellAddress(ASTReference referenceNode) {

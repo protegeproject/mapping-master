@@ -18,6 +18,8 @@ import org.mm.renderer.internal.LiteralValue.Datatype;
  */
 public class ReferenceResolver implements MappingMasterParserConstants {
 
+   private final static String EMPTY_CELL_VALUE_STRING = "";
+
    private final Workbook workbook;
 
    public ReferenceResolver(@Nonnull Workbook workbook) {
@@ -26,17 +28,18 @@ public class ReferenceResolver implements MappingMasterParserConstants {
 
    public Value resolve(CellAddress cellAddress, ReferenceDirectives directives) {
       try {
+         String cellValueString = EMPTY_CELL_VALUE_STRING;
          Optional<String> cellValue = workbook.getCellValue(cellAddress);
-         String cellValueString = "";
-         if (cellValue.isEmpty()) {
-            cellValueString = processEmptyValue(cellAddress, directives);
-            cellValueString = processCellShifting(cellAddress, directives);
+         if (!cellValue.isPresent()) {
+            cellValueString = processEmptyCell(cellAddress, directives);
+            if (cellValueString.isEmpty()) {
+               cellValueString = processCellShifting(cellAddress, directives);
+            }
          } else {
             cellValueString = cellValue.get();
          }
-         Value resolvedValue = getValueObject(cellAddress, cellValueString, directives);
-         return resolvedValue;
-      } catch (RuntimeException e) {
+         return getValueObject(cellAddress, cellValueString, directives);
+      } catch (WarningEmptyCellException | EmptyCellException e) {
          supplyErrorLocation(e, cellAddress);
          throw e;
       }
@@ -53,12 +56,12 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       final Sheet sheet = workbook.getSheet(cellAddress.getSheetName());
       int option = directives.getShiftDirection();
       switch (option) {
-         case MM_NO_SHIFT: return "";
+         case MM_NO_SHIFT: return EMPTY_CELL_VALUE_STRING;
          case MM_SHIFT_UP: return processShiftingCellUp(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
          case MM_SHIFT_LEFT: return processShiftingCellLeft(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
          case MM_SHIFT_DOWN: return processShiftingCellDown(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
          case MM_SHIFT_RIGHT: return processShiftingCellRight(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-         default: return "";
+         default: return EMPTY_CELL_VALUE_STRING;
       }
    }
 
@@ -72,7 +75,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          }
          currentRowIndex--; // move 1 row up
       }
-      return "";
+      return EMPTY_CELL_VALUE_STRING;
    }
 
    private String processShiftingCellLeft(Sheet sheet, int columnIndex, int rowIndex) {
@@ -85,7 +88,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          }
          currentColumnIndex--; // move 1 column left
       }
-      return "";
+      return EMPTY_CELL_VALUE_STRING;
    }
 
    private String processShiftingCellDown(Sheet sheet, int columnIndex, int rowIndex) {
@@ -98,7 +101,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          }
          currentRowIndex++; // move 1 row down
       }
-      return "";
+      return EMPTY_CELL_VALUE_STRING;
    }
 
    private String processShiftingCellRight(Sheet sheet, int columnIndex, int rowIndex) {
@@ -111,15 +114,15 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          }
          currentColumnIndex++; // move 1 column right
       }
-      return "";
+      return EMPTY_CELL_VALUE_STRING;
    }
 
-   private String processEmptyValue(CellAddress cellAddress, ReferenceDirectives directives) {
+   private String processEmptyCell(CellAddress cellAddress, ReferenceDirectives directives) {
       int option = directives.getOrderIfCellEmpty();
       if (option == MM_CREATE_IF_CELL_EMPTY) {
          return getDefaultCellValue(cellAddress);
       } else if (option == MM_IGNORE_IF_CELL_EMPTY) {
-         return "";
+         return EMPTY_CELL_VALUE_STRING;
       } else if (option == MM_WARNING_IF_CELL_EMPTY) {
          throw new WarningEmptyCellException();
       } else if (option == MM_ERROR_IF_CELL_EMPTY) {
@@ -135,39 +138,36 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    }
 
    private Value getValueObject(CellAddress cellAddress, String cellValueString, ReferenceDirectives directives) {
-      int option = directives.getReferenceType();
-      if (option == OWL_CLASS) {
-         return processClassName(cellAddress, cellValueString, directives);
-      } else if (option == OWL_DATA_PROPERTY) {
-         return processDataPropertyName(cellAddress, cellValueString, directives);
-      } else if (option == OWL_OBJECT_PROPERTY) {
-         return processObjectPropertyName(cellAddress, cellValueString, directives);
-      } else if (option == OWL_ANNOTATION_PROPERTY) {
-         return processAnnotationPropertyName(cellAddress, cellValueString, directives);
-      } else if (option == OWL_NAMED_INDIVIDUAL) {
-         return processIndividualName(cellAddress, cellValueString, directives);
-      } else if (option == OWL_IRI) {
-         return getIriValue(cellValueString);
-      } else if (option == MM_ENTITY_IRI) {
-         return getEntityName(cellValueString);
-      } else if (option == XSD_STRING
-            || option == XSD_DECIMAL
-            || option == XSD_BYTE
-            || option == XSD_SHORT
-            || option == XSD_INTEGER
-            || option == XSD_LONG
-            || option == XSD_FLOAT
-            || option == XSD_DOUBLE
-            || option == XSD_BOOLEAN
-            || option == XSD_TIME
-            || option == XSD_DATETIME
-            || option == XSD_DATE
-            || option == XSD_DURATION
-            || option == RDF_PLAINLITERAL) {
-         return processLiteral(cellValueString, directives);
-      } 
-      throw new RuntimeException("Programming error: Unknown directive to handle reference type"
-            + " (" + tokenImage[option] + ")");
+      Value value = EmptyValue.create();
+      if (!cellValueString.isEmpty()) {
+         int option = directives.getReferenceType();
+         switch (option) {
+            case OWL_CLASS: value = processClassName(cellAddress, cellValueString, directives); break;
+            case OWL_DATA_PROPERTY: value = processDataPropertyName(cellAddress, cellValueString, directives); break;
+            case OWL_OBJECT_PROPERTY: value = processObjectPropertyName(cellAddress, cellValueString, directives); break;
+            case OWL_ANNOTATION_PROPERTY: value = processAnnotationPropertyName(cellAddress, cellValueString, directives); break;
+            case OWL_NAMED_INDIVIDUAL: value = processIndividualName(cellAddress, cellValueString, directives); break;
+            case OWL_IRI: value = getIriValue(cellValueString); break;
+            case MM_ENTITY_IRI: value = getEntityName(cellValueString); break;
+            case XSD_STRING:
+            case XSD_DECIMAL:
+            case XSD_BYTE:
+            case XSD_SHORT:
+            case XSD_INTEGER:
+            case XSD_LONG:
+            case XSD_FLOAT:
+            case XSD_DOUBLE:
+            case XSD_BOOLEAN:
+            case XSD_TIME:
+            case XSD_DATETIME:
+            case XSD_DATE:
+            case XSD_DURATION:
+            case RDF_PLAINLITERAL: value = processLiteral(cellValueString, directives); break;
+            default: throw new RuntimeException("Programming error: Unknown directive to handle reference type"
+                  + " (" + tokenImage[option] + ")");
+         }
+      }
+      return value;
    }
 
    private Value processClassName(CellAddress cellAddress, String cellValue,

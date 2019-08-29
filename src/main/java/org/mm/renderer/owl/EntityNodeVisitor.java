@@ -1,9 +1,8 @@
 package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import javax.annotation.Nonnull;
-
+import javax.annotation.Nullable;
 import org.mm.parser.node.ASTAnnotationProperty;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTDataProperty;
@@ -31,6 +30,7 @@ public class EntityNodeVisitor extends AbstractNodeVisitor {
       this.owlFactory = checkNotNull(owlFactory);
    }
 
+   @Nullable
    public OWLEntity getEntity() {
       return entity;
    }
