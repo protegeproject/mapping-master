@@ -2,7 +2,6 @@ package org.mm.renderer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import javax.annotation.Nonnull;
-import org.mm.renderer.internal.CellUtils;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -10,61 +9,43 @@ import org.mm.renderer.internal.CellUtils;
  */
 public class RenderingContext {
 
-   private static final String ANY_WILDCARD = "+";
+   private final String sheetName;
+   private final int startColumn;
+   private final int endColumn;
+   private final int startRow;
+   private final int endRow;
 
-   private final Sheet sheet;
-   private final String startColumn;
-   private final String endColumn;
-   private final String startRow;
-   private final String endRow;
-
-   public RenderingContext(@Nonnull Sheet sheet, @Nonnull String startColumn, @Nonnull String endColumn,
-         @Nonnull String startRow, @Nonnull String endRow) {
-      this.sheet = checkNotNull(sheet);
-      this.startColumn = checkNotNull(startColumn);
-      this.endColumn = checkNotNull(endColumn);
-      this.startRow = checkNotNull(startRow);
-      this.endRow = checkNotNull(endRow);
+   public RenderingContext(@Nonnull String sheetName, int startColumn, int endColumn, int startRow,
+         int endRow) {
+      this.sheetName = checkNotNull(sheetName);
+      this.startColumn = startColumn;
+      this.endColumn = endColumn;
+      this.startRow = startRow;
+      this.endRow = endRow;
    }
 
    public String getSheetName() {
-      return sheet.getSheetName();
+      return sheetName;
    }
 
-   public String getStartColumn() {
+   public int getStartColumn() {
       return startColumn;
    }
 
-   public String getEndColumn() {
+   public int getEndColumn() {
       return endColumn;
    }
 
-   public String getStartRow() {
+   public int getStartRow() {
       return startRow;
    }
 
-   public String getEndRow() {
+   public int getEndRow() {
       return endRow;
    }
 
-   public int getStartColumnIndex() {
-      return CellUtils.toColumnIndex(startColumn);
-   }
-
-   public int getEndColumnIndex() {
-      return (ANY_WILDCARD.equals(endColumn)) ? sheet.getEndColumnIndex() : CellUtils.toColumnIndex(endColumn);
-   }
-
-   public int getStartRowIndex() {
-      return CellUtils.toRowIndex(startRow);
-   }
-
-   public int getEndRowIndex() {
-      return (ANY_WILDCARD.equals(endRow)) ? sheet.getEndRowIndex() : CellUtils.toRowIndex(endRow);
-   }
-
    public Iterator getIterator() {
-      return new Iterator(getStartColumnIndex()-1, getStartRowIndex());
+      return new Iterator(startColumn-1, startRow);
    }
 
    public class Iterator {
@@ -78,13 +59,13 @@ public class RenderingContext {
       }
 
       public CellCursor getCursor() {
-         return new CellCursor(getSheetName(), column, row);
+         return new CellCursor(sheetName, column, row);
       }
 
       public boolean next() {
          boolean hasNext = true;
          if (moveToNextColumn()) {
-            column = getStartColumnIndex()-1;
+            column = startColumn-1;
             if (moveToNextRow()) {
                hasNext = false;
             }
@@ -94,12 +75,12 @@ public class RenderingContext {
 
       private boolean moveToNextColumn() {
          column++;
-         return column > getEndColumnIndex();
+         return column > getEndColumn();
       }
 
       private boolean moveToNextRow() {
          row++;
-         return row > getEndRowIndex();
+         return row > getEndRow();
       }
    }
 }
