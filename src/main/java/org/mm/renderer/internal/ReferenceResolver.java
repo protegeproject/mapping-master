@@ -1,6 +1,8 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.mm.directive.ReferenceDirectives;
@@ -149,6 +151,15 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             case OWL_NAMED_INDIVIDUAL: value = processIndividualName(cellAddress, cellValueString, directives); break;
             case OWL_IRI: value = getIriValue(cellValueString); break;
             case MM_ENTITY_IRI: value = getEntityName(cellValueString); break;
+            case XSD_DATETIME:
+               String dateTimeString = cellValueString;
+               value = processLiteral(dateTimeString, directives); break;
+            case XSD_DATE:
+               String dateString = cellValueString.split("T")[0];
+               value = processLiteral(dateString, directives); break;
+            case XSD_TIME:
+               String timeString = cellValueString.split("T")[1];
+               value = processLiteral(timeString, directives); break;
             case XSD_STRING:
             case XSD_DECIMAL:
             case XSD_BYTE:
@@ -158,9 +169,6 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             case XSD_FLOAT:
             case XSD_DOUBLE:
             case XSD_BOOLEAN:
-            case XSD_TIME:
-            case XSD_DATETIME:
-            case XSD_DATE:
             case XSD_DURATION:
             case RDF_PLAINLITERAL: value = processLiteral(cellValueString, directives); break;
             default: throw new RuntimeException("Programming error: Unknown directive to handle reference type"

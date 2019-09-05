@@ -1,16 +1,16 @@
 package org.mm.renderer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK;
-import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN;
-import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_ERROR;
-import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_FORMULA;
-import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC;
-import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 
 /**
@@ -55,12 +55,45 @@ public class Sheet {
       return poiSheet.getLastRowNum();
    }
 
+   public void addValueToCell(int column, int row, boolean value) {
+      Row poiRow = poiSheet.getRow(row);
+      if (poiRow == null) {
+         poiRow = poiSheet.createRow(row);
+      }
+      poiRow.createCell(column).setCellValue(value);
+   }
+
+   public void addValueToCell(int column, int row, double value) {
+      Row poiRow = poiSheet.getRow(row);
+      if (poiRow == null) {
+         poiRow = poiSheet.createRow(row);
+      }
+      poiRow.createCell(column).setCellValue(value);
+   }
+
    public void addValueToCell(int column, int row, String value) {
       Row poiRow = poiSheet.getRow(row);
       if (poiRow == null) {
          poiRow = poiSheet.createRow(row);
       }
       poiRow.createCell(column).setCellValue(value);
+   }
+
+   public void addValueToCell(int column, int row, Date value) {
+      Row poiRow = poiSheet.getRow(row);
+      if (poiRow == null) {
+         poiRow = poiSheet.createRow(row);
+      }
+      Cell cell = poiRow.createCell(column);
+      cell.setCellValue(value);
+      setValueAsDate(cell);
+   }
+
+   private void setValueAsDate(Cell cell) {
+      CellStyle cellStyle = poiSheet.getWorkbook().createCellStyle();
+      CreationHelper createHelper = poiSheet.getWorkbook().getCreationHelper();
+      cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-MM-ddThh:mm:ss"));
+      cell.setCellStyle(cellStyle);
    }
 
    public Optional<String> getValueFromCell(int column, int row) {
@@ -78,19 +111,23 @@ public class Sheet {
 
    @Nullable
    private String getCellValue(Cell cell) {
-      int cellType = cell.getCellType();
+      CellType cellType = cell.getCellType();
       switch (cellType) {
-         case CELL_TYPE_BLANK: return null;
-         case CELL_TYPE_NUMERIC:
-            if (isInteger(cell.getNumericCellValue())) {
-               return String.valueOf((int) cell.getNumericCellValue());
+         case BLANK: return null;
+         case NUMERIC:
+            double value = cell.getNumericCellValue();
+            if (DateUtil.isCellDateFormatted(cell)) {
+               String pattern = "yyyy-MM-dd'T'hh:mm:ss";  // ISO 8601
+               return new SimpleDateFormat(pattern).format(cell.getDateCellValue());
+            } else if (isInteger(value)) {
+               return String.valueOf((int) value);
             } else {
-               return String.valueOf(cell.getNumericCellValue());
+               return String.valueOf(value);
             }
-         case CELL_TYPE_STRING: return cell.getStringCellValue();
-         case CELL_TYPE_FORMULA: return String.valueOf(cell.getStringCellValue());
-         case CELL_TYPE_BOOLEAN: return String.valueOf(cell.getBooleanCellValue());
-         case CELL_TYPE_ERROR: return null;
+         case STRING: return cell.getStringCellValue();
+         case FORMULA: return String.valueOf(cell.getStringCellValue());
+         case BOOLEAN: return String.valueOf(cell.getBooleanCellValue());
+         case ERROR: return null;
          default: return null;
       }
    }

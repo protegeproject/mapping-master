@@ -1,5 +1,7 @@
 package org.mm.renderer;
 
+import java.util.Date;
+
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
@@ -17,7 +19,31 @@ public abstract class AbstractRendererTest {
       return workbook;
    }
 
+   protected void createCell(String sheetName, int columnNumber, int rowNumber, boolean value) {
+      Sheet sheet = workbook.getSheet(sheetName);
+      if (sheet == null) {
+         sheet = workbook.createSheet(sheetName);
+      }
+      sheet.addValueToCell(columnNumber-1, rowNumber-1, value);
+   }
+
+   protected void createCell(String sheetName, int columnNumber, int rowNumber, double value) {
+      Sheet sheet = workbook.getSheet(sheetName);
+      if (sheet == null) {
+         sheet = workbook.createSheet(sheetName);
+      }
+      sheet.addValueToCell(columnNumber-1, rowNumber-1, value);
+   }
+
    protected void createCell(String sheetName, int columnNumber, int rowNumber, String value) {
+      Sheet sheet = workbook.getSheet(sheetName);
+      if (sheet == null) {
+         sheet = workbook.createSheet(sheetName);
+      }
+      sheet.addValueToCell(columnNumber-1, rowNumber-1, value);
+   }
+
+   protected void createCell(String sheetName, int columnNumber, int rowNumber, Date value) {
       Sheet sheet = workbook.getSheet(sheetName);
       if (sheet == null) {
          sheet = workbook.createSheet(sheetName);
