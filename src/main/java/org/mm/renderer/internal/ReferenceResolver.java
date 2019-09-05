@@ -1,8 +1,6 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.mm.directive.ReferenceDirectives;
