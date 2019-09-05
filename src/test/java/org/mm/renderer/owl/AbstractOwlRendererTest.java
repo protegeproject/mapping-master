@@ -87,12 +87,7 @@ public abstract class AbstractOwlRendererTest extends AbstractRendererTest {
 
    private RenderingContext getDefaultRenderingContext() {
       final Sheet sheet = getWorkbook().getSheet(0);
-      return new RenderingContext(
-            sheet.getSheetName(),
-            sheet.getStartColumnIndex(),
-            sheet.getEndColumnIndex(),
-            sheet.getStartRowIndex(),
-            sheet.getEndRowIndex());
+      return new RenderingContext(sheet, "A", "+", "1", "+");
    }
 
    protected void setPrefix(String prefixName, String prefix) {
