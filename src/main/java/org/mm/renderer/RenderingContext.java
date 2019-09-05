@@ -47,24 +47,24 @@ public class RenderingContext {
       return endRow;
    }
 
-   public int getStartColumnNum() {
+   public int getStartColumnIndex() {
       return CellUtils.toColumnIndex(startColumn);
    }
 
-   public int getEndColumnNum() {
+   public int getEndColumnIndex() {
       return (ANY_WILDCARD.equals(endColumn)) ? sheet.getEndColumnIndex() : CellUtils.toColumnIndex(endColumn);
    }
 
-   public int getStartRowNum() {
+   public int getStartRowIndex() {
       return CellUtils.toRowIndex(startRow);
    }
 
-   public int getEndRowNum() {
+   public int getEndRowIndex() {
       return (ANY_WILDCARD.equals(endRow)) ? sheet.getEndRowIndex() : CellUtils.toRowIndex(endRow);
    }
 
    public Iterator getIterator() {
-      return new Iterator(getStartColumnNum()-1, getStartRowNum());
+      return new Iterator(getStartColumnIndex()-1, getStartRowIndex());
    }
 
    public class Iterator {
@@ -84,7 +84,7 @@ public class RenderingContext {
       public boolean next() {
          boolean hasNext = true;
          if (moveToNextColumn()) {
-            column = getStartColumnNum()-1;
+            column = getStartColumnIndex()-1;
             if (moveToNextRow()) {
                hasNext = false;
             }
@@ -94,12 +94,12 @@ public class RenderingContext {
 
       private boolean moveToNextColumn() {
          column++;
-         return column > getEndColumnNum();
+         return column > getEndColumnIndex();
       }
 
       private boolean moveToNextRow() {
          row++;
-         return row > getEndRowNum();
+         return row > getEndRowIndex();
       }
    }
 }
