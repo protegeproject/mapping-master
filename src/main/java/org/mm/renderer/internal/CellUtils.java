@@ -37,6 +37,23 @@ public class CellUtils {
    }
 
    /**
+    * Returns the physical column label. For example, the column number 4 has a column label of "D".
+    * 
+    * @param columnNumber Column number (1-based)
+    * 
+    * @return A label representing the column number.
+    */
+   public static String toColumnLabel(int columnNumber) {
+      String label = "";
+      while (columnNumber > 0) {
+         columnNumber--;
+         label = (char) (columnNumber % 26 + 65) + label;
+         columnNumber = columnNumber / 26;
+      }
+      return label;
+   }
+
+   /**
     * Returns the logical row (not physical) 0-based ordering. For example, the row label "2" has an
     * index number of 1.
     * 

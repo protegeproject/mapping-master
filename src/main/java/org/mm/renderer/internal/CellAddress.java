@@ -68,16 +68,6 @@ public class CellAddress {
 
    @Override
    public String toString() {
-      return format("%s!%s%s", getSheetName(), columnNumber2Name(columnNumber), rowNumber);
-   }
-
-   private static String columnNumber2Name(int column) {
-      String col = "";
-      while (column > 0) {
-         column--;
-         col = (char) (column % 26 + 65) + col;
-         column = column / 26;
-      }
-      return col;
+      return format("%s!%s%s", getSheetName(), CellUtils.toColumnLabel(columnNumber), rowNumber);
    }
 }
