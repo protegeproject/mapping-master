@@ -135,4 +135,9 @@ public class Sheet {
    private boolean isInteger(double number) {
       return (number == Math.floor(number) && !Double.isInfinite(number));
    }
+
+   @Override
+   public String toString() {
+      return getSheetName();
+   }
 }

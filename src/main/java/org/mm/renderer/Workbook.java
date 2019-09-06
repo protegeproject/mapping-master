@@ -1,9 +1,11 @@
 package org.mm.renderer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.mm.renderer.internal.CellAddress;
 
@@ -35,6 +37,22 @@ public class Workbook {
 
    public Sheet getSheet(int sheetIndex) {
       return new Sheet(workbook.getSheetAt(sheetIndex));
+   }
+
+   public List<Sheet> getSheets() {
+      List<Sheet> sheets = Lists.newArrayList();
+      for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+         sheets.add(getSheet(i));
+      }
+      return sheets;
+   }
+
+   public List<String> getSheetNames() {
+      List<String> names = Lists.newArrayList();
+      for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+         names.add(workbook.getSheetName(i));
+      }
+      return names;
    }
 
    public Optional<String> getCellValue(CellAddress cellAddress) {
