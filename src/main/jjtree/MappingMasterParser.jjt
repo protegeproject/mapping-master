@@ -896,7 +896,7 @@ void reference(int type) #Reference :
 {
   reference_notation()
     ( LOOKAHEAD(2)
-       "(" ( builtin_function() { jjtThis.hasBuiltInFunction = true; })? ( reference_directive() )* ")"
+       "(" ( reference_directive() )* ( builtin_function() { jjtThis.hasBuiltInFunction = true; })? ")"
     )?
   {
     jjtThis.referenceDirectives = new ReferenceDirectives(

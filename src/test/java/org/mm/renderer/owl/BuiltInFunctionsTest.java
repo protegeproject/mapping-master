@@ -110,7 +110,7 @@ public class BuiltInFunctionsTest extends AbstractOwlRendererTest {
       createCell("Sheet1", 1, 1, "p1");
       createCell("Sheet1", 2, 1, "23000.2");
       // Act
-      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1(mm:decimalFormat(\"###,###.00\") xsd:decimal)");
+      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:decimal mm:decimalFormat(\"###,###.00\"))");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
@@ -178,7 +178,7 @@ public class BuiltInFunctionsTest extends AbstractOwlRendererTest {
       createCell("Sheet1", 1, 1, "p1");
       createCell("Sheet1", 2, 1, text);
       // Act
-      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1(mm:capturing(\"([0-9]+.[0-9]+)\") xsd:decimal)");
+      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:decimal mm:capturing(\"([0-9]+.[0-9]+)\"))");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
@@ -195,7 +195,7 @@ public class BuiltInFunctionsTest extends AbstractOwlRendererTest {
       createCell("Sheet1", 1, 1, "p1");
       createCell("Sheet1", 2, 1, text);
       // Act
-      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1([\"([0-9]+.[0-9]+)\"] xsd:decimal)");
+      Set<OWLAxiom> results = evaluate("Individual: @A1 Facts: hasValue @B1(xsd:decimal [\"([0-9]+.[0-9]+)\"])");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
