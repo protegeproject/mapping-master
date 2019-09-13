@@ -9,11 +9,11 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class EntityName implements Value {
+public class PrefixedValue implements Value {
 
    private final String prefixedName;
 
-   public EntityName(@Nonnull String prefixedName) {
+   public PrefixedValue(@Nonnull String prefixedName) {
       this.prefixedName = checkNotNull(prefixedName);
    }
 
@@ -23,8 +23,8 @@ public class EntityName implements Value {
    }
 
    @Override
-   public EntityName update(String newPrefixedName) {
-      return new EntityName(newPrefixedName);
+   public PrefixedValue update(String newPrefixedName) {
+      return new PrefixedValue(newPrefixedName);
    }
 
    @Override
@@ -35,10 +35,10 @@ public class EntityName implements Value {
       if (this == o) {
          return true;
       }
-      if (!(o instanceof EntityName)) {
+      if (!(o instanceof PrefixedValue)) {
          return false;
       }
-      EntityName other = (EntityName) o;
+      PrefixedValue other = (PrefixedValue) o;
       return Objects.equal(prefixedName, other.getString());
    }
 

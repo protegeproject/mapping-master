@@ -135,13 +135,13 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    @Deprecated
    public void visit(ASTName node) {
       String name = node.getValue();
-      value = new EntityName(name);
+      value = new PrefixedValue(name);
    }
 
    @Override
    public void visit(ASTQName node) {
       String name = node.getValue();
-      value = new EntityName(name);
+      value = new PrefixedValue(name);
    }
 
    @Override

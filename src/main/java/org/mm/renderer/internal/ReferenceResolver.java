@@ -263,8 +263,8 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return new IriValue(cellValue);
    }
 
-   private EntityName getEntityName(String cellValue) {
-      return new EntityName(cellValue);
+   private PrefixedValue getEntityName(String cellValue) {
+      return new PrefixedValue(cellValue);
    }
 
    private Value processLiteral(String cellValue, ReferenceDirectives directives) {
