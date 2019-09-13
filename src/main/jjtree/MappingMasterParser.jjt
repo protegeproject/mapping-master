@@ -595,10 +595,10 @@ void different_from() #DifferentFrom : {}
 
 void class_expression() #ClassExpressionCategory : {}
 {
-  ( LOOKAHEAD(3) atomic_class()
+  ( LOOKAHEAD(4) restriction()
+    | atomic_class()
     | "(" boolean_class_expression() ")"
     | object_one_of()
-    | restriction()
   )
 }
 
@@ -640,12 +640,12 @@ void object_one_of() #ObjectOneOf : {}
 
 void restriction() : {}
 {
-  ( LOOKAHEAD(2) exact_cardinality()
-    | LOOKAHEAD(2) max_cardinality()
-    | LOOKAHEAD(2) min_cardinality()
-    | LOOKAHEAD(2) has_value()
-    | LOOKAHEAD(2) all_values_from()
-    | some_values_from()
+  ( LOOKAHEAD(4) exact_cardinality()
+    | LOOKAHEAD(4) max_cardinality()
+    | LOOKAHEAD(4) min_cardinality()
+    | LOOKAHEAD(4) has_value()
+    | LOOKAHEAD(3) all_values_from()
+    | LOOKAHEAD(3) some_values_from()
   )
 }
 
@@ -676,7 +676,7 @@ void object_exact_cardinality() #ObjectExactCardinality :
 }
 {
   object_property() <EXACTLY> cardinality = cardinality_value()
-      ( "(" class_expression() ")" { hasExplicitClassExpression = true; } )?
+      ( class_expression() { hasExplicitClassExpression = true; } )?
   {
     jjtThis.cardinality = cardinality;
     jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
@@ -710,7 +710,7 @@ void object_max_cardinality() #ObjectMaxCardinality :
 }
 {
   object_property() <MAX> cardinality = cardinality_value()
-      ( "(" class_expression() ")" { hasExplicitClassExpression = true; } )?
+      ( class_expression() { hasExplicitClassExpression = true; } )?
       
   {
     jjtThis.cardinality = cardinality;
@@ -745,7 +745,7 @@ void object_min_cardinality() #ObjectMinCardinality :
 }
 {
   object_property() <MIN> cardinality = cardinality_value()
-      ( "(" class_expression() ")" { hasExplicitClassExpression = true; } )?
+      ( class_expression() { hasExplicitClassExpression = true; } )?
       
   {
     jjtThis.cardinality = cardinality;
@@ -766,7 +766,7 @@ int cardinality_value() :
 
 void has_value() : {}
 {
-  ( LOOKAHEAD(3) data_has_value()
+  ( LOOKAHEAD(4) data_has_value()
     | object_has_value()
   )
 }
@@ -793,7 +793,7 @@ void data_all_values_from() #DataAllValuesFrom :
   int datatype;
 }
 {
-  property() <ONLY> datatype = datatype()
+  data_property() <ONLY> datatype = datatype()
   {
     jjtThis.datatype = datatype;
   }
@@ -801,7 +801,7 @@ void data_all_values_from() #DataAllValuesFrom :
 
 void object_all_values_from() #ObjectAllValuesFrom : {}
 {
-  property() <ONLY> class_expression()
+  object_property() <ONLY> class_expression()
 }
 
 void some_values_from() : {}
@@ -816,7 +816,7 @@ void data_some_values_from() #DataSomeValuesFrom :
   int datatype;
 }
 {
-  property() <SOME> datatype = datatype()
+  data_property() <SOME> datatype = datatype()
   {
     jjtThis.datatype = datatype;
   }
@@ -824,7 +824,7 @@ void data_some_values_from() #DataSomeValuesFrom :
 
 void object_some_values_from() #ObjectSomeValuesFrom : {}
 {
-  property() <SOME> class_expression()
+  object_property() <SOME> class_expression()
 }
 
 //------------------------------------------------------------------------------------------
@@ -884,6 +884,7 @@ void object_value() #ObjectValue() : {}
 {
   ( reference(OWL_NAMED_INDIVIDUAL)
     | qname()
+    | iri()
   )
 }
 
@@ -895,7 +896,7 @@ void reference(int type) #Reference :
 }
 {
   reference_notation()
-    ( LOOKAHEAD(2)
+    (
        "(" ( reference_directive() )* ( builtin_function() { jjtThis.hasBuiltInFunction = true; })? ")"
     )?
   {
