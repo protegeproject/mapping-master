@@ -18,6 +18,9 @@ PARSER_BEGIN(MappingMasterParser)
 
 package org.mm.parser;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import javax.annotation.Nonnull;
+
 import org.mm.renderer.internal.ReferenceNotation;
 
 import org.mm.directive.ReferenceDirectives;
@@ -27,43 +30,18 @@ import java.util.*;
 
 public class MappingMasterParser {
 
-  private String prefix;
-  private String namespace;
-  private String language;
+  private ReferenceDirectives systemDirectives;
+  private ReferenceDirectives localDirectives;
+  private ReferenceDirectives userDirectives;
 
-  private int entityType;
-  private int propertyType;
-
-  private int valueDatatype;
-
-  private int iriEncoding;
-
-  private int shiftDirection;
-
-  private String labelValue;
-  private String literalValue;
-
-  private int orderIfCellEmpty;
-  private int orderIfEntityAbsent;
-
-  public MappingMasterParser(java.io.InputStream inputStream, int unused) {
+  public MappingMasterParser(@Nonnull java.io.InputStream inputStream, int unused) {
     this(inputStream, new DefaultDirectives(), unused);
   }
 
-  public MappingMasterParser(java.io.InputStream inputStream, ReferenceDirectives systemDirectives, int unused) {
-    this(inputStream);
-    prefix = systemDirectives.getPrefix();
-    namespace = systemDirectives.getNamespace();
-    language = systemDirectives.getLanguage();
-    entityType = systemDirectives.getEntityType();
-    propertyType = systemDirectives.getPropertyType();
-    valueDatatype = systemDirectives.getValueDatatype();
-    iriEncoding = systemDirectives.getIriEncoding();
-    shiftDirection = systemDirectives.getShiftDirection();
-    labelValue = systemDirectives.getLabelValue();
-    literalValue = systemDirectives.getLiteralValue();
-    orderIfCellEmpty = systemDirectives.getOrderIfCellEmpty();
-    orderIfEntityAbsent = systemDirectives.getOrderIfEntityAbsent();
+  public MappingMasterParser(@Nonnull java.io.InputStream inputStream, @Nonnull ReferenceDirectives systemDirectives, int unused) {
+    this(checkNotNull(inputStream));
+    this.systemDirectives = checkNotNull(systemDirectives);
+    this.localDirectives = new ReferenceDirectives(systemDirectives);
   }
 
   public SimpleNode getTransformationRuleNode() throws ParseException {
@@ -222,9 +200,7 @@ TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
 TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
 TOKEN: { <OWL_ANNOTATION_PROPERTY: "AnnotationProperty"> }
 TOKEN: { <OWL_LITERAL: "Literal"> }
-TOKEN: { <OWL_DATATYPE: "Datatype"> }
 TOKEN: { <OWL_IRI: "IRI"> }
-TOKEN: { <MM_ENTITY_IRI: "mm:entityIRI"> }
 
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
 TOKEN: { <MM_TO_LOWER_CASE: "mm:toLowerCase"> }
@@ -297,7 +273,7 @@ TOKEN:
 
 SimpleNode transformation_rule() #TransformationRule : {}
 {
-  (  rule_directive()
+  ( rule_directive()
     | rule_expression()
   ) <EOF>
   {
@@ -332,7 +308,7 @@ void mm_default_prefix_directive() :
 {
   <MM_DEFAULT_PREFIX> "=" defaultPrefix = string_value()
   {
-    prefix = defaultPrefix;
+    localDirectives = localDirectives.setPrefix(defaultPrefix);
   }
 }
 
@@ -343,7 +319,7 @@ void mm_default_namespace_directive() :
 {
   <MM_DEFAULT_NAMESPACE> "=" defaultNamespace = string_value()
   {
-    namespace = defaultNamespace;
+    localDirectives = localDirectives.setNamespace(defaultNamespace);
   }
 }
 
@@ -354,18 +330,18 @@ void mm_default_language_directive() :
 {
   <MM_DEFAULT_LANGUAGE> "=" defaultLanguage = string_value()
   {
-    language = defaultLanguage;
+    localDirectives = localDirectives.setLanguage(defaultLanguage);
   }
 }
 
 void mm_default_reference_type_directive() :
 {
-  int defaultReferenceType;
+  int defaultEntityType;
 }
 {
-  <MM_DEFAULT_REFERENCE_TYPE> "=" defaultReferenceType = reference_type()
+  <MM_DEFAULT_REFERENCE_TYPE> "=" defaultEntityType = reference_type()
   {
-    entityType = defaultReferenceType;
+    localDirectives = localDirectives.setEntityType(defaultEntityType);
   }
 }
 
@@ -376,7 +352,7 @@ void mm_default_property_type_directive() :
 {
   <MM_DEFAULT_PROPERTY_TYPE> "=" defaultPropertyType = property_type()
   {
-    propertyType = defaultPropertyType;
+    localDirectives = localDirectives.setPropertyType(defaultPropertyType);
   }
 }
 
@@ -387,7 +363,7 @@ void mm_default_value_datatype_directive() :
 {
   <MM_DEFAULT_VALUE_DATATYPE> "=" defaultValueDatatype = datatype()
   {
-    valueDatatype = defaultValueDatatype;
+    localDirectives = localDirectives.setValueDatatype(defaultValueDatatype);
   }
 }
 
@@ -398,7 +374,7 @@ void mm_default_iri_encoding_directive() :
 {
   <MM_DEFAULT_IRI_ENCODING> "=" defaultIriEncoding = iri_encoding()
   {
-    iriEncoding = defaultIriEncoding;
+    localDirectives = localDirectives.setIriEncoding(defaultIriEncoding);
   }
 }
 
@@ -409,7 +385,7 @@ void mm_default_shift_direction_directive() :
 {
   <MM_DEFAULT_SHIFT_DIRECTION> "=" defaultShiftDirection = shift_direction()
   {
-    shiftDirection = defaultShiftDirection;
+    localDirectives = localDirectives.setShiftDirection(defaultShiftDirection);
   }
 }
 
@@ -420,7 +396,7 @@ void mm_default_label_value_directive() :
 {
   <MM_DEFAULT_LABEL> "=" defaultLabelValue = string_value()
   {
-    labelValue = defaultLabelValue;
+    localDirectives = localDirectives.setLabelValue(defaultLabelValue);
   }
 }
 
@@ -431,7 +407,7 @@ void mm_default_literal_value_directive() :
 {
   <MM_DEFAULT_LITERAL> "=" defaultLiteralValue = string_value()
   {
-    literalValue = defaultLiteralValue;
+    localDirectives = localDirectives.setLiteralValue(defaultLiteralValue);
   }
 }
 
@@ -442,7 +418,7 @@ void mm_default_order_if_cell_empty_directive() :
 {
   <MM_DEFAULT_ORDER_IF_CELL_EMPTY> "=" defaultOrderIfCellEmpty = order_type()
   {
-    orderIfCellEmpty = defaultOrderIfCellEmpty;
+    localDirectives = localDirectives.setOrderIfCellEmpty(defaultOrderIfCellEmpty);
   }
 }
 
@@ -453,7 +429,7 @@ void mm_default_order_if_entity_absent_directive() :
 {
   <MM_DEFAULT_ORDER_IF_ENTITY_ABSENT> "=" defaultOrderIfEntityAbsent = order_type()
   {
-    orderIfEntityAbsent = defaultOrderIfEntityAbsent;
+    localDirectives = localDirectives.setOrderIfEntityAbsent(defaultOrderIfEntityAbsent);
   }
 }
 
@@ -515,7 +491,7 @@ void annotation_value() #AnnotationValue : {}
 {
   ( iri(OWL_IRI)
     | literal()
-    | reference(valueDatatype)
+    | reference(MM_UNTYPED)
   )
 }
 
@@ -556,9 +532,9 @@ void fact() #Fact : {}
 
 void property_value() #PropertyValue : {}
 {
-  ( reference(MM_UNTYPED)
-    | iri(OWL_IRI)
+  ( iri(OWL_IRI)
     | literal()
+    | reference(MM_UNTYPED)
   )
 }
 
@@ -823,7 +799,7 @@ void object_some_values_from() #ObjectSomeValuesFrom : {}
 void property() #Property : {}
 {
   ( value(MM_UNTYPED)
-    | reference(propertyType)
+    | reference(localDirectives.getPropertyType())
   )
 }
 
@@ -873,7 +849,7 @@ void value(int type) #Value : {}
 
 void literal_value() #LiteralValue : {}
 {
-  ( reference(valueDatatype)
+  ( reference(MM_UNTYPED)
     | literal()
   )
 }
@@ -888,9 +864,7 @@ void object_value() #ObjectValue() : {}
 
 void reference(int type) #Reference :
 {
-  entityType = type;
-  ReferenceDirectives referenceDirectives;
-  boolean hasBuiltInFunction = false;
+  userDirectives = new ReferenceDirectives(localDirectives).setEntityType(type);
 }
 {
   reference_notation()
@@ -898,17 +872,13 @@ void reference(int type) #Reference :
        "(" ( reference_directive() )* ( builtin_function() { jjtThis.hasBuiltInFunction = true; })? ")"
     )?
   {
-    jjtThis.referenceDirectives = new ReferenceDirectives(
-        prefix, namespace, language, labelValue, literalValue,
-        entityType, propertyType, valueDatatype, iriEncoding,
-        shiftDirection, orderIfCellEmpty, orderIfEntityAbsent);
+    jjtThis.referenceDirectives = new ReferenceDirectives(userDirectives);
   }
 }
 
 void name(int type) #Name :
 {
   String name;
-  int entityType;
 }
 {
   ( LOOKAHEAD(2) name = prefixed_name()
@@ -946,7 +916,6 @@ String unprefixed_name() :
 void iri(int type) #Iri :
 {
   Token t;
-  int entityType;
 }
 {
   t = <IRI_REF>
@@ -1059,11 +1028,12 @@ void reference_directive() :
   ( prefix_directive()
    | namespace_directive()
    | language_directive()
-   | value = reference_type() { entityType = value; }
-   | value = iri_encoding() { iriEncoding = value; }
-   | value = shift_direction() { shiftDirection = value; }
-   | value = order_if_cell_empty() { orderIfCellEmpty = value; }
-   | value = order_if_entity_absent() { orderIfEntityAbsent = value; }
+   | value = reference_type() { userDirectives = userDirectives.setEntityType(value); }
+   | value = datatype() { userDirectives = userDirectives.setValueDatatype(value).setEntityType(OWL_LITERAL); }
+   | value = iri_encoding() { userDirectives = userDirectives.setIriEncoding(value); }
+   | value = shift_direction() { userDirectives = userDirectives.setShiftDirection(value); }
+   | value = order_if_cell_empty() { userDirectives = userDirectives.setOrderIfCellEmpty(value); }
+   | value = order_if_entity_absent() { userDirectives = userDirectives.setOrderIfEntityAbsent(value); }
   )
 }
 
@@ -1074,7 +1044,7 @@ void prefix_directive() :
 {
   <MM_PREFIX> "=" prefixValue = string_value()
   {
-    prefix = prefixValue;
+    userDirectives = userDirectives.setPrefix(prefixValue);
   }
 }
 
@@ -1085,7 +1055,7 @@ void namespace_directive() :
 {
   <MM_NAMESPACE> "=" namespaceValue = string_value()
   {
-    namespace = namespaceValue;
+    userDirectives = userDirectives.setNamespace(namespaceValue);
   }
 }
 
@@ -1101,9 +1071,9 @@ void language_directive() :
                | ( "!" "=" <MM_NULL> { languageValue = "+"; } )
              )
   {
-    language = languageValue;
-    entityType = RDF_PLAINLITERAL;
-    valueDatatype = RDF_PLAINLITERAL;
+    userDirectives = userDirectives.setLanguage(languageValue)
+                            .setEntityType(OWL_LITERAL)
+                            .setValueDatatype(RDF_PLAINLITERAL);
   }
 }
 
@@ -1251,24 +1221,19 @@ int iri_encoding() :
   }
 }
 
-int reference_type() #ReferenceType :
+int reference_type() :
 {
   Token t;
-  int datatype;
+  int entityType;
 }
 {
   ( t = <OWL_CLASS> { entityType = t.kind; }
-   | t = <OWL_NAMED_INDIVIDUAL> { entityType = t.kind; }
-   | t = <OWL_OBJECT_PROPERTY> { entityType = t.kind; }
-   | t = <OWL_DATA_PROPERTY> { entityType = t.kind; }
-   | t = <OWL_ANNOTATION_PROPERTY> { entityType = t.kind; }
-   | t = <OWL_IRI> { entityType = t.kind; }
-   | t = <MM_ENTITY_IRI> { entityType = t.kind; }
-   | datatype = datatype()
-     {
-       entityType = datatype;
-       valueDatatype = datatype; // assign as well as property value datatype
-     }
+    | t = <OWL_NAMED_INDIVIDUAL> { entityType = t.kind; }
+    | t = <OWL_OBJECT_PROPERTY> { entityType = t.kind; }
+    | t = <OWL_DATA_PROPERTY> { entityType = t.kind; }
+    | t = <OWL_ANNOTATION_PROPERTY> { entityType = t.kind; }
+    | t = <OWL_IRI> { entityType = t.kind; }
+    | t = <OWL_LITERAL> { entityType = t.kind; }
   )
   {
     return entityType;

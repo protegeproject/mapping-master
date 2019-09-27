@@ -50,7 +50,7 @@ public class PlainLiteralValue implements Value {
    }
 
    public String getDatatype() {
-      return "rdf:PlainLiteral";
+      return Datatypes.RDF_PLAINLITERAL;
    }
 
    @Override

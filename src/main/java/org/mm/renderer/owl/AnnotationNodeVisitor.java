@@ -17,6 +17,7 @@ import org.mm.renderer.internal.LiteralValue;
 import org.mm.renderer.internal.PlainLiteralValue;
 import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.UntypedIri;
+import org.mm.renderer.internal.UntypedValue;
 import org.mm.renderer.internal.Value;
 import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -86,6 +87,8 @@ public class AnnotationNodeVisitor extends NodeVisitorAdapter {
          annotationValue = owlFactory.getOWLAnnotationValue((LiteralValue) value);
       } else if (value instanceof PlainLiteralValue) {
          annotationValue = owlFactory.getOWLAnnotationValue((PlainLiteralValue) value);
+      } else if (value instanceof UntypedValue) {
+         annotationValue = owlFactory.getOWLAnnotationValue(((UntypedValue) value).asLiteralValue());
       }
    }
 

@@ -65,7 +65,6 @@ public interface MappingMasterParserTreeConstants
   public int JJTBUILTINFUNCTION = 57;
   public int JJTARGUMENTLIST = 58;
   public int JJTARGUMENT = 59;
-  public int JJTREFERENCETYPE = 60;
 
 
   public String[] jjtNodeName = {
@@ -129,7 +128,6 @@ public interface MappingMasterParserTreeConstants
     "BuiltInFunction",
     "ArgumentList",
     "Argument",
-    "ReferenceType",
   };
 }
-/* JavaCC - OriginalChecksum=4c1554ba39742f18c22782f84784f761 (do not edit this line) */
+/* JavaCC - OriginalChecksum=6311eae1b2e51c44e0119106128148d6 (do not edit this line) */

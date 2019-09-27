@@ -19,7 +19,6 @@ import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.Node;
 import org.mm.renderer.CellCursor;
-import org.mm.renderer.internal.LiteralValue.Datatype;
 import com.google.common.collect.Lists;
 
 public class BuiltInFunctionNodeVisitor extends NodeVisitorAdapter {
@@ -100,24 +99,24 @@ public class BuiltInFunctionNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTIntegerLiteral node) {
       int literal = node.getLexicalValue();
-      arguments.add(LiteralValue.create(literal, Datatype.XSD_INTEGER));
+      arguments.add(LiteralValue.create(literal, Datatypes.XSD_INTEGER));
    }
 
    @Override
    public void visit(ASTFloatLiteral node) {
       float literal = node.getLexicalValue();
-      arguments.add(LiteralValue.create(literal, Datatype.XSD_FLOAT));
+      arguments.add(LiteralValue.create(literal, Datatypes.XSD_FLOAT));
    }
 
    @Override
    public void visit(ASTStringLiteral node) {
       String literal = node.getLexicalValue();
-      arguments.add(LiteralValue.create(literal, Datatype.XSD_STRING));
+      arguments.add(LiteralValue.create(literal, Datatypes.XSD_STRING));
    }
 
    @Override
    public void visit(ASTBooleanLiteral node) {
       boolean literal = node.getLexicalValue();
-      arguments.add(LiteralValue.create(literal, Datatype.XSD_BOOLEAN));
+      arguments.add(LiteralValue.create(literal, Datatypes.XSD_BOOLEAN));
    }
 }

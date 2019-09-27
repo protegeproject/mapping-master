@@ -29,7 +29,6 @@ import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.ASTValue;
 import org.mm.parser.node.Node;
 import org.mm.renderer.CellCursor;
-import org.mm.renderer.internal.LiteralValue.Datatype;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -169,24 +168,24 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTIntegerLiteral node) {
       int literal = node.getLexicalValue();
-      value = LiteralValue.create(literal, Datatype.XSD_INTEGER);
+      value = LiteralValue.create(literal, Datatypes.XSD_INTEGER);
    }
 
    @Override
    public void visit(ASTFloatLiteral node) {
       float literal = node.getLexicalValue();
-      value = LiteralValue.create(literal, Datatype.XSD_FLOAT);
+      value = LiteralValue.create(literal, Datatypes.XSD_FLOAT);
    }
 
    @Override
    public void visit(ASTStringLiteral node) {
       String literal = node.getLexicalValue();
-      value = LiteralValue.create(literal, Datatype.XSD_STRING);
+      value = LiteralValue.create(literal, Datatypes.XSD_STRING);
    }
 
    @Override
    public void visit(ASTBooleanLiteral node) {
       boolean literal = node.getLexicalValue();
-      value = LiteralValue.create(literal, Datatype.XSD_BOOLEAN);
+      value = LiteralValue.create(literal, Datatypes.XSD_BOOLEAN);
    }
 }

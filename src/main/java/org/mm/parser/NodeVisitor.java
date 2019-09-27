@@ -48,7 +48,6 @@ import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
-import org.mm.parser.node.ASTReferenceType;
 import org.mm.parser.node.ASTRestrictionCategory;
 import org.mm.parser.node.ASTRuleExpression;
 import org.mm.parser.node.ASTSameAs;
@@ -168,8 +167,6 @@ public interface NodeVisitor {
    void visit(ASTReference node);
 
    void visit(ASTReferenceNotation node);
-
-   void visit(ASTReferenceType node);
 
    void visit(ASTRestrictionCategory node);
 
