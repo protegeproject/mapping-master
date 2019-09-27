@@ -36,7 +36,6 @@ public class MappingMasterParser {
 
   private int valueDatatype;
 
-  private int valueEncoding;
   private int iriEncoding;
 
   private int shiftDirection;
@@ -59,7 +58,6 @@ public class MappingMasterParser {
     entityType = systemDirectives.getEntityType();
     propertyType = systemDirectives.getPropertyType();
     valueDatatype = systemDirectives.getValueDatatype();
-    valueEncoding = systemDirectives.getValueEncoding();
     iriEncoding = systemDirectives.getIriEncoding();
     shiftDirection = systemDirectives.getShiftDirection();
     labelValue = systemDirectives.getLabelValue();
@@ -198,10 +196,8 @@ TOKEN: { <XSD_NMTOKEN: "xsd:NMTOKEN" > }
 /* MappingMaster tokens */
 
 TOKEN: { <RDF_ID: "rdf:ID"> }
-TOKEN: { <RDFS_LABEL: "rdfs:label"> }
 TOKEN: { <XML_LANG: "xml:lang" > }
 
-TOKEN: { <MM_DEFAULT_VALUE_ENCODING: "mm:DefaultValueEncoding"> }
 TOKEN: { <MM_DEFAULT_IRI_ENCODING: "mm:DefaultIRIEncoding"> }
 TOKEN: { <MM_DEFAULT_SHIFT_DIRECTION: "mm:DefaultShiftDirection"> }
 TOKEN: { <MM_DEFAULT_REFERENCE_TYPE: "mm:DefaultReferenceType"> }
@@ -213,7 +209,6 @@ TOKEN: { <MM_DEFAULT_ORDER_IF_ENTITY_ABSENT: "mm:DefaultOrderIfEntityAbsent"> }
 
 TOKEN: { <MM_PREFIX: "mm:Prefix"> }
 TOKEN: { <MM_NAMESPACE: "mm:Namespace"> }
-TOKEN: { <MM_VALUE_ENCODING: "mm:ValueEncoding"> }
 TOKEN: { <MM_IRI_ENCODING: "mm:IRIEncoding"> }
 
 TOKEN: { <MM_UNTYPED: "mm:Untyped"> }
@@ -322,7 +317,6 @@ void rule_directive() : {}
     | mm_default_reference_type_directive()
     | mm_default_property_type_directive()
     | mm_default_value_datatype_directive()
-    | mm_default_value_encoding_directive()
     | mm_default_iri_encoding_directive()
     | mm_default_label_value_directive()
     | mm_default_literal_value_directive()
@@ -394,17 +388,6 @@ void mm_default_value_datatype_directive() :
   <MM_DEFAULT_VALUE_DATATYPE> "=" defaultValueDatatype = datatype()
   {
     valueDatatype = defaultValueDatatype;
-  }
-}
-
-void mm_default_value_encoding_directive() :
-{
-  int defaultValueEncoding;
-}
-{
-  <MM_DEFAULT_VALUE_ENCODING> "=" defaultValueEncoding = value_encoding()
-  {
-    valueEncoding = defaultValueEncoding;
   }
 }
 
@@ -917,9 +900,8 @@ void reference(int type) #Reference :
   {
     jjtThis.referenceDirectives = new ReferenceDirectives(
         prefix, namespace, language, labelValue, literalValue,
-        entityType, propertyType, valueDatatype,
-        valueEncoding, iriEncoding, shiftDirection,
-        orderIfCellEmpty, orderIfEntityAbsent);
+        entityType, propertyType, valueDatatype, iriEncoding,
+        shiftDirection, orderIfCellEmpty, orderIfEntityAbsent);
   }
 }
 
@@ -929,14 +911,13 @@ void name(int type) #Name :
   int entityType;
 }
 {
-  <RDFS_LABEL> { jjtThis.name = "rdfs:label"; } // TODO: Remove this after having a clear decision on "rdfs:label" directive
-  | ( LOOKAHEAD(2) name = prefixed_name()
-      | LOOKAHEAD(2) name = unprefixed_name()
-    )
-    {
-      jjtThis.name = name;
-      jjtThis.entityType = type;
-    }
+  ( LOOKAHEAD(2) name = prefixed_name()
+    | LOOKAHEAD(2) name = unprefixed_name()
+  )
+  {
+    jjtThis.name = name;
+    jjtThis.entityType = type;
+  }
 }
 
 String prefixed_name() :
@@ -1079,7 +1060,6 @@ void reference_directive() :
    | namespace_directive()
    | language_directive()
    | value = reference_type() { entityType = value; }
-   | value = value_encoding() { valueEncoding = value; }
    | value = iri_encoding() { iriEncoding = value; }
    | value = shift_direction() { shiftDirection = value; }
    | value = order_if_cell_empty() { orderIfCellEmpty = value; }
@@ -1253,21 +1233,6 @@ int datatype() :
 //------------------------------------------------------------------------------------------
 // Enumeration Types
 //------------------------------------------------------------------------------------------
-
-int value_encoding() :
-{
-  Token t;
-  int encodingType;
-}
-{
-  ( t = <RDF_ID> { encodingType = t.kind; }
-    | t = <RDFS_LABEL> { encodingType = t.kind; }
-    | t = <OWL_LITERAL> { encodingType = t.kind; }
-  )
-  {
-    return encodingType;
-  }
-}
 
 int iri_encoding() :
 {

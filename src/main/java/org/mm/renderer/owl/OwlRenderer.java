@@ -1,9 +1,7 @@
 package org.mm.renderer.owl;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.ByteArrayInputStream;
 import java.util.Set;
-import javax.annotation.Nonnull;
 import org.mm.parser.MappingMasterParser;
 import org.mm.parser.NodeType;
 import org.mm.parser.ParseException;
