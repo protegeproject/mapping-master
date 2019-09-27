@@ -57,7 +57,9 @@ public class ClassFrameNodeVisitor extends EntityNodeVisitor {
       ASTClass classNode = ParserUtils.getChild(node, NodeType.CLASS);
       classNode.accept(this);
       subject = (OWLClass) getEntity();
-      axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
+      if (subject != null) {
+         axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
+      }
    }
 
    private void visitClassDeclarationNode(ASTClassFrame classSectionNode) {

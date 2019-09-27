@@ -79,7 +79,9 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
       ASTNamedIndividual individualNode = ParserUtils.getChild(node, NodeType.INDIVIDUAL);
       individualNode.accept(this);
       subject = (OWLNamedIndividual) getEntity();
-      axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
+      if (subject != null) {
+         axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
+      }
    }
 
    private void visitIndividualDeclarationNode(ASTIndividualFrame individualSectionNode) {
