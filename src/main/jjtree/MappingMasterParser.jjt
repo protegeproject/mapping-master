@@ -573,7 +573,7 @@ void fact() #Fact : {}
 
 void property_value() #PropertyValue : {}
 {
-  ( reference(valueDatatype)
+  ( reference(MM_UNTYPED)
     | iri(OWL_IRI)
     | literal()
   )

@@ -31,6 +31,7 @@ import org.mm.renderer.internal.PlainLiteralValue;
 import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.UntypedIri;
 import org.mm.renderer.internal.UntypedPrefixedName;
+import org.mm.renderer.internal.UntypedValue;
 import org.mm.renderer.internal.Value;
 import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -140,9 +141,17 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
       if (property != null) {
          Value value = getPropertyValue(node);
          if (property.isOWLDataProperty()) {
-            visitDataPropertyAssertion((OWLDataProperty) property, value);
+            if (value instanceof UntypedValue) {
+               visitDataPropertyAssertion((OWLDataProperty) property, ((UntypedValue) value).asLiteralValue());
+            } else {
+               visitDataPropertyAssertion((OWLDataProperty) property, value);
+            }
          } else if (property.isOWLObjectProperty()) {
-            visitObjectPropertyAssertion((OWLObjectProperty) property, value);
+            if (value instanceof UntypedValue) {
+               visitObjectPropertyAssertion((OWLObjectProperty) property, ((UntypedValue) value).asIndividualName());
+            } else {
+               visitObjectPropertyAssertion((OWLObjectProperty) property, value);
+            }
          } else {
             throw new RuntimeException("Programming error: Fact can only be data property assertion or "
                   + "object property assertion");
@@ -160,9 +169,8 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
    @Nullable
    private OWLEntity visitPropertyNode(ASTFact node) {
       ASTProperty propertyNode = ParserUtils.getChild(node, NodeType.PROPERTY);
-      EntityNodeVisitor visitor = createNewEntityNodeVisitor();
-      visitor.visit(propertyNode);
-      return visitor.getEntity();
+      propertyNode.accept(this);
+      return getEntity();
    }
 
    private void visitDataPropertyAssertion(OWLDataProperty property, Value value) {

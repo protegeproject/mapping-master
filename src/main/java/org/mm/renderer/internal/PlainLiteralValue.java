@@ -16,7 +16,7 @@ public class PlainLiteralValue implements Value {
    private final String language;
    private final boolean isFromWorkbook;
 
-   private PlainLiteralValue(@Nonnull String value, @Nonnull String language, boolean isFromWorkbook) {
+   public PlainLiteralValue(@Nonnull String value, @Nonnull String language, boolean isFromWorkbook) {
       this.value = checkNotNull(value);
       this.language = checkNotNull(language);
       this.isFromWorkbook = isFromWorkbook;

@@ -137,26 +137,27 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return cellAddressUuid;
    }
 
-   private Value getValueObject(CellAddress cellAddress, String cellValueString, ReferenceDirectives directives) {
+   private Value getValueObject(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       Value value = EmptyValue.create();
-      if (!cellValueString.isEmpty()) {
+      if (!cellValue.isEmpty()) {
          int option = directives.getEntityType();
          switch (option) {
-            case OWL_CLASS: value = processClassName(cellAddress, cellValueString, directives); break;
-            case OWL_DATA_PROPERTY: value = processDataPropertyName(cellAddress, cellValueString, directives); break;
-            case OWL_OBJECT_PROPERTY: value = processObjectPropertyName(cellAddress, cellValueString, directives); break;
-            case OWL_ANNOTATION_PROPERTY: value = processAnnotationPropertyName(cellAddress, cellValueString, directives); break;
-            case OWL_NAMED_INDIVIDUAL: value = processIndividualName(cellAddress, cellValueString, directives); break;
-            case OWL_IRI: value = getIriValue(cellValueString); break;
-            case MM_ENTITY_IRI: value = getEntityName(cellValueString); break;
+            case OWL_CLASS: value = processClassName(cellAddress, cellValue, directives); break;
+            case OWL_DATA_PROPERTY: value = processDataPropertyName(cellAddress, cellValue, directives); break;
+            case OWL_OBJECT_PROPERTY: value = processObjectPropertyName(cellAddress, cellValue, directives); break;
+            case OWL_ANNOTATION_PROPERTY: value = processAnnotationPropertyName(cellAddress, cellValue, directives); break;
+            case OWL_NAMED_INDIVIDUAL: value = processIndividualName(cellAddress, cellValue, directives); break;
+            case OWL_IRI: value = getIriValue(cellValue); break;
+            case MM_ENTITY_IRI: value = getEntityName(cellValue); break;
+            case MM_UNTYPED: value = getUntypedValue(cellValue, directives); break;
             case XSD_DATETIME:
-               String dateTimeString = cellValueString;
+               String dateTimeString = cellValue;
                value = processLiteral(dateTimeString, directives); break;
             case XSD_DATE:
-               String dateString = cellValueString.split("T")[0];
+               String dateString = cellValue.split("T")[0];
                value = processLiteral(dateString, directives); break;
             case XSD_TIME:
-               String timeString = cellValueString.split("T")[1];
+               String timeString = cellValue.split("T")[1];
                value = processLiteral(timeString, directives); break;
             case XSD_STRING:
             case XSD_DECIMAL:
@@ -168,7 +169,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             case XSD_DOUBLE:
             case XSD_BOOLEAN:
             case XSD_DURATION:
-            case RDF_PLAINLITERAL: value = processLiteral(cellValueString, directives); break;
+            case RDF_PLAINLITERAL: value = processLiteral(cellValue, directives); break;
             default: throw new RuntimeException("Programming error: Unknown directive to handle reference type"
                   + " (" + tokenImage[option] + ")");
          }
@@ -259,6 +260,10 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             + " (" + tokenImage[option] + ")");
    }
 
+   private UntypedValue getUntypedValue(String cellValue, ReferenceDirectives directives) {
+      return new UntypedValue(cellValue, getDatatype(directives.getValueDatatype()), directives.getLanguage(), true);
+   }
+
    private IriValue getIriValue(String cellValue) {
       return new UntypedIri(cellValue, true);
    }
@@ -269,40 +274,28 @@ public class ReferenceResolver implements MappingMasterParserConstants {
 
    private Value processLiteral(String cellValue, ReferenceDirectives directives) {
       int option = directives.getValueDatatype();
-      if (option == XSD_STRING) {
-         return new LiteralValue(cellValue, Datatype.XSD_STRING, true);
-      } else if (option == XSD_BOOLEAN) {
-         return new LiteralValue(cellValue, Datatype.XSD_BOOLEAN, true);
-      } else if (option == XSD_DOUBLE) {
-         return new LiteralValue(cellValue, Datatype.XSD_DOUBLE, true);
-      } else if (option == XSD_FLOAT) {
-         return new LiteralValue(cellValue, Datatype.XSD_FLOAT, true);
-      } else if (option == XSD_LONG) {
-         return new LiteralValue(cellValue, Datatype.XSD_LONG, true);
-      } else if (option == XSD_INTEGER) {
-         return new LiteralValue(cellValue, Datatype.XSD_INTEGER, true);
-      } else if (option == XSD_SHORT) {
-         return new LiteralValue(cellValue, Datatype.XSD_SHORT, true);
-      } else if (option == XSD_BYTE) {
-         return new LiteralValue(cellValue, Datatype.XSD_BYTE, true);
-      } else if (option == XSD_DECIMAL) {
-         return new LiteralValue(cellValue, Datatype.XSD_DECIMAL, true);
-      } else if (option == XSD_TIME) {
-         return new LiteralValue(cellValue, Datatype.XSD_TIME, true);
-      } else if (option == XSD_DATE) {
-         return new LiteralValue(cellValue, Datatype.XSD_DATE, true);
-      } else if (option == XSD_DATETIME) {
-         return new LiteralValue(cellValue, Datatype.XSD_DATETIME, true);
-      } else if (option == XSD_DURATION) {
-         return new LiteralValue(cellValue, Datatype.XSD_DURATION, true);
-      } else if (option == RDF_PLAINLITERAL) {
-         if (directives.useUserLanguage()) {
-            return PlainLiteralValue.create(cellValue, directives.getLanguage());
-         } else {
-            return PlainLiteralValue.create(cellValue);
-         }
+      return (option == RDF_PLAINLITERAL) ?
+            new PlainLiteralValue(cellValue, directives.getLanguage(), true) :
+            new LiteralValue(cellValue, getDatatype(option), true);
+   }
+
+   private String getDatatype(int datatypeConstant) {
+      switch(datatypeConstant) {
+         case XSD_STRING: return Datatype.XSD_STRING;
+         case XSD_BOOLEAN: return Datatype.XSD_BOOLEAN;
+         case XSD_DOUBLE: return Datatype.XSD_DOUBLE;
+         case XSD_FLOAT: return Datatype.XSD_FLOAT;
+         case XSD_LONG: return Datatype.XSD_LONG;
+         case XSD_INTEGER: return Datatype.XSD_INTEGER;
+         case XSD_SHORT: return Datatype.XSD_SHORT;
+         case XSD_BYTE: return Datatype.XSD_BYTE;
+         case XSD_DECIMAL: return Datatype.XSD_DECIMAL;
+         case XSD_TIME: return Datatype.XSD_TIME;
+         case XSD_DATE: return Datatype.XSD_DATE;
+         case XSD_DATETIME: return Datatype.XSD_DATETIME;
+         case XSD_DURATION: return Datatype.XSD_DURATION; 
       }
       throw new RuntimeException("Programming error: Unknown datatype"
-            + " (" + tokenImage[option] + ")");
+            + " (" + tokenImage[datatypeConstant] + ")");
    }
 }
