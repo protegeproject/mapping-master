@@ -10,6 +10,8 @@ class ASTIri extends SimpleNode {
 
   public String iri; /* XXX: Manually added */
 
+  public int entityType; /* XXX: Manually added */
+
   public ASTIri(int id) {
     super(id);
   }
@@ -21,6 +23,10 @@ class ASTIri extends SimpleNode {
   public String getValue() { /* XXX: Manually added */
      return iri;
   }
+
+  public int getEntityType() { /* XXX: Manually added */
+     return entityType;
+   }
 
   @Override
   public void accept(NodeVisitor visitor) { /* XXX: Manually added */

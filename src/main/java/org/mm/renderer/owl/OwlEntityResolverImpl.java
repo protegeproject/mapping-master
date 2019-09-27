@@ -1,12 +1,9 @@
 package org.mm.renderer.owl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Map;
 import java.util.Optional;
-
 import javax.annotation.Nonnull;
-
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotationProperty;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -152,15 +149,6 @@ public class OwlEntityResolverImpl implements OwlEntityResolver {
       return entityType.cast(foundEntity.get());
    }
 
-   @Override
-   public <T extends OWLEntity> T createUnchecked(String entityName, Class<T> entityType) {
-      try {
-         return create(entityName, entityType);
-      } catch (EntityCreationException e) {
-         throw new RuntimeException(e.getMessage());
-      }
-   }
-
    private <T extends OWLEntity> T createNew(String entityName, final Class<T> entityType) {
       final OWLDataFactory dataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
       if (OWLClass.class.isAssignableFrom(entityType)) {
@@ -177,5 +165,21 @@ public class OwlEntityResolverImpl implements OwlEntityResolver {
          return entityType.cast(dataFactory.getOWLDatatype(entityName, prefixManager));
       }
       throw new IllegalStateException(String.format("Unknown entity type %s", entityType));
+   }
+
+   @Override
+   public <T extends OWLEntity> T createUnchecked(String entityName, Class<T> entityType) {
+      try {
+         return create(entityName, entityType);
+      } catch (EntityCreationException e) {
+         throw new RuntimeException(e.getMessage());
+      }
+   }
+
+   @Override
+   public <T extends OWLEntity> boolean hasType(String entityName, Class<T> entityType) {
+      IRI entityIRI = prefixManager.getIRI(entityName);
+      Optional<OWLEntity> foundEntity = ontology.getEntitiesInSignature(entityIRI).stream().findFirst();
+      return (foundEntity.isPresent()) ? entityType.isInstance(foundEntity.get()) : false;
    }
 }

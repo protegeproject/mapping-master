@@ -31,7 +31,7 @@ public class MappingMasterParser {
   private String namespace;
   private String language;
 
-  private int referenceType;
+  private int entityType;
   private int propertyType;
 
   private int valueDatatype;
@@ -56,7 +56,7 @@ public class MappingMasterParser {
     prefix = systemDirectives.getPrefix();
     namespace = systemDirectives.getNamespace();
     language = systemDirectives.getLanguage();
-    referenceType = systemDirectives.getReferenceType();
+    entityType = systemDirectives.getEntityType();
     propertyType = systemDirectives.getPropertyType();
     valueDatatype = systemDirectives.getValueDatatype();
     valueEncoding = systemDirectives.getValueEncoding();
@@ -371,7 +371,7 @@ void mm_default_reference_type_directive() :
 {
   <MM_DEFAULT_REFERENCE_TYPE> "=" defaultReferenceType = reference_type()
   {
-    referenceType = defaultReferenceType;
+    entityType = defaultReferenceType;
   }
 }
 
@@ -530,9 +530,9 @@ void annotation() #Annotation : {}
 
 void annotation_value() #AnnotationValue : {}
 {
-  ( reference(valueDatatype)
-    | iri()
+  ( iri(OWL_IRI)
     | literal()
+    | reference(valueDatatype)
   )
 }
 
@@ -573,8 +573,8 @@ void fact() #Fact : {}
 
 void property_value() #PropertyValue : {}
 {
-  ( reference(XSD_STRING)
-    | qname()
+  ( reference(valueDatatype)
+    | iri(OWL_IRI)
     | literal()
   )
 }
@@ -604,7 +604,7 @@ void class_expression() #ClassExpressionCategory : {}
 
 void atomic_class() #Class : {}
 {
-  value(OWL_CLASS)
+  value(OWL_CLASS) | reference(OWL_CLASS)
 }
 
 void boolean_class_expression() : {}
@@ -652,76 +652,81 @@ void restriction() : {}
 void exact_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_exact_cardinality()
-    | object_exact_cardinality()
+    | LOOKAHEAD(4) object_exact_cardinality()
+    | LOOKAHEAD(4) untyped_exact_cardinality()
   )
 }
 
 void data_exact_cardinality() #DataExactCardinality :
 {
-  int cardinality;
   int datatype;
 }
 {
-  data_property() <EXACTLY> cardinality = cardinality_value() datatype = datatype()
+  data_property() <EXACTLY> cardinality_value() datatype = datatype()
   {
-    jjtThis.cardinality = cardinality;
     jjtThis.datatype = datatype;
   }
 }
 
 void object_exact_cardinality() #ObjectExactCardinality :
 {
-  int cardinality;
   boolean hasExplicitClassExpression = false;
 }
 {
-  object_property() <EXACTLY> cardinality = cardinality_value()
+  object_property() <EXACTLY> cardinality_value()
       ( class_expression() { hasExplicitClassExpression = true; } )?
   {
-    jjtThis.cardinality = cardinality;
     jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
   }
+}
+
+void untyped_exact_cardinality() #UntypedExactCardinality : {}
+{
+  property() <EXACTLY> cardinality_value() reference(MM_UNTYPED)
 }
 
 void max_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_max_cardinality()
-    | object_max_cardinality()
+    | LOOKAHEAD(4) object_max_cardinality()
+    | LOOKAHEAD(4) untyped_max_cardinality()
   )
 }
 
 void data_max_cardinality() #DataMaxCardinality :
 {
-  int cardinality;
   int datatype;
 }
 {
-  data_property() <MAX> cardinality = cardinality_value() datatype = datatype()
+  data_property() <MAX> cardinality_value() datatype = datatype()
   {
-    jjtThis.cardinality = cardinality;
     jjtThis.datatype = datatype;
   }
 }
 
 void object_max_cardinality() #ObjectMaxCardinality :
 {
-  int cardinality;
   boolean hasExplicitClassExpression = false;
 }
 {
-  object_property() <MAX> cardinality = cardinality_value()
+  object_property() <MAX> cardinality_value()
       ( class_expression() { hasExplicitClassExpression = true; } )?
       
   {
-    jjtThis.cardinality = cardinality;
     jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
   }
+}
+
+void untyped_max_cardinality() #UntypedMaxCardinality : {}
+{
+  property() <MAX> cardinality_value() reference(MM_UNTYPED)
 }
 
 void min_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_min_cardinality()
-    | object_min_cardinality()
+    | LOOKAHEAD(4) object_min_cardinality()
+    | LOOKAHEAD(4) untyped_min_cardinality()
   )
 }
 
@@ -753,15 +758,16 @@ void object_min_cardinality() #ObjectMinCardinality :
   }
 }
 
-int cardinality_value() :
+void untyped_min_cardinality() #UntypedMinCardinality : {}
 {
-  int cardinality;
+  property() <MIN> cardinality_value() reference(MM_UNTYPED)
 }
+
+int cardinality_value() #CardinalityValue : {}
 {
-  cardinality  = integer_value()
-  {
-    return cardinality;
-  }
+  ( reference(XSD_INTEGER)
+    | integer_literal()
+  )
 }
 
 void has_value() : {}
@@ -833,22 +839,30 @@ void object_some_values_from() #ObjectSomeValuesFrom : {}
 
 void property() #Property : {}
 {
-  value(propertyType)
+  ( value(MM_UNTYPED)
+    | reference(propertyType)
+  )
 }
 
 void data_property() #DataProperty : {}
 {
-  value(OWL_DATA_PROPERTY)
+  ( value(OWL_DATA_PROPERTY)
+    | reference(OWL_DATA_PROPERTY)
+  )
 }
 
 void object_property() #ObjectProperty : {}
 {
-  value(OWL_OBJECT_PROPERTY)
+  ( value(OWL_OBJECT_PROPERTY)
+    | reference(OWL_OBJECT_PROPERTY)
+  )
 }
 
 void annotation_property() #AnnotationProperty: {}
 {
-  value(OWL_ANNOTATION_PROPERTY)
+  ( value(OWL_ANNOTATION_PROPERTY)
+    | reference(OWL_ANNOTATION_PROPERTY)
+  )
 }
 
 //------------------------------------------------------------------------------------------
@@ -857,18 +871,19 @@ void annotation_property() #AnnotationProperty: {}
 
 void named_individual() #NamedIndividual : {}
 {
-  value(OWL_NAMED_INDIVIDUAL)
+  ( value(OWL_NAMED_INDIVIDUAL)
+    | reference(OWL_NAMED_INDIVIDUAL)
+  )
 }
 
 //------------------------------------------------------------------------------------------
 // Value Category
 //------------------------------------------------------------------------------------------
 
-void value(int referenceType) #ValueCategory : {}
+void value(int type) #Value : {}
 {
-  ( reference(referenceType)
-    | qname()
-    | iri()
+  ( name(type)
+    | iri(type)
     | literal()
   )
 }
@@ -883,53 +898,44 @@ void literal_value() #LiteralValue : {}
 void object_value() #ObjectValue() : {}
 {
   ( reference(OWL_NAMED_INDIVIDUAL)
-    | qname()
-    | iri()
+    | name(OWL_NAMED_INDIVIDUAL)
+    | iri(OWL_NAMED_INDIVIDUAL)
   )
 }
 
 void reference(int type) #Reference :
 {
-  referenceType = type;
+  entityType = type;
   ReferenceDirectives referenceDirectives;
   boolean hasBuiltInFunction = false;
 }
 {
   reference_notation()
-    (
+    (  LOOKAHEAD(2)
        "(" ( reference_directive() )* ( builtin_function() { jjtThis.hasBuiltInFunction = true; })? ")"
     )?
   {
     jjtThis.referenceDirectives = new ReferenceDirectives(
         prefix, namespace, language, labelValue, literalValue,
-        referenceType, propertyType, valueDatatype,
+        entityType, propertyType, valueDatatype,
         valueEncoding, iriEncoding, shiftDirection,
         orderIfCellEmpty, orderIfEntityAbsent);
   }
 }
 
-void name() #Name :
+void name(int type) #Name :
 {
-  Token t;
-}
-{
-  t = <NAME>
-  {
-    jjtThis.name = t.image;
-  }
-}
-
-void qname() #QName :
-{
-  String qname;
+  String name;
+  int entityType;
 }
 {
   <RDFS_LABEL> { jjtThis.name = "rdfs:label"; } // TODO: Remove this after having a clear decision on "rdfs:label" directive
-  | ( LOOKAHEAD(2) qname = prefixed_name()
-      | LOOKAHEAD(2) qname = unprefixed_name()
+  | ( LOOKAHEAD(2) name = prefixed_name()
+      | LOOKAHEAD(2) name = unprefixed_name()
     )
     {
-      jjtThis.name = qname;
+      jjtThis.name = name;
+      jjtThis.entityType = type;
     }
 }
 
@@ -956,14 +962,16 @@ String unprefixed_name() :
   }
 }
 
-void iri() #Iri :
+void iri(int type) #Iri :
 {
   Token t;
+  int entityType;
 }
 {
   t = <IRI_REF>
   {
     jjtThis.iri = t.image;
+    jjtThis.entityType = type;
   }
 }
 
@@ -1070,7 +1078,7 @@ void reference_directive() :
   ( prefix_directive()
    | namespace_directive()
    | language_directive()
-   | value = reference_type() { referenceType = value; }
+   | value = reference_type() { entityType = value; }
    | value = value_encoding() { valueEncoding = value; }
    | value = iri_encoding() { iriEncoding = value; }
    | value = shift_direction() { shiftDirection = value; }
@@ -1114,7 +1122,7 @@ void language_directive() :
              )
   {
     language = languageValue;
-    referenceType = RDF_PLAINLITERAL;
+    entityType = RDF_PLAINLITERAL;
     valueDatatype = RDF_PLAINLITERAL;
   }
 }
@@ -1284,21 +1292,21 @@ int reference_type() #ReferenceType :
   int datatype;
 }
 {
-  ( t = <OWL_CLASS> { referenceType = t.kind; }
-   | t = <OWL_NAMED_INDIVIDUAL> { referenceType = t.kind; }
-   | t = <OWL_OBJECT_PROPERTY> { referenceType = t.kind; }
-   | t = <OWL_DATA_PROPERTY> { referenceType = t.kind; }
-   | t = <OWL_ANNOTATION_PROPERTY> { referenceType = t.kind; }
-   | t = <OWL_IRI> { referenceType = t.kind; }
-   | t = <MM_ENTITY_IRI> { referenceType = t.kind; }
+  ( t = <OWL_CLASS> { entityType = t.kind; }
+   | t = <OWL_NAMED_INDIVIDUAL> { entityType = t.kind; }
+   | t = <OWL_OBJECT_PROPERTY> { entityType = t.kind; }
+   | t = <OWL_DATA_PROPERTY> { entityType = t.kind; }
+   | t = <OWL_ANNOTATION_PROPERTY> { entityType = t.kind; }
+   | t = <OWL_IRI> { entityType = t.kind; }
+   | t = <MM_ENTITY_IRI> { entityType = t.kind; }
    | datatype = datatype()
      {
-       referenceType = datatype;
+       entityType = datatype;
        valueDatatype = datatype; // assign as well as property value datatype
      }
   )
   {
-    return referenceType;
+    return entityType;
   }
 }
 

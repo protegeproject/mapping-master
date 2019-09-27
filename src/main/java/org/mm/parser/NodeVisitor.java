@@ -46,7 +46,6 @@ import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTPropertyValue;
-import org.mm.parser.node.ASTQName;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTReferenceType;
@@ -57,7 +56,10 @@ import org.mm.parser.node.ASTSourceSpecification;
 import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.ASTSubclassOf;
 import org.mm.parser.node.ASTTransformationRule;
-import org.mm.parser.node.ASTValueCategory;
+import org.mm.parser.node.ASTUntypedExactCardinality;
+import org.mm.parser.node.ASTUntypedMaxCardinality;
+import org.mm.parser.node.ASTUntypedMinCardinality;
+import org.mm.parser.node.ASTValue;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -133,13 +135,19 @@ public interface NodeVisitor {
 
    void visit(ASTObjectExactCardinality node);
 
+   void visit(ASTUntypedExactCardinality node);
+
    void visit(ASTObjectHasValue node);
 
    void visit(ASTObjectIntersection node);
 
    void visit(ASTObjectMaxCardinality node);
 
+   void visit(ASTUntypedMaxCardinality node);
+
    void visit(ASTObjectMinCardinality node);
+
+   void visit(ASTUntypedMinCardinality node);
 
    void visit(ASTObjectOneOf node);
 
@@ -156,8 +164,6 @@ public interface NodeVisitor {
    void visit(ASTPropertyAssertion node);
 
    void visit(ASTPropertyValue node);
-
-   void visit(ASTQName node);
 
    void visit(ASTReference node);
 
@@ -179,5 +185,5 @@ public interface NodeVisitor {
 
    void visit(ASTTransformationRule node);
 
-   void visit(ASTValueCategory node);
+   void visit(ASTValue node);
 }

@@ -7,29 +7,29 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class DataPropertyName extends PropertyName {
+public class ObjectPropertyIri extends PropertyIri {
 
-   public DataPropertyName(@Nonnull String value, boolean isFromWorkbook) {
+   public ObjectPropertyIri(@Nonnull String value, boolean isFromWorkbook) {
       super(value, isFromWorkbook);
    }
 
-   public static DataPropertyName create(@Nonnull String value) {
-      return new DataPropertyName(value, false);
+   public static ObjectPropertyIri create(@Nonnull String value) {
+      return new ObjectPropertyIri(value, false);
    }
 
    @Override
-   public DataPropertyName update(String newValue) {
-      return new DataPropertyName(newValue, isFromWorkbook());
+   public ObjectPropertyIri update(String newValue) {
+      return new ObjectPropertyIri(newValue, isFromWorkbook());
    }
 
    @Override
    public boolean isDataProperty() {
-      return true;
+      return false;
    }
 
    @Override
    public boolean isObjectProperty() {
-      return false;
+      return true;
    }
 
    @Override
@@ -45,10 +45,10 @@ public class DataPropertyName extends PropertyName {
       if (this == o) {
          return true;
       }
-      if (!(o instanceof DataPropertyName)) {
+      if (!(o instanceof ObjectPropertyIri)) {
          return false;
       }
-      DataPropertyName other = (DataPropertyName) o;
+      ObjectPropertyIri other = (ObjectPropertyIri) o;
       return Objects.equal(getString(), other.getString())
             && Objects.equal(isFromWorkbook(), other.isFromWorkbook());
    }

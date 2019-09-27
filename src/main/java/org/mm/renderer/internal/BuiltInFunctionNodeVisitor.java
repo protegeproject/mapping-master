@@ -19,6 +19,7 @@ import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.Node;
 import org.mm.renderer.CellCursor;
+import org.mm.renderer.internal.LiteralValue.Datatype;
 import com.google.common.collect.Lists;
 
 public class BuiltInFunctionNodeVisitor extends NodeVisitorAdapter {
@@ -52,9 +53,11 @@ public class BuiltInFunctionNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTReference referenceNode) {
       Value resolvedValue = resolveReference(referenceNode);
-      String stringValue = resolvedValue.getString();
-      if (stringValue != null) {
-         arguments.add(LiteralValue.createLiteral(stringValue));
+      if (resolvedValue instanceof LiteralValue) {
+         LiteralValue literalValue = (LiteralValue) resolvedValue;
+         String value = literalValue.getString();
+         String datatype = literalValue.getDatatype();
+         arguments.add(new LiteralValue(value, datatype, true));
       }
    }
 
@@ -97,24 +100,24 @@ public class BuiltInFunctionNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTIntegerLiteral node) {
       int literal = node.getLexicalValue();
-      arguments.add(LiteralValue.createLiteral(literal));
+      arguments.add(LiteralValue.create(literal, Datatype.XSD_INTEGER));
    }
 
    @Override
    public void visit(ASTFloatLiteral node) {
       float literal = node.getLexicalValue();
-      arguments.add(LiteralValue.createLiteral(literal));
+      arguments.add(LiteralValue.create(literal, Datatype.XSD_FLOAT));
    }
 
    @Override
    public void visit(ASTStringLiteral node) {
       String literal = node.getLexicalValue();
-      arguments.add(LiteralValue.createLiteral(literal));
+      arguments.add(LiteralValue.create(literal, Datatype.XSD_STRING));
    }
 
    @Override
    public void visit(ASTBooleanLiteral node) {
       boolean literal = node.getLexicalValue();
-      arguments.add(LiteralValue.createLiteral(literal));
+      arguments.add(LiteralValue.create(literal, Datatype.XSD_BOOLEAN));
    }
 }

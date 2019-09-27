@@ -80,9 +80,8 @@ public abstract class AbstractOwlRendererTest extends AbstractRendererTest {
 
    protected Set<OWLAxiom> evaluate(@Nonnull String ruleString) {
       checkNotNull(ruleString);
-      final OwlEntityResolver entityResolver = new OwlEntityResolverImpl(ontology);
-      OwlRenderer owlRenderer = new OwlRenderer(new OwlFactory(entityResolver));
-      return owlRenderer.render(ruleString, getWorkbook(), getDefaultRenderingContext());
+      OwlRenderer owlRenderer = new OwlRenderer();
+      return owlRenderer.render(ruleString, getWorkbook(), getDefaultRenderingContext(), getEntityResolver());
    }
 
    private RenderingContext getDefaultRenderingContext() {
@@ -93,6 +92,10 @@ public abstract class AbstractOwlRendererTest extends AbstractRendererTest {
             sheet.getEndColumnIndex(),
             sheet.getStartRowIndex(),
             sheet.getEndRowIndex());
+   }
+
+   private OwlEntityResolver getEntityResolver() {
+      return new OwlEntityResolverImpl(ontology);
    }
 
    protected void setPrefix(String prefixName, String prefix) {

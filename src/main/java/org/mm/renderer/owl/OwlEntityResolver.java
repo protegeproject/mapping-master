@@ -1,6 +1,8 @@
 package org.mm.renderer.owl;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLDataProperty;
 import org.semanticweb.owlapi.model.OWLDatatype;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
@@ -75,4 +77,19 @@ public interface OwlEntityResolver {
     * @return Returns an OWL entity object following its given name and type
     */
    <T extends OWLEntity> T createUnchecked(String entityName, final Class<T> entityType);
+
+   /**
+    * Checks if the given {@code entityName} has a type of {@code entityType} in the active ontology.
+    *
+    * @param entityName
+    *          The entity name in short form or as a prefixed name string.
+    * @param entityType
+    *          The entity type following the OWLAPI class hierarchy. The types an be
+    *          one of these: {@link OWLClass}, {@link OWLDataProperty},
+    *          {@link OWLObjectProperty}. {@link OWLNamedIndividual} or
+    *          {@link OWLDatatype}.
+    * @return Returns true if the {@code entityName} has the type of {@code entityType}
+    *          in the active ontology, or otherwise false.
+    */
+   <T extends OWLEntity> boolean hasType(String entityName, final Class<T> entityType);
 }

@@ -7,19 +7,19 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class ClassName extends PrefixedValue  {
+public class ClassIri extends IriValue  {
 
-   public ClassName(@Nonnull String value, boolean isFromWorkbook) {
+   public ClassIri(@Nonnull String value, boolean isFromWorkbook) {
       super(value, isFromWorkbook);
    }
 
-   public static ClassName create(@Nonnull String value) {
-      return new ClassName(value, false);
+   public static ClassIri create(@Nonnull String value) {
+      return new ClassIri(value, false);
    }
 
    @Override
-   public ClassName update(String newValue) {
-      return new ClassName(newValue, isFromWorkbook());
+   public ClassIri update(String newValue) {
+      return new ClassIri(newValue, isFromWorkbook());
    }
 
    @Override
@@ -30,10 +30,10 @@ public class ClassName extends PrefixedValue  {
       if (this == o) {
          return true;
       }
-      if (!(o instanceof ClassName)) {
+      if (!(o instanceof ClassIri)) {
          return false;
       }
-      ClassName other = (ClassName) o;
+      ClassIri other = (ClassIri) o;
       return Objects.equal(getString(), other.getString())
             && Objects.equal(isFromWorkbook(), other.isFromWorkbook());
    }

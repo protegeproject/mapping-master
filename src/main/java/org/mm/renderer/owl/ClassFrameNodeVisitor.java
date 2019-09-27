@@ -1,12 +1,10 @@
 package org.mm.renderer.owl;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.mm.parser.NodeType;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotation;
@@ -17,31 +15,29 @@ import org.mm.parser.node.ASTClassExpressionCategory;
 import org.mm.parser.node.ASTClassFrame;
 import org.mm.parser.node.ASTEquivalentClasses;
 import org.mm.parser.node.ASTSubclassOf;
-import org.mm.renderer.AbstractNodeVisitor;
-import org.mm.renderer.internal.ValueNodeVisitor;
+import org.mm.renderer.CellCursor;
+import org.mm.renderer.internal.BuiltInFunctionHandler;
+import org.mm.renderer.internal.ReferenceResolver;
 import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLEntity;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
+public class ClassFrameNodeVisitor extends EntityNodeVisitor {
 
-   private final ValueNodeVisitor valueNodeVisitor;
-   private final OwlFactory owlFactory;
-
-   @Nullable private OWLClass subject;
+   private OWLClass subject;
 
    private Set<OWLAxiom> axioms = new HashSet<>();
 
-   public ClassFrameNodeVisitor(@Nonnull ValueNodeVisitor valueNodeVisitor, @Nonnull OwlFactory owlFactory) {
-      super(valueNodeVisitor);
-      this.valueNodeVisitor = checkNotNull(valueNodeVisitor);
-      this.owlFactory = checkNotNull(owlFactory);
+   public ClassFrameNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
+         @Nonnull BuiltInFunctionHandler builtInFunctionHandler,
+         @Nonnull OwlFactory owlFactory,
+         @Nonnull CellCursor cellCursor) {
+      super(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    public Collection<OWLAxiom> getAxioms() {
@@ -60,19 +56,8 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    public void visit(ASTClassDeclaration node) {
       ASTClass classNode = ParserUtils.getChild(node, NodeType.CLASS);
       classNode.accept(this);
-      if (subject != null) {
-         axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
-      }
-   }
-
-   @Override
-   public void visit(ASTClass classNode) {
-      EntityNodeVisitor visitor = new EntityNodeVisitor(owlFactory, valueNodeVisitor);
-      visitor.visit(classNode);
-      OWLEntity entity = visitor.getEntity();
-      if (entity != null) {
-         subject = entity.asOWLClass();
-      }
+      subject = (OWLClass) getEntity();
+      axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
    }
 
    private void visitClassDeclarationNode(ASTClassFrame classSectionNode) {
@@ -160,10 +145,10 @@ public class ClassFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private ClassExpressionNodeVisitor createNewClassExpressionNodeVisitor() {
-      return new ClassExpressionNodeVisitor(owlFactory, valueNodeVisitor);
+      return new ClassExpressionNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    private AnnotationNodeVisitor createNewAnnotationNodeVisitor() {
-      return new AnnotationNodeVisitor(owlFactory, valueNodeVisitor);
+      return new AnnotationNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 }

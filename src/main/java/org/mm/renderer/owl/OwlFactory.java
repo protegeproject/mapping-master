@@ -4,15 +4,24 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import org.mm.renderer.internal.EmptyValue;
-import org.mm.renderer.internal.PrefixedValue;
+import org.mm.renderer.internal.AnnotationPropertyIri;
+import org.mm.renderer.internal.AnnotationPropertyName;
+import org.mm.renderer.internal.ClassIri;
+import org.mm.renderer.internal.ClassName;
+import org.mm.renderer.internal.DataPropertyIri;
+import org.mm.renderer.internal.DataPropertyName;
+import org.mm.renderer.internal.IndividualIri;
+import org.mm.renderer.internal.IndividualName;
 import org.mm.renderer.internal.IriValue;
 import org.mm.renderer.internal.LiteralValue;
+import org.mm.renderer.internal.ObjectPropertyIri;
+import org.mm.renderer.internal.ObjectPropertyName;
 import org.mm.renderer.internal.PlainLiteralValue;
+import org.mm.renderer.internal.PrefixedValue;
+import org.mm.renderer.internal.PropertyIri;
 import org.mm.renderer.internal.PropertyName;
-import org.mm.renderer.internal.ReferencedEntityName;
-import org.mm.renderer.internal.Value;
+import org.mm.renderer.internal.UntypedIri;
+import org.mm.renderer.internal.UntypedPrefixedName;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -69,217 +78,288 @@ public class OwlFactory {
 
    private final OwlEntityResolver entityResolver;
 
-   private final OWLDataFactory owlDataFactory = OWLManager.getOWLDataFactory();
-
    public OwlFactory(@Nonnull OwlEntityResolver entityResolver) {
       this.entityResolver = checkNotNull(entityResolver);
    }
 
-   @Nullable
-   public OWLClass getOWLClass(@Nonnull Value value) {
-      if (value instanceof EmptyValue) {
-         return null;
-      } else if (value instanceof PrefixedValue) {
-         return fetchOWLClass((PrefixedValue) value);
-      } else if (value instanceof ReferencedEntityName) {
-         return createOWLClass((ReferencedEntityName) value);
-      } else if (value instanceof IriValue) {
-         return createOWLClass(((IriValue) value));
-      }
-      throw new RuntimeException("Programming error: Creating OWL class using "
-            + value.getClass() + " is not yet implemented");
+   /*
+    * Methods to create the OWL Class
+    */
+
+   public OWLClass getOWLClass(@Nonnull ClassName className) {
+      return (className.isFromWorkbook()) ? createOWLClass(className) : fetchOWLClass(className);
+   }
+
+   public OWLClass getOWLClass(@Nonnull UntypedPrefixedName prefixedName) {
+      return (prefixedName.isFromWorkbook()) ? createOWLClass(prefixedName) : fetchOWLClass(prefixedName);
+   }
+
+   private OWLClass createOWLClass(PrefixedValue entityName) {
+      return entityResolver.createUnchecked(entityName.getString(), OWLClass.class);
    }
 
    private OWLClass fetchOWLClass(PrefixedValue entityName) {
       return entityResolver.resolveUnchecked(entityName.getString(), OWLClass.class);
    }
 
-   private OWLClass createOWLClass(ReferencedEntityName referencedValue) {
-      return entityResolver.createUnchecked(referencedValue.getString(), OWLClass.class);
+   public OWLClass getOWLClass(@Nonnull ClassIri classIri) {
+      return classIri.isFromWorkbook() ? createOWLClass(classIri) : fetchOWLClass(classIri);
    }
 
-   private OWLClass createOWLClass(IriValue iriValue) {
-      return owlDataFactory.getOWLClass(IRI.create(iriValue.getString()));
+   public OWLClass getOWLClass(@Nonnull UntypedIri iri) {
+      return iri.isFromWorkbook() ? createOWLClass(iri) : fetchOWLClass(iri);
    }
 
-   @Nullable
-   public OWLProperty getOWLProperty(@Nonnull Value value) {
-      if (value instanceof EmptyValue) {
-         return null;
-      } else if (value instanceof PrefixedValue) {
-         return fetchOWLProperty(((PrefixedValue) value));
-      } else if (value instanceof ReferencedEntityName) {
-         return createOWLProperty((ReferencedEntityName) value);
+   private OWLClass createOWLClass(IriValue entityIri) {
+      String entityName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.createUnchecked(entityName, OWLClass.class);
+   }
+
+   private OWLClass fetchOWLClass(IriValue entityIri) {
+      String entityName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.resolveUnchecked(entityName, OWLClass.class);
+   }
+
+   private static String encloseWithBrackets(String iriString) {
+      if (!iriString.startsWith("<") && !iriString.endsWith(">")) {
+         iriString = String.format("<%s>", iriString);
       }
-      throw new RuntimeException("Programming error: Creating OWL property using "
-            + value.getClass() + " is not yet implemented");
+      return iriString;
    }
 
-   private OWLProperty fetchOWLProperty(PrefixedValue entityName) {
-      return entityResolver.resolveUnchecked(entityName.getString(), OWLProperty.class);
+   /*
+    * Methods to create the OWL Property
+    */
+
+   public OWLProperty getOWLProperty(@Nonnull PropertyName propertyName) {
+      return (propertyName.isFromWorkbook()) ? createOWLProperty(propertyName) : fetchOWLProperty(propertyName);
    }
 
-   private OWLProperty createOWLProperty(ReferencedEntityName referencedValue) {
-      if (referencedValue instanceof PropertyName) {
-         PropertyName propertyName = (PropertyName) referencedValue;
-         if (propertyName.isDataProperty()) {
-            return createOWLDataProperty(propertyName);
-         } else if (propertyName.isObjectProperty()) {
-            return createOWLObjectProperty(propertyName);
-         } else if (propertyName.isAnnotationProperty()) {
-            return createOWLAnnotationProperty(propertyName);
-         }
+   public OWLProperty getOWLProperty(@Nonnull UntypedPrefixedName propertyName) {
+      String entityName = propertyName.getString();
+      if (entityResolver.hasType(entityName, OWLDataProperty.class)) {
+         return fetchOWLDataProperty(propertyName);
+      } else if (entityResolver.hasType(entityName, OWLObjectProperty.class)) {
+         return fetchOWLObjectProperty(propertyName);
+      } else if (entityResolver.hasType(entityName, OWLAnnotationProperty.class)) {
+         return fetchOWLAnnotationProperty(propertyName);
       }
-      throw new RuntimeException("Programming error: Unknown property type");
+      throw new RuntimeException(
+            String.format("The expected entity name '%s' does not exist in the ontology",
+                  entityName));
    }
 
-   @Nullable
-   public OWLDataProperty getOWLDataProperty(@Nonnull Value value) {
-      if (value instanceof EmptyValue) {
-         return null;
-      } else if (value instanceof PrefixedValue) {
-         return fetchOWLDataProperty((PrefixedValue) value);
-      } else if (value instanceof ReferencedEntityName) {
-         return createOWLDataProperty((ReferencedEntityName) value);
-      } else if (value instanceof IriValue) {
-         return createOWLDataProperty((IriValue) value);
+   private OWLProperty createOWLProperty(@Nonnull PropertyName propertyName) {
+      if (propertyName.isDataProperty()) {
+         return createOWLDataProperty((DataPropertyName) propertyName);
+      } else if (propertyName.isObjectProperty()) {
+         return createOWLObjectProperty((ObjectPropertyName) propertyName);
+      } else if (propertyName.isAnnotationProperty()) {
+         return createOWLAnnotationProperty((AnnotationPropertyName) propertyName);
       }
-      throw new RuntimeException("Programming error: Creating OWL data property using "
-            + value.getClass() + " is not yet implemented");
+      throw new RuntimeException(
+            String.format("Programming error: Creating OWL property of type %s is not yet implemented",
+                  propertyName.getClass()));
    }
 
-   private OWLDataProperty fetchOWLDataProperty(PrefixedValue entityName) {
-      return entityResolver.resolveUnchecked(entityName.getString(), OWLDataProperty.class);
-   }
-
-   private OWLDataProperty createOWLDataProperty(ReferencedEntityName referencedValue) {
-      return entityResolver.createUnchecked(referencedValue.getString(), OWLDataProperty.class);
-   }
-
-   private OWLDataProperty createOWLDataProperty(IriValue iriValue) {
-      return owlDataFactory.getOWLDataProperty(IRI.create(iriValue.getString()));
-   }
-
-   @Nullable
-   public OWLObjectProperty getOWLObjectProperty(@Nonnull Value value) {
-      if (value instanceof EmptyValue) {
-         return null;
-      } else if (value instanceof PrefixedValue) {
-         return fetchOWLObjectProperty((PrefixedValue) value);
-      } else if (value instanceof ReferencedEntityName) {
-         return createOWLObjectProperty((ReferencedEntityName) value);
-      } else if (value instanceof IriValue) {
-         return createOWLObjectProperty((IriValue) value);
+   private OWLProperty fetchOWLProperty(@Nonnull PropertyName propertyName) {
+      if (propertyName.isDataProperty()) {
+         return fetchOWLDataProperty((DataPropertyName) propertyName);
+      } else if (propertyName.isObjectProperty()) {
+         return fetchOWLObjectProperty((ObjectPropertyName) propertyName);
+      } else if (propertyName.isAnnotationProperty()) {
+         return fetchOWLAnnotationProperty((AnnotationPropertyName) propertyName);
       }
-      throw new RuntimeException("Programming error: Creating OWL data property using "
-            + value.getClass() + " is not yet implemented");
+      throw new RuntimeException(
+            String.format("Programming error: Fetching OWL property of type %s is not yet implemented",
+                  propertyName.getClass()));
    }
 
-   private OWLObjectProperty fetchOWLObjectProperty(PrefixedValue entityName) {
-      return entityResolver.resolveUnchecked(entityName.getString(), OWLObjectProperty.class);
+   public OWLProperty getOWLProperty(@Nonnull PropertyIri propertyIri) {
+      return (propertyIri.isFromWorkbook()) ? createOWLProperty(propertyIri) : fetchOWLProperty(propertyIri);
    }
 
-   private OWLObjectProperty createOWLObjectProperty(ReferencedEntityName referencedValue) {
-      return entityResolver.createUnchecked(referencedValue.getString(), OWLObjectProperty.class);
-   }
-
-   private OWLObjectProperty createOWLObjectProperty(IriValue iriValue) {
-      return owlDataFactory.getOWLObjectProperty(IRI.create(iriValue.getString()));
-   }
-
-   @Nullable
-   public OWLAnnotationProperty getOWLAnnotationProperty(@Nonnull Value value) {
-      if (value instanceof EmptyValue) {
-         return null;
-      } else if (value instanceof PrefixedValue) {
-         return fetchOWLAnnotationProperty((PrefixedValue) value);
-      } else if (value instanceof ReferencedEntityName) {
-         return createOWLAnnotationProperty((ReferencedEntityName) value);
-      } else if (value instanceof IriValue) {
-         return createOWLAnnotationProperty((IriValue) value);
+   public OWLProperty getOWLProperty(@Nonnull UntypedIri entityIri) {
+      String entityName = encloseWithBrackets(entityIri.getString());
+      if (entityResolver.hasType(entityName, OWLDataProperty.class)) {
+         return fetchOWLDataProperty(entityIri);
+      } else if (entityResolver.hasType(entityName, OWLObjectProperty.class)) {
+         return fetchOWLObjectProperty(entityIri);
+      } else if (entityResolver.hasType(entityName, OWLAnnotationProperty.class)) {
+         return fetchOWLAnnotationProperty(entityIri);
       }
-      throw new RuntimeException("Programming error: Creating OWL data property using "
-            + value.getClass() + " is not yet implemented");
+      throw new RuntimeException(
+            String.format("The expected entity name '%s' does not exist in the ontology",
+                  entityName));
    }
 
-   private OWLAnnotationProperty fetchOWLAnnotationProperty(PrefixedValue entityName) {
-      return entityResolver.resolveUnchecked(entityName.getString(), OWLAnnotationProperty.class);
-   }
-
-   private OWLAnnotationProperty createOWLAnnotationProperty(ReferencedEntityName referencedValue) {
-      return entityResolver.createUnchecked(referencedValue.getString(), OWLAnnotationProperty.class);
-   }
-
-   private OWLAnnotationProperty createOWLAnnotationProperty(IriValue iriValue) {
-      return owlDataFactory.getOWLAnnotationProperty(IRI.create(iriValue.getString()));
-   }
-
-   @Nullable
-   public OWLNamedIndividual getOWLNamedIndividual(@Nonnull Value value) {
-      if (value instanceof EmptyValue) {
-         return null;
-      } else if (value instanceof PrefixedValue) {
-         return fetchOWLNamedIndividual((PrefixedValue) value);
-      } else if (value instanceof ReferencedEntityName) {
-         return createOWLNamedIndividual((ReferencedEntityName) value);
-      } else if (value instanceof IriValue) {
-         return createOWLNamedIndividual((IriValue) value);
+   private OWLProperty createOWLProperty(@Nonnull PropertyIri propertyIri) {
+      if (propertyIri.isDataProperty()) {
+         return createOWLDataProperty((DataPropertyIri) propertyIri);
+      } else if (propertyIri.isObjectProperty()) {
+         return createOWLObjectProperty((ObjectPropertyIri) propertyIri);
+      } else if (propertyIri.isAnnotationProperty()) {
+         return createOWLAnnotationProperty((AnnotationPropertyIri) propertyIri);
       }
-      throw new RuntimeException("Programming error: Creating OWL data property using "
-            + value.getClass() + " is not yet implemented");
+      throw new RuntimeException(
+            String.format("Programming error: Creating OWL property of type %s is not yet implemented",
+                  propertyIri.getClass()));
    }
 
-   private OWLNamedIndividual fetchOWLNamedIndividual(PrefixedValue entityName) {
-      return entityResolver.resolveUnchecked(entityName.getString(), OWLNamedIndividual.class);
-   }
-
-   private OWLNamedIndividual createOWLNamedIndividual(ReferencedEntityName referencedValue) {
-      return entityResolver.createUnchecked(referencedValue.getString(), OWLNamedIndividual.class);
-   }
-
-   private OWLNamedIndividual createOWLNamedIndividual(IriValue iriValue) {
-      return owlDataFactory.getOWLNamedIndividual(IRI.create(iriValue.getString()));
-   }
-
-   @Nullable
-   public OWLAnnotationValue getOWLAnnotationValue(@Nonnull Value value) {
-      if (value instanceof EmptyValue) {
-         return null;
-      } else if (value instanceof IriValue) {
-         return getIri((IriValue) value);
-      } else if (value instanceof LiteralValue) {
-         return getOWLTypedLiteral((LiteralValue) value);
-      } else if (value instanceof PlainLiteralValue) {
-         return getOWLPlainLiteral((PlainLiteralValue) value);
+   private OWLProperty fetchOWLProperty(@Nonnull PropertyIri propertyIri) {
+      if (propertyIri.isDataProperty()) {
+         return fetchOWLDataProperty((DataPropertyIri) propertyIri);
+      } else if (propertyIri.isObjectProperty()) {
+         return fetchOWLObjectProperty((ObjectPropertyIri) propertyIri);
+      } else if (propertyIri.isAnnotationProperty()) {
+         return fetchOWLAnnotationProperty((AnnotationPropertyIri) propertyIri);
       }
-      throw new RuntimeException("Programming error: Creating OWL annotation using "
-            + value.getClass() + " is not yet implemented");
+      throw new RuntimeException(
+            String.format("Programming error: Fetching OWL property of type %s is not yet implemented",
+                  propertyIri.getClass()));
    }
 
-   private OWLAnnotationValue getIri(IriValue value) {
-      return IRI.create(value.getString());
+   /*
+    * Methods to create the OWL Data Property
+    */
+
+   public OWLDataProperty getOWLDataProperty(@Nonnull DataPropertyName dataPropertyName) {
+      return (dataPropertyName.isFromWorkbook()) ? createOWLDataProperty(dataPropertyName) : fetchOWLDataProperty(dataPropertyName);
    }
 
-   @Nullable
-   public OWLLiteral getOWLLiteral(@Nonnull Value value) {
-      if (value instanceof EmptyValue) {
-         return null;
-      } else if (value instanceof LiteralValue) {
-         return getOWLTypedLiteral((LiteralValue) value);
-      } else if (value instanceof PlainLiteralValue) {
-         return getOWLPlainLiteral((PlainLiteralValue) value);
-      }
-      throw new RuntimeException("Programming error: Creating OWL literal using "
-            + value.getClass() + " is not yet implemented");
+   public OWLDataProperty getOWLDataProperty(@Nonnull UntypedPrefixedName prefixedName) {
+      return (prefixedName.isFromWorkbook()) ? createOWLDataProperty(prefixedName) : fetchOWLDataProperty(prefixedName);
+   }
+
+   private OWLDataProperty createOWLDataProperty(@Nonnull PrefixedValue propertyName) {
+      return entityResolver.createUnchecked(propertyName.getString(), OWLDataProperty.class);
+   }
+
+   private OWLDataProperty fetchOWLDataProperty(@Nonnull PrefixedValue  propertyName) {
+      return entityResolver.resolveUnchecked(propertyName.getString(), OWLDataProperty.class);
+   }
+
+   public OWLDataProperty getOWLDataProperty(@Nonnull DataPropertyIri dataPropertyIri) {
+      return (dataPropertyIri.isFromWorkbook()) ? createOWLDataProperty(dataPropertyIri) : fetchOWLDataProperty(dataPropertyIri);
+   }
+
+   public OWLDataProperty getOWLDataProperty(@Nonnull UntypedIri iri) {
+      return (iri.isFromWorkbook()) ? createOWLDataProperty(iri) : fetchOWLDataProperty(iri);
+   }
+
+   private OWLDataProperty createOWLDataProperty(@Nonnull IriValue entityIri) {
+      String propertyName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.createUnchecked(propertyName, OWLDataProperty.class);
+   }
+
+   private OWLDataProperty fetchOWLDataProperty(@Nonnull IriValue entityIri) {
+      String propertyName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.resolveUnchecked(propertyName, OWLDataProperty.class);
+   }
+
+   /*
+    * Methods to create the OWL Object Property
+    */
+
+   public OWLObjectProperty getOWLObjectProperty(@Nonnull ObjectPropertyName objectPropertyName) {
+      return (objectPropertyName.isFromWorkbook()) ? createOWLObjectProperty(objectPropertyName) : fetchOWLObjectProperty(objectPropertyName);
+   }
+
+   public OWLObjectProperty getOWLObjectProperty(@Nonnull UntypedPrefixedName prefixedName) {
+      return (prefixedName.isFromWorkbook()) ? createOWLObjectProperty(prefixedName) : fetchOWLObjectProperty(prefixedName);
+   }
+
+   private OWLObjectProperty createOWLObjectProperty(@Nonnull PrefixedValue propertyName) {
+      return entityResolver.createUnchecked(propertyName.getString(), OWLObjectProperty.class);
+   }
+
+   private OWLObjectProperty fetchOWLObjectProperty(@Nonnull PrefixedValue propertyName) {
+      return entityResolver.resolveUnchecked(propertyName.getString(), OWLObjectProperty.class);
+   }
+
+   public OWLObjectProperty getOWLObjectProperty(@Nonnull ObjectPropertyIri objectPropertyIri) {
+      return (objectPropertyIri.isFromWorkbook()) ? createOWLObjectProperty(objectPropertyIri) : fetchOWLObjectProperty(objectPropertyIri);
+   }
+
+   public OWLObjectProperty getOWLObjectProperty(@Nonnull UntypedIri iri) {
+      return (iri.isFromWorkbook()) ? createOWLObjectProperty(iri) : fetchOWLObjectProperty(iri);
+   }
+
+   private OWLObjectProperty createOWLObjectProperty(IriValue entityIri) {
+      String propertyName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.createUnchecked(propertyName, OWLObjectProperty.class);
+   }
+
+   private OWLObjectProperty fetchOWLObjectProperty(IriValue entityIri) {
+      String propertyName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.resolveUnchecked(propertyName, OWLObjectProperty.class);
+   }
+
+   /*
+    * Methods to create the OWL Annotation Property
+    */
+
+   public OWLAnnotationProperty getOWLAnnotationProperty(@Nonnull AnnotationPropertyName annotationPropertyName) {
+      return (annotationPropertyName.isFromWorkbook()) ? createOWLAnnotationProperty(annotationPropertyName) : fetchOWLAnnotationProperty(annotationPropertyName);
+   }
+
+   public OWLAnnotationProperty getOWLAnnotationProperty(@Nonnull UntypedPrefixedName prefixedName) {
+      return (prefixedName.isFromWorkbook()) ? createOWLAnnotationProperty(prefixedName) : fetchOWLAnnotationProperty(prefixedName);
+   }
+
+   private OWLAnnotationProperty createOWLAnnotationProperty(@Nonnull PrefixedValue propertyName) {
+      return entityResolver.createUnchecked(propertyName.getString(), OWLAnnotationProperty.class);
+   }
+
+   private OWLAnnotationProperty fetchOWLAnnotationProperty(@Nonnull PrefixedValue propertyName) {
+      return entityResolver.resolveUnchecked(propertyName.getString(), OWLAnnotationProperty.class);
+   }
+
+   public OWLAnnotationProperty getOWLAnnotationProperty(@Nonnull AnnotationPropertyIri annotationPropertyIri) {
+      return (annotationPropertyIri.isFromWorkbook()) ? createOWLAnnotationProperty(annotationPropertyIri) : fetchOWLAnnotationProperty(annotationPropertyIri);
+   }
+
+   public OWLAnnotationProperty getOWLAnnotationProperty(@Nonnull UntypedIri iri) {
+      return (iri.isFromWorkbook()) ? createOWLAnnotationProperty(iri) : fetchOWLAnnotationProperty(iri);
+   }
+
+   private OWLAnnotationProperty createOWLAnnotationProperty(@Nonnull IriValue entityIri) {
+      String propertyName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.createUnchecked(propertyName, OWLAnnotationProperty.class);
+   }
+
+   private OWLAnnotationProperty fetchOWLAnnotationProperty(@Nonnull IriValue entityIri) {
+      String propertyName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.resolveUnchecked(propertyName, OWLAnnotationProperty.class);
+   }
+
+   /*
+    * Methods to create the OWL Annotation Value
+    */
+
+   public OWLAnnotationValue getOWLAnnotationValue(@Nonnull ClassIri classIri) {
+      return IRI.create(classIri.getString());
+   }
+
+   public OWLAnnotationValue getOWLAnnotationValue(@Nonnull UntypedIri iri) {
+      return IRI.create(iri.getString());
+   }
+
+   public OWLAnnotationValue getOWLAnnotationValue(@Nonnull LiteralValue literalValue) {
+      return getOWLTypedLiteral(literalValue);
+   }
+
+   public OWLAnnotationValue getOWLAnnotationValue(@Nonnull PlainLiteralValue plainLiteralValue) {
+      return getOWLPlainLiteral(plainLiteralValue);
    }
 
    public OWLLiteral getOWLTypedLiteral(@Nonnull LiteralValue literal) {
       final String lexicalString = literal.getString();
       final String datatype = literal.getDatatype();
-      return owlDataFactory.getOWLLiteral(lexicalString, getOWLDatatype(datatype));
+      return createOWLLiteral(lexicalString, createOWLDatatype(datatype));
    }
 
-   private OWLDatatype getOWLDatatype(@Nonnull String datatype) {
+   private OWLDatatype createOWLDatatype(@Nonnull String datatype) {
       return entityResolver.resolveUnchecked(datatype, OWLDatatype.class);
    }
 
@@ -287,15 +367,73 @@ public class OwlFactory {
       final String lexicalString = literal.getString();
       final Optional<String> language = literal.getLanguage();
       if (language.isPresent()) {
-         return owlDataFactory.getOWLLiteral(lexicalString, language.get());
+         return createOWLLiteral(lexicalString, language.get());
       } else {
-         return owlDataFactory.getOWLLiteral(lexicalString, OWL2Datatype.RDF_PLAIN_LITERAL);
+         return createOWLLiteral(lexicalString, OWL2Datatype.RDF_PLAIN_LITERAL);
       }
+   }
+
+   /*
+    * Methods to create the OWL Individual
+    */
+
+   public OWLNamedIndividual getOWLNamedIndividual(@Nonnull IndividualName individualName) {
+      return (individualName.isFromWorkbook()) ? createOWLNamedIndividual(individualName) : fetchOWLNamedIndividual(individualName);
+   }
+
+   public OWLNamedIndividual getOWLNamedIndividual(@Nonnull UntypedPrefixedName prefixedName) {
+      return (prefixedName.isFromWorkbook()) ? createOWLNamedIndividual(prefixedName) : fetchOWLNamedIndividual(prefixedName);
+   }
+
+   private OWLNamedIndividual createOWLNamedIndividual(@Nonnull PrefixedValue entityName) {
+      return entityResolver.createUnchecked(entityName.getString(), OWLNamedIndividual.class);
+   }
+
+   private OWLNamedIndividual fetchOWLNamedIndividual(@Nonnull PrefixedValue entityName) {
+      return entityResolver.resolveUnchecked(entityName.getString(), OWLNamedIndividual.class);
+   }
+
+   public OWLNamedIndividual getOWLNamedIndividual(@Nonnull IndividualIri individualIri) {
+      return (individualIri.isFromWorkbook()) ? createOWLNamedIndividual(individualIri) : fetchOWLNamedIndividual(individualIri);
+   }
+
+   public OWLNamedIndividual getOWLNamedIndividual(@Nonnull UntypedIri iri) {
+      return (iri.isFromWorkbook()) ? createOWLNamedIndividual(iri) : fetchOWLNamedIndividual(iri);
+   }
+
+   private OWLNamedIndividual createOWLNamedIndividual(@Nonnull IriValue entityIri) {
+      String individualName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.createUnchecked(individualName, OWLNamedIndividual.class);
+   }
+
+   private OWLNamedIndividual fetchOWLNamedIndividual(@Nonnull IriValue entityIri) {
+      String individualName = encloseWithBrackets(entityIri.getString());
+      return entityResolver.resolveUnchecked(individualName, OWLNamedIndividual.class);
    }
 
    /*
     * Public methods to create a various number of OWL expression and axioms
     */
+
+   private final OWLDataFactory owlDataFactory = OWLManager.getOWLDataFactory();
+
+   public OWLLiteral createOWLLiteral(
+         @Nonnull String value,
+         @Nonnull OWLDatatype datatype) {
+      return owlDataFactory.getOWLLiteral(value, datatype);
+   }
+
+   public OWLLiteral createOWLLiteral(
+         @Nonnull String value,
+         @Nonnull OWL2Datatype datatype) {
+      return owlDataFactory.getOWLLiteral(value, datatype);
+   }
+
+   public OWLLiteral createOWLLiteral(
+         @Nonnull String value,
+         @Nonnull String language) {
+      return owlDataFactory.getOWLLiteral(value, language);
+   }
 
    public OWLAnnotation createOWLAnnotation(
          @Nonnull OWLAnnotationProperty property,

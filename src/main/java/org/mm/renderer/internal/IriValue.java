@@ -9,22 +9,24 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class IriValue implements Value {
+public abstract class IriValue implements Value {
 
-   private final String iriString;
+   private final String value;
+   private final boolean isFromWorkbook;
 
-   public IriValue(@Nonnull String iriString) {
-      this.iriString = checkNotNull(iriString);
+   public IriValue(@Nonnull String value, boolean isFromWorkbook) {
+      this.value = checkNotNull(value);
+      this.isFromWorkbook = isFromWorkbook;
    }
 
    @Override
    public String getString() {
-      return iriString;
+      return value;
    }
 
    @Override
-   public IriValue update(String newIriString) {
-      return new IriValue(newIriString);
+   public boolean isFromWorkbook() {
+      return isFromWorkbook;
    }
 
    @Override
@@ -39,18 +41,20 @@ public class IriValue implements Value {
          return false;
       }
       IriValue other = (IriValue) o;
-      return Objects.equal(iriString, other.getString());
+      return Objects.equal(value, other.getString())
+            && Objects.equal(isFromWorkbook, other.isFromWorkbook());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hashCode(iriString);
+      return Objects.hashCode(value, isFromWorkbook);
    }
 
    @Override
    public String toString() {
       return MoreObjects.toStringHelper(this)
-            .addValue(iriString)
+            .addValue(value)
+            .addValue(isFromWorkbook)
             .toString();
    }
 }

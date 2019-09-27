@@ -29,6 +29,7 @@ public class Vocabulary {
    public static final OWLClass VEHICLE = Class(IRI(ONTOLOGY_ID, "Vehicle"));
    public static final OWLClass AUTOMOBILE = Class(IRI(ONTOLOGY_ID, "Automobile"));
    public static final OWLClass AUTO = Class(IRI(ONTOLOGY_ID, "Auto"));
+   public static final OWLClass MOTOR = Class(IRI(ONTOLOGY_ID, "Motor"));
    public static final OWLClass PHYSICIAN = Class(IRI(ONTOLOGY_ID, "Physician"));
    public static final OWLClass CHILD_OF_DOCTOR = Class(IRI(ONTOLOGY_ID, "ChildOfDoctor"));
    public static final OWLClass PERSON = Class(IRI(ONTOLOGY_ID, "Person"));
@@ -87,6 +88,7 @@ public class Vocabulary {
    public static final OWLNamedIndividual ALFRED = NamedIndividual(IRI(ONTOLOGY_ID, "alfred"));
    public static final OWLNamedIndividual BOB = NamedIndividual(IRI(ONTOLOGY_ID, "bob"));
    public static final OWLNamedIndividual BOBBY = NamedIndividual(IRI(ONTOLOGY_ID, "bobby"));
+   public static final OWLNamedIndividual BMW_MOTOR = NamedIndividual(IRI(ONTOLOGY_ID, "bmw-motor"));
 
    public static final OWLDatatype RDFS_LITERAL = Datatype(IRI(Namespaces.RDFS + "Literal"));
    public static final OWLDatatype RDF_PLAINLITERAL = Datatype(IRI(Namespaces.RDF + "PlainLiteral"));

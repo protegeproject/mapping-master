@@ -9,4 +9,6 @@ public interface Value {
    String getString();
 
    Value update(String newValue);
+
+   boolean isFromWorkbook();
 }

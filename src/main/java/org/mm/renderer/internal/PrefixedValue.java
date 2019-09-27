@@ -9,22 +9,24 @@ import com.google.common.base.Objects;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class PrefixedValue implements Value {
+public abstract class PrefixedValue implements Value {
 
-   private final String prefixedName;
+   private final String value;
+   private final boolean isFromWorkbook;
 
-   public PrefixedValue(@Nonnull String prefixedName) {
-      this.prefixedName = checkNotNull(prefixedName);
+   public PrefixedValue(@Nonnull String value, boolean isFromWorkbook) {
+      this.value = checkNotNull(value);
+      this.isFromWorkbook = isFromWorkbook;
    }
 
    @Override
    public String getString() {
-      return prefixedName;
+      return value;
    }
 
    @Override
-   public PrefixedValue update(String newPrefixedName) {
-      return new PrefixedValue(newPrefixedName);
+   public boolean isFromWorkbook() {
+      return isFromWorkbook;
    }
 
    @Override
@@ -39,18 +41,20 @@ public class PrefixedValue implements Value {
          return false;
       }
       PrefixedValue other = (PrefixedValue) o;
-      return Objects.equal(prefixedName, other.getString());
+      return Objects.equal(value, other.getString())
+            && Objects.equal(isFromWorkbook, other.isFromWorkbook());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hashCode(prefixedName);
+      return Objects.hashCode(value, isFromWorkbook);
    }
 
    @Override
    public String toString() {
       return MoreObjects.toStringHelper(this)
-            .addValue(prefixedName)
+            .addValue(value)
+            .addValue(isFromWorkbook)
             .toString();
    }
 }

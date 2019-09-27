@@ -9,7 +9,7 @@ import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTPropertyValue;
-import org.mm.parser.node.ASTValueCategory;
+import org.mm.parser.node.ASTValue;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.internal.Value;
 import org.mm.renderer.internal.ValueNodeVisitor;
@@ -18,16 +18,16 @@ import org.mm.renderer.internal.ValueNodeVisitor;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class AbstractNodeVisitor extends NodeVisitorAdapter {
+public class AbstractNodeVisitor extends NodeVisitorAdapter { // XXX: Deprecated or do something
 
-   private final ValueNodeVisitor valueNodeVisitor;
+   protected final ValueNodeVisitor valueNodeVisitor;
 
    protected AbstractNodeVisitor(@Nonnull ValueNodeVisitor valueNodeVisitor) {
       this.valueNodeVisitor = checkNotNull(valueNodeVisitor);
    }
 
    protected Value getValue(SimpleNode node) {
-      ASTValueCategory valueNode = ParserUtils.getChild(node, NodeType.VALUE);
+      ASTValue valueNode = ParserUtils.getChild(node, NodeType.VALUE);
       valueNodeVisitor.visit(valueNode);
       return valueNodeVisitor.getValue();
    }

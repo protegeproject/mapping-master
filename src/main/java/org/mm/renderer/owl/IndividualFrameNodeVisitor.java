@@ -1,6 +1,5 @@
 package org.mm.renderer.owl;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -20,10 +19,18 @@ import org.mm.parser.node.ASTIndividualFrame;
 import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
+import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTSameAs;
-import org.mm.renderer.AbstractNodeVisitor;
+import org.mm.parser.node.SimpleNode;
+import org.mm.renderer.CellCursor;
+import org.mm.renderer.internal.BuiltInFunctionHandler;
+import org.mm.renderer.internal.IndividualIri;
 import org.mm.renderer.internal.IndividualName;
 import org.mm.renderer.internal.LiteralValue;
+import org.mm.renderer.internal.PlainLiteralValue;
+import org.mm.renderer.internal.ReferenceResolver;
+import org.mm.renderer.internal.UntypedIri;
+import org.mm.renderer.internal.UntypedPrefixedName;
 import org.mm.renderer.internal.Value;
 import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLAnnotation;
@@ -39,19 +46,17 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
+public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
 
-   private final ValueNodeVisitor valueNodeVisitor;
-   private final OwlFactory owlFactory;
-
-   @Nullable private OWLNamedIndividual subject;
+   private OWLNamedIndividual subject;
 
    private Set<OWLAxiom> axioms = new HashSet<>();
 
-   protected IndividualFrameNodeVisitor(@Nonnull ValueNodeVisitor valueNodeVisitor, @Nonnull OwlFactory owlFactory) {
-      super(valueNodeVisitor);
-      this.valueNodeVisitor = checkNotNull(valueNodeVisitor);
-      this.owlFactory = checkNotNull(owlFactory);
+   protected IndividualFrameNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
+         @Nonnull BuiltInFunctionHandler builtInFunctionHandler,
+         @Nonnull OwlFactory owlFactory,
+         @Nonnull CellCursor cellCursor) {
+      super(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    public Collection<OWLAxiom> getAxioms() {
@@ -69,18 +74,11 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    @Override
-   public void visit(ASTNamedIndividual node) {
-      Value individualNameValue = getValue(node);
-      subject = owlFactory.getOWLNamedIndividual(individualNameValue);
-   }
-
-   @Override
    public void visit(ASTIndividualDeclaration node) {
       ASTNamedIndividual individualNode = ParserUtils.getChild(node, NodeType.INDIVIDUAL);
       individualNode.accept(this);
-      if (subject != null) {
-         axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
-      }
+      subject = (OWLNamedIndividual) getEntity();
+      axioms.add(owlFactory.createOWLDeclarationAxiom(subject));
    }
 
    private void visitIndividualDeclarationNode(ASTIndividualFrame individualSectionNode) {
@@ -152,6 +150,13 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
       }
    }
 
+   private Value getPropertyValue(SimpleNode node) {
+      ASTPropertyValue valueNode = ParserUtils.getChild(node, NodeType.PROPERTY_VALUE);
+      ValueNodeVisitor visitor = new ValueNodeVisitor(referenceResolver, builtInFunctionHandler, cellCursor);
+      visitor.visit(valueNode);
+      return visitor.getValue();
+   }
+
    @Nullable
    private OWLEntity visitPropertyNode(ASTFact node) {
       ASTProperty propertyNode = ParserUtils.getChild(node, NodeType.PROPERTY);
@@ -161,27 +166,29 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private void visitDataPropertyAssertion(OWLDataProperty property, Value value) {
-      OWLLiteral literal = owlFactory.getOWLLiteral(value);
-      if (literal != null) {
+      if (value instanceof LiteralValue) {
+         OWLLiteral literal = owlFactory.getOWLTypedLiteral((LiteralValue) value);
+         axioms.add(owlFactory.createOWLDataPropertyAssertionAxiom(property, subject, literal));
+      } else if (value instanceof PlainLiteralValue) {
+         OWLLiteral literal = owlFactory.getOWLPlainLiteral((PlainLiteralValue) value);
          axioms.add(owlFactory.createOWLDataPropertyAssertionAxiom(property, subject, literal));
       }
    }
 
    private void visitObjectPropertyAssertion(OWLObjectProperty property, Value value) {
-      value = changeLiteralValueToIndividualName(value);
-      OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(value);
-      if (individual != null) {
+      if (value instanceof IndividualName) {
+         OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((IndividualName) value);
          axioms.add(owlFactory.createOWLObjectPropertyAssertionAxiom(property, subject, individual));
-      }
-   }
-
-   private Value changeLiteralValueToIndividualName(Value value) {
-      // Since we know we are dealing with object property, thus any literal value produced
-      // by the value visitor must be an object value (i.e., named individual).
-      if (value instanceof LiteralValue) {
-         return new IndividualName(((LiteralValue) value).getString());
-      }
-      return value;
+      } else if (value instanceof IndividualIri) {
+         OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((IndividualIri) value);
+         axioms.add(owlFactory.createOWLObjectPropertyAssertionAxiom(property, subject, individual));
+      } else if (value instanceof UntypedPrefixedName) {
+         OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((UntypedPrefixedName) value);
+         axioms.add(owlFactory.createOWLObjectPropertyAssertionAxiom(property, subject, individual));
+      }  else if (value instanceof UntypedIri) {
+         OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((UntypedIri) value);
+         axioms.add(owlFactory.createOWLObjectPropertyAssertionAxiom(property, subject, individual));
+      } 
    }
 
    private void visitAnnotationAssertionNode(ASTIndividualFrame individualSectionNode) {
@@ -260,14 +267,14 @@ public class IndividualFrameNodeVisitor extends AbstractNodeVisitor {
    }
 
    private EntityNodeVisitor createNewEntityNodeVisitor() {
-      return new EntityNodeVisitor(owlFactory, valueNodeVisitor);
+      return new EntityNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    private ClassExpressionNodeVisitor createNewClassExpressionNodeVisitor() {
-      return new ClassExpressionNodeVisitor(owlFactory, valueNodeVisitor);
+      return new ClassExpressionNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    private AnnotationNodeVisitor createNewAnnotationNodeVisitor() {
-      return new AnnotationNodeVisitor(owlFactory, valueNodeVisitor);
+      return new AnnotationNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 }

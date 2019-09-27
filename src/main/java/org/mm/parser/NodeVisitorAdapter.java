@@ -46,7 +46,6 @@ import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTPropertyValue;
-import org.mm.parser.node.ASTQName;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTReferenceType;
@@ -57,7 +56,10 @@ import org.mm.parser.node.ASTSourceSpecification;
 import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.ASTSubclassOf;
 import org.mm.parser.node.ASTTransformationRule;
-import org.mm.parser.node.ASTValueCategory;
+import org.mm.parser.node.ASTUntypedExactCardinality;
+import org.mm.parser.node.ASTUntypedMaxCardinality;
+import org.mm.parser.node.ASTUntypedMinCardinality;
+import org.mm.parser.node.ASTValue;
 import org.mm.parser.node.Node;
 
 /**
@@ -139,6 +141,11 @@ public class NodeVisitorAdapter implements NodeVisitor {
    }
 
    @Override
+   public void visit(ASTUntypedExactCardinality node) {
+      handleDefault(node);
+   }
+
+   @Override
    public void visit(ASTDataHasValue node) {
       handleDefault(node);
    }
@@ -149,7 +156,17 @@ public class NodeVisitorAdapter implements NodeVisitor {
    }
 
    @Override
+   public void visit(ASTUntypedMaxCardinality node) {
+      handleDefault(node);
+   }
+
+   @Override
    public void visit(ASTDataMinCardinality node) {
+      handleDefault(node);
+   }
+
+   @Override
+   public void visit(ASTUntypedMinCardinality node) {
       handleDefault(node);
    }
 
@@ -299,11 +316,6 @@ public class NodeVisitorAdapter implements NodeVisitor {
    }
 
    @Override
-   public void visit(ASTQName node) {
-      handleDefault(node);
-   }
-
-   @Override
    public void visit(ASTReference node) {
       handleDefault(node);
    }
@@ -354,7 +366,7 @@ public class NodeVisitorAdapter implements NodeVisitor {
    }
 
    @Override
-   public void visit(ASTValueCategory node) {
+   public void visit(ASTValue node) {
       handleDefault(node);
    }
 }

@@ -12,7 +12,7 @@ public class DefaultDirectives extends ReferenceDirectives {
             "",                              // default language
             "",                              // default label value
             "",                              // default literal value
-            OWL_CLASS,                       // default reference type
+            MM_UNTYPED,                      // default entity type
             OWL_DATA_PROPERTY,               // default property type
             XSD_STRING,                      // default value datatype
             RDF_ID,                          // default value encoding

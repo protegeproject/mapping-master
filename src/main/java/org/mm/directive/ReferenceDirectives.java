@@ -16,7 +16,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
    private final String namespace;
    private final String language;
 
-   private final int referenceType;
+   private final int entityType;
    private final int propertyType;
 
    private final int valueDatatype;
@@ -34,14 +34,14 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives(@Nonnull String prefix, @Nonnull String namespace,
          @Nonnull String language, @Nonnull String labelValue, @Nonnull String literalValue,
-         int referenceType, int propertyType, int valueDatatype, int valueEncoding, int iriEncoding,
-         int shiftDirection, int orderIfCellEmpty, int orderIfEntityAbsent) {
+         int entityType, int propertyType, int valueDatatype, int valueEncoding,
+         int iriEncoding, int shiftDirection, int orderIfCellEmpty, int orderIfEntityAbsent) {
       this.prefix = checkNotNull(prefix);
       this.namespace = checkNotNull(namespace);
       this.language = checkNotNull(language);
       this.labelValue = checkNotNull(labelValue);
       this.literalValue = checkNotNull(literalValue);
-      this.referenceType = referenceType;
+      this.entityType = entityType;
       this.propertyType = propertyType;
       this.valueDatatype = valueDatatype;
       this.valueEncoding = valueEncoding;
@@ -91,8 +91,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
       return literalValue.isEmpty() ? false : true;
    }
 
-   public int getReferenceType() {
-      return referenceType;
+   public int getEntityType() {
+      return entityType;
    }
 
    public int getPropertyType() {

@@ -13,6 +13,7 @@ import org.mm.parser.node.ASTIndividualFrame;
 import org.mm.parser.node.ASTRuleExpression;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
+import org.mm.renderer.CellCursor;
 import org.mm.renderer.Renderer;
 import org.mm.renderer.RenderingContext;
 import org.mm.renderer.Workbook;
@@ -20,7 +21,6 @@ import org.mm.renderer.exception.IgnoreEmptyCellException;
 import org.mm.renderer.exception.WarningEmptyCellException;
 import org.mm.renderer.internal.BuiltInFunctionHandler;
 import org.mm.renderer.internal.ReferenceResolver;
-import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,34 +34,29 @@ public class OwlRenderer implements Renderer<Set<OWLAxiom>> {
 
    private static final Logger logger = LoggerFactory.getLogger(OwlRenderer.class);
 
-   private final OwlFactory owlFactory;
-
-   public OwlRenderer(@Nonnull OwlFactory owlFactory) {
-      this.owlFactory = checkNotNull(owlFactory);
-   }
-
    @Override
-   public Set<OWLAxiom> render(String transformationRule, Workbook workbook, RenderingContext context) {
-      final Node ruleFrameNode = parse(transformationRule);
+   public Set<OWLAxiom> render(String transformationRule, Workbook workbook, RenderingContext context, OwlEntityResolver entityResolver) {
+      final Node transformationRuleObject = parse(transformationRule);
       final ReferenceResolver referenceResolver = new ReferenceResolver(workbook);
-      return performRendering(ruleFrameNode, referenceResolver, context);
+      final BuiltInFunctionHandler builtInFunctionHandler = new BuiltInFunctionHandler();
+      final OwlFactory owlFactory = new OwlFactory(entityResolver);
+      return performRendering(transformationRuleObject, referenceResolver, builtInFunctionHandler, owlFactory, context);
    }
 
-   private Set<OWLAxiom> performRendering(Node transformationRuleNode, ReferenceResolver referenceResolver,
-         RenderingContext context) {
+   private Set<OWLAxiom> performRendering(Node transformationRuleObject, ReferenceResolver referenceResolver,
+         BuiltInFunctionHandler builtInFunctionHandler, OwlFactory owlFactory, RenderingContext context) {
       Set<OWLAxiom> axioms = Sets.newHashSet();
       RenderingContext.Iterator contextIterator = context.getIterator();
       while (contextIterator.next()) {
-         ValueNodeVisitor valueNodeVisitor = new ValueNodeVisitor(referenceResolver, new BuiltInFunctionHandler());
-         valueNodeVisitor.setCellCursor(contextIterator.getCursor());
+         CellCursor cellCursor = contextIterator.getCursor();
          try {
-            if (transformationRuleNode instanceof ASTClassFrame) {
-               ClassFrameNodeVisitor classFrameNodeVisitor = new ClassFrameNodeVisitor(valueNodeVisitor, owlFactory);
-               classFrameNodeVisitor.visit((ASTClassFrame) transformationRuleNode);
+            if (transformationRuleObject instanceof ASTClassFrame) {
+               ClassFrameNodeVisitor classFrameNodeVisitor = new ClassFrameNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
+               classFrameNodeVisitor.visit((ASTClassFrame) transformationRuleObject);
                axioms.addAll(classFrameNodeVisitor.getAxioms());
-            } else if (transformationRuleNode instanceof ASTIndividualFrame) {
-               IndividualFrameNodeVisitor individualFrameNodeVisitor = new IndividualFrameNodeVisitor(valueNodeVisitor, owlFactory);
-               individualFrameNodeVisitor.visit((ASTIndividualFrame) transformationRuleNode);
+            } else if (transformationRuleObject instanceof ASTIndividualFrame) {
+               IndividualFrameNodeVisitor individualFrameNodeVisitor = new IndividualFrameNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
+               individualFrameNodeVisitor.visit((ASTIndividualFrame) transformationRuleObject);
                axioms.addAll(individualFrameNodeVisitor.getAxioms());
             }
          } catch (IgnoreEmptyCellException | WarningEmptyCellException e) {

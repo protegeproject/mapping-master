@@ -1,21 +1,25 @@
 package org.mm.renderer.internal;
 
-import com.google.common.base.MoreObjects;
+import javax.annotation.Nonnull;
 import com.google.common.base.Objects;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class IndividualName extends ReferencedEntityName {
+public class IndividualName extends PrefixedValue {
 
-   public IndividualName(String prefixedName) {
-      super(prefixedName);
+   public IndividualName(@Nonnull String value, boolean isFromWorkbook) {
+      super(value, isFromWorkbook);
+   }
+
+   public static IndividualName create(@Nonnull String value) {
+      return new IndividualName(value, false);
    }
 
    @Override
-   public IndividualName update(String newPrefixedName) {
-      return new IndividualName(newPrefixedName);
+   public IndividualName update(String newValue) {
+      return new IndividualName(newValue, isFromWorkbook());
    }
 
    @Override
@@ -30,18 +34,7 @@ public class IndividualName extends ReferencedEntityName {
          return false;
       }
       IndividualName other = (IndividualName) o;
-      return Objects.equal(this.getString(), other.getString());
-   }
-
-   @Override
-   public int hashCode() {
-      return Objects.hashCode(this.getString());
-   }
-
-   @Override
-   public String toString() {
-      return MoreObjects.toStringHelper(this)
-            .addValue(this.getString())
-            .toString();
+      return Objects.equal(getString(), other.getString())
+            && Objects.equal(isFromWorkbook(), other.isFromWorkbook());
    }
 }

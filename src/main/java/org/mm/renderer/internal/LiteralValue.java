@@ -11,42 +11,33 @@ import com.google.common.base.Objects;
  */
 public class LiteralValue implements Value, Argument {
 
-   private final String literalValue;
+   private final String value;
    private final String datatype;
+   private final boolean isFromWorkbook;
 
-   private LiteralValue(@Nonnull String literalValue, @Nonnull String datatype) {
-      this.literalValue = checkNotNull(literalValue);
+   public LiteralValue(@Nonnull String value, @Nonnull String datatype, boolean isFromWorkbook) {
+      this.value = checkNotNull(value);
       this.datatype = checkNotNull(datatype);
+      this.isFromWorkbook = isFromWorkbook;
    }
 
-   public static LiteralValue createLiteral(String literalValue, String datatype) {
-      return new LiteralValue(literalValue, datatype);
-   }
-
-   public static LiteralValue createLiteral(String stringValue) {
-      return new LiteralValue(String.valueOf(stringValue), Datatype.XSD_STRING);
-   }
-
-   public static LiteralValue createLiteral(int integerValue) {
-      return new LiteralValue(String.valueOf(integerValue), Datatype.XSD_INTEGER);
-   }
-
-   public static LiteralValue createLiteral(float floatValue) {
-      return new LiteralValue(String.valueOf(floatValue), Datatype.XSD_FLOAT);
-   }
-
-   public static LiteralValue createLiteral(boolean booleanValue) {
-      return new LiteralValue(String.valueOf(booleanValue), Datatype.XSD_BOOLEAN);
+   public static LiteralValue create(@Nonnull Object value, @Nonnull String datatype) {
+      return new LiteralValue(String.valueOf(value), datatype, false);
    }
 
    @Override
    public String getString() {
-      return literalValue;
+      return value;
    }
 
    @Override
-   public LiteralValue update(String newLiteralValue) {
-      return createLiteral(newLiteralValue, this.datatype);
+   public LiteralValue update(String newValue) {
+      return new LiteralValue(newValue, datatype, isFromWorkbook);
+   }
+
+   @Override
+   public boolean isFromWorkbook() {
+      return isFromWorkbook;
    }
 
    public String getDatatype() {
@@ -65,20 +56,22 @@ public class LiteralValue implements Value, Argument {
          return false;
       }
       LiteralValue other = (LiteralValue) o;
-      return Objects.equal(literalValue, other.getString())
-            && Objects.equal(datatype, other.getDatatype());
+      return Objects.equal(value, other.getString())
+            && Objects.equal(datatype, other.getDatatype())
+            && Objects.equal(isFromWorkbook, other.isFromWorkbook());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hashCode(literalValue, datatype);
+      return Objects.hashCode(value, datatype, isFromWorkbook);
    }
 
    @Override
    public String toString() {
       return MoreObjects.toStringHelper(this)
-            .addValue(literalValue)
+            .addValue(value)
             .addValue(datatype)
+            .addValue(isFromWorkbook)
             .toString();
    }
 

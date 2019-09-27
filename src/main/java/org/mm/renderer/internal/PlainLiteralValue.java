@@ -14,18 +14,20 @@ public class PlainLiteralValue implements Value {
 
    private final String value;
    private final String language;
+   private final boolean isFromWorkbook;
 
-   private PlainLiteralValue(@Nonnull String value, @Nonnull String language) {
+   private PlainLiteralValue(@Nonnull String value, @Nonnull String language, boolean isFromWorkbook) {
       this.value = checkNotNull(value);
       this.language = checkNotNull(language);
+      this.isFromWorkbook = isFromWorkbook;
    }
 
-   public static PlainLiteralValue createPlainLiteral(String value, String language) {
-      return new PlainLiteralValue(value, language);
+   public static PlainLiteralValue create(String value, String language) {
+      return new PlainLiteralValue(value, language, false);
    }
 
-   public static PlainLiteralValue createPlainLiteral(String value) {
-      return new PlainLiteralValue(value, "");
+   public static PlainLiteralValue create(String value) {
+      return new PlainLiteralValue(value, "", false);
    }
 
    @Override
@@ -35,7 +37,12 @@ public class PlainLiteralValue implements Value {
 
    @Override
    public PlainLiteralValue update(String newValue) {
-      return createPlainLiteral(newValue, this.language);
+      return new PlainLiteralValue(newValue, language, isFromWorkbook);
+   }
+
+   @Override
+   public boolean isFromWorkbook() {
+      return isFromWorkbook;
    }
 
    public Optional<String> getLanguage() {
@@ -59,12 +66,13 @@ public class PlainLiteralValue implements Value {
       }
       PlainLiteralValue other = (PlainLiteralValue) o;
       return Objects.equal(value, other.getString())
-            && Objects.equal(language, other.getLanguage());
+            && Objects.equal(language, other.getLanguage())
+            && Objects.equal(isFromWorkbook, other.isFromWorkbook());
    }
 
    @Override
    public int hashCode() {
-      return Objects.hashCode(value, language);
+      return Objects.hashCode(value, language, isFromWorkbook);
    }
 
    @Override
@@ -72,6 +80,7 @@ public class PlainLiteralValue implements Value {
       return MoreObjects.toStringHelper(this)
             .addValue(value)
             .addValue(language)
+            .addValue(isFromWorkbook)
             .toString();
    }
 }

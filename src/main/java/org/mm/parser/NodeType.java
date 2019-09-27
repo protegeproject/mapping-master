@@ -30,7 +30,7 @@ import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTRuleExpression;
 import org.mm.parser.node.ASTSameAs;
 import org.mm.parser.node.ASTSubclassOf;
-import org.mm.parser.node.ASTValueCategory;
+import org.mm.parser.node.ASTValue;
 import org.mm.parser.node.Node;
 
 /**
@@ -79,7 +79,7 @@ public class NodeType<T extends Node> {
    public static final NodeType<ASTRuleExpression> RULE_EXPRESSION = new NodeType<>("RuleExpression", ASTRuleExpression.class);
    public static final NodeType<ASTSameAs> SAME_AS = new NodeType<>("SameAs", ASTSameAs.class);
    public static final NodeType<ASTSubclassOf> SUBCLASS_OF = new NodeType<>("SubclassOf", ASTSubclassOf.class);
-   public static final NodeType<ASTValueCategory> VALUE = new NodeType<>("ValueCategory", ASTValueCategory.class);
+   public static final NodeType<ASTValue> VALUE = new NodeType<>("Value", ASTValue.class);
    public static final NodeType<ASTAnnotationValue> ANNOTATION_VALUE = new NodeType<>("AnnotationValue", ASTAnnotationValue.class);
    public static final NodeType<ASTBuiltInFunction> BUILTIN_FUNCTION = new NodeType<>("BuiltInFunction", ASTBuiltInFunction.class);
    public static final NodeType<ASTArgumentList> ARGUMENT_LIST = new NodeType<>("ArgumentList", ASTArgumentList.class);

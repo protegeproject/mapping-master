@@ -140,7 +140,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    private Value getValueObject(CellAddress cellAddress, String cellValueString, ReferenceDirectives directives) {
       Value value = EmptyValue.create();
       if (!cellValueString.isEmpty()) {
-         int option = directives.getReferenceType();
+         int option = directives.getEntityType();
          switch (option) {
             case OWL_CLASS: value = processClassName(cellAddress, cellValueString, directives); break;
             case OWL_DATA_PROPERTY: value = processDataPropertyName(cellAddress, cellValueString, directives); break;
@@ -179,11 +179,11 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    private Value processClassName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value className = new ClassName(localName);
+      Value className = new ClassName(localName, true);
       if (directives.useUserPrefix()) {
-         className = new ClassName(directives.getPrefix() + ":" + localName);
+         className = new ClassName(directives.getPrefix() + ":" + localName, true);
       } else if (directives.useUserNamespace()) {
-         className = new IriValue(directives.getNamespace() + localName);
+         className = new ClassIri(directives.getNamespace() + localName, true);
       }
       return className;
    }
@@ -191,11 +191,11 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    private Value processDataPropertyName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value propertyName = new DataPropertyName(localName);
+      Value propertyName = new DataPropertyName(localName, true);
       if (directives.useUserPrefix()) {
-         propertyName = new DataPropertyName(directives.getPrefix() + ":" + localName);
+         propertyName = new DataPropertyName(directives.getPrefix() + ":" + localName, true);
       } else if (directives.useUserNamespace()) {
-         propertyName = new IriValue(directives.getNamespace() + localName);
+         propertyName = new DataPropertyIri(directives.getNamespace() + localName, true);
       }
       return propertyName;
    }
@@ -203,11 +203,11 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    private Value processObjectPropertyName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value propertyName = new ObjectPropertyName(localName);
+      Value propertyName = new ObjectPropertyName(localName, true);
       if (directives.useUserPrefix()) {
-         propertyName = new ObjectPropertyName(directives.getPrefix() + ":" + localName);
+         propertyName = new ObjectPropertyName(directives.getPrefix() + ":" + localName, true);
       } else if (directives.useUserNamespace()) {
-         propertyName = new IriValue(directives.getNamespace() + localName);
+         propertyName = new ObjectPropertyIri(directives.getNamespace() + localName, true);
       }
       return propertyName;
    }
@@ -215,11 +215,11 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    private Value processAnnotationPropertyName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value propertyName = new AnnotationPropertyName(localName);
+      Value propertyName = new AnnotationPropertyName(localName, true);
       if (directives.useUserPrefix()) {
-         propertyName = new AnnotationPropertyName(directives.getPrefix() + ":" + localName);
+         propertyName = new AnnotationPropertyName(directives.getPrefix() + ":" + localName, true);
       } else if (directives.useUserNamespace()) {
-         propertyName = new IriValue(directives.getNamespace() + localName);
+         propertyName = new AnnotationPropertyIri(directives.getNamespace() + localName, true);
       }
       return propertyName;
    }
@@ -227,11 +227,11 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    private Value processIndividualName(CellAddress cellAddress, String cellValue,
          ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
-      Value propertyName = new IndividualName(localName);
+      Value propertyName = new IndividualName(localName, true);
       if (directives.useUserPrefix()) {
-         propertyName = new IndividualName(directives.getPrefix() + ":" + localName);
+         propertyName = new IndividualName(directives.getPrefix() + ":" + localName, true);
       } else if (directives.useUserNamespace()) {
-         propertyName = new IriValue(directives.getNamespace() + localName);
+         propertyName = new IndividualIri(directives.getNamespace() + localName, true);
       }
       return propertyName;
    }
@@ -240,7 +240,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          ReferenceDirectives directives) {
       int option = directives.getIriEncoding();
       if (option == MM_CAMELCASE_ENCODE) {
-         if (directives.getReferenceType() == OWL_CLASS) {
+         if (directives.getEntityType() == OWL_CLASS) {
             return NameUtils.toUpperCamel(cellValue);
          } else {
             return NameUtils.toLowerCamel(cellValue);
@@ -260,46 +260,46 @@ public class ReferenceResolver implements MappingMasterParserConstants {
    }
 
    private IriValue getIriValue(String cellValue) {
-      return new IriValue(cellValue);
+      return new UntypedIri(cellValue, true);
    }
 
    private PrefixedValue getEntityName(String cellValue) {
-      return new PrefixedValue(cellValue);
+      return new UntypedPrefixedName(cellValue, true);
    }
 
    private Value processLiteral(String cellValue, ReferenceDirectives directives) {
       int option = directives.getValueDatatype();
       if (option == XSD_STRING) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_STRING);
+         return new LiteralValue(cellValue, Datatype.XSD_STRING, true);
       } else if (option == XSD_BOOLEAN) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_BOOLEAN);
+         return new LiteralValue(cellValue, Datatype.XSD_BOOLEAN, true);
       } else if (option == XSD_DOUBLE) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_DOUBLE);
+         return new LiteralValue(cellValue, Datatype.XSD_DOUBLE, true);
       } else if (option == XSD_FLOAT) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_FLOAT);
+         return new LiteralValue(cellValue, Datatype.XSD_FLOAT, true);
       } else if (option == XSD_LONG) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_LONG);
+         return new LiteralValue(cellValue, Datatype.XSD_LONG, true);
       } else if (option == XSD_INTEGER) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_INTEGER);
+         return new LiteralValue(cellValue, Datatype.XSD_INTEGER, true);
       } else if (option == XSD_SHORT) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_SHORT);
+         return new LiteralValue(cellValue, Datatype.XSD_SHORT, true);
       } else if (option == XSD_BYTE) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_BYTE);
+         return new LiteralValue(cellValue, Datatype.XSD_BYTE, true);
       } else if (option == XSD_DECIMAL) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_DECIMAL);
+         return new LiteralValue(cellValue, Datatype.XSD_DECIMAL, true);
       } else if (option == XSD_TIME) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_TIME);
+         return new LiteralValue(cellValue, Datatype.XSD_TIME, true);
       } else if (option == XSD_DATE) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_DATE);
+         return new LiteralValue(cellValue, Datatype.XSD_DATE, true);
       } else if (option == XSD_DATETIME) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_DATETIME);
+         return new LiteralValue(cellValue, Datatype.XSD_DATETIME, true);
       } else if (option == XSD_DURATION) {
-         return LiteralValue.createLiteral(cellValue, Datatype.XSD_DURATION);
+         return new LiteralValue(cellValue, Datatype.XSD_DURATION, true);
       } else if (option == RDF_PLAINLITERAL) {
          if (directives.useUserLanguage()) {
-            return PlainLiteralValue.createPlainLiteral(cellValue, directives.getLanguage());
+            return PlainLiteralValue.create(cellValue, directives.getLanguage());
          } else {
-            return PlainLiteralValue.createPlainLiteral(cellValue);
+            return PlainLiteralValue.create(cellValue);
          }
       }
       throw new RuntimeException("Programming error: Unknown datatype"

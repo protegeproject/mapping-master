@@ -1,6 +1,6 @@
 package org.mm.renderer.internal;
 
-import com.google.common.base.MoreObjects;
+import javax.annotation.Nonnull;
 import com.google.common.base.Objects;
 
 /**
@@ -9,13 +9,17 @@ import com.google.common.base.Objects;
  */
 public class AnnotationPropertyName extends PropertyName {
 
-   public AnnotationPropertyName(String prefixedName) {
-      super(prefixedName);
+   public AnnotationPropertyName(@Nonnull String value, boolean isFromWorkbook) {
+      super(value, isFromWorkbook);
+   }
+
+   public static AnnotationPropertyName create(@Nonnull String value) {
+      return new AnnotationPropertyName(value, false);
    }
 
    @Override
-   public AnnotationPropertyName update(String newPrefixedName) {
-      return new AnnotationPropertyName(newPrefixedName);
+   public AnnotationPropertyName update(String newValue) {
+      return new AnnotationPropertyName(newValue, isFromWorkbook());
    }
 
    @Override
@@ -45,18 +49,7 @@ public class AnnotationPropertyName extends PropertyName {
          return false;
       }
       AnnotationPropertyName other = (AnnotationPropertyName) o;
-      return Objects.equal(this.getString(), other.getString());
-   }
-
-   @Override
-   public int hashCode() {
-      return Objects.hashCode(this.getString());
-   }
-
-   @Override
-   public String toString() {
-      return MoreObjects.toStringHelper(this)
-            .addValue(this.getString())
-            .toString();
+      return Objects.equal(getString(), other.getString())
+            && Objects.equal(isFromWorkbook(), other.isFromWorkbook());
    }
 }

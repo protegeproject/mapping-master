@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.mm.parser.NodeType;
+import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassExpressionCategory;
@@ -17,6 +18,7 @@ import org.mm.parser.node.ASTDataMaxCardinality;
 import org.mm.parser.node.ASTDataMinCardinality;
 import org.mm.parser.node.ASTDataProperty;
 import org.mm.parser.node.ASTDataSomeValuesFrom;
+import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTObjectAllValuesFrom;
 import org.mm.parser.node.ASTObjectComplement;
@@ -29,9 +31,16 @@ import org.mm.parser.node.ASTObjectOneOf;
 import org.mm.parser.node.ASTObjectProperty;
 import org.mm.parser.node.ASTObjectSomeValuesFrom;
 import org.mm.parser.node.ASTObjectUnion;
+import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
-import org.mm.renderer.AbstractNodeVisitor;
+import org.mm.renderer.CellCursor;
+import org.mm.renderer.internal.BuiltInFunctionHandler;
+import org.mm.renderer.internal.IndividualIri;
+import org.mm.renderer.internal.IndividualName;
+import org.mm.renderer.internal.LiteralValue;
+import org.mm.renderer.internal.PlainLiteralValue;
+import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.Value;
 import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -46,18 +55,23 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
+public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
 
+   private final ReferenceResolver referenceResolver;
+   private final BuiltInFunctionHandler builtInFunctionHandler;
    private final OwlFactory owlFactory;
-   private final ValueNodeVisitor valueNodeVisitor;
+   private final CellCursor cellCursor;
 
    private OWLClassExpression classExpression;
 
-   public ClassExpressionNodeVisitor(@Nonnull OwlFactory owlFactory,
-         @Nonnull ValueNodeVisitor valueNodeVisitor) {
-      super(valueNodeVisitor);
+   public ClassExpressionNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
+         @Nonnull BuiltInFunctionHandler builtInFunctionHandler,
+         @Nonnull OwlFactory owlFactory,
+         @Nonnull CellCursor cellCursor) {
+      this.referenceResolver = checkNotNull(referenceResolver);
+      this.builtInFunctionHandler = checkNotNull(builtInFunctionHandler);
       this.owlFactory = checkNotNull(owlFactory);
-      this.valueNodeVisitor = checkNotNull(valueNodeVisitor);
+      this.cellCursor = checkNotNull(cellCursor);
    }
 
    @Nullable
@@ -233,11 +247,21 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
       OWLDataProperty property = getOWLDataProperty(node);
       if (property != null) {
          Value value = getLiteralValue(node);
-         OWLLiteral literal = owlFactory.getOWLLiteral(value);
-         if (literal != null) {
+         if (value instanceof LiteralValue) {
+            OWLLiteral literal = owlFactory.getOWLTypedLiteral((LiteralValue) value);
+            classExpression = owlFactory.createOWLDataHasValue(property, literal);
+         } else if (value instanceof PlainLiteralValue) {
+            OWLLiteral literal = owlFactory.getOWLPlainLiteral((PlainLiteralValue) value);
             classExpression = owlFactory.createOWLDataHasValue(property, literal);
          }
       }
+   }
+
+   protected Value getLiteralValue(SimpleNode node) {
+      ASTLiteralValue literalValueNode = ParserUtils.getChild(node, NodeType.LITERAL_VALUE);
+      ValueNodeVisitor visitor = new ValueNodeVisitor(referenceResolver, builtInFunctionHandler, cellCursor);
+      visitor.visit(literalValueNode);
+      return visitor.getValue();
    }
 
    @Override
@@ -245,11 +269,21 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
       OWLObjectProperty property = getOWLObjectProperty(node);
       if (property != null) {
          Value value = getObjectValue(node);
-         OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(value);
-         if (individual != null) {
+         if (value instanceof IndividualName) {
+            OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((IndividualName) value);
+            classExpression = owlFactory.createOWLObjectHasValue(property, individual);
+         } else if (value instanceof IndividualIri) {
+            OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((IndividualIri) value);
             classExpression = owlFactory.createOWLObjectHasValue(property, individual);
          }
       }
+   }
+
+   protected Value getObjectValue(SimpleNode node) {
+      ASTObjectValue objectValueNode = ParserUtils.getChild(node, NodeType.OBJECT_VALUE);
+      ValueNodeVisitor visitor = new ValueNodeVisitor(referenceResolver, builtInFunctionHandler, cellCursor);
+      visitor.visit(objectValueNode);
+      return visitor.getValue();
    }
 
    @Override
@@ -364,10 +398,10 @@ public class ClassExpressionNodeVisitor extends AbstractNodeVisitor {
    }
 
    private EntityNodeVisitor createNewEntityNodeVisitor() {
-      return new EntityNodeVisitor(owlFactory, valueNodeVisitor);
+      return new EntityNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    private ClassExpressionNodeVisitor createNewClassExpressionNodeVisitor() {
-      return new ClassExpressionNodeVisitor(owlFactory, valueNodeVisitor);
+      return new ClassExpressionNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 }

@@ -1,6 +1,12 @@
 package org.mm.renderer.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.mm.parser.MappingMasterParserConstants.MM_UNTYPED;
+import static org.mm.parser.MappingMasterParserConstants.OWL_ANNOTATION_PROPERTY;
+import static org.mm.parser.MappingMasterParserConstants.OWL_CLASS;
+import static org.mm.parser.MappingMasterParserConstants.OWL_DATA_PROPERTY;
+import static org.mm.parser.MappingMasterParserConstants.OWL_NAMED_INDIVIDUAL;
+import static org.mm.parser.MappingMasterParserConstants.OWL_OBJECT_PROPERTY;
 import javax.annotation.Nonnull;
 import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.NodeType;
@@ -17,13 +23,13 @@ import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTName;
 import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTPropertyValue;
-import org.mm.parser.node.ASTQName;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTStringLiteral;
-import org.mm.parser.node.ASTValueCategory;
+import org.mm.parser.node.ASTValue;
 import org.mm.parser.node.Node;
 import org.mm.renderer.CellCursor;
+import org.mm.renderer.internal.LiteralValue.Datatype;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -31,21 +37,18 @@ import org.mm.renderer.CellCursor;
  */
 public class ValueNodeVisitor extends NodeVisitorAdapter {
 
-   private final ReferenceResolver referenceResolver;
-   private final BuiltInFunctionHandler builtInFunctionHandler;
-
-   private CellCursor cellCursor = CellCursor.getDefaultCursor();
+   protected final ReferenceResolver referenceResolver;
+   protected final BuiltInFunctionHandler builtInFunctionHandler;
+   protected final CellCursor cellCursor;
 
    private Value value = EmptyValue.create();
 
    public ValueNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
-         @Nonnull BuiltInFunctionHandler builtInFunctionHandler) {
+         @Nonnull BuiltInFunctionHandler builtInFunctionHandler,
+         @Nonnull CellCursor cellCursor) {
       this.referenceResolver = checkNotNull(referenceResolver);
       this.builtInFunctionHandler = checkNotNull(builtInFunctionHandler);
-   }
-
-   public void setCellCursor(@Nonnull CellCursor cellCursor) {
-      this.cellCursor = cellCursor;
+      this.cellCursor = checkNotNull(cellCursor);
    }
 
    public Value getValue() {
@@ -53,7 +56,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    }
 
    @Override
-   public void visit(ASTValueCategory valueNode) {
+   public void visit(ASTValue valueNode) {
       Node valueTypeNode = ParserUtils.getChild(valueNode);
       valueTypeNode.accept(this);
    }
@@ -128,26 +131,33 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
       return builtInFunctionNodeVisitor.getBuiltInFunction();
    }
 
-   /**
-    * @deprecated use {@link visit(ASTQName)} instead.
-    */
    @Override
-   @Deprecated
    public void visit(ASTName node) {
-      String name = node.getValue();
-      value = new PrefixedValue(name);
+      String valueString = node.getValue();
+      int type = node.getEntityType();
+      switch (type) {
+         case OWL_CLASS: value = ClassName.create(valueString); break;
+         case OWL_DATA_PROPERTY: value = DataPropertyName.create(valueString); break;
+         case OWL_OBJECT_PROPERTY: value = ObjectPropertyName.create(valueString); break;
+         case OWL_ANNOTATION_PROPERTY: value = AnnotationPropertyName.create(valueString); break;
+         case OWL_NAMED_INDIVIDUAL: value = IndividualName.create(valueString); break;
+         case MM_UNTYPED: value = UntypedPrefixedName.create(valueString); break;
+      }
    }
 
-   @Override
-   public void visit(ASTQName node) {
-      String name = node.getValue();
-      value = new PrefixedValue(name);
-   }
 
    @Override
    public void visit(ASTIri node) {
-      String iri = node.getValue();
-      value = new IriValue(iri);
+      String iriString = node.getValue();
+      int type = node.getEntityType();
+      switch (type) {
+         case OWL_CLASS: value = ClassIri.create(iriString); break;
+         case OWL_DATA_PROPERTY: value = DataPropertyIri.create(iriString); break;
+         case OWL_OBJECT_PROPERTY: value = ObjectPropertyIri.create(iriString); break;
+         case OWL_ANNOTATION_PROPERTY: value = AnnotationPropertyIri.create(iriString); break;
+         case OWL_NAMED_INDIVIDUAL: value = IndividualIri.create(iriString); break;
+         case MM_UNTYPED: value = UntypedIri.create(iriString); break;
+      }
    }
 
    @Override
@@ -159,24 +169,24 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTIntegerLiteral node) {
       int literal = node.getLexicalValue();
-      value = LiteralValue.createLiteral(literal);
+      value = LiteralValue.create(literal, Datatype.XSD_INTEGER);
    }
 
    @Override
    public void visit(ASTFloatLiteral node) {
       float literal = node.getLexicalValue();
-      value = LiteralValue.createLiteral(literal);
+      value = LiteralValue.create(literal, Datatype.XSD_FLOAT);
    }
 
    @Override
    public void visit(ASTStringLiteral node) {
       String literal = node.getLexicalValue();
-      value = LiteralValue.createLiteral(literal);
+      value = LiteralValue.create(literal, Datatype.XSD_STRING);
    }
 
    @Override
    public void visit(ASTBooleanLiteral node) {
       boolean literal = node.getLexicalValue();
-      value = LiteralValue.createLiteral(literal);
+      value = LiteralValue.create(literal, Datatype.XSD_BOOLEAN);
    }
 }

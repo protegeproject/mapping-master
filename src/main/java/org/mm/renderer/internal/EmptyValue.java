@@ -19,4 +19,9 @@ public class EmptyValue implements Value {
    public Value update(String newValue) {
       return null;
    }
+
+   @Override
+   public boolean isFromWorkbook() {
+      return false;
+   }
 }

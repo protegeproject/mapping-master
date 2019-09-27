@@ -6,9 +6,9 @@ import javax.annotation.Nonnull;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public abstract class PropertyName extends PrefixedValue {
+public abstract class PropertyIri extends IriValue {
 
-   public PropertyName(@Nonnull String value, boolean isFromWorkbook) {
+   public PropertyIri(@Nonnull String value, boolean isFromWorkbook) {
       super(value, isFromWorkbook);
    }
 
