@@ -25,16 +25,8 @@ public class Vocabulary {
    public static final String ONTOLOGY_ID = "http://protege.stanford.edu/mapping-master/test/";
 
    public static final OWLClass CAR = Class(IRI(ONTOLOGY_ID, "Car"));
-   public static final OWLClass CATAMARAN = Class(IRI(ONTOLOGY_ID, "Catamaran"));
-   public static final OWLClass VEHICLE = Class(IRI(ONTOLOGY_ID, "Vehicle"));
-   public static final OWLClass AUTOMOBILE = Class(IRI(ONTOLOGY_ID, "Automobile"));
-   public static final OWLClass AUTO = Class(IRI(ONTOLOGY_ID, "Auto"));
    public static final OWLClass MOTOR = Class(IRI(ONTOLOGY_ID, "Motor"));
-   public static final OWLClass PHYSICIAN = Class(IRI(ONTOLOGY_ID, "Physician"));
-   public static final OWLClass CHILD_OF_DOCTOR = Class(IRI(ONTOLOGY_ID, "ChildOfDoctor"));
    public static final OWLClass PERSON = Class(IRI(ONTOLOGY_ID, "Person"));
-   public static final OWLClass HUMAN = Class(IRI(ONTOLOGY_ID, "Human"));
-   public static final OWLClass A = Class(IRI(ONTOLOGY_ID, "A"));
    public static final OWLClass SHEET1_A1_UUID = Class(IRI(ONTOLOGY_ID, "71b3e3df-1b0e-3f34-869e-f25398971852"));
    public static final OWLClass STUDENT = Class(IRI(ONTOLOGY_ID, "Student"));
    public static final OWLClass CAR_OWNER = Class(IRI(ONTOLOGY_ID, "CarOwner"));
@@ -45,31 +37,16 @@ public class Vocabulary {
    public static final OWLClass BARBARA_PUFFINS_MD5 = Class(IRI(ONTOLOGY_ID, "290d31fea17d405a10b7a025dde55111"));
    public static final OWLClass CAR_LOWERCASE = Class(IRI(ONTOLOGY_ID, "car"));
    public static final OWLClass CAR_UPPERCASE = Class(IRI(ONTOLOGY_ID, "CAR"));
-   public static final OWLClass BMW_CAR = Class(IRI(ONTOLOGY_ID, "BMWCar"));
-   public static final OWLClass CAR_BMW = Class(IRI(ONTOLOGY_ID, "CarBMW"));
-   public static final OWLClass BAYERISCHE_MOTOREN_WERKE = Class(IRI(ONTOLOGY_ID, "BayerischeMotorenWerke"));
-   public static final OWLClass ZYVOX = Class(IRI(ONTOLOGY_ID, "Zyvox"));
-   public static final OWLClass DEFAULT_NAME = Class(IRI(ONTOLOGY_ID, "DefaultName"));
 
    public static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI(ONTOLOGY_ID, "hasEngine"));
-   public static final OWLObjectProperty HAS_HULL = ObjectProperty(IRI(ONTOLOGY_ID, "hasHull"));
    public static final OWLObjectProperty HAS_PARENT = ObjectProperty(IRI(ONTOLOGY_ID, "hasParent"));
    public static final OWLObjectProperty HAS_GENDER = ObjectProperty(IRI(ONTOLOGY_ID, "hasGender"));
-   public static final OWLObjectProperty HAS_P1 = ObjectProperty(IRI(ONTOLOGY_ID, "hasP1"));
-   public static final OWLObjectProperty HAS_P2 = ObjectProperty(IRI(ONTOLOGY_ID, "hasP2"));
 
-   public static final OWLDataProperty HAS_P3 = DataProperty(IRI(ONTOLOGY_ID, "hasP3"));
-   public static final OWLDataProperty HAS_P4 = DataProperty(IRI(ONTOLOGY_ID, "hasP4"));
-   public static final OWLDataProperty HAS_SSN = DataProperty(IRI(ONTOLOGY_ID, "hasSSN"));
-   public static final OWLDataProperty HAS_ORIGIN = DataProperty(IRI(ONTOLOGY_ID, "hasOrigin"));
    public static final OWLDataProperty HAS_NAME = DataProperty(IRI(ONTOLOGY_ID, "hasName"));
+   public static final OWLDataProperty HAS_ALIAS = DataProperty(IRI(ONTOLOGY_ID, "hasAlias"));
    public static final OWLDataProperty HAS_AGE = DataProperty(IRI(ONTOLOGY_ID, "hasAge"));
-   public static final OWLDataProperty HAS_SALARY = DataProperty(IRI(ONTOLOGY_ID, "hasSalary"));
-   public static final OWLDataProperty HAS_DOB = DataProperty(IRI(ONTOLOGY_ID, "hasDOB"));
-   public static final OWLDataProperty HAS_BEDTIME = DataProperty(IRI(ONTOLOGY_ID, "hasBedTime"));
    public static final OWLDataProperty HAS_VALUE = DataProperty(IRI(ONTOLOGY_ID, "hasValue"));
 
-   public static final OWLAnnotationProperty SKOS_PREFLABEL = AnnotationProperty(IRI(Namespaces.SKOS + "prefLabel"));
    public static final OWLAnnotationProperty FOAF_DEPICTION = AnnotationProperty(IRI(Namespaces.FOAF + "depiction"));
    public static final OWLAnnotationProperty RDFS_LABEL = AnnotationProperty(IRI(Namespaces.RDFS + "label"));
    public static final OWLAnnotationProperty RDFS_COMMENT = AnnotationProperty(IRI(Namespaces.RDFS + "comment"));
@@ -79,15 +56,11 @@ public class Vocabulary {
    public static final OWLAnnotationProperty COMMENT = AnnotationProperty(IRI(ONTOLOGY_ID, "comment"));
 
    public static final OWLNamedIndividual P1 = NamedIndividual(IRI(ONTOLOGY_ID, "p1"));
-   public static final OWLNamedIndividual DOUBLE_HULL = NamedIndividual(IRI(ONTOLOGY_ID, "double-hull"));
    public static final OWLNamedIndividual MALE = NamedIndividual(IRI(ONTOLOGY_ID, "male"));
    public static final OWLNamedIndividual FEMALE = NamedIndividual(IRI(ONTOLOGY_ID, "female"));
    public static final OWLNamedIndividual OTHER = NamedIndividual(IRI(ONTOLOGY_ID, "other"));
    public static final OWLNamedIndividual FRED = NamedIndividual(IRI(ONTOLOGY_ID, "fred"));
-   public static final OWLNamedIndividual FREDDY = NamedIndividual(IRI(ONTOLOGY_ID, "freddy"));
-   public static final OWLNamedIndividual ALFRED = NamedIndividual(IRI(ONTOLOGY_ID, "alfred"));
    public static final OWLNamedIndividual BOB = NamedIndividual(IRI(ONTOLOGY_ID, "bob"));
-   public static final OWLNamedIndividual BOBBY = NamedIndividual(IRI(ONTOLOGY_ID, "bobby"));
    public static final OWLNamedIndividual BMW_MOTOR = NamedIndividual(IRI(ONTOLOGY_ID, "bmw-motor"));
 
    public static final OWLDatatype RDFS_LITERAL = Datatype(IRI(Namespaces.RDFS + "Literal"));
