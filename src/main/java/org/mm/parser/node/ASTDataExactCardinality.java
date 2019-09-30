@@ -8,7 +8,6 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTDataExactCardinality extends SimpleNode {
 
-  public int cardinality; /* XXX: Manually added */
   public int datatype; /* XXX: Manually added */
 
   public ASTDataExactCardinality(int id) {
@@ -17,10 +16,6 @@ class ASTDataExactCardinality extends SimpleNode {
 
   public ASTDataExactCardinality(MappingMasterParser p, int id) {
     super(p, id);
-  }
-
-  public int getCardinality() { /* XXX: Manually added */
-     return cardinality;
   }
 
   public int getDatatype() { /* XXX: Manually added */

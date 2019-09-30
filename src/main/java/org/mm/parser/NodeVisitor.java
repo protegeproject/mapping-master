@@ -7,6 +7,7 @@ import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTArgument;
 import org.mm.parser.node.ASTBooleanLiteral;
 import org.mm.parser.node.ASTBuiltInFunction;
+import org.mm.parser.node.ASTCardinalityValue;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassAssertion;
 import org.mm.parser.node.ASTClassDeclaration;
@@ -99,6 +100,8 @@ public interface NodeVisitor {
    void visit(ASTDataMaxCardinality node);
 
    void visit(ASTDataMinCardinality node);
+
+   void visit(ASTCardinalityValue node);
 
    void visit(ASTDataProperty node);
 

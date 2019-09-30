@@ -9,6 +9,7 @@ import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTArgument;
 import org.mm.parser.node.ASTArgumentList;
 import org.mm.parser.node.ASTBuiltInFunction;
+import org.mm.parser.node.ASTCardinalityValue;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassAssertion;
 import org.mm.parser.node.ASTClassDeclaration;
@@ -81,6 +82,7 @@ public class NodeType<T extends Node> {
    public static final NodeType<ASTSubclassOf> SUBCLASS_OF = new NodeType<>("SubclassOf", ASTSubclassOf.class);
    public static final NodeType<ASTValue> VALUE = new NodeType<>("Value", ASTValue.class);
    public static final NodeType<ASTAnnotationValue> ANNOTATION_VALUE = new NodeType<>("AnnotationValue", ASTAnnotationValue.class);
+   public static final NodeType<ASTCardinalityValue> CARDINALITY_VALUE = new NodeType<>("CardinalityValue", ASTCardinalityValue.class);
    public static final NodeType<ASTBuiltInFunction> BUILTIN_FUNCTION = new NodeType<>("BuiltInFunction", ASTBuiltInFunction.class);
    public static final NodeType<ASTArgumentList> ARGUMENT_LIST = new NodeType<>("ArgumentList", ASTArgumentList.class);
    public static final NodeType<ASTArgument> ARGUMENT = new NodeType<>("Argument", ASTArgument.class);

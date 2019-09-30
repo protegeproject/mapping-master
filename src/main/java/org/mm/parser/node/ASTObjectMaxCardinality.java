@@ -8,7 +8,6 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTObjectMaxCardinality extends SimpleNode {
 
-  public int cardinality; /* XXX: Manually added */
   public boolean hasExplicitClassExpression; /* XXX: Manually added */
 
   public ASTObjectMaxCardinality(int id) {
@@ -17,10 +16,6 @@ class ASTObjectMaxCardinality extends SimpleNode {
 
   public ASTObjectMaxCardinality(MappingMasterParser p, int id) {
     super(p, id);
-  }
-
-  public int getCardinality() { /* XXX: Manually added */
-     return cardinality;
   }
 
   public boolean hasExplicitClassExpression() { /* XXX: Manually added */

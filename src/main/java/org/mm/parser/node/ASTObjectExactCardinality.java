@@ -8,7 +8,6 @@ import org.mm.parser.NodeVisitor;
 public
 class ASTObjectExactCardinality extends SimpleNode {
 
-  public int cardinality; /* XXX: Manually added */
   public boolean hasExplicitClassExpression; /* XXX: Manually added */
 
   public ASTObjectExactCardinality(int id) {
@@ -17,10 +16,6 @@ class ASTObjectExactCardinality extends SimpleNode {
 
   public ASTObjectExactCardinality(MappingMasterParser p, int id) {
     super(p, id);
-  }
-
-  public int getCardinality() { /* XXX: Manually added */
-     return cardinality;
   }
 
   public boolean hasExplicitClassExpression() { /* XXX: Manually added */

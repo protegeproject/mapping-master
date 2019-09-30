@@ -691,13 +691,11 @@ void min_cardinality() : {}
 
 void data_min_cardinality() #DataMinCardinality :
 {
-  int cardinality;
   int datatype;
 }
 {
-  data_property() <MIN> cardinality = cardinality_value() datatype = datatype()
+  data_property() <MIN> cardinality_value() datatype = datatype()
   {
-    jjtThis.cardinality = cardinality;
     jjtThis.datatype = datatype;
   }
 }
@@ -708,11 +706,10 @@ void object_min_cardinality() #ObjectMinCardinality :
   boolean hasExplicitClassExpression = false;
 }
 {
-  object_property() <MIN> cardinality = cardinality_value()
+  object_property() <MIN> cardinality_value()
       ( class_expression() { hasExplicitClassExpression = true; } )?
       
   {
-    jjtThis.cardinality = cardinality;
     jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
   }
 }
@@ -722,7 +719,7 @@ void untyped_min_cardinality() #UntypedMinCardinality : {}
   property() <MIN> cardinality_value() reference(MM_UNTYPED)
 }
 
-int cardinality_value() #CardinalityValue : {}
+void cardinality_value() #CardinalityValue : {}
 {
   ( reference(XSD_INTEGER)
     | integer_literal()

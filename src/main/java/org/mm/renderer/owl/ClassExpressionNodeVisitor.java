@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import org.mm.parser.NodeType;
 import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
+import org.mm.parser.node.ASTCardinalityValue;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassExpressionCategory;
 import org.mm.parser.node.ASTDataAllValuesFrom;
@@ -41,6 +42,7 @@ import org.mm.renderer.internal.IndividualName;
 import org.mm.renderer.internal.LiteralValue;
 import org.mm.renderer.internal.PlainLiteralValue;
 import org.mm.renderer.internal.ReferenceResolver;
+import org.mm.renderer.internal.UntypedValue;
 import org.mm.renderer.internal.Value;
 import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -147,7 +149,7 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
    public void visit(ASTDataExactCardinality node) {
       OWLDataProperty property = getOWLDataProperty(node);
       if (property != null) {
-         int cardinality = node.getCardinality();
+         int cardinality = getCardinality(node);
          classExpression = owlFactory.createOWLDataExactCardinality(
                cardinality,
                property,
@@ -155,11 +157,19 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
       }
    }
 
+   private int getCardinality(SimpleNode node) {
+      ASTCardinalityValue valueNode = ParserUtils.getChild(node, NodeType.CARDINALITY_VALUE);
+      ValueNodeVisitor visitor = new ValueNodeVisitor(referenceResolver, builtInFunctionHandler, cellCursor);
+      visitor.visit(valueNode);
+      Value v = visitor.getValue();
+      return Integer.parseInt(v.getString());
+   }
+
    @Override
    public void visit(ASTObjectExactCardinality node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
       if (property != null) {
-         int cardinality = node.getCardinality();
+         int cardinality = getCardinality(node);
          if (node.hasExplicitClassExpression()) {
             OWLClassExpression innerClassExpression = getOWLClassExpression(node);
             if (innerClassExpression != null) {
@@ -180,7 +190,7 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
    public void visit(ASTDataMaxCardinality node) {
       OWLDataProperty property = getOWLDataProperty(node);
       if (property != null) {
-         int cardinality = node.getCardinality();
+         int cardinality = getCardinality(node);
          classExpression = owlFactory.createOWLDataMaxCardinality(
                cardinality,
                property,
@@ -192,7 +202,7 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
    public void visit(ASTObjectMaxCardinality node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
       if (property != null) {
-         int cardinality = node.getCardinality();
+         int cardinality = getCardinality(node);
          if (node.hasExplicitClassExpression()) {
             OWLClassExpression innerClassExpression = getOWLClassExpression(node);
             if (innerClassExpression != null) {
@@ -213,7 +223,7 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
    public void visit(ASTDataMinCardinality node) {
       OWLDataProperty property = getOWLDataProperty(node);
       if (property != null) {
-         int cardinality = node.getCardinality();
+         int cardinality = getCardinality(node);
          classExpression = owlFactory.createOWLDataMinCardinality(
                cardinality,
                property,
@@ -225,7 +235,7 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
    public void visit(ASTObjectMinCardinality node) {
       OWLObjectProperty property = getOWLObjectProperty(node);
       if (property != null) {
-         int cardinality = node.getCardinality();
+         int cardinality = getCardinality(node);
          if (node.hasExplicitClassExpression()) {
             OWLClassExpression innerClassExpression = getOWLClassExpression(node);
             if (innerClassExpression != null) {
@@ -252,6 +262,9 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
             classExpression = owlFactory.createOWLDataHasValue(property, literal);
          } else if (value instanceof PlainLiteralValue) {
             OWLLiteral literal = owlFactory.getOWLPlainLiteral((PlainLiteralValue) value);
+            classExpression = owlFactory.createOWLDataHasValue(property, literal);
+         } else if (value instanceof UntypedValue) {
+            OWLLiteral literal = owlFactory.getOWLTypedLiteral(((UntypedValue) value).asLiteralValue());
             classExpression = owlFactory.createOWLDataHasValue(property, literal);
          }
       }

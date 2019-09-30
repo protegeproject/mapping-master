@@ -14,5 +14,9 @@ class ASTCardinalityValue extends SimpleNode {
     super(p, id);
   }
 
+  @Override
+  public void accept(NodeVisitor visitor) { /* XXX: Manually added */
+    visitor.visit(this);
+  }
 }
 /* JavaCC - OriginalChecksum=1298354c67976391244d198a2110e9cf (do not edit this line) */

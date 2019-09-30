@@ -15,6 +15,7 @@ import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotationValue;
 import org.mm.parser.node.ASTBooleanLiteral;
 import org.mm.parser.node.ASTBuiltInFunction;
+import org.mm.parser.node.ASTCardinalityValue;
 import org.mm.parser.node.ASTFloatLiteral;
 import org.mm.parser.node.ASTIntegerLiteral;
 import org.mm.parser.node.ASTIri;
@@ -62,6 +63,12 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTAnnotationValue valueNode) {
+      Node valueTypeNode = ParserUtils.getChild(valueNode);
+      valueTypeNode.accept(this);
+   }
+
+   @Override
+   public void visit(ASTCardinalityValue valueNode) {
       Node valueTypeNode = ParserUtils.getChild(valueNode);
       valueTypeNode.accept(this);
    }
