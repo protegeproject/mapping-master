@@ -34,6 +34,7 @@ import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTUntypedExactCardinality;
+import org.mm.parser.node.ASTUntypedHasValue;
 import org.mm.parser.node.ASTUntypedMaxCardinality;
 import org.mm.parser.node.ASTUntypedMinCardinality;
 import org.mm.parser.node.Node;
@@ -364,6 +365,23 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
       ValueNodeVisitor visitor = new ValueNodeVisitor(referenceResolver, builtInFunctionHandler, cellCursor);
       visitor.visit(objectValueNode);
       return visitor.getValue();
+   }
+
+   @Override
+   public void visit(ASTUntypedHasValue node) {
+      OWLEntity property = getOWLProperty(node);
+      if (property != null) {
+         Value filler = getFiller(node);
+         if (property.isOWLDataProperty()) {
+            classExpression = owlFactory.createOWLDataHasValue(
+                  property.asOWLDataProperty(),
+                  owlFactory.getOWLTypedLiteral(((UntypedValue) filler).asLiteralValue()));
+         } else if (property.isOWLObjectProperty()) {
+            classExpression = owlFactory.createOWLObjectHasValue(
+                  property.asOWLObjectProperty(),
+                  owlFactory.createOWLNamedIndividual(filler.getString()));
+         }
+      }
    }
 
    @Override

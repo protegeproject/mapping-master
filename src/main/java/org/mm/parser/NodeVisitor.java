@@ -57,6 +57,7 @@ import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.ASTSubclassOf;
 import org.mm.parser.node.ASTTransformationRule;
 import org.mm.parser.node.ASTUntypedExactCardinality;
+import org.mm.parser.node.ASTUntypedHasValue;
 import org.mm.parser.node.ASTUntypedMaxCardinality;
 import org.mm.parser.node.ASTUntypedMinCardinality;
 import org.mm.parser.node.ASTValue;
@@ -140,6 +141,8 @@ public interface NodeVisitor {
    void visit(ASTUntypedExactCardinality node);
 
    void visit(ASTObjectHasValue node);
+
+   void visit(ASTUntypedHasValue node);
 
    void visit(ASTObjectIntersection node);
 

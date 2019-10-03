@@ -170,7 +170,6 @@ public class ReferenceResolver implements MappingMasterParserConstants {
                   case XSD_BOOLEAN:
                   case XSD_DURATION:
                   case RDF_PLAINLITERAL: value = processLiteral(cellValue, directives); break;
-                  case MM_UNTYPED: value = getUntypedValue(cellValue, directives); break;
                   default: throw new RuntimeException(
                         String.format("Programming error: Unknown directive to handle value datatype (%s)",
                               tokenImage[datatype]));

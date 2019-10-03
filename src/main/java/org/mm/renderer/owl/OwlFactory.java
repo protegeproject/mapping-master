@@ -418,11 +418,11 @@ public class OwlFactory {
    }
 
    private OWLNamedIndividual createOWLNamedIndividual(@Nonnull PrefixedValue entityName) {
-      return entityResolver.createUnchecked(entityName.getString(), OWLNamedIndividual.class);
+      return createOWLNamedIndividual(entityName.getString());
    }
 
    private OWLNamedIndividual fetchOWLNamedIndividual(@Nonnull PrefixedValue entityName) {
-      return entityResolver.resolveUnchecked(entityName.getString(), OWLNamedIndividual.class);
+      return fetchOWLNamedIndividual(entityName.getString());
    }
 
    public OWLNamedIndividual getOWLNamedIndividual(@Nonnull IndividualIri individualIri) {
@@ -435,11 +435,19 @@ public class OwlFactory {
 
    private OWLNamedIndividual createOWLNamedIndividual(@Nonnull IriValue entityIri) {
       String individualName = encloseWithBrackets(entityIri.getString());
-      return entityResolver.createUnchecked(individualName, OWLNamedIndividual.class);
+      return createOWLNamedIndividual(individualName);
    }
 
    private OWLNamedIndividual fetchOWLNamedIndividual(@Nonnull IriValue entityIri) {
       String individualName = encloseWithBrackets(entityIri.getString());
+      return fetchOWLNamedIndividual(individualName);
+   }
+
+   public OWLNamedIndividual createOWLNamedIndividual(@Nonnull String individualName) {
+      return entityResolver.createUnchecked(individualName, OWLNamedIndividual.class);
+   }
+
+   public OWLNamedIndividual fetchOWLNamedIndividual(@Nonnull String individualName) {
       return entityResolver.resolveUnchecked(individualName, OWLNamedIndividual.class);
    }
 

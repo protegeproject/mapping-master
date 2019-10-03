@@ -41,30 +41,31 @@ public interface MappingMasterParserTreeConstants
   public int JJTCARDINALITYVALUE = 33;
   public int JJTDATAHASVALUE = 34;
   public int JJTOBJECTHASVALUE = 35;
-  public int JJTDATAALLVALUESFROM = 36;
-  public int JJTOBJECTALLVALUESFROM = 37;
-  public int JJTDATASOMEVALUESFROM = 38;
-  public int JJTOBJECTSOMEVALUESFROM = 39;
-  public int JJTPROPERTY = 40;
-  public int JJTDATAPROPERTY = 41;
-  public int JJTOBJECTPROPERTY = 42;
-  public int JJTANNOTATIONPROPERTY = 43;
-  public int JJTNAMEDINDIVIDUAL = 44;
-  public int JJTVALUE = 45;
-  public int JJTLITERALVALUE = 46;
-  public int JJTOBJECTVALUE = 47;
-  public int JJTREFERENCE = 48;
-  public int JJTNAME = 49;
-  public int JJTIRI = 50;
-  public int JJTLITERAL = 51;
-  public int JJTINTEGERLITERAL = 52;
-  public int JJTFLOATLITERAL = 53;
-  public int JJTSTRINGLITERAL = 54;
-  public int JJTBOOLEANLITERAL = 55;
-  public int JJTREFERENCENOTATION = 56;
-  public int JJTBUILTINFUNCTION = 57;
-  public int JJTARGUMENTLIST = 58;
-  public int JJTARGUMENT = 59;
+  public int JJTUNTYPEDHASVALUE = 36;
+  public int JJTDATAALLVALUESFROM = 37;
+  public int JJTOBJECTALLVALUESFROM = 38;
+  public int JJTDATASOMEVALUESFROM = 39;
+  public int JJTOBJECTSOMEVALUESFROM = 40;
+  public int JJTPROPERTY = 41;
+  public int JJTDATAPROPERTY = 42;
+  public int JJTOBJECTPROPERTY = 43;
+  public int JJTANNOTATIONPROPERTY = 44;
+  public int JJTNAMEDINDIVIDUAL = 45;
+  public int JJTVALUE = 46;
+  public int JJTLITERALVALUE = 47;
+  public int JJTOBJECTVALUE = 48;
+  public int JJTREFERENCE = 49;
+  public int JJTNAME = 50;
+  public int JJTIRI = 51;
+  public int JJTLITERAL = 52;
+  public int JJTINTEGERLITERAL = 53;
+  public int JJTFLOATLITERAL = 54;
+  public int JJTSTRINGLITERAL = 55;
+  public int JJTBOOLEANLITERAL = 56;
+  public int JJTREFERENCENOTATION = 57;
+  public int JJTBUILTINFUNCTION = 58;
+  public int JJTARGUMENTLIST = 59;
+  public int JJTARGUMENT = 60;
 
 
   public String[] jjtNodeName = {
@@ -104,6 +105,7 @@ public interface MappingMasterParserTreeConstants
     "CardinalityValue",
     "DataHasValue",
     "ObjectHasValue",
+    "UntypedHasValue",
     "DataAllValuesFrom",
     "ObjectAllValuesFrom",
     "DataSomeValuesFrom",
@@ -130,4 +132,4 @@ public interface MappingMasterParserTreeConstants
     "Argument",
   };
 }
-/* JavaCC - OriginalChecksum=6311eae1b2e51c44e0119106128148d6 (do not edit this line) */
+/* JavaCC - OriginalChecksum=a02ae30d3c959f71ab51b47561fd2339 (do not edit this line) */

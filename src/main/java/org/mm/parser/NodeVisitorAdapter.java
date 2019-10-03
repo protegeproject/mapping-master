@@ -57,6 +57,7 @@ import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.ASTSubclassOf;
 import org.mm.parser.node.ASTTransformationRule;
 import org.mm.parser.node.ASTUntypedExactCardinality;
+import org.mm.parser.node.ASTUntypedHasValue;
 import org.mm.parser.node.ASTUntypedMaxCardinality;
 import org.mm.parser.node.ASTUntypedMinCardinality;
 import org.mm.parser.node.ASTValue;
@@ -147,6 +148,11 @@ public class NodeVisitorAdapter implements NodeVisitor {
 
    @Override
    public void visit(ASTDataHasValue node) {
+      handleDefault(node);
+   }
+
+   @Override
+   public void visit(ASTUntypedHasValue node) {
       handleDefault(node);
    }
 

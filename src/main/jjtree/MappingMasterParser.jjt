@@ -728,7 +728,8 @@ void cardinality_value() #CardinalityValue : {}
 void has_value() : {}
 {
   ( LOOKAHEAD(4) data_has_value()
-    | object_has_value()
+    | LOOKAHEAD(4) object_has_value()
+    | untyped_has_value()
   )
 }
 
@@ -740,6 +741,11 @@ void data_has_value() #DataHasValue : {}
 void object_has_value() #ObjectHasValue : {}
 {
   object_property() <VALUE> object_value()
+}
+
+void untyped_has_value() #UntypedHasValue : {}
+{
+  property() <VALUE> reference(MM_UNTYPED)
 }
 
 void all_values_from() : {}
@@ -841,7 +847,7 @@ void value(int type) #Value : {}
 
 void literal_value() #LiteralValue : {}
 {
-  ( reference(MM_UNTYPED)
+  ( reference(OWL_LITERAL)
     | literal()
   )
 }

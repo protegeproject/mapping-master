@@ -236,6 +236,21 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
    }
 
    @Test
+   public void shouldRenderObjectHasValue_UsingReferences() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "hasEngine");
+      createCell("Sheet1", 3, 1, "bmw-motor");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1(ObjectProperty) value @C1");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.CAR),
+            SubClassOf(ObjectHasValue(Vocabulary.HAS_ENGINE, Vocabulary.BMW_MOTOR), Vocabulary.CAR)));
+   }
+
+   @Test
    public void shouldRenderDataHasValue() {
       // Arrange
       declareEntity(Vocabulary.HAS_ALIAS);
@@ -243,6 +258,21 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       createCell("Sheet1", 2, 1, "Nick");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: hasAlias value @B1");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.PERSON),
+            SubClassOf(DataHasValue(Vocabulary.HAS_ALIAS, Vocabulary.NICK), Vocabulary.PERSON)));
+   }
+
+   @Test
+   public void shouldRenderDataHasValue_UsingReferences() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Person");
+      createCell("Sheet1", 2, 1, "hasAlias");
+      createCell("Sheet1", 3, 1, "Nick");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1 value @C1");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
