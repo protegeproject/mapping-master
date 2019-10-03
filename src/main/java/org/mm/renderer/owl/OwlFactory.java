@@ -95,11 +95,11 @@ public class OwlFactory {
    }
 
    private OWLClass createOWLClass(PrefixedValue entityName) {
-      return entityResolver.createUnchecked(entityName.getString(), OWLClass.class);
+      return createOWLClass(entityName.getString());
    }
 
    private OWLClass fetchOWLClass(PrefixedValue entityName) {
-      return entityResolver.resolveUnchecked(entityName.getString(), OWLClass.class);
+      return fetchOWLClass(entityName.getString());
    }
 
    public OWLClass getOWLClass(@Nonnull ClassIri classIri) {
@@ -112,12 +112,12 @@ public class OwlFactory {
 
    private OWLClass createOWLClass(IriValue entityIri) {
       String entityName = encloseWithBrackets(entityIri.getString());
-      return entityResolver.createUnchecked(entityName, OWLClass.class);
+      return createOWLClass(entityName);
    }
 
    private OWLClass fetchOWLClass(IriValue entityIri) {
       String entityName = encloseWithBrackets(entityIri.getString());
-      return entityResolver.resolveUnchecked(entityName, OWLClass.class);
+      return fetchOWLClass(entityName);
    }
 
    private static String encloseWithBrackets(String iriString) {
@@ -125,6 +125,14 @@ public class OwlFactory {
          iriString = String.format("<%s>", iriString);
       }
       return iriString;
+   }
+
+   public OWLClass createOWLClass(String className) {
+      return entityResolver.createUnchecked(className, OWLClass.class);
+   }
+
+   public OWLClass fetchOWLClass(String className) {
+      return entityResolver.resolveUnchecked(className, OWLClass.class);
    }
 
    /*
@@ -232,11 +240,11 @@ public class OwlFactory {
    }
 
    private OWLDataProperty createOWLDataProperty(@Nonnull PrefixedValue propertyName) {
-      return entityResolver.createUnchecked(propertyName.getString(), OWLDataProperty.class);
+      return createOWLDataProperty(propertyName.getString());
    }
 
    private OWLDataProperty fetchOWLDataProperty(@Nonnull PrefixedValue  propertyName) {
-      return entityResolver.resolveUnchecked(propertyName.getString(), OWLDataProperty.class);
+      return fetchOWLDataProperty(propertyName.getString());
    }
 
    public OWLDataProperty getOWLDataProperty(@Nonnull DataPropertyIri dataPropertyIri) {
@@ -249,11 +257,19 @@ public class OwlFactory {
 
    private OWLDataProperty createOWLDataProperty(@Nonnull IriValue entityIri) {
       String propertyName = encloseWithBrackets(entityIri.getString());
-      return entityResolver.createUnchecked(propertyName, OWLDataProperty.class);
+      return createOWLDataProperty(propertyName);
    }
 
    private OWLDataProperty fetchOWLDataProperty(@Nonnull IriValue entityIri) {
       String propertyName = encloseWithBrackets(entityIri.getString());
+      return fetchOWLDataProperty(propertyName);
+   }
+
+   public OWLDataProperty createOWLDataProperty(@Nonnull String propertyName) {
+      return entityResolver.createUnchecked(propertyName, OWLDataProperty.class);
+   }
+
+   public OWLDataProperty fetchOWLDataProperty(@Nonnull String propertyName) {
       return entityResolver.resolveUnchecked(propertyName, OWLDataProperty.class);
    }
 
@@ -270,11 +286,11 @@ public class OwlFactory {
    }
 
    private OWLObjectProperty createOWLObjectProperty(@Nonnull PrefixedValue propertyName) {
-      return entityResolver.createUnchecked(propertyName.getString(), OWLObjectProperty.class);
+      return createOWLObjectProperty(propertyName.getString());
    }
 
    private OWLObjectProperty fetchOWLObjectProperty(@Nonnull PrefixedValue propertyName) {
-      return entityResolver.resolveUnchecked(propertyName.getString(), OWLObjectProperty.class);
+      return fetchOWLObjectProperty(propertyName.getString());
    }
 
    public OWLObjectProperty getOWLObjectProperty(@Nonnull ObjectPropertyIri objectPropertyIri) {
@@ -287,11 +303,19 @@ public class OwlFactory {
 
    private OWLObjectProperty createOWLObjectProperty(IriValue entityIri) {
       String propertyName = encloseWithBrackets(entityIri.getString());
-      return entityResolver.createUnchecked(propertyName, OWLObjectProperty.class);
+      return createOWLObjectProperty(propertyName);
    }
 
    private OWLObjectProperty fetchOWLObjectProperty(IriValue entityIri) {
       String propertyName = encloseWithBrackets(entityIri.getString());
+      return fetchOWLObjectProperty(propertyName);
+   }
+
+   public OWLObjectProperty createOWLObjectProperty(@Nonnull String propertyName) {
+      return entityResolver.createUnchecked(propertyName, OWLObjectProperty.class);
+   }
+
+   public OWLObjectProperty fetchOWLObjectProperty(@Nonnull String propertyName) {
       return entityResolver.resolveUnchecked(propertyName, OWLObjectProperty.class);
    }
 
@@ -308,11 +332,11 @@ public class OwlFactory {
    }
 
    private OWLAnnotationProperty createOWLAnnotationProperty(@Nonnull PrefixedValue propertyName) {
-      return entityResolver.createUnchecked(propertyName.getString(), OWLAnnotationProperty.class);
+      return createOWLAnnotationProperty(propertyName.getString());
    }
 
    private OWLAnnotationProperty fetchOWLAnnotationProperty(@Nonnull PrefixedValue propertyName) {
-      return entityResolver.resolveUnchecked(propertyName.getString(), OWLAnnotationProperty.class);
+      return fetchOWLAnnotationProperty(propertyName.getString());
    }
 
    public OWLAnnotationProperty getOWLAnnotationProperty(@Nonnull AnnotationPropertyIri annotationPropertyIri) {
@@ -325,11 +349,19 @@ public class OwlFactory {
 
    private OWLAnnotationProperty createOWLAnnotationProperty(@Nonnull IriValue entityIri) {
       String propertyName = encloseWithBrackets(entityIri.getString());
-      return entityResolver.createUnchecked(propertyName, OWLAnnotationProperty.class);
+      return createOWLAnnotationProperty(propertyName);
    }
 
    private OWLAnnotationProperty fetchOWLAnnotationProperty(@Nonnull IriValue entityIri) {
       String propertyName = encloseWithBrackets(entityIri.getString());
+      return fetchOWLAnnotationProperty(propertyName);
+   }
+
+   public OWLAnnotationProperty createOWLAnnotationProperty(@Nonnull String propertyName) {
+      return entityResolver.createUnchecked(propertyName, OWLAnnotationProperty.class);
+   }
+
+   public OWLAnnotationProperty fetchOWLAnnotationProperty(@Nonnull String propertyName) {
       return entityResolver.resolveUnchecked(propertyName, OWLAnnotationProperty.class);
    }
 
@@ -359,7 +391,7 @@ public class OwlFactory {
       return createOWLLiteral(lexicalString, createOWLDatatype(datatype));
    }
 
-   private OWLDatatype createOWLDatatype(@Nonnull String datatype) {
+   public OWLDatatype createOWLDatatype(@Nonnull String datatype) {
       return entityResolver.resolveUnchecked(datatype, OWLDatatype.class);
    }
 

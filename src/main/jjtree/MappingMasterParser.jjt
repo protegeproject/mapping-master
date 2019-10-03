@@ -599,12 +599,12 @@ void object_one_of() #ObjectOneOf : {}
 
 void restriction() : {}
 {
-  ( LOOKAHEAD(4) exact_cardinality()
-    | LOOKAHEAD(4) max_cardinality()
-    | LOOKAHEAD(4) min_cardinality()
-    | LOOKAHEAD(4) has_value()
-    | LOOKAHEAD(3) all_values_from()
-    | LOOKAHEAD(3) some_values_from()
+  ( LOOKAHEAD(12) exact_cardinality()
+    | LOOKAHEAD(12) max_cardinality()
+    | LOOKAHEAD(12) min_cardinality()
+    | LOOKAHEAD(12) has_value()
+    | LOOKAHEAD(12) all_values_from()
+    | LOOKAHEAD(12) some_values_from()
   )
 }
 
@@ -612,7 +612,7 @@ void exact_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_exact_cardinality()
     | LOOKAHEAD(4) object_exact_cardinality()
-    | LOOKAHEAD(4) untyped_exact_cardinality()
+    | untyped_exact_cardinality()
   )
 }
 
@@ -648,7 +648,7 @@ void max_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_max_cardinality()
     | LOOKAHEAD(4) object_max_cardinality()
-    | LOOKAHEAD(4) untyped_max_cardinality()
+    | untyped_max_cardinality()
   )
 }
 
@@ -685,7 +685,7 @@ void min_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_min_cardinality()
     | LOOKAHEAD(4) object_min_cardinality()
-    | LOOKAHEAD(4) untyped_min_cardinality()
+    | untyped_min_cardinality()
   )
 }
 
@@ -702,7 +702,6 @@ void data_min_cardinality() #DataMinCardinality :
 
 void object_min_cardinality() #ObjectMinCardinality :
 {
-  int cardinality;
   boolean hasExplicitClassExpression = false;
 }
 {
@@ -721,7 +720,7 @@ void untyped_min_cardinality() #UntypedMinCardinality : {}
 
 void cardinality_value() #CardinalityValue : {}
 {
-  ( reference(XSD_INTEGER)
+  ( reference(OWL_LITERAL)
     | integer_literal()
   )
 }
@@ -802,16 +801,12 @@ void property() #Property : {}
 
 void data_property() #DataProperty : {}
 {
-  ( value(OWL_DATA_PROPERTY)
-    | reference(OWL_DATA_PROPERTY)
-  )
+  value(OWL_DATA_PROPERTY)
 }
 
 void object_property() #ObjectProperty : {}
 {
-  ( value(OWL_OBJECT_PROPERTY)
-    | reference(OWL_OBJECT_PROPERTY)
-  )
+  value(OWL_OBJECT_PROPERTY)
 }
 
 void annotation_property() #AnnotationProperty: {}

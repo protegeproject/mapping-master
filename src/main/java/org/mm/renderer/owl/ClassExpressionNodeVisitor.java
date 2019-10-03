@@ -1,13 +1,11 @@
 package org.mm.renderer.owl;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.mm.parser.NodeType;
-import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTCardinalityValue;
 import org.mm.parser.node.ASTClass;
@@ -33,6 +31,11 @@ import org.mm.parser.node.ASTObjectProperty;
 import org.mm.parser.node.ASTObjectSomeValuesFrom;
 import org.mm.parser.node.ASTObjectUnion;
 import org.mm.parser.node.ASTObjectValue;
+import org.mm.parser.node.ASTProperty;
+import org.mm.parser.node.ASTReference;
+import org.mm.parser.node.ASTUntypedExactCardinality;
+import org.mm.parser.node.ASTUntypedMaxCardinality;
+import org.mm.parser.node.ASTUntypedMinCardinality;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.CellCursor;
@@ -57,12 +60,7 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
  *         Stanford Center for Biomedical Informatics Research
  */
-public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
-
-   private final ReferenceResolver referenceResolver;
-   private final BuiltInFunctionHandler builtInFunctionHandler;
-   private final OwlFactory owlFactory;
-   private final CellCursor cellCursor;
+public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
 
    private OWLClassExpression classExpression;
 
@@ -70,10 +68,7 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
          @Nonnull BuiltInFunctionHandler builtInFunctionHandler,
          @Nonnull OwlFactory owlFactory,
          @Nonnull CellCursor cellCursor) {
-      this.referenceResolver = checkNotNull(referenceResolver);
-      this.builtInFunctionHandler = checkNotNull(builtInFunctionHandler);
-      this.owlFactory = checkNotNull(owlFactory);
-      this.cellCursor = checkNotNull(cellCursor);
+      super(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    @Nullable
@@ -89,9 +84,8 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTClass classNode) {
-      EntityNodeVisitor visitor = createNewEntityNodeVisitor();
-      visitor.visit(classNode);
-      OWLEntity entity = visitor.getEntity();
+      super.visit(classNode);
+      OWLEntity entity = getEntity();
       if (entity != null) {
          classExpression = entity.asOWLClass();
       }
@@ -187,6 +181,39 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
    }
 
    @Override
+   public void visit(ASTUntypedExactCardinality node) {
+      OWLEntity property = getOWLProperty(node);
+      if (property != null) {
+         int cardinality = getCardinality(node);
+         Value filler = getFiller(node);
+         if (property.isOWLDataProperty()) {
+            classExpression = owlFactory.createOWLDataExactCardinality(
+                  cardinality,
+                  property.asOWLDataProperty(),
+                  owlFactory.createOWLDatatype(filler.getString()));
+         } else if (property.isOWLObjectProperty()) {
+            classExpression = owlFactory.createOWLObjectExactCardinality(
+                  cardinality,
+                  property.asOWLObjectProperty(),
+                  owlFactory.createOWLClass(filler.getString()));
+         }
+      }
+   }
+
+   @Nullable
+   private OWLEntity getOWLProperty(SimpleNode node) {
+      ASTProperty propertyNode = ParserUtils.getChild(node, NodeType.PROPERTY);
+      propertyNode.accept(this);
+      return getEntity();
+   }
+
+   private Value getFiller(SimpleNode node) {
+      ASTReference valueNode = ParserUtils.getChild(node, NodeType.REFERENCE);
+      valueNode.accept(this);
+      return getValue();
+   }
+
+   @Override
    public void visit(ASTDataMaxCardinality node) {
       OWLDataProperty property = getOWLDataProperty(node);
       if (property != null) {
@@ -220,6 +247,26 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
    }
 
    @Override
+   public void visit(ASTUntypedMaxCardinality node) {
+      OWLEntity property = getOWLProperty(node);
+      if (property != null) {
+         int cardinality = getCardinality(node);
+         Value filler = getFiller(node);
+         if (property.isOWLDataProperty()) {
+            classExpression = owlFactory.createOWLDataMaxCardinality(
+                  cardinality,
+                  property.asOWLDataProperty(),
+                  owlFactory.createOWLDatatype(filler.getString()));
+         } else if (property.isOWLObjectProperty()) {
+            classExpression = owlFactory.createOWLObjectMaxCardinality(
+                  cardinality,
+                  property.asOWLObjectProperty(),
+                  owlFactory.createOWLClass(filler.getString()));
+         }
+      }
+   }
+
+   @Override
    public void visit(ASTDataMinCardinality node) {
       OWLDataProperty property = getOWLDataProperty(node);
       if (property != null) {
@@ -248,6 +295,26 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
             classExpression = owlFactory.createOWLObjectMinCardinality(
                   cardinality,
                   property);
+         }
+      }
+   }
+
+   @Override
+   public void visit(ASTUntypedMinCardinality node) {
+      OWLEntity property = getOWLProperty(node);
+      if (property != null) {
+         int cardinality = getCardinality(node);
+         Value filler = getFiller(node);
+         if (property.isOWLDataProperty()) {
+            classExpression = owlFactory.createOWLDataMinCardinality(
+                  cardinality,
+                  property.asOWLDataProperty(),
+                  owlFactory.createOWLDatatype(filler.getString()));
+         } else if (property.isOWLObjectProperty()) {
+            classExpression = owlFactory.createOWLObjectMinCardinality(
+                  cardinality,
+                  property.asOWLObjectProperty(),
+                  owlFactory.createOWLClass(filler.getString()));
          }
       }
    }
@@ -345,9 +412,8 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
 
    @Nullable
    private OWLDataProperty visitDataPropertyNode(ASTDataProperty propertyNode) {
-      EntityNodeVisitor visitor = createNewEntityNodeVisitor();
-      visitor.visit(propertyNode);
-      OWLEntity entity = visitor.getEntity();
+      propertyNode.accept(this);
+      OWLEntity entity = getEntity();
       return (entity != null) ? entity.asOWLDataProperty() : null;
    }
 
@@ -360,9 +426,8 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
    }
 
    private OWLObjectProperty visitObjectPropertyNode(ASTObjectProperty propertyNode) {
-      EntityNodeVisitor visitor = createNewEntityNodeVisitor();
-      visitor.visit(propertyNode);
-      OWLEntity entity = visitor.getEntity();
+      propertyNode.accept(this);
+      OWLEntity entity = getEntity();
       return (entity != null) ? entity.asOWLObjectProperty() : null;
    }
 
@@ -382,9 +447,8 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
 
    @Nullable
    private OWLNamedIndividual visitIndividualNode(ASTNamedIndividual individualNode) {
-      EntityNodeVisitor visitor = createNewEntityNodeVisitor();
-      visitor.visit(individualNode);
-      OWLEntity entity = visitor.getEntity();
+      individualNode.accept(this);
+      OWLEntity entity = getEntity();
       return (entity != null) ? entity.asOWLNamedIndividual() : null;
    }
 
@@ -408,10 +472,6 @@ public class ClassExpressionNodeVisitor extends NodeVisitorAdapter {
       ClassExpressionNodeVisitor innerVisitor = createNewClassExpressionNodeVisitor();
       innerVisitor.visit(classExpressionNode);
       return innerVisitor.getClassExpression();
-   }
-
-   private EntityNodeVisitor createNewEntityNodeVisitor() {
-      return new EntityNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    private ClassExpressionNodeVisitor createNewClassExpressionNodeVisitor() {
