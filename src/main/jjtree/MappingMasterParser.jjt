@@ -201,6 +201,7 @@ TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
 TOKEN: { <OWL_ANNOTATION_PROPERTY: "AnnotationProperty"> }
 TOKEN: { <OWL_LITERAL: "Literal"> }
 TOKEN: { <OWL_IRI: "IRI"> }
+TOKEN: { <OWL_DATATYPE: "Datatype"> }
 
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
 TOKEN: { <MM_TO_LOWER_CASE: "mm:toLowerCase"> }
@@ -361,7 +362,7 @@ void mm_default_value_datatype_directive() :
   int defaultValueDatatype;
 }
 {
-  <MM_DEFAULT_VALUE_DATATYPE> "=" defaultValueDatatype = datatype()
+  <MM_DEFAULT_VALUE_DATATYPE> "=" defaultValueDatatype = datatype_type()
   {
     localDirectives = localDirectives.setValueDatatype(defaultValueDatatype);
   }
@@ -1042,7 +1043,7 @@ void reference_directive() :
    | namespace_directive()
    | language_directive()
    | value = reference_type() { userDirectives = userDirectives.setEntityType(value); }
-   | value = datatype() { userDirectives = userDirectives.setValueDatatype(value).setEntityType(OWL_LITERAL); }
+   | value = datatype_type() { userDirectives = userDirectives.setValueDatatype(value).setEntityType(OWL_LITERAL); }
    | value = iri_encoding() { userDirectives = userDirectives.setIriEncoding(value); }
    | value = shift_direction() { userDirectives = userDirectives.setShiftDirection(value); }
    | value = order_if_cell_empty() { userDirectives = userDirectives.setOrderIfCellEmpty(value); }
@@ -1188,7 +1189,17 @@ boolean boolean_value() :
 // Literal Datatypes
 //------------------------------------------------------------------------------------------
 
-int datatype() :
+void datatype() #Datatype : {}
+{
+  ( value(OWL_DATATYPE)    | reference(OWL_DATATYPE)
+  )
+}
+
+//------------------------------------------------------------------------------------------
+// Enumeration Types
+//------------------------------------------------------------------------------------------
+
+int datatype_type() :
 {
   Token t;
 }
@@ -1212,10 +1223,6 @@ int datatype() :
     return t.kind;
   }
 }
-
-//------------------------------------------------------------------------------------------
-// Enumeration Types
-//------------------------------------------------------------------------------------------
 
 int iri_encoding() :
 {
