@@ -121,7 +121,6 @@ public class AssertionAxiomTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   @Ignore
    public void shouldRenderObjectPropertyAssertion() {
       // Arrange
       declareEntity(Vocabulary.HAS_PARENT);
@@ -150,7 +149,6 @@ public class AssertionAxiomTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   @Ignore
    public void shouldRenderPropertyAssertion_MultipleProperties() {
       // Arrange
       declareEntity(Vocabulary.HAS_AGE);

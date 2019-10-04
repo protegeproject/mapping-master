@@ -26,10 +26,6 @@ public class ParserUtils implements MappingMasterParserConstants {
       return parent.jjtGetChild(0);
    }
 
-   public static Node getChild(@Nonnull Node parent, int index) {
-      return parent.jjtGetChild(index);
-   }
-
    public static <T extends Node> T getChild(@Nonnull Node parent, NodeType<T> type) {
       Node childNode = getChild(parent, type.getName());
       return type.getActualClass().cast(childNode);

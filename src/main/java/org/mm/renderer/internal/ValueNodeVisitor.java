@@ -23,6 +23,7 @@ import org.mm.parser.node.ASTLiteral;
 import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTName;
 import org.mm.parser.node.ASTObjectValue;
+import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTStringLiteral;
@@ -80,6 +81,12 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTObjectValue valueNode) {
+      Node valueTypeNode = ParserUtils.getChild(valueNode);
+      valueTypeNode.accept(this);
+   }
+
+   @Override
+   public void visit(ASTPropertyValue valueNode) {
       Node valueTypeNode = ParserUtils.getChild(valueNode);
       valueTypeNode.accept(this);
    }

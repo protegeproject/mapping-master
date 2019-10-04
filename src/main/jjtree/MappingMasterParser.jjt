@@ -527,25 +527,27 @@ void property_assertion() #PropertyAssertion : {}
 
 void fact() #Fact : {}
 {
-  ( LOOKAHEAD(4) data_fact()
-    | LOOKAHEAD(4) object_fact()
+  ( property_fact()
     | referenced_fact()
   )
 }
 
-void data_fact() #DataFact : {}
+void property_fact() #PropertyFact : {}
 {
-  data_property() ( literal() | reference(MM_UNTYPED) )
-}
-
-void object_fact() #ObjectFact : {}
-{
-  object_property() ( iri(OWL_NAMED_INDIVIDUAL) | reference(OWL_NAMED_INDIVIDUAL) )
+  property() property_value()
 }
 
 void referenced_fact() #ReferencedFact : {}
 {
-  referenced_property() reference(MM_UNTYPED)
+  referenced_property() property_value()
+}
+
+void property_value() #PropertyValue : {}
+{
+  ( literal()
+    | iri(MM_UNTYPED)
+    | reference(MM_UNTYPED)
+  )
 }
 
 void same_as() #SameAs : {}

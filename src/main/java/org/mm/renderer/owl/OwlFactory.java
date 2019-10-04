@@ -227,6 +227,19 @@ public class OwlFactory {
                   propertyIri.getClass()));
    }
 
+   public OWLProperty fetchOWLProperty(@Nonnull String propertyName) {
+      if (entityResolver.hasType(propertyName, OWLDataProperty.class)) {
+         return fetchOWLDataProperty(propertyName);
+      } else if (entityResolver.hasType(propertyName, OWLObjectProperty.class)) {
+         return fetchOWLObjectProperty(propertyName);
+      } else if (entityResolver.hasType(propertyName, OWLAnnotationProperty.class)) {
+         return fetchOWLAnnotationProperty(propertyName);
+      }
+      throw new RuntimeException(
+            String.format("The expected entity name '%s' does not exist in the ontology",
+                  propertyName));
+   }
+
    /*
     * Methods to create the OWL Data Property
     */

@@ -9,6 +9,7 @@ import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTDataProperty;
 import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTObjectProperty;
+import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTReferencedProperty;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
@@ -24,8 +25,6 @@ import org.mm.renderer.internal.IndividualIri;
 import org.mm.renderer.internal.IndividualName;
 import org.mm.renderer.internal.ObjectPropertyIri;
 import org.mm.renderer.internal.ObjectPropertyName;
-import org.mm.renderer.internal.PropertyIri;
-import org.mm.renderer.internal.PropertyName;
 import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.UntypedIri;
 import org.mm.renderer.internal.UntypedPrefixedName;
@@ -77,16 +76,10 @@ public class EntityNodeVisitor extends ValueNodeVisitor {
    }
 
    @Override
-   public void visit(ASTReferencedProperty propertyNode) {
+   public void visit(ASTProperty propertyNode) {
       Value value = getValue(propertyNode);
-      if (value instanceof PropertyName) {
-         entity = owlFactory.getOWLProperty((PropertyName) value);
-      } else if (value instanceof PropertyIri) {
-         entity = owlFactory.getOWLProperty((PropertyIri) value);
-      } else if (value instanceof UntypedPrefixedName) {
-         entity = owlFactory.getOWLProperty((UntypedPrefixedName) value);
-      } else if (value instanceof UntypedIri) {
-         entity = owlFactory.getOWLProperty((UntypedIri) value);
+      if (value instanceof UntypedPrefixedName) {
+         entity = owlFactory.fetchOWLProperty(value.getString());
       }
    }
 
@@ -97,10 +90,6 @@ public class EntityNodeVisitor extends ValueNodeVisitor {
          entity = owlFactory.getOWLDataProperty((DataPropertyName) value);
       } else if (value instanceof DataPropertyIri) {
          entity = owlFactory.getOWLDataProperty((DataPropertyIri) value);
-      } else if (value instanceof UntypedPrefixedName) {
-         entity = owlFactory.getOWLDataProperty((UntypedPrefixedName) value);
-      } else if (value instanceof UntypedIri) {
-         entity = owlFactory.getOWLDataProperty((UntypedIri) value);
       }
    }
 
@@ -111,10 +100,6 @@ public class EntityNodeVisitor extends ValueNodeVisitor {
          entity = owlFactory.getOWLObjectProperty((ObjectPropertyName) value);
       } else if (value instanceof ObjectPropertyIri) {
          entity = owlFactory.getOWLObjectProperty((ObjectPropertyIri) value);
-      } else if (value instanceof UntypedPrefixedName) {
-         entity = owlFactory.getOWLObjectProperty((UntypedPrefixedName) value);
-      } else if (value instanceof UntypedIri) {
-         entity = owlFactory.getOWLObjectProperty((UntypedIri) value);
       }
    }
 
@@ -129,6 +114,20 @@ public class EntityNodeVisitor extends ValueNodeVisitor {
          entity = owlFactory.getOWLAnnotationProperty((UntypedPrefixedName) value);
       } else if (value instanceof UntypedIri) {
          entity = owlFactory.getOWLAnnotationProperty((UntypedIri) value);
+      }
+   }
+
+   @Override
+   public void visit(ASTReferencedProperty propertyNode) {
+      Value value = getValue(propertyNode);
+      if (value instanceof DataPropertyName) {
+         entity = owlFactory.getOWLDataProperty((DataPropertyName) value);
+      } else if (value instanceof DataPropertyIri) {
+         entity = owlFactory.getOWLDataProperty((DataPropertyIri) value);
+      } else if (value instanceof ObjectPropertyName) {
+         entity = owlFactory.getOWLObjectProperty((ObjectPropertyName) value);
+      } else if (value instanceof ObjectPropertyIri) {
+         entity = owlFactory.getOWLObjectProperty((ObjectPropertyIri) value);
       }
    }
 

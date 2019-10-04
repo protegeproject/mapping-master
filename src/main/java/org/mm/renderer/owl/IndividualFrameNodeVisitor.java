@@ -12,19 +12,18 @@ import org.mm.parser.node.ASTAnnotation;
 import org.mm.parser.node.ASTAnnotationAssertion;
 import org.mm.parser.node.ASTClassAssertion;
 import org.mm.parser.node.ASTClassExpressionCategory;
-import org.mm.parser.node.ASTDataFact;
-import org.mm.parser.node.ASTDataProperty;
 import org.mm.parser.node.ASTDifferentFrom;
 import org.mm.parser.node.ASTFact;
 import org.mm.parser.node.ASTIndividualDeclaration;
 import org.mm.parser.node.ASTIndividualFrame;
 import org.mm.parser.node.ASTNamedIndividual;
-import org.mm.parser.node.ASTObjectFact;
-import org.mm.parser.node.ASTObjectProperty;
-import org.mm.parser.node.ASTReferencedProperty;
+import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
-import org.mm.parser.node.ASTSameAs;
+import org.mm.parser.node.ASTPropertyFact;
+import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTReferencedFact;
+import org.mm.parser.node.ASTReferencedProperty;
+import org.mm.parser.node.ASTSameAs;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.CellCursor;
@@ -148,27 +147,35 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
    }
 
    @Override
-   public void visit(ASTDataFact node) {
-      OWLEntity property = getDataProperty(node);
+   public void visit(ASTPropertyFact node) {
+      OWLEntity property = getProperty(node);
       if (property != null) {
          Value value = getPropertyValue(node);
-         if (value instanceof UntypedValue) {
-            visitDataPropertyAssertion(property.asOWLDataProperty(), ((UntypedValue) value).asLiteralValue());
-         } else {
-            visitDataPropertyAssertion(property.asOWLDataProperty(), value);
+         if (property.isOWLDataProperty()) {
+            if (value instanceof UntypedValue) {
+               visitDataPropertyAssertion(property.asOWLDataProperty(), ((UntypedValue) value).asLiteralValue());
+            } else {
+               visitDataPropertyAssertion(property.asOWLDataProperty(), value);
+            }
+         } else if (property.isOWLObjectProperty()) {
+            if (value instanceof UntypedValue) {
+               visitObjectPropertyAssertion(property.asOWLObjectProperty(), ((UntypedValue) value).asIndividualName());
+            } else {
+               visitObjectPropertyAssertion(property.asOWLObjectProperty(), value);
+            }
          }
       }
    }
 
    @Nullable
-   private OWLEntity getDataProperty(ASTDataFact node) {
-      ASTDataProperty individualNode = ParserUtils.getChild(node, NodeType.DATA_PROPERTY);
-      individualNode.accept(this);
+   private OWLEntity getProperty(ASTPropertyFact node) {
+      ASTProperty propertyNode = ParserUtils.getChild(node, NodeType.PROPERTY);
+      propertyNode.accept(this);
       return getEntity();
    }
 
    private Value getPropertyValue(SimpleNode node) {
-      Node valueNode = ParserUtils.getChild(node, 1);
+      ASTPropertyValue valueNode = ParserUtils.getChild(node, NodeType.PROPERTY_VALUE);
       valueNode.accept(this);
       return getValue();
    }
@@ -181,26 +188,6 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
          OWLLiteral literal = owlFactory.getOWLPlainLiteral((PlainLiteralValue) value);
          axioms.add(owlFactory.createOWLDataPropertyAssertionAxiom(property, subject, literal));
       }
-   }
-
-   @Override
-   public void visit(ASTObjectFact node) {
-      OWLEntity property = getObjectProperty(node);
-      if (property != null) {
-         Value value = getPropertyValue(node);
-         if (value instanceof UntypedValue) {
-            visitObjectPropertyAssertion(property.asOWLObjectProperty(), ((UntypedValue) value).asIndividualName());
-         } else {
-            visitObjectPropertyAssertion(property.asOWLObjectProperty(), value);
-         }
-      }
-   }
-
-   @Nullable
-   private OWLEntity getObjectProperty(ASTObjectFact node) {
-      ASTObjectProperty individualNode = ParserUtils.getChild(node, NodeType.OBJECT_PROPERTY);
-      individualNode.accept(this);
-      return getEntity();
    }
 
    private void visitObjectPropertyAssertion(OWLObjectProperty property, Value value) {

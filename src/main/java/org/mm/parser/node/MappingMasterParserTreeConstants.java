@@ -20,9 +20,9 @@ public interface MappingMasterParserTreeConstants
   public int JJTCLASSASSERTION = 12;
   public int JJTPROPERTYASSERTION = 13;
   public int JJTFACT = 14;
-  public int JJTDATAFACT = 15;
-  public int JJTOBJECTFACT = 16;
-  public int JJTREFERENCEDFACT = 17;
+  public int JJTPROPERTYFACT = 15;
+  public int JJTREFERENCEDFACT = 16;
+  public int JJTPROPERTYVALUE = 17;
   public int JJTSAMEAS = 18;
   public int JJTDIFFERENTFROM = 19;
   public int JJTCLASSEXPRESSIONCATEGORY = 20;
@@ -87,9 +87,9 @@ public interface MappingMasterParserTreeConstants
     "ClassAssertion",
     "PropertyAssertion",
     "Fact",
-    "DataFact",
-    "ObjectFact",
+    "PropertyFact",
     "ReferencedFact",
+    "PropertyValue",
     "SameAs",
     "DifferentFrom",
     "ClassExpressionCategory",
@@ -138,4 +138,4 @@ public interface MappingMasterParserTreeConstants
     "Argument",
   };
 }
-/* JavaCC - OriginalChecksum=87f65730a929ee8be3d323a4fc4fb89f (do not edit this line) */
+/* JavaCC - OriginalChecksum=88dda6ec9a88de8d0ed27c138da44e56 (do not edit this line) */
