@@ -11,27 +11,25 @@ import org.mm.parser.node.ASTCardinalityValue;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassExpressionCategory;
 import org.mm.parser.node.ASTDataAllValuesFrom;
-import org.mm.parser.node.ASTDataExactCardinality;
 import org.mm.parser.node.ASTDataHasValue;
-import org.mm.parser.node.ASTDataMaxCardinality;
-import org.mm.parser.node.ASTDataMinCardinality;
 import org.mm.parser.node.ASTDataProperty;
 import org.mm.parser.node.ASTDataSomeValuesFrom;
+import org.mm.parser.node.ASTFiller;
 import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTObjectAllValuesFrom;
 import org.mm.parser.node.ASTObjectComplement;
-import org.mm.parser.node.ASTObjectExactCardinality;
 import org.mm.parser.node.ASTObjectHasValue;
 import org.mm.parser.node.ASTObjectIntersection;
-import org.mm.parser.node.ASTObjectMaxCardinality;
-import org.mm.parser.node.ASTObjectMinCardinality;
 import org.mm.parser.node.ASTObjectOneOf;
 import org.mm.parser.node.ASTObjectProperty;
 import org.mm.parser.node.ASTObjectSomeValuesFrom;
 import org.mm.parser.node.ASTObjectUnion;
 import org.mm.parser.node.ASTObjectValue;
-import org.mm.parser.node.ASTReference;
+import org.mm.parser.node.ASTProperty;
+import org.mm.parser.node.ASTPropertyExactCardinality;
+import org.mm.parser.node.ASTPropertyMaxCardinality;
+import org.mm.parser.node.ASTPropertyMinCardinality;
 import org.mm.parser.node.ASTReferencedExactCardinality;
 import org.mm.parser.node.ASTReferencedHasValue;
 import org.mm.parser.node.ASTReferencedMaxCardinality;
@@ -141,15 +139,37 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
    }
 
    @Override
-   public void visit(ASTDataExactCardinality node) {
-      OWLDataProperty property = getOWLDataProperty(node);
+   public void visit(ASTPropertyExactCardinality node) {
+      OWLEntity property = getDeclaredProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
-         classExpression = owlFactory.createOWLDataExactCardinality(
-               cardinality,
-               property,
-               DatatypeUtils.getOWLDatatype(node.getDatatype()));
+         if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
+            classExpression = owlFactory.createOWLDataExactCardinality(
+                  cardinality,
+                  property.asOWLDataProperty(),
+                  datatype);
+         } else if (property.isOWLObjectProperty()) {
+            if (node.hasFiller()) {
+               OWLClassExpression fillerExpression = getClassExpressionFiller(node);
+               classExpression = owlFactory.createOWLObjectExactCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty(),
+                     fillerExpression);
+            } else {
+               classExpression = owlFactory.createOWLObjectExactCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty());
+            }
+         }
       }
+   }
+
+   @Nullable
+   private OWLEntity getDeclaredProperty(SimpleNode node) {
+      ASTProperty propertyNode = ParserUtils.getChild(node, NodeType.PROPERTY);
+      propertyNode.accept(this);
+      return getEntity();
    }
 
    private int getCardinality(SimpleNode node) {
@@ -160,162 +180,163 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
       return Integer.parseInt(v.getString());
    }
 
-   @Override
-   public void visit(ASTObjectExactCardinality node) {
-      OWLObjectProperty property = getOWLObjectProperty(node);
-      if (property != null) {
-         int cardinality = getCardinality(node);
-         if (node.hasExplicitClassExpression()) {
-            OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-            if (innerClassExpression != null) {
-               classExpression = owlFactory.createOWLObjectExactCardinality(
-                     cardinality,
-                     property,
-                     innerClassExpression);
-            }
-         } else {
-            classExpression = owlFactory.createOWLObjectExactCardinality(
-                  cardinality,
-                  property);
-         }
+   private OWLDatatype getDatatypeFiller(SimpleNode node) {
+      ASTFiller fillerNode = ParserUtils.getChild(node, NodeType.FILLER);
+      if (fillerNode.getDatatype() != -1) {
+         return DatatypeUtils.getOWLDatatype(fillerNode.getDatatype());
+      } else {
+         fillerNode.accept(this);
+         Value fillerValue = getValue();
+         return owlFactory.createOWLDatatype(fillerValue.getString());
       }
+   }
+
+   @Nullable
+   private OWLClassExpression getClassExpressionFiller(SimpleNode node) {
+      ASTFiller valueNode = ParserUtils.getChild(node, NodeType.FILLER);
+      FillerNodeVisitor visitor = createNewFillerNodeVisitor();
+      visitor.visit(valueNode);
+      return visitor.getClassExpression();
    }
 
    @Override
    public void visit(ASTReferencedExactCardinality node) {
-      OWLEntity property = getOWLProperty(node);
+      OWLEntity property = getReferencedProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
-         Value filler = getFiller(node);
          if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
             classExpression = owlFactory.createOWLDataExactCardinality(
                   cardinality,
                   property.asOWLDataProperty(),
-                  owlFactory.createOWLDatatype(filler.getString()));
+                  datatype);
          } else if (property.isOWLObjectProperty()) {
-            classExpression = owlFactory.createOWLObjectExactCardinality(
-                  cardinality,
-                  property.asOWLObjectProperty(),
-                  owlFactory.createOWLClass(filler.getString()));
+            if (node.hasFiller()) {
+               OWLClassExpression fillerExpression = getClassExpressionFiller(node);
+               classExpression = owlFactory.createOWLObjectExactCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty(),
+                     fillerExpression);
+            } else {
+               classExpression = owlFactory.createOWLObjectExactCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty());
+            }
          }
       }
    }
 
    @Nullable
-   private OWLEntity getOWLProperty(SimpleNode node) {
+   private OWLEntity getReferencedProperty(SimpleNode node) {
       ASTReferencedProperty propertyNode = ParserUtils.getChild(node, NodeType.REFERENCED_PROPERTY);
       propertyNode.accept(this);
       return getEntity();
    }
 
-   private Value getFiller(SimpleNode node) {
-      ASTReference valueNode = ParserUtils.getChild(node, NodeType.REFERENCE);
-      valueNode.accept(this);
-      return getValue();
-   }
-
    @Override
-   public void visit(ASTDataMaxCardinality node) {
-      OWLDataProperty property = getOWLDataProperty(node);
+   public void visit(ASTPropertyMaxCardinality node) {
+      OWLEntity property = getDeclaredProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
-         classExpression = owlFactory.createOWLDataMaxCardinality(
-               cardinality,
-               property,
-               DatatypeUtils.getOWLDatatype(node.getDatatype()));
-      }
-   }
-
-   @Override
-   public void visit(ASTObjectMaxCardinality node) {
-      OWLObjectProperty property = getOWLObjectProperty(node);
-      if (property != null) {
-         int cardinality = getCardinality(node);
-         if (node.hasExplicitClassExpression()) {
-            OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-            if (innerClassExpression != null) {
+         if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
+            classExpression = owlFactory.createOWLDataMaxCardinality(
+                  cardinality,
+                  property.asOWLDataProperty(),
+                  datatype);
+         } else if (property.isOWLObjectProperty()) {
+            if (node.hasFiller()) {
+               OWLClassExpression fillerExpression = getClassExpressionFiller(node);
                classExpression = owlFactory.createOWLObjectMaxCardinality(
                      cardinality,
-                     property,
-                     innerClassExpression);
+                     property.asOWLObjectProperty(),
+                     fillerExpression);
+            } else {
+               classExpression = owlFactory.createOWLObjectMaxCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty());
             }
-         } else {
-            classExpression = owlFactory.createOWLObjectMaxCardinality(
-                  cardinality,
-                  property);
          }
       }
    }
 
    @Override
    public void visit(ASTReferencedMaxCardinality node) {
-      OWLEntity property = getOWLProperty(node);
+      OWLEntity property = getReferencedProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
-         Value filler = getFiller(node);
          if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
             classExpression = owlFactory.createOWLDataMaxCardinality(
                   cardinality,
                   property.asOWLDataProperty(),
-                  owlFactory.createOWLDatatype(filler.getString()));
+                  datatype);
          } else if (property.isOWLObjectProperty()) {
-            classExpression = owlFactory.createOWLObjectMaxCardinality(
-                  cardinality,
-                  property.asOWLObjectProperty(),
-                  owlFactory.createOWLClass(filler.getString()));
+            if (node.hasFiller()) {
+               OWLClassExpression fillerExpression = getClassExpressionFiller(node);
+               classExpression = owlFactory.createOWLObjectMaxCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty(),
+                     fillerExpression);
+            } else {
+               classExpression = owlFactory.createOWLObjectMaxCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty());
+            }
          }
       }
    }
 
    @Override
-   public void visit(ASTDataMinCardinality node) {
-      OWLDataProperty property = getOWLDataProperty(node);
+   public void visit(ASTPropertyMinCardinality node) {
+      OWLEntity property = getDeclaredProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
-         classExpression = owlFactory.createOWLDataMinCardinality(
-               cardinality,
-               property,
-               DatatypeUtils.getOWLDatatype(node.getDatatype()));
-      }
-   }
-
-   @Override
-   public void visit(ASTObjectMinCardinality node) {
-      OWLObjectProperty property = getOWLObjectProperty(node);
-      if (property != null) {
-         int cardinality = getCardinality(node);
-         if (node.hasExplicitClassExpression()) {
-            OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-            if (innerClassExpression != null) {
+         if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
+            classExpression = owlFactory.createOWLDataMinCardinality(
+                  cardinality,
+                  property.asOWLDataProperty(),
+                  datatype);
+         } else if (property.isOWLObjectProperty()) {
+            if (node.hasFiller()) {
+               OWLClassExpression fillerExpression = getClassExpressionFiller(node);
                classExpression = owlFactory.createOWLObjectMinCardinality(
                      cardinality,
-                     property,
-                     innerClassExpression);
+                     property.asOWLObjectProperty(),
+                     fillerExpression);
+            } else {
+               classExpression = owlFactory.createOWLObjectMinCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty());
             }
-         } else {
-            classExpression = owlFactory.createOWLObjectMinCardinality(
-                  cardinality,
-                  property);
          }
       }
    }
 
    @Override
    public void visit(ASTReferencedMinCardinality node) {
-      OWLEntity property = getOWLProperty(node);
+      OWLEntity property = getReferencedProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
-         Value filler = getFiller(node);
          if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
             classExpression = owlFactory.createOWLDataMinCardinality(
                   cardinality,
                   property.asOWLDataProperty(),
-                  owlFactory.createOWLDatatype(filler.getString()));
+                  datatype);
          } else if (property.isOWLObjectProperty()) {
-            classExpression = owlFactory.createOWLObjectMinCardinality(
-                  cardinality,
-                  property.asOWLObjectProperty(),
-                  owlFactory.createOWLClass(filler.getString()));
+            if (node.hasFiller()) {
+               OWLClassExpression fillerExpression = getClassExpressionFiller(node);
+               classExpression = owlFactory.createOWLObjectMinCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty(),
+                     fillerExpression);
+            } else {
+               classExpression = owlFactory.createOWLObjectMinCardinality(
+                     cardinality,
+                     property.asOWLObjectProperty());
+            }
          }
       }
    }
@@ -369,17 +390,17 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
 
    @Override
    public void visit(ASTReferencedHasValue node) {
-      OWLEntity property = getOWLProperty(node);
+      OWLEntity property = getReferencedProperty(node);
       if (property != null) {
-         Value filler = getFiller(node);
+         OWLDatatype datatype = getDatatypeFiller(node);
          if (property.isOWLDataProperty()) {
             classExpression = owlFactory.createOWLDataHasValue(
                   property.asOWLDataProperty(),
-                  owlFactory.getOWLTypedLiteral(((UntypedValue) filler).asLiteralValue()));
+                  owlFactory.getOWLTypedLiteral(null));
          } else if (property.isOWLObjectProperty()) {
             classExpression = owlFactory.createOWLObjectHasValue(
                   property.asOWLObjectProperty(),
-                  owlFactory.createOWLNamedIndividual(filler.getString()));
+                  owlFactory.createOWLNamedIndividual(""));
          }
       }
    }
@@ -472,9 +493,7 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
 
    @Nullable
    private OWLClassExpression getOWLClassExpression(SimpleNode node) {
-      ASTClassExpressionCategory classExpressionNode = ParserUtils.getChild(
-            node,
-            NodeType.CLASS_EXPRESSION);
+      ASTClassExpressionCategory classExpressionNode = ParserUtils.getChild(node, NodeType.CLASS_EXPRESSION);
       return visitInnerClassExpressionNode(classExpressionNode);
    }
 
@@ -490,6 +509,10 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
       ClassExpressionNodeVisitor innerVisitor = createNewClassExpressionNodeVisitor();
       innerVisitor.visit(classExpressionNode);
       return innerVisitor.getClassExpression();
+   }
+
+   private FillerNodeVisitor createNewFillerNodeVisitor() {
+      return new FillerNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    private ClassExpressionNodeVisitor createNewClassExpressionNodeVisitor() {

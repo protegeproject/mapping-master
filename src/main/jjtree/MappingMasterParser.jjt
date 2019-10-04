@@ -570,7 +570,7 @@ void class_expression() #ClassExpressionCategory : {}
   ( LOOKAHEAD(4) restriction()
     | atomic_class()
     | "(" boolean_class_expression() ")"
-    | object_one_of()
+    | "{" object_one_of() "}"
   )
 }
 
@@ -603,7 +603,7 @@ void object_complement_of() #ObjectComplement : {}
 
 void object_one_of() #ObjectOneOf : {}
 {
-  "{" named_individual() ( "," named_individual() )* "}"
+  named_individual() ( "," named_individual() )*
 }
 
 //------------------------------------------------------------------------------------------
@@ -612,9 +612,9 @@ void object_one_of() #ObjectOneOf : {}
 
 void restriction() : {}
 {
-  ( LOOKAHEAD(12) exact_cardinality()
-    | LOOKAHEAD(12) max_cardinality()
-    | LOOKAHEAD(12) min_cardinality()
+  ( LOOKAHEAD(8) exact_cardinality()
+    | LOOKAHEAD(8) max_cardinality()
+    | LOOKAHEAD(8) min_cardinality()
     | LOOKAHEAD(12) has_value()
     | LOOKAHEAD(12) all_values_from()
     | LOOKAHEAD(12) some_values_from()
@@ -623,112 +623,89 @@ void restriction() : {}
 
 void exact_cardinality() : {}
 {
-  ( LOOKAHEAD(4) data_exact_cardinality()
-    | LOOKAHEAD(4) object_exact_cardinality()
+  ( property_exact_cardinality()
     | referenced_exact_cardinality()
   )
 }
 
-void data_exact_cardinality() #DataExactCardinality :
+void property_exact_cardinality() #PropertyExactCardinality :
 {
-  int datatype;
+  boolean hasFiller = false;
 }
 {
-  data_property() <EXACTLY> cardinality_value() datatype = datatype()
+  property() <EXACTLY> cardinality_value() ( filler() { hasFiller = true; } )?
   {
-    jjtThis.datatype = datatype;
+    jjtThis.hasFiller = hasFiller;
   }
 }
 
-void object_exact_cardinality() #ObjectExactCardinality :
+void referenced_exact_cardinality() #ReferencedExactCardinality :
 {
-  boolean hasExplicitClassExpression = false;
+  boolean hasFiller = false;
 }
 {
-  object_property() <EXACTLY> cardinality_value()
-      ( class_expression() { hasExplicitClassExpression = true; } )?
+  referenced_property() <EXACTLY> cardinality_value() ( filler() { hasFiller = true; } )?
   {
-    jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
+    jjtThis.hasFiller = hasFiller;
   }
-}
-
-void referenced_exact_cardinality() #ReferencedExactCardinality : {}
-{
-  referenced_property() <EXACTLY> cardinality_value() reference(MM_UNTYPED)
 }
 
 void max_cardinality() : {}
 {
-  ( LOOKAHEAD(4) data_max_cardinality()
-    | LOOKAHEAD(4) object_max_cardinality()
+  ( property_max_cardinality()
     | referenced_max_cardinality()
   )
 }
 
-void data_max_cardinality() #DataMaxCardinality :
+void property_max_cardinality() #PropertyMaxCardinality :
 {
-  int datatype;
+  boolean hasFiller = false;
 }
 {
-  data_property() <MAX> cardinality_value() datatype = datatype()
+  property() <MAX> cardinality_value() ( filler() { hasFiller = true; } )?
   {
-    jjtThis.datatype = datatype;
+    jjtThis.hasFiller = hasFiller;
   }
 }
 
-void object_max_cardinality() #ObjectMaxCardinality :
+void referenced_max_cardinality() #ReferencedMaxCardinality :
 {
-  boolean hasExplicitClassExpression = false;
+  boolean hasFiller = false;
 }
 {
-  object_property() <MAX> cardinality_value()
-      ( class_expression() { hasExplicitClassExpression = true; } )?
-      
+  referenced_property() <MAX> cardinality_value() ( filler() { hasFiller = true; } )?
   {
-    jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
+    jjtThis.hasFiller = hasFiller;
   }
-}
-
-void referenced_max_cardinality() #ReferencedMaxCardinality : {}
-{
-  referenced_property() <MAX> cardinality_value() reference(MM_UNTYPED)
 }
 
 void min_cardinality() : {}
 {
-  ( LOOKAHEAD(4) data_min_cardinality()
-    | LOOKAHEAD(4) object_min_cardinality()
+  ( property_min_cardinality()
     | referenced_min_cardinality()
   )
 }
 
-void data_min_cardinality() #DataMinCardinality :
+void property_min_cardinality() #PropertyMinCardinality :
 {
-  int datatype;
+  boolean hasFiller = false;
 }
 {
-  data_property() <MIN> cardinality_value() datatype = datatype()
+  property() <MIN> cardinality_value() ( filler() { hasFiller = true; } )?
   {
-    jjtThis.datatype = datatype;
+    jjtThis.hasFiller = hasFiller;
   }
 }
 
-void object_min_cardinality() #ObjectMinCardinality :
+void referenced_min_cardinality() #ReferencedMinCardinality :
 {
-  boolean hasExplicitClassExpression = false;
+  boolean hasFiller = false;
 }
 {
-  object_property() <MIN> cardinality_value()
-      ( class_expression() { hasExplicitClassExpression = true; } )?
-      
+  referenced_property() <MIN> cardinality_value() ( filler() { hasFiller = true; } )?
   {
-    jjtThis.hasExplicitClassExpression = hasExplicitClassExpression;
+    jjtThis.hasFiller = hasFiller;
   }
-}
-
-void referenced_min_cardinality() #ReferencedMinCardinality : {}
-{
-  referenced_property() <MIN> cardinality_value() reference(MM_UNTYPED)
 }
 
 void cardinality_value() #CardinalityValue : {}
@@ -770,10 +747,10 @@ void all_values_from() : {}
 
 void data_all_values_from() #DataAllValuesFrom :
 {
-  int datatype;
+  int datatype = 0;
 }
 {
-  data_property() <ONLY> datatype = datatype()
+  data_property() <ONLY> datatype()
   {
     jjtThis.datatype = datatype;
   }
@@ -793,10 +770,10 @@ void some_values_from() : {}
 
 void data_some_values_from() #DataSomeValuesFrom :
 {
-  int datatype;
+  int datatype = 0;
 }
 {
-  data_property() <SOME> datatype = datatype()
+  data_property() <SOME> datatype()
   {
     jjtThis.datatype = datatype;
   }
@@ -805,6 +782,25 @@ void data_some_values_from() #DataSomeValuesFrom :
 void object_some_values_from() #ObjectSomeValuesFrom : {}
 {
   object_property() <SOME> class_expression()
+}
+
+void filler() #Filler :
+{
+  int datatype = -1;
+}
+{
+  ( datatype = datatype_type() { jjtThis.datatype = datatype; }
+    | value(MM_UNTYPED)
+    | reference(MM_UNTYPED)
+    | class_expression_filler()
+  )
+}
+
+void class_expression_filler() #ClassExpressionFiller : {}
+{
+  ( "(" boolean_class_expression() ")"
+    | "{" object_one_of() "}"
+  )
 }
 
 //------------------------------------------------------------------------------------------

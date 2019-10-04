@@ -14,10 +14,12 @@ import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassAssertion;
 import org.mm.parser.node.ASTClassDeclaration;
 import org.mm.parser.node.ASTClassExpressionCategory;
+import org.mm.parser.node.ASTClassExpressionFiller;
 import org.mm.parser.node.ASTDataProperty;
 import org.mm.parser.node.ASTDifferentFrom;
 import org.mm.parser.node.ASTEquivalentClasses;
 import org.mm.parser.node.ASTFact;
+import org.mm.parser.node.ASTFiller;
 import org.mm.parser.node.ASTIndividualDeclaration;
 import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTNamedIndividual;
@@ -65,6 +67,7 @@ public class NodeType<T extends Node> {
    public static final NodeType<ASTClassAssertion> CLASS_ASSERTION = new NodeType<>("ClassAssertion", ASTClassAssertion.class);
    public static final NodeType<ASTClassDeclaration> CLASS_DECLARATION = new NodeType<>("ClassDeclaration", ASTClassDeclaration.class);
    public static final NodeType<ASTClassExpressionCategory> CLASS_EXPRESSION = new NodeType<>("ClassExpressionCategory", ASTClassExpressionCategory.class);;
+   public static final NodeType<ASTClassExpressionFiller> CLASS_EXPRESSION_FILLER = new NodeType<>("ClassExpressionFiller", ASTClassExpressionFiller.class);;
    public static final NodeType<ASTDataProperty> DATA_PROPERTY = new NodeType<>("DataProperty", ASTDataProperty.class);
    public static final NodeType<ASTDifferentFrom> DIFFERENT_FROM = new NodeType<>("DifferentFrom", ASTDifferentFrom.class);
    public static final NodeType<ASTEquivalentClasses> EQUIVALENT_CLASSES = new NodeType<>("EquivalentClasses", ASTEquivalentClasses.class);
@@ -77,6 +80,7 @@ public class NodeType<T extends Node> {
    public static final NodeType<ASTObjectValue> OBJECT_VALUE = new NodeType<>("ObjectValue", ASTObjectValue.class);
    public static final NodeType<ASTProperty> PROPERTY = new NodeType<>("Property", ASTProperty.class);
    public static final NodeType<ASTPropertyValue> PROPERTY_VALUE = new NodeType<>("PropertyValue", ASTPropertyValue.class);
+   public static final NodeType<ASTFiller> FILLER = new NodeType<>("Filler", ASTFiller.class);
    public static final NodeType<ASTReferencedProperty> REFERENCED_PROPERTY = new NodeType<>("ReferencedProperty", ASTReferencedProperty.class);
    public static final NodeType<ASTPropertyAssertion> PROPERTY_ASSERTION = new NodeType<>("PropertyAssertion", ASTPropertyAssertion.class);
    public static final NodeType<ASTReference> REFERENCE = new NodeType<>("Reference", ASTReference.class);

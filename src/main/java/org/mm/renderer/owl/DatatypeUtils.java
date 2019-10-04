@@ -34,6 +34,6 @@ public class DatatypeUtils implements MappingMasterParserConstants {
       if (datatypeIri != null) {
          return new OWLDatatypeImpl(datatypeIri);
       }
-      throw new RuntimeException("Internal programming error: datatype is not implemented yet");
+      throw new RuntimeException("Internal programming error: datatype code (" + datatype + ") does not exist");
    }
 }

@@ -12,17 +12,17 @@ import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassAssertion;
 import org.mm.parser.node.ASTClassDeclaration;
 import org.mm.parser.node.ASTClassExpressionCategory;
+import org.mm.parser.node.ASTClassExpressionFiller;
 import org.mm.parser.node.ASTClassFrame;
 import org.mm.parser.node.ASTDataAllValuesFrom;
-import org.mm.parser.node.ASTDataExactCardinality;
 import org.mm.parser.node.ASTDataHasValue;
-import org.mm.parser.node.ASTDataMaxCardinality;
-import org.mm.parser.node.ASTDataMinCardinality;
 import org.mm.parser.node.ASTDataProperty;
 import org.mm.parser.node.ASTDataSomeValuesFrom;
+import org.mm.parser.node.ASTDatatype;
 import org.mm.parser.node.ASTDifferentFrom;
 import org.mm.parser.node.ASTEquivalentClasses;
 import org.mm.parser.node.ASTFact;
+import org.mm.parser.node.ASTFiller;
 import org.mm.parser.node.ASTFloatLiteral;
 import org.mm.parser.node.ASTIndividualDeclaration;
 import org.mm.parser.node.ASTIndividualFrame;
@@ -34,11 +34,8 @@ import org.mm.parser.node.ASTName;
 import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTObjectAllValuesFrom;
 import org.mm.parser.node.ASTObjectComplement;
-import org.mm.parser.node.ASTObjectExactCardinality;
 import org.mm.parser.node.ASTObjectHasValue;
 import org.mm.parser.node.ASTObjectIntersection;
-import org.mm.parser.node.ASTObjectMaxCardinality;
-import org.mm.parser.node.ASTObjectMinCardinality;
 import org.mm.parser.node.ASTObjectOneOf;
 import org.mm.parser.node.ASTObjectProperty;
 import org.mm.parser.node.ASTObjectSomeValuesFrom;
@@ -46,7 +43,10 @@ import org.mm.parser.node.ASTObjectUnion;
 import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
+import org.mm.parser.node.ASTPropertyExactCardinality;
 import org.mm.parser.node.ASTPropertyFact;
+import org.mm.parser.node.ASTPropertyMaxCardinality;
+import org.mm.parser.node.ASTPropertyMinCardinality;
 import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
@@ -93,17 +93,13 @@ public interface NodeVisitor {
 
    void visit(ASTClassExpressionCategory node);
 
+   void visit(ASTClassExpressionFiller node);
+
    void visit(ASTClassFrame node);
 
    void visit(ASTDataAllValuesFrom node);
 
-   void visit(ASTDataExactCardinality node);
-
    void visit(ASTDataHasValue node);
-
-   void visit(ASTDataMaxCardinality node);
-
-   void visit(ASTDataMinCardinality node);
 
    void visit(ASTCardinalityValue node);
 
@@ -129,6 +125,8 @@ public interface NodeVisitor {
 
    void visit(ASTIntegerLiteral node);
 
+   void visit(ASTDatatype node);
+
    void visit(ASTIri node);
 
    void visit(ASTLiteral node);
@@ -143,9 +141,11 @@ public interface NodeVisitor {
 
    void visit(ASTObjectComplement node);
 
-   void visit(ASTObjectExactCardinality node);
+   void visit(ASTPropertyExactCardinality node);
 
    void visit(ASTReferencedExactCardinality node);
+
+   void visit(ASTFiller node);
 
    void visit(ASTObjectHasValue node);
 
@@ -153,11 +153,11 @@ public interface NodeVisitor {
 
    void visit(ASTObjectIntersection node);
 
-   void visit(ASTObjectMaxCardinality node);
+   void visit(ASTPropertyMaxCardinality node);
 
    void visit(ASTReferencedMaxCardinality node);
 
-   void visit(ASTObjectMinCardinality node);
+   void visit(ASTPropertyMinCardinality node);
 
    void visit(ASTReferencedMinCardinality node);
 

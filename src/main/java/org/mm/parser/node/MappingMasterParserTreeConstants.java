@@ -31,44 +31,44 @@ public interface MappingMasterParserTreeConstants
   public int JJTOBJECTINTERSECTION = 23;
   public int JJTOBJECTCOMPLEMENT = 24;
   public int JJTOBJECTONEOF = 25;
-  public int JJTDATAEXACTCARDINALITY = 26;
-  public int JJTOBJECTEXACTCARDINALITY = 27;
-  public int JJTREFERENCEDEXACTCARDINALITY = 28;
-  public int JJTDATAMAXCARDINALITY = 29;
-  public int JJTOBJECTMAXCARDINALITY = 30;
-  public int JJTREFERENCEDMAXCARDINALITY = 31;
-  public int JJTDATAMINCARDINALITY = 32;
-  public int JJTOBJECTMINCARDINALITY = 33;
-  public int JJTREFERENCEDMINCARDINALITY = 34;
-  public int JJTCARDINALITYVALUE = 35;
-  public int JJTDATAHASVALUE = 36;
-  public int JJTOBJECTHASVALUE = 37;
-  public int JJTREFERENCEDHASVALUE = 38;
-  public int JJTDATAALLVALUESFROM = 39;
-  public int JJTOBJECTALLVALUESFROM = 40;
-  public int JJTDATASOMEVALUESFROM = 41;
-  public int JJTOBJECTSOMEVALUESFROM = 42;
-  public int JJTREFERENCEDPROPERTY = 43;
-  public int JJTPROPERTY = 44;
-  public int JJTDATAPROPERTY = 45;
-  public int JJTOBJECTPROPERTY = 46;
-  public int JJTANNOTATIONPROPERTY = 47;
-  public int JJTNAMEDINDIVIDUAL = 48;
-  public int JJTVALUE = 49;
-  public int JJTLITERALVALUE = 50;
-  public int JJTOBJECTVALUE = 51;
-  public int JJTREFERENCE = 52;
-  public int JJTNAME = 53;
-  public int JJTIRI = 54;
-  public int JJTLITERAL = 55;
-  public int JJTINTEGERLITERAL = 56;
-  public int JJTFLOATLITERAL = 57;
-  public int JJTSTRINGLITERAL = 58;
-  public int JJTBOOLEANLITERAL = 59;
-  public int JJTREFERENCENOTATION = 60;
-  public int JJTBUILTINFUNCTION = 61;
-  public int JJTARGUMENTLIST = 62;
-  public int JJTARGUMENT = 63;
+  public int JJTPROPERTYEXACTCARDINALITY = 26;
+  public int JJTREFERENCEDEXACTCARDINALITY = 27;
+  public int JJTPROPERTYMAXCARDINALITY = 28;
+  public int JJTREFERENCEDMAXCARDINALITY = 29;
+  public int JJTPROPERTYMINCARDINALITY = 30;
+  public int JJTREFERENCEDMINCARDINALITY = 31;
+  public int JJTCARDINALITYVALUE = 32;
+  public int JJTDATAHASVALUE = 33;
+  public int JJTOBJECTHASVALUE = 34;
+  public int JJTREFERENCEDHASVALUE = 35;
+  public int JJTDATAALLVALUESFROM = 36;
+  public int JJTOBJECTALLVALUESFROM = 37;
+  public int JJTDATASOMEVALUESFROM = 38;
+  public int JJTOBJECTSOMEVALUESFROM = 39;
+  public int JJTFILLER = 40;
+  public int JJTCLASSEXPRESSIONFILLER = 41;
+  public int JJTREFERENCEDPROPERTY = 42;
+  public int JJTPROPERTY = 43;
+  public int JJTDATAPROPERTY = 44;
+  public int JJTOBJECTPROPERTY = 45;
+  public int JJTANNOTATIONPROPERTY = 46;
+  public int JJTNAMEDINDIVIDUAL = 47;
+  public int JJTVALUE = 48;
+  public int JJTLITERALVALUE = 49;
+  public int JJTOBJECTVALUE = 50;
+  public int JJTREFERENCE = 51;
+  public int JJTNAME = 52;
+  public int JJTIRI = 53;
+  public int JJTLITERAL = 54;
+  public int JJTINTEGERLITERAL = 55;
+  public int JJTFLOATLITERAL = 56;
+  public int JJTSTRINGLITERAL = 57;
+  public int JJTBOOLEANLITERAL = 58;
+  public int JJTREFERENCENOTATION = 59;
+  public int JJTBUILTINFUNCTION = 60;
+  public int JJTARGUMENTLIST = 61;
+  public int JJTARGUMENT = 62;
+  public int JJTDATATYPE = 63;
 
 
   public String[] jjtNodeName = {
@@ -98,14 +98,11 @@ public interface MappingMasterParserTreeConstants
     "ObjectIntersection",
     "ObjectComplement",
     "ObjectOneOf",
-    "DataExactCardinality",
-    "ObjectExactCardinality",
+    "PropertyExactCardinality",
     "ReferencedExactCardinality",
-    "DataMaxCardinality",
-    "ObjectMaxCardinality",
+    "PropertyMaxCardinality",
     "ReferencedMaxCardinality",
-    "DataMinCardinality",
-    "ObjectMinCardinality",
+    "PropertyMinCardinality",
     "ReferencedMinCardinality",
     "CardinalityValue",
     "DataHasValue",
@@ -115,6 +112,8 @@ public interface MappingMasterParserTreeConstants
     "ObjectAllValuesFrom",
     "DataSomeValuesFrom",
     "ObjectSomeValuesFrom",
+    "Filler",
+    "ClassExpressionFiller",
     "ReferencedProperty",
     "Property",
     "DataProperty",
@@ -136,6 +135,7 @@ public interface MappingMasterParserTreeConstants
     "BuiltInFunction",
     "ArgumentList",
     "Argument",
+    "Datatype",
   };
 }
-/* JavaCC - OriginalChecksum=88dda6ec9a88de8d0ed27c138da44e56 (do not edit this line) */
+/* JavaCC - OriginalChecksum=008d243c8e3a60ac50038ff079664acc (do not edit this line) */

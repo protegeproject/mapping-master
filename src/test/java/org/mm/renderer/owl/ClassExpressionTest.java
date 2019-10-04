@@ -220,7 +220,6 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   @Ignore
    public void shouldRenderObjectHasValue() {
       // Arrange
       declareEntity(Vocabulary.HAS_ENGINE);

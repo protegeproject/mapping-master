@@ -6,17 +6,24 @@ import org.mm.parser.*;
 
 public
 class ASTReferencedMaxCardinality extends SimpleNode {
-  public ASTReferencedMaxCardinality(int id) {
-    super(id);
-  }
 
-  public ASTReferencedMaxCardinality(MappingMasterParser p, int id) {
-    super(p, id);
-  }
+   public boolean hasFiller; /* XXX: Manually added */
 
-  @Override
-  public void accept(NodeVisitor visitor) { /* XXX: Manually added */
-    visitor.visit(this);
-  }
+   public ASTReferencedMaxCardinality(int id) {
+     super(id);
+   }
+
+   public ASTReferencedMaxCardinality(MappingMasterParser p, int id) {
+     super(p, id);
+   }
+
+   public boolean hasFiller() { /* XXX: Manually added */
+     return hasFiller;
+   }
+
+   @Override
+   public void accept(NodeVisitor visitor) { /* XXX: Manually added */
+     visitor.visit(this);
+   }
 }
 /* JavaCC - OriginalChecksum=6c2aabd388e301467721ec095b839657 (do not edit this line) */
