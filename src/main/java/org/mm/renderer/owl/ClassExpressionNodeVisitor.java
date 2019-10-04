@@ -31,12 +31,12 @@ import org.mm.parser.node.ASTObjectProperty;
 import org.mm.parser.node.ASTObjectSomeValuesFrom;
 import org.mm.parser.node.ASTObjectUnion;
 import org.mm.parser.node.ASTObjectValue;
-import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTReference;
-import org.mm.parser.node.ASTUntypedExactCardinality;
-import org.mm.parser.node.ASTUntypedHasValue;
-import org.mm.parser.node.ASTUntypedMaxCardinality;
-import org.mm.parser.node.ASTUntypedMinCardinality;
+import org.mm.parser.node.ASTReferencedExactCardinality;
+import org.mm.parser.node.ASTReferencedHasValue;
+import org.mm.parser.node.ASTReferencedMaxCardinality;
+import org.mm.parser.node.ASTReferencedMinCardinality;
+import org.mm.parser.node.ASTReferencedProperty;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.CellCursor;
@@ -182,7 +182,7 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
    }
 
    @Override
-   public void visit(ASTUntypedExactCardinality node) {
+   public void visit(ASTReferencedExactCardinality node) {
       OWLEntity property = getOWLProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
@@ -203,7 +203,7 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
 
    @Nullable
    private OWLEntity getOWLProperty(SimpleNode node) {
-      ASTProperty propertyNode = ParserUtils.getChild(node, NodeType.PROPERTY);
+      ASTReferencedProperty propertyNode = ParserUtils.getChild(node, NodeType.REFERENCED_PROPERTY);
       propertyNode.accept(this);
       return getEntity();
    }
@@ -248,7 +248,7 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
    }
 
    @Override
-   public void visit(ASTUntypedMaxCardinality node) {
+   public void visit(ASTReferencedMaxCardinality node) {
       OWLEntity property = getOWLProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
@@ -301,7 +301,7 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
    }
 
    @Override
-   public void visit(ASTUntypedMinCardinality node) {
+   public void visit(ASTReferencedMinCardinality node) {
       OWLEntity property = getOWLProperty(node);
       if (property != null) {
          int cardinality = getCardinality(node);
@@ -368,7 +368,7 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
    }
 
    @Override
-   public void visit(ASTUntypedHasValue node) {
+   public void visit(ASTReferencedHasValue node) {
       OWLEntity property = getOWLProperty(node);
       if (property != null) {
          Value filler = getFiller(node);

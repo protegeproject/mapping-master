@@ -9,7 +9,7 @@ import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTDataProperty;
 import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTObjectProperty;
-import org.mm.parser.node.ASTProperty;
+import org.mm.parser.node.ASTReferencedProperty;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.CellCursor;
@@ -77,7 +77,7 @@ public class EntityNodeVisitor extends ValueNodeVisitor {
    }
 
    @Override
-   public void visit(ASTProperty propertyNode) {
+   public void visit(ASTReferencedProperty propertyNode) {
       Value value = getValue(propertyNode);
       if (value instanceof PropertyName) {
          entity = owlFactory.getOWLProperty((PropertyName) value);

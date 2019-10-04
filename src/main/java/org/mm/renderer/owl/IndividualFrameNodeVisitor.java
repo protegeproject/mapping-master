@@ -21,10 +21,10 @@ import org.mm.parser.node.ASTIndividualFrame;
 import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTObjectFact;
 import org.mm.parser.node.ASTObjectProperty;
-import org.mm.parser.node.ASTProperty;
+import org.mm.parser.node.ASTReferencedProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTSameAs;
-import org.mm.parser.node.ASTUntypedFact;
+import org.mm.parser.node.ASTReferencedFact;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.CellCursor;
@@ -220,7 +220,7 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
    }
 
    @Override
-   public void visit(ASTUntypedFact node) {
+   public void visit(ASTReferencedFact node) {
       OWLEntity property = getProperty(node);
       if (property != null) {
          Value value = getPropertyValue(node);
@@ -241,8 +241,8 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
    }
 
    @Nullable
-   private OWLEntity getProperty(ASTUntypedFact node) {
-      ASTProperty propertyNode = ParserUtils.getChild(node, NodeType.PROPERTY);
+   private OWLEntity getProperty(ASTReferencedFact node) {
+      ASTReferencedProperty propertyNode = ParserUtils.getChild(node, NodeType.REFERENCED_PROPERTY);
       propertyNode.accept(this);
       return getEntity();
    }

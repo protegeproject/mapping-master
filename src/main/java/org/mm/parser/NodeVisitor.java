@@ -50,6 +50,12 @@ import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
+import org.mm.parser.node.ASTReferencedExactCardinality;
+import org.mm.parser.node.ASTReferencedFact;
+import org.mm.parser.node.ASTReferencedHasValue;
+import org.mm.parser.node.ASTReferencedMaxCardinality;
+import org.mm.parser.node.ASTReferencedMinCardinality;
+import org.mm.parser.node.ASTReferencedProperty;
 import org.mm.parser.node.ASTRestrictionCategory;
 import org.mm.parser.node.ASTRuleExpression;
 import org.mm.parser.node.ASTSameAs;
@@ -57,11 +63,6 @@ import org.mm.parser.node.ASTSourceSpecification;
 import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.ASTSubclassOf;
 import org.mm.parser.node.ASTTransformationRule;
-import org.mm.parser.node.ASTUntypedExactCardinality;
-import org.mm.parser.node.ASTUntypedFact;
-import org.mm.parser.node.ASTUntypedHasValue;
-import org.mm.parser.node.ASTUntypedMaxCardinality;
-import org.mm.parser.node.ASTUntypedMinCardinality;
 import org.mm.parser.node.ASTValue;
 
 /**
@@ -120,7 +121,7 @@ public interface NodeVisitor {
 
    void visit(ASTObjectFact node);
 
-   void visit(ASTUntypedFact node);
+   void visit(ASTReferencedFact node);
 
    void visit(ASTFloatLiteral node);
 
@@ -146,21 +147,21 @@ public interface NodeVisitor {
 
    void visit(ASTObjectExactCardinality node);
 
-   void visit(ASTUntypedExactCardinality node);
+   void visit(ASTReferencedExactCardinality node);
 
    void visit(ASTObjectHasValue node);
 
-   void visit(ASTUntypedHasValue node);
+   void visit(ASTReferencedHasValue node);
 
    void visit(ASTObjectIntersection node);
 
    void visit(ASTObjectMaxCardinality node);
 
-   void visit(ASTUntypedMaxCardinality node);
+   void visit(ASTReferencedMaxCardinality node);
 
    void visit(ASTObjectMinCardinality node);
 
-   void visit(ASTUntypedMinCardinality node);
+   void visit(ASTReferencedMinCardinality node);
 
    void visit(ASTObjectOneOf node);
 
@@ -171,6 +172,8 @@ public interface NodeVisitor {
    void visit(ASTObjectUnion node);
 
    void visit(ASTObjectValue node);
+
+   void visit(ASTReferencedProperty node);
 
    void visit(ASTProperty node);
 

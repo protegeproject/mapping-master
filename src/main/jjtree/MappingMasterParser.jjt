@@ -529,7 +529,7 @@ void fact() #Fact : {}
 {
   ( LOOKAHEAD(4) data_fact()
     | LOOKAHEAD(4) object_fact()
-    | untyped_fact()
+    | referenced_fact()
   )
 }
 
@@ -543,9 +543,9 @@ void object_fact() #ObjectFact : {}
   object_property() ( iri(OWL_NAMED_INDIVIDUAL) | reference(OWL_NAMED_INDIVIDUAL) )
 }
 
-void untyped_fact() #UntypedFact : {}
+void referenced_fact() #ReferencedFact : {}
 {
-  property() reference(MM_UNTYPED)
+  referenced_property() reference(MM_UNTYPED)
 }
 
 void same_as() #SameAs : {}
@@ -622,7 +622,7 @@ void exact_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_exact_cardinality()
     | LOOKAHEAD(4) object_exact_cardinality()
-    | untyped_exact_cardinality()
+    | referenced_exact_cardinality()
   )
 }
 
@@ -649,16 +649,16 @@ void object_exact_cardinality() #ObjectExactCardinality :
   }
 }
 
-void untyped_exact_cardinality() #UntypedExactCardinality : {}
+void referenced_exact_cardinality() #ReferencedExactCardinality : {}
 {
-  property() <EXACTLY> cardinality_value() reference(MM_UNTYPED)
+  referenced_property() <EXACTLY> cardinality_value() reference(MM_UNTYPED)
 }
 
 void max_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_max_cardinality()
     | LOOKAHEAD(4) object_max_cardinality()
-    | untyped_max_cardinality()
+    | referenced_max_cardinality()
   )
 }
 
@@ -686,16 +686,16 @@ void object_max_cardinality() #ObjectMaxCardinality :
   }
 }
 
-void untyped_max_cardinality() #UntypedMaxCardinality : {}
+void referenced_max_cardinality() #ReferencedMaxCardinality : {}
 {
-  property() <MAX> cardinality_value() reference(MM_UNTYPED)
+  referenced_property() <MAX> cardinality_value() reference(MM_UNTYPED)
 }
 
 void min_cardinality() : {}
 {
   ( LOOKAHEAD(4) data_min_cardinality()
     | LOOKAHEAD(4) object_min_cardinality()
-    | untyped_min_cardinality()
+    | referenced_min_cardinality()
   )
 }
 
@@ -723,9 +723,9 @@ void object_min_cardinality() #ObjectMinCardinality :
   }
 }
 
-void untyped_min_cardinality() #UntypedMinCardinality : {}
+void referenced_min_cardinality() #ReferencedMinCardinality : {}
 {
-  property() <MIN> cardinality_value() reference(MM_UNTYPED)
+  referenced_property() <MIN> cardinality_value() reference(MM_UNTYPED)
 }
 
 void cardinality_value() #CardinalityValue : {}
@@ -739,7 +739,7 @@ void has_value() : {}
 {
   ( LOOKAHEAD(4) data_has_value()
     | LOOKAHEAD(4) object_has_value()
-    | untyped_has_value()
+    | referenced_has_value()
   )
 }
 
@@ -753,9 +753,9 @@ void object_has_value() #ObjectHasValue : {}
   object_property() <VALUE> object_value()
 }
 
-void untyped_has_value() #UntypedHasValue : {}
+void referenced_has_value() #ReferencedHasValue : {}
 {
-  property() <VALUE> reference(MM_UNTYPED)
+  referenced_property() <VALUE> reference(MM_UNTYPED)
 }
 
 void all_values_from() : {}
@@ -808,9 +808,14 @@ void object_some_values_from() #ObjectSomeValuesFrom : {}
 // OWL Property
 //------------------------------------------------------------------------------------------
 
-void property() #Property : {}
+void referenced_property() #ReferencedProperty : {}
 {
   reference(localDirectives.getPropertyType())
+}
+
+void property() #Property : {}
+{
+  value(MM_UNTYPED)
 }
 
 void data_property() #DataProperty : {}

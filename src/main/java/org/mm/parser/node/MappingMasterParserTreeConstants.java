@@ -22,7 +22,7 @@ public interface MappingMasterParserTreeConstants
   public int JJTFACT = 14;
   public int JJTDATAFACT = 15;
   public int JJTOBJECTFACT = 16;
-  public int JJTUNTYPEDFACT = 17;
+  public int JJTREFERENCEDFACT = 17;
   public int JJTSAMEAS = 18;
   public int JJTDIFFERENTFROM = 19;
   public int JJTCLASSEXPRESSIONCATEGORY = 20;
@@ -33,41 +33,42 @@ public interface MappingMasterParserTreeConstants
   public int JJTOBJECTONEOF = 25;
   public int JJTDATAEXACTCARDINALITY = 26;
   public int JJTOBJECTEXACTCARDINALITY = 27;
-  public int JJTUNTYPEDEXACTCARDINALITY = 28;
+  public int JJTREFERENCEDEXACTCARDINALITY = 28;
   public int JJTDATAMAXCARDINALITY = 29;
   public int JJTOBJECTMAXCARDINALITY = 30;
-  public int JJTUNTYPEDMAXCARDINALITY = 31;
+  public int JJTREFERENCEDMAXCARDINALITY = 31;
   public int JJTDATAMINCARDINALITY = 32;
   public int JJTOBJECTMINCARDINALITY = 33;
-  public int JJTUNTYPEDMINCARDINALITY = 34;
+  public int JJTREFERENCEDMINCARDINALITY = 34;
   public int JJTCARDINALITYVALUE = 35;
   public int JJTDATAHASVALUE = 36;
   public int JJTOBJECTHASVALUE = 37;
-  public int JJTUNTYPEDHASVALUE = 38;
+  public int JJTREFERENCEDHASVALUE = 38;
   public int JJTDATAALLVALUESFROM = 39;
   public int JJTOBJECTALLVALUESFROM = 40;
   public int JJTDATASOMEVALUESFROM = 41;
   public int JJTOBJECTSOMEVALUESFROM = 42;
-  public int JJTPROPERTY = 43;
-  public int JJTDATAPROPERTY = 44;
-  public int JJTOBJECTPROPERTY = 45;
-  public int JJTANNOTATIONPROPERTY = 46;
-  public int JJTNAMEDINDIVIDUAL = 47;
-  public int JJTVALUE = 48;
-  public int JJTLITERALVALUE = 49;
-  public int JJTOBJECTVALUE = 50;
-  public int JJTREFERENCE = 51;
-  public int JJTNAME = 52;
-  public int JJTIRI = 53;
-  public int JJTLITERAL = 54;
-  public int JJTINTEGERLITERAL = 55;
-  public int JJTFLOATLITERAL = 56;
-  public int JJTSTRINGLITERAL = 57;
-  public int JJTBOOLEANLITERAL = 58;
-  public int JJTREFERENCENOTATION = 59;
-  public int JJTBUILTINFUNCTION = 60;
-  public int JJTARGUMENTLIST = 61;
-  public int JJTARGUMENT = 62;
+  public int JJTREFERENCEDPROPERTY = 43;
+  public int JJTPROPERTY = 44;
+  public int JJTDATAPROPERTY = 45;
+  public int JJTOBJECTPROPERTY = 46;
+  public int JJTANNOTATIONPROPERTY = 47;
+  public int JJTNAMEDINDIVIDUAL = 48;
+  public int JJTVALUE = 49;
+  public int JJTLITERALVALUE = 50;
+  public int JJTOBJECTVALUE = 51;
+  public int JJTREFERENCE = 52;
+  public int JJTNAME = 53;
+  public int JJTIRI = 54;
+  public int JJTLITERAL = 55;
+  public int JJTINTEGERLITERAL = 56;
+  public int JJTFLOATLITERAL = 57;
+  public int JJTSTRINGLITERAL = 58;
+  public int JJTBOOLEANLITERAL = 59;
+  public int JJTREFERENCENOTATION = 60;
+  public int JJTBUILTINFUNCTION = 61;
+  public int JJTARGUMENTLIST = 62;
+  public int JJTARGUMENT = 63;
 
 
   public String[] jjtNodeName = {
@@ -88,7 +89,7 @@ public interface MappingMasterParserTreeConstants
     "Fact",
     "DataFact",
     "ObjectFact",
-    "UntypedFact",
+    "ReferencedFact",
     "SameAs",
     "DifferentFrom",
     "ClassExpressionCategory",
@@ -99,21 +100,22 @@ public interface MappingMasterParserTreeConstants
     "ObjectOneOf",
     "DataExactCardinality",
     "ObjectExactCardinality",
-    "UntypedExactCardinality",
+    "ReferencedExactCardinality",
     "DataMaxCardinality",
     "ObjectMaxCardinality",
-    "UntypedMaxCardinality",
+    "ReferencedMaxCardinality",
     "DataMinCardinality",
     "ObjectMinCardinality",
-    "UntypedMinCardinality",
+    "ReferencedMinCardinality",
     "CardinalityValue",
     "DataHasValue",
     "ObjectHasValue",
-    "UntypedHasValue",
+    "ReferencedHasValue",
     "DataAllValuesFrom",
     "ObjectAllValuesFrom",
     "DataSomeValuesFrom",
     "ObjectSomeValuesFrom",
+    "ReferencedProperty",
     "Property",
     "DataProperty",
     "ObjectProperty",
@@ -136,4 +138,4 @@ public interface MappingMasterParserTreeConstants
     "Argument",
   };
 }
-/* JavaCC - OriginalChecksum=c829b1814796c74390c633d19a8c49c5 (do not edit this line) */
+/* JavaCC - OriginalChecksum=87f65730a929ee8be3d323a4fc4fb89f (do not edit this line) */
