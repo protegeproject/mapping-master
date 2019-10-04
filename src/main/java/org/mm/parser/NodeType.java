@@ -26,7 +26,6 @@ import org.mm.parser.node.ASTObjectProperty;
 import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
-import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTRuleExpression;
@@ -76,7 +75,6 @@ public class NodeType<T extends Node> {
    public static final NodeType<ASTObjectValue> OBJECT_VALUE = new NodeType<>("ObjectValue", ASTObjectValue.class);
    public static final NodeType<ASTProperty> PROPERTY = new NodeType<>("Property", ASTProperty.class);
    public static final NodeType<ASTPropertyAssertion> PROPERTY_ASSERTION = new NodeType<>("PropertyAssertion", ASTPropertyAssertion.class);
-   public static final NodeType<ASTPropertyValue> PROPERTY_VALUE = new NodeType<>("PropertyValue", ASTPropertyValue.class);
    public static final NodeType<ASTReference> REFERENCE = new NodeType<>("Reference", ASTReference.class);
    public static final NodeType<ASTReferenceNotation> REFERENCE_NOTATION = new NodeType<>("ReferenceNotation", ASTReferenceNotation.class);
    public static final NodeType<ASTRuleExpression> RULE_EXPRESSION = new NodeType<>("RuleExpression", ASTRuleExpression.class);

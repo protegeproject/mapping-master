@@ -20,52 +20,54 @@ public interface MappingMasterParserTreeConstants
   public int JJTCLASSASSERTION = 12;
   public int JJTPROPERTYASSERTION = 13;
   public int JJTFACT = 14;
-  public int JJTPROPERTYVALUE = 15;
-  public int JJTSAMEAS = 16;
-  public int JJTDIFFERENTFROM = 17;
-  public int JJTCLASSEXPRESSIONCATEGORY = 18;
-  public int JJTCLASS = 19;
-  public int JJTOBJECTUNION = 20;
-  public int JJTOBJECTINTERSECTION = 21;
-  public int JJTOBJECTCOMPLEMENT = 22;
-  public int JJTOBJECTONEOF = 23;
-  public int JJTDATAEXACTCARDINALITY = 24;
-  public int JJTOBJECTEXACTCARDINALITY = 25;
-  public int JJTUNTYPEDEXACTCARDINALITY = 26;
-  public int JJTDATAMAXCARDINALITY = 27;
-  public int JJTOBJECTMAXCARDINALITY = 28;
-  public int JJTUNTYPEDMAXCARDINALITY = 29;
-  public int JJTDATAMINCARDINALITY = 30;
-  public int JJTOBJECTMINCARDINALITY = 31;
-  public int JJTUNTYPEDMINCARDINALITY = 32;
-  public int JJTCARDINALITYVALUE = 33;
-  public int JJTDATAHASVALUE = 34;
-  public int JJTOBJECTHASVALUE = 35;
-  public int JJTUNTYPEDHASVALUE = 36;
-  public int JJTDATAALLVALUESFROM = 37;
-  public int JJTOBJECTALLVALUESFROM = 38;
-  public int JJTDATASOMEVALUESFROM = 39;
-  public int JJTOBJECTSOMEVALUESFROM = 40;
-  public int JJTPROPERTY = 41;
-  public int JJTDATAPROPERTY = 42;
-  public int JJTOBJECTPROPERTY = 43;
-  public int JJTANNOTATIONPROPERTY = 44;
-  public int JJTNAMEDINDIVIDUAL = 45;
-  public int JJTVALUE = 46;
-  public int JJTLITERALVALUE = 47;
-  public int JJTOBJECTVALUE = 48;
-  public int JJTREFERENCE = 49;
-  public int JJTNAME = 50;
-  public int JJTIRI = 51;
-  public int JJTLITERAL = 52;
-  public int JJTINTEGERLITERAL = 53;
-  public int JJTFLOATLITERAL = 54;
-  public int JJTSTRINGLITERAL = 55;
-  public int JJTBOOLEANLITERAL = 56;
-  public int JJTREFERENCENOTATION = 57;
-  public int JJTBUILTINFUNCTION = 58;
-  public int JJTARGUMENTLIST = 59;
-  public int JJTARGUMENT = 60;
+  public int JJTDATAFACT = 15;
+  public int JJTOBJECTFACT = 16;
+  public int JJTUNTYPEDFACT = 17;
+  public int JJTSAMEAS = 18;
+  public int JJTDIFFERENTFROM = 19;
+  public int JJTCLASSEXPRESSIONCATEGORY = 20;
+  public int JJTCLASS = 21;
+  public int JJTOBJECTUNION = 22;
+  public int JJTOBJECTINTERSECTION = 23;
+  public int JJTOBJECTCOMPLEMENT = 24;
+  public int JJTOBJECTONEOF = 25;
+  public int JJTDATAEXACTCARDINALITY = 26;
+  public int JJTOBJECTEXACTCARDINALITY = 27;
+  public int JJTUNTYPEDEXACTCARDINALITY = 28;
+  public int JJTDATAMAXCARDINALITY = 29;
+  public int JJTOBJECTMAXCARDINALITY = 30;
+  public int JJTUNTYPEDMAXCARDINALITY = 31;
+  public int JJTDATAMINCARDINALITY = 32;
+  public int JJTOBJECTMINCARDINALITY = 33;
+  public int JJTUNTYPEDMINCARDINALITY = 34;
+  public int JJTCARDINALITYVALUE = 35;
+  public int JJTDATAHASVALUE = 36;
+  public int JJTOBJECTHASVALUE = 37;
+  public int JJTUNTYPEDHASVALUE = 38;
+  public int JJTDATAALLVALUESFROM = 39;
+  public int JJTOBJECTALLVALUESFROM = 40;
+  public int JJTDATASOMEVALUESFROM = 41;
+  public int JJTOBJECTSOMEVALUESFROM = 42;
+  public int JJTPROPERTY = 43;
+  public int JJTDATAPROPERTY = 44;
+  public int JJTOBJECTPROPERTY = 45;
+  public int JJTANNOTATIONPROPERTY = 46;
+  public int JJTNAMEDINDIVIDUAL = 47;
+  public int JJTVALUE = 48;
+  public int JJTLITERALVALUE = 49;
+  public int JJTOBJECTVALUE = 50;
+  public int JJTREFERENCE = 51;
+  public int JJTNAME = 52;
+  public int JJTIRI = 53;
+  public int JJTLITERAL = 54;
+  public int JJTINTEGERLITERAL = 55;
+  public int JJTFLOATLITERAL = 56;
+  public int JJTSTRINGLITERAL = 57;
+  public int JJTBOOLEANLITERAL = 58;
+  public int JJTREFERENCENOTATION = 59;
+  public int JJTBUILTINFUNCTION = 60;
+  public int JJTARGUMENTLIST = 61;
+  public int JJTARGUMENT = 62;
 
 
   public String[] jjtNodeName = {
@@ -84,7 +86,9 @@ public interface MappingMasterParserTreeConstants
     "ClassAssertion",
     "PropertyAssertion",
     "Fact",
-    "PropertyValue",
+    "DataFact",
+    "ObjectFact",
+    "UntypedFact",
     "SameAs",
     "DifferentFrom",
     "ClassExpressionCategory",
@@ -132,4 +136,4 @@ public interface MappingMasterParserTreeConstants
     "Argument",
   };
 }
-/* JavaCC - OriginalChecksum=a02ae30d3c959f71ab51b47561fd2339 (do not edit this line) */
+/* JavaCC - OriginalChecksum=c829b1814796c74390c633d19a8c49c5 (do not edit this line) */

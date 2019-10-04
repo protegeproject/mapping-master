@@ -527,15 +527,25 @@ void property_assertion() #PropertyAssertion : {}
 
 void fact() #Fact : {}
 {
-  property() property_value()
+  ( LOOKAHEAD(4) data_fact()
+    | LOOKAHEAD(4) object_fact()
+    | untyped_fact()
+  )
 }
 
-void property_value() #PropertyValue : {}
+void data_fact() #DataFact : {}
 {
-  ( iri(OWL_IRI)
-    | literal()
-    | reference(MM_UNTYPED)
-  )
+  data_property() ( literal() | reference(MM_UNTYPED) )
+}
+
+void object_fact() #ObjectFact : {}
+{
+  object_property() ( iri(OWL_NAMED_INDIVIDUAL) | reference(OWL_NAMED_INDIVIDUAL) )
+}
+
+void untyped_fact() #UntypedFact : {}
+{
+  property() reference(MM_UNTYPED)
 }
 
 void same_as() #SameAs : {}
@@ -800,9 +810,7 @@ void object_some_values_from() #ObjectSomeValuesFrom : {}
 
 void property() #Property : {}
 {
-  ( value(MM_UNTYPED)
-    | reference(localDirectives.getPropertyType())
-  )
+  reference(localDirectives.getPropertyType())
 }
 
 void data_property() #DataProperty : {}

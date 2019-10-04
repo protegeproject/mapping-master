@@ -15,6 +15,7 @@ import org.mm.parser.node.ASTClassExpressionCategory;
 import org.mm.parser.node.ASTClassFrame;
 import org.mm.parser.node.ASTDataAllValuesFrom;
 import org.mm.parser.node.ASTDataExactCardinality;
+import org.mm.parser.node.ASTDataFact;
 import org.mm.parser.node.ASTDataHasValue;
 import org.mm.parser.node.ASTDataMaxCardinality;
 import org.mm.parser.node.ASTDataMinCardinality;
@@ -35,6 +36,7 @@ import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTObjectAllValuesFrom;
 import org.mm.parser.node.ASTObjectComplement;
 import org.mm.parser.node.ASTObjectExactCardinality;
+import org.mm.parser.node.ASTObjectFact;
 import org.mm.parser.node.ASTObjectHasValue;
 import org.mm.parser.node.ASTObjectIntersection;
 import org.mm.parser.node.ASTObjectMaxCardinality;
@@ -46,7 +48,6 @@ import org.mm.parser.node.ASTObjectUnion;
 import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
-import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
 import org.mm.parser.node.ASTRestrictionCategory;
@@ -57,6 +58,7 @@ import org.mm.parser.node.ASTStringLiteral;
 import org.mm.parser.node.ASTSubclassOf;
 import org.mm.parser.node.ASTTransformationRule;
 import org.mm.parser.node.ASTUntypedExactCardinality;
+import org.mm.parser.node.ASTUntypedFact;
 import org.mm.parser.node.ASTUntypedHasValue;
 import org.mm.parser.node.ASTUntypedMaxCardinality;
 import org.mm.parser.node.ASTUntypedMinCardinality;
@@ -207,6 +209,21 @@ public class NodeVisitorAdapter implements NodeVisitor {
    }
 
    @Override
+   public void visit(ASTDataFact node) {
+      handleDefault(node);
+   }
+
+   @Override
+   public void visit(ASTObjectFact node) {
+      handleDefault(node);
+   }
+
+   @Override
+   public void visit(ASTUntypedFact node) {
+      handleDefault(node);
+   }
+
+   @Override
    public void visit(ASTFloatLiteral node) {
       handleDefault(node);
    }
@@ -318,11 +335,6 @@ public class NodeVisitorAdapter implements NodeVisitor {
 
    @Override
    public void visit(ASTPropertyAssertion node) {
-      handleDefault(node);
-   }
-
-   @Override
-   public void visit(ASTPropertyValue node) {
       handleDefault(node);
    }
 
