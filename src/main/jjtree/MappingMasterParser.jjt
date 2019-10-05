@@ -717,25 +717,19 @@ void cardinality_value() #CardinalityValue : {}
 
 void has_value() : {}
 {
-  ( LOOKAHEAD(4) data_has_value()
-    | LOOKAHEAD(4) object_has_value()
+  ( property_has_value()
     | referenced_has_value()
   )
 }
 
-void data_has_value() #DataHasValue : {}
+void property_has_value() #PropertyHasValue : {}
 {
-  data_property() <VALUE> literal_value()
-}
-
-void object_has_value() #ObjectHasValue : {}
-{
-  object_property() <VALUE> object_value()
+  property() <VALUE> any_value()
 }
 
 void referenced_has_value() #ReferencedHasValue : {}
 {
-  referenced_property() <VALUE> reference(MM_UNTYPED)
+  referenced_property() <VALUE> any_value()
 }
 
 void all_values_from() : {}
@@ -849,26 +843,17 @@ void named_individual() #NamedIndividual : {}
 // Value Category
 //------------------------------------------------------------------------------------------
 
+void any_value() #AnyValue : {}
+{
+  ( value(MM_UNTYPED)    | reference(MM_UNTYPED)
+  )
+}
+
 void value(int type) #Value : {}
 {
   ( name(type)
     | iri(type)
     | literal()
-  )
-}
-
-void literal_value() #LiteralValue : {}
-{
-  ( reference(OWL_LITERAL)
-    | literal()
-  )
-}
-
-void object_value() #ObjectValue() : {}
-{
-  ( reference(OWL_NAMED_INDIVIDUAL)
-    | name(OWL_NAMED_INDIVIDUAL)
-    | iri(OWL_NAMED_INDIVIDUAL)
   )
 }
 

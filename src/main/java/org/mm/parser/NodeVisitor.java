@@ -4,6 +4,7 @@ import org.mm.parser.node.ASTAnnotation;
 import org.mm.parser.node.ASTAnnotationAssertion;
 import org.mm.parser.node.ASTAnnotationProperty;
 import org.mm.parser.node.ASTAnnotationValue;
+import org.mm.parser.node.ASTAnyValue;
 import org.mm.parser.node.ASTArgument;
 import org.mm.parser.node.ASTBooleanLiteral;
 import org.mm.parser.node.ASTBuiltInFunction;
@@ -15,7 +16,6 @@ import org.mm.parser.node.ASTClassExpressionCategory;
 import org.mm.parser.node.ASTClassExpressionFiller;
 import org.mm.parser.node.ASTClassFrame;
 import org.mm.parser.node.ASTDataAllValuesFrom;
-import org.mm.parser.node.ASTDataHasValue;
 import org.mm.parser.node.ASTDataProperty;
 import org.mm.parser.node.ASTDataSomeValuesFrom;
 import org.mm.parser.node.ASTDatatype;
@@ -29,22 +29,20 @@ import org.mm.parser.node.ASTIndividualFrame;
 import org.mm.parser.node.ASTIntegerLiteral;
 import org.mm.parser.node.ASTIri;
 import org.mm.parser.node.ASTLiteral;
-import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTName;
 import org.mm.parser.node.ASTNamedIndividual;
 import org.mm.parser.node.ASTObjectAllValuesFrom;
 import org.mm.parser.node.ASTObjectComplement;
-import org.mm.parser.node.ASTObjectHasValue;
 import org.mm.parser.node.ASTObjectIntersection;
 import org.mm.parser.node.ASTObjectOneOf;
 import org.mm.parser.node.ASTObjectProperty;
 import org.mm.parser.node.ASTObjectSomeValuesFrom;
 import org.mm.parser.node.ASTObjectUnion;
-import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTProperty;
 import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTPropertyExactCardinality;
 import org.mm.parser.node.ASTPropertyFact;
+import org.mm.parser.node.ASTPropertyHasValue;
 import org.mm.parser.node.ASTPropertyMaxCardinality;
 import org.mm.parser.node.ASTPropertyMinCardinality;
 import org.mm.parser.node.ASTPropertyValue;
@@ -99,8 +97,6 @@ public interface NodeVisitor {
 
    void visit(ASTDataAllValuesFrom node);
 
-   void visit(ASTDataHasValue node);
-
    void visit(ASTCardinalityValue node);
 
    void visit(ASTDataProperty node);
@@ -131,7 +127,7 @@ public interface NodeVisitor {
 
    void visit(ASTLiteral node);
 
-   void visit(ASTLiteralValue node);
+   void visit(ASTAnyValue node);
 
    void visit(ASTName node);
 
@@ -147,7 +143,7 @@ public interface NodeVisitor {
 
    void visit(ASTFiller node);
 
-   void visit(ASTObjectHasValue node);
+   void visit(ASTPropertyHasValue node);
 
    void visit(ASTReferencedHasValue node);
 
@@ -168,8 +164,6 @@ public interface NodeVisitor {
    void visit(ASTObjectSomeValuesFrom node);
 
    void visit(ASTObjectUnion node);
-
-   void visit(ASTObjectValue node);
 
    void visit(ASTReferencedProperty node);
 

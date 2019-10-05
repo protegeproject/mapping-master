@@ -13,6 +13,7 @@ import org.mm.parser.NodeType;
 import org.mm.parser.NodeVisitorAdapter;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTAnnotationValue;
+import org.mm.parser.node.ASTAnyValue;
 import org.mm.parser.node.ASTBooleanLiteral;
 import org.mm.parser.node.ASTBuiltInFunction;
 import org.mm.parser.node.ASTCardinalityValue;
@@ -22,9 +23,7 @@ import org.mm.parser.node.ASTFloatLiteral;
 import org.mm.parser.node.ASTIntegerLiteral;
 import org.mm.parser.node.ASTIri;
 import org.mm.parser.node.ASTLiteral;
-import org.mm.parser.node.ASTLiteralValue;
 import org.mm.parser.node.ASTName;
-import org.mm.parser.node.ASTObjectValue;
 import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
@@ -58,6 +57,12 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    }
 
    @Override
+   public void visit(ASTAnyValue valueNode) {
+      Node valueTypeNode = ParserUtils.getChild(valueNode);
+      valueTypeNode.accept(this);
+   }
+
+   @Override
    public void visit(ASTValue valueNode) {
       Node valueTypeNode = ParserUtils.getChild(valueNode);
       valueTypeNode.accept(this);
@@ -71,18 +76,6 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
 
    @Override
    public void visit(ASTCardinalityValue valueNode) {
-      Node valueTypeNode = ParserUtils.getChild(valueNode);
-      valueTypeNode.accept(this);
-   }
-
-   @Override
-   public void visit(ASTLiteralValue valueNode) {
-      Node valueTypeNode = ParserUtils.getChild(valueNode);
-      valueTypeNode.accept(this);
-   }
-
-   @Override
-   public void visit(ASTObjectValue valueNode) {
       Node valueTypeNode = ParserUtils.getChild(valueNode);
       valueTypeNode.accept(this);
    }
