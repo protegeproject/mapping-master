@@ -57,6 +57,6 @@ public class Workbook {
 
    public Optional<String> getCellValue(CellAddress cellAddress) {
       final Sheet sheet = getSheet(cellAddress.getSheetName());
-      return sheet.getValueFromCell(cellAddress.getColumnIndex(), cellAddress.getRowIndex());
+      return sheet.getValueFromCell(cellAddress.getColumnNumber(), cellAddress.getRowNumber());
    }
 }

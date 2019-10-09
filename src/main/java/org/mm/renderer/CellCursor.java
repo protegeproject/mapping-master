@@ -20,7 +20,7 @@ public class CellCursor {
    }
 
    public static CellCursor getDefaultCursor() {
-      return new CellCursor("Sheet1", 0, 0);
+      return new CellCursor("Sheet1", 1, 1);
    }
 
    /**
@@ -33,18 +33,18 @@ public class CellCursor {
    }
 
    /**
-    * Returns the column position (0-based ordering).
+    * Returns the column position (1-based ordering).
     * 
-    * @return A number representing the column index position.
+    * @return A number representing the physical column position in a spreadsheet.
     */
    public int getColumn() {
       return column;
    }
 
    /**
-    * Returns the row position (0-based ordering).
+    * Returns the row position (1-based ordering).
     * 
-    * @return A number representing the column index position.
+    * @return A number representing the physical row position in a spreadsheet.
     */
    public int getRow() {
       return row;

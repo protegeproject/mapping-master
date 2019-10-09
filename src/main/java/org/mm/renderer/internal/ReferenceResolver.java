@@ -56,62 +56,62 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       int option = directives.getShiftDirection();
       switch (option) {
          case MM_NO_SHIFT: return EMPTY_CELL_VALUE_STRING;
-         case MM_SHIFT_UP: return processShiftingCellUp(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-         case MM_SHIFT_LEFT: return processShiftingCellLeft(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-         case MM_SHIFT_DOWN: return processShiftingCellDown(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
-         case MM_SHIFT_RIGHT: return processShiftingCellRight(sheet, cellAddress.getColumnIndex(), cellAddress.getRowIndex());
+         case MM_SHIFT_UP: return processShiftingCellUp(sheet, cellAddress.getColumnNumber(), cellAddress.getRowNumber());
+         case MM_SHIFT_LEFT: return processShiftingCellLeft(sheet, cellAddress.getColumnNumber(), cellAddress.getRowNumber());
+         case MM_SHIFT_DOWN: return processShiftingCellDown(sheet, cellAddress.getColumnNumber(), cellAddress.getRowNumber());
+         case MM_SHIFT_RIGHT: return processShiftingCellRight(sheet, cellAddress.getColumnNumber(), cellAddress.getRowNumber());
          default: return EMPTY_CELL_VALUE_STRING;
       }
    }
 
-   private String processShiftingCellUp(Sheet sheet, int columnIndex, int rowIndex) {
-      final int topMostRowIndex = 0;
-      int currentRowIndex = rowIndex;
-      while (currentRowIndex >= topMostRowIndex) {
-         Optional<String> cellValue = sheet.getValueFromCell(columnIndex, currentRowIndex);
+   private String processShiftingCellUp(Sheet sheet, int column, int row) {
+      final int topMostRow = 1;
+      int currentRow = row;
+      while (currentRow >= topMostRow) {
+         Optional<String> cellValue = sheet.getValueFromCell(column, currentRow);
          if (cellValue.isPresent()) {
             return cellValue.get();
          }
-         currentRowIndex--; // move 1 row up
+         currentRow--; // move 1 row up
       }
       return EMPTY_CELL_VALUE_STRING;
    }
 
-   private String processShiftingCellLeft(Sheet sheet, int columnIndex, int rowIndex) {
-      final int leftMostColumnIndex = 0;
-      int currentColumnIndex = columnIndex;
-      while (currentColumnIndex >= leftMostColumnIndex) {
-         Optional<String> cellValue = sheet.getValueFromCell(currentColumnIndex, rowIndex);
+   private String processShiftingCellLeft(Sheet sheet, int column, int row) {
+      final int leftMostColumn = 0;
+      int currentColumn = column;
+      while (currentColumn >= leftMostColumn) {
+         Optional<String> cellValue = sheet.getValueFromCell(currentColumn, row);
          if (cellValue.isPresent()) {
             return cellValue.get();
          }
-         currentColumnIndex--; // move 1 column left
+         currentColumn--; // move 1 column left
       }
       return EMPTY_CELL_VALUE_STRING;
    }
 
-   private String processShiftingCellDown(Sheet sheet, int columnIndex, int rowIndex) {
-      final int bottomMostRowIndex = sheet.getEndRowIndex();
-      int currentRowIndex = rowIndex;
-      while (currentRowIndex <= bottomMostRowIndex) {
-         Optional<String> cellValue = sheet.getValueFromCell(columnIndex, currentRowIndex);
+   private String processShiftingCellDown(Sheet sheet, int column, int row) {
+      final int bottomMostRow = sheet.getEndRowNumber();
+      int currentRow = row;
+      while (currentRow <= bottomMostRow) {
+         Optional<String> cellValue = sheet.getValueFromCell(column, currentRow);
          if (cellValue.isPresent()) {
             return cellValue.get();
          }
-         currentRowIndex++; // move 1 row down
+         currentRow++; // move 1 row down
       }
       return EMPTY_CELL_VALUE_STRING;
    }
 
-   private String processShiftingCellRight(Sheet sheet, int columnIndex, int rowIndex) {
-      final int rightMostColumn = sheet.getEndColumnIndex();
-      int currentColumnIndex = columnIndex;
-      while (currentColumnIndex <= rightMostColumn) {
-         Optional<String> cellValue = sheet.getValueFromCell(currentColumnIndex, rowIndex);
+   private String processShiftingCellRight(Sheet sheet, int column, int row) {
+      final int rightMostColumn = sheet.getEndColumnNumber();
+      int currentColumn = column;
+      while (currentColumn <= rightMostColumn) {
+         Optional<String> cellValue = sheet.getValueFromCell(currentColumn, row);
          if (cellValue.isPresent()) {
             return cellValue.get();
          }
-         currentColumnIndex++; // move 1 column right
+         currentColumn++; // move 1 column right
       }
       return EMPTY_CELL_VALUE_STRING;
    }

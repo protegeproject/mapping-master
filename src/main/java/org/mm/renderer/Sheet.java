@@ -29,62 +29,62 @@ public class Sheet {
       return poiSheet.getSheetName();
    }
 
-   public int getStartColumnIndex() {
-      return 0;
+   public int getStartColumnNumber() { // 1-based index
+      return 1;
    }
 
-   public int getEndColumnIndex() {
-      int endColumnIndex = 0;
-      for (int rowIndex = 0; rowIndex <= getEndRowIndex(); rowIndex++) {
-         Row poiRow = poiSheet.getRow(rowIndex);
+   public int getEndColumnNumber() { // 1-based index
+      int endColumn = 1;
+      for (int row = getStartRowNumber(); row <= getEndRowNumber(); row++) {
+         Row poiRow = poiSheet.getRow(row-1);
          if (poiRow != null) {
-            int currentEndColumnIndex = poiRow.getLastCellNum() - 1;
-            if (currentEndColumnIndex > endColumnIndex) {
-               endColumnIndex = currentEndColumnIndex;
+            int currentEndColumn = poiRow.getLastCellNum();
+            if (currentEndColumn > endColumn) {
+               endColumn = currentEndColumn;
             }
          }
       }
-      return endColumnIndex;
+      return endColumn;
    }
 
-   public int getStartRowIndex() {
-      return 0;
+   public int getStartRowNumber() { // 1-based index
+      return 1;
    }
 
-   public int getEndRowIndex() {
-      return poiSheet.getLastRowNum();
+   public int getEndRowNumber() { // 1-based index
+      return poiSheet.getLastRowNum() + 1;
    }
 
-   public void addValueToCell(int column, int row, boolean value) {
-      Row poiRow = poiSheet.getRow(row);
+   public void addValueToCell(int column, int row, boolean value) { // 1-based index
+      Row poiRow = poiSheet.getRow(row-1);
       if (poiRow == null) {
-         poiRow = poiSheet.createRow(row);
+         poiRow = poiSheet.createRow(row-1);
       }
-      poiRow.createCell(column).setCellValue(value);
+      poiRow.createCell(column-1).setCellValue(value);
    }
 
-   public void addValueToCell(int column, int row, double value) {
-      Row poiRow = poiSheet.getRow(row);
+   public void addValueToCell(int column, int row, double value) { // 1-based index
+      Row poiRow = poiSheet.getRow(row-1);
       if (poiRow == null) {
-         poiRow = poiSheet.createRow(row);
+         poiRow = poiSheet.createRow(row-1);
       }
-      poiRow.createCell(column).setCellValue(value);
+      poiRow.createCell(column-1).setCellValue(value);
    }
 
-   public void addValueToCell(int column, int row, String value) {
-      Row poiRow = poiSheet.getRow(row);
+   public void addValueToCell(int column, int row, String value) { // 1-based index
+      Row poiRow = poiSheet.getRow(row-1);
       if (poiRow == null) {
-         poiRow = poiSheet.createRow(row);
+         poiRow = poiSheet.createRow(row-1);
       }
-      poiRow.createCell(column).setCellValue(value);
+      poiRow.createCell(column-1).setCellValue(value);
    }
 
-   public void addValueToCell(int column, int row, Date value) {
-      Row poiRow = poiSheet.getRow(row);
+   public void addValueToCell(int column, int row, Date value) { // 1-based index
+      Row poiRow = poiSheet.getRow(row-1);
       if (poiRow == null) {
-         poiRow = poiSheet.createRow(row);
+         poiRow = poiSheet.createRow(row-1);
       }
-      Cell cell = poiRow.createCell(column);
+      Cell cell = poiRow.createCell(column-1);
       cell.setCellValue(value);
       setValueAsDate(cell);
    }
@@ -96,11 +96,11 @@ public class Sheet {
       cell.setCellStyle(cellStyle);
    }
 
-   public Optional<String> getValueFromCell(int column, int row) {
-      final Row poiRow = poiSheet.getRow(row);
+   public Optional<String> getValueFromCell(int column, int row) { // 1-based index
+      final Row poiRow = poiSheet.getRow(row-1);
       Optional<String> value = Optional.empty();
       if (poiRow != null) {
-         final Cell cell = poiRow.getCell(column);
+         final Cell cell = poiRow.getCell(column-1);
          if (cell != null) {
             final String stringValue = getCellValue(cell);
             value = Optional.of(stringValue);

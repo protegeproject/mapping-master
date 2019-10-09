@@ -19,35 +19,35 @@ public abstract class AbstractRendererTest {
       return workbook;
    }
 
-   protected void createCell(String sheetName, int columnNumber, int rowNumber, boolean value) {
+   protected void createCell(String sheetName, int columnNumber, int rowNumber, boolean value) { // 1-based index
       Sheet sheet = workbook.getSheet(sheetName);
       if (sheet == null) {
          sheet = workbook.createSheet(sheetName);
       }
-      sheet.addValueToCell(columnNumber-1, rowNumber-1, value);
+      sheet.addValueToCell(columnNumber, rowNumber, value);
    }
 
-   protected void createCell(String sheetName, int columnNumber, int rowNumber, double value) {
+   protected void createCell(String sheetName, int columnNumber, int rowNumber, double value) { // 1-based index
       Sheet sheet = workbook.getSheet(sheetName);
       if (sheet == null) {
          sheet = workbook.createSheet(sheetName);
       }
-      sheet.addValueToCell(columnNumber-1, rowNumber-1, value);
+      sheet.addValueToCell(columnNumber, rowNumber, value);
    }
 
-   protected void createCell(String sheetName, int columnNumber, int rowNumber, String value) {
+   protected void createCell(String sheetName, int columnNumber, int rowNumber, String value) { // 1-based index
       Sheet sheet = workbook.getSheet(sheetName);
       if (sheet == null) {
          sheet = workbook.createSheet(sheetName);
       }
-      sheet.addValueToCell(columnNumber-1, rowNumber-1, value);
+      sheet.addValueToCell(columnNumber, rowNumber, value);
    }
 
-   protected void createCell(String sheetName, int columnNumber, int rowNumber, Date value) {
+   protected void createCell(String sheetName, int columnNumber, int rowNumber, Date value) { // 1-based index
       Sheet sheet = workbook.getSheet(sheetName);
       if (sheet == null) {
          sheet = workbook.createSheet(sheetName);
       }
-      sheet.addValueToCell(columnNumber-1, rowNumber-1, value);
+      sheet.addValueToCell(columnNumber, rowNumber, value);
    }
 }

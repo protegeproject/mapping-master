@@ -88,10 +88,10 @@ public abstract class AbstractOwlRendererTest extends AbstractRendererTest {
       final Sheet sheet = getWorkbook().getSheet(0);
       return new RenderingContext(
             sheet.getSheetName(),
-            sheet.getStartColumnIndex(),
-            sheet.getEndColumnIndex(),
-            sheet.getStartRowIndex(),
-            sheet.getEndRowIndex());
+            sheet.getStartColumnNumber(),
+            sheet.getEndColumnNumber(),
+            sheet.getStartRowNumber(),
+            sheet.getEndRowNumber());
    }
 
    private OwlEntityResolver getEntityResolver() {
