@@ -27,6 +27,9 @@ public class Vocabulary {
 
    public static final OWLClass CAR = Class(IRI(ONTOLOGY_ID, "Car"));
    public static final OWLClass MOTOR = Class(IRI(ONTOLOGY_ID, "Motor"));
+   public static final OWLClass GASOLINE = Class(IRI(ONTOLOGY_ID, "Gasoline"));
+   public static final OWLClass DIESEL = Class(IRI(ONTOLOGY_ID, "Diesel"));
+   public static final OWLClass BATTERY = Class(IRI(ONTOLOGY_ID, "Battery"));
    public static final OWLClass PERSON = Class(IRI(ONTOLOGY_ID, "Person"));
    public static final OWLClass SHEET1_A1_UUID = Class(IRI(ONTOLOGY_ID, "71b3e3df-1b0e-3f34-869e-f25398971852"));
    public static final OWLClass STUDENT = Class(IRI(ONTOLOGY_ID, "Student"));
@@ -40,6 +43,8 @@ public class Vocabulary {
    public static final OWLClass CAR_UPPERCASE = Class(IRI(ONTOLOGY_ID, "CAR"));
 
    public static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI(ONTOLOGY_ID, "hasEngine"));
+   public static final OWLObjectProperty USE_FUEL = ObjectProperty(IRI(ONTOLOGY_ID, "useFuel"));
+   public static final OWLObjectProperty USE_ELECTRICITY = ObjectProperty(IRI(ONTOLOGY_ID, "useElectricity"));
    public static final OWLObjectProperty HAS_PARENT = ObjectProperty(IRI(ONTOLOGY_ID, "hasParent"));
    public static final OWLObjectProperty HAS_GENDER = ObjectProperty(IRI(ONTOLOGY_ID, "hasGender"));
 
@@ -47,6 +52,7 @@ public class Vocabulary {
    public static final OWLDataProperty HAS_ALIAS = DataProperty(IRI(ONTOLOGY_ID, "hasAlias"));
    public static final OWLDataProperty HAS_AGE = DataProperty(IRI(ONTOLOGY_ID, "hasAge"));
    public static final OWLDataProperty HAS_VALUE = DataProperty(IRI(ONTOLOGY_ID, "hasValue"));
+   public static final OWLDataProperty NUMBER_OF_CYLINDER = DataProperty(IRI(ONTOLOGY_ID, "numberOfCylinder"));
 
    public static final OWLAnnotationProperty FOAF_DEPICTION = AnnotationProperty(IRI(Namespaces.FOAF + "depiction"));
    public static final OWLAnnotationProperty RDFS_LABEL = AnnotationProperty(IRI(Namespaces.RDFS + "label"));

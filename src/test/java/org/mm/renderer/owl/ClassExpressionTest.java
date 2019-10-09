@@ -10,16 +10,18 @@ import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataM
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataMinCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Literal;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectAllValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectExactCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectHasValue;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectIntersectionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectMaxCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectMinCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectUnionOf;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 import java.util.Set;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
@@ -65,6 +67,33 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
             SubClassOf(ObjectExactCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+   }
+
+   @Test
+   public void shouldRenderObjectExactCardinality_UsingClassExpression() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "hasEngine");
+      createCell("Sheet1", 3, 1, "1");
+      createCell("Sheet1", 4, 1, "useFuel");
+      createCell("Sheet1", 4, 2, "Gasoline");
+      createCell("Sheet1", 4, 3, "Diesel");
+      createCell("Sheet1", 5, 1, "useElectricity");
+      createCell("Sheet1", 5, 2, "Battery");
+      createCell("Sheet1", 6, 1, "numberOfCylinder");
+      createCell("Sheet1", 6, 2, "6");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1(ObjectProperty) exactly @C1 "
+            + "((((@D1(ObjectProperty) some (@D2 or @D3) or @E1(ObjectProperty) some @E2)) and @F1 value @F2(xsd:integer)))");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.CAR),
+            SubClassOf(ObjectExactCardinality(1, Vocabulary.HAS_ENGINE, 
+                  ObjectIntersectionOf(ObjectUnionOf(
+                        ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
+                        ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
    }
 
    @Test
@@ -129,6 +158,33 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
    }
 
    @Test
+   public void shouldRenderObjectMinCardinality_UsingClassExpression() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "hasEngine");
+      createCell("Sheet1", 3, 1, "1");
+      createCell("Sheet1", 4, 1, "useFuel");
+      createCell("Sheet1", 4, 2, "Gasoline");
+      createCell("Sheet1", 4, 3, "Diesel");
+      createCell("Sheet1", 5, 1, "useElectricity");
+      createCell("Sheet1", 5, 2, "Battery");
+      createCell("Sheet1", 6, 1, "numberOfCylinder");
+      createCell("Sheet1", 6, 2, "6");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1(ObjectProperty) min @C1 "
+            + "((((@D1(ObjectProperty) some (@D2 or @D3) or @E1(ObjectProperty) some @E2)) and @F1 value @F2(xsd:integer)))");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.CAR),
+            SubClassOf(ObjectMinCardinality(1, Vocabulary.HAS_ENGINE, 
+                  ObjectIntersectionOf(ObjectUnionOf(
+                        ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
+                        ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
+   }
+
+   @Test
    public void shouldRenderDatatMinCardinality() {
       // Arrange
       declareEntity(Vocabulary.HAS_ALIAS);
@@ -187,6 +243,33 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
             SubClassOf(ObjectMaxCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+   }
+
+   @Test
+   public void shouldRenderObjectMaxCardinality_UsingClassExpression() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "hasEngine");
+      createCell("Sheet1", 3, 1, "1");
+      createCell("Sheet1", 4, 1, "useFuel");
+      createCell("Sheet1", 4, 2, "Gasoline");
+      createCell("Sheet1", 4, 3, "Diesel");
+      createCell("Sheet1", 5, 1, "useElectricity");
+      createCell("Sheet1", 5, 2, "Battery");
+      createCell("Sheet1", 6, 1, "numberOfCylinder");
+      createCell("Sheet1", 6, 2, "6");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1(ObjectProperty) max @C1 "
+            + "((((@D1(ObjectProperty) some (@D2 or @D3) or @E1(ObjectProperty) some @E2)) and @F1 value @F2(xsd:integer)))");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.CAR),
+            SubClassOf(ObjectMaxCardinality(1, Vocabulary.HAS_ENGINE, 
+                  ObjectIntersectionOf(ObjectUnionOf(
+                        ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
+                        ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
    }
 
    @Test
@@ -295,13 +378,70 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
    }
 
    @Test
+   public void shouldRenderObjectSomeValues_UsingReferences() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "hasEngine");
+      createCell("Sheet1", 3, 1, "Motor");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1(ObjectProperty) some @C1");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.CAR),
+            SubClassOf(ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+   }
+
+   @Test
+   public void shouldRenderObjectSomeValues_UsingClassExpression() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "hasEngine");
+      createCell("Sheet1", 3, 1, "1");
+      createCell("Sheet1", 4, 1, "useFuel");
+      createCell("Sheet1", 4, 2, "Gasoline");
+      createCell("Sheet1", 4, 3, "Diesel");
+      createCell("Sheet1", 5, 1, "useElectricity");
+      createCell("Sheet1", 5, 2, "Battery");
+      createCell("Sheet1", 6, 1, "numberOfCylinder");
+      createCell("Sheet1", 6, 2, "6");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1(ObjectProperty) some "
+            + "((((@D1(ObjectProperty) some (@D2 or @D3) or @E1(ObjectProperty) some @E2)) and @F1 value @F2(xsd:integer)))");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.CAR),
+            SubClassOf(ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, 
+                  ObjectIntersectionOf(ObjectUnionOf(
+                        ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
+                        ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
+   }
+
+   @Test
    public void shouldRenderDataSomeValues() {
       // Arrange
       declareEntity(Vocabulary.HAS_ALIAS);
       createCell("Sheet1", 1, 1, "Person");
-      createCell("Sheet1", 2, 1, "Nick");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: hasAlias some xsd:string");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.PERSON),
+            SubClassOf(DataSomeValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+   }
+
+   @Test
+   public void shouldRenderDataSomeValues_UsingReferences() {
+      // Arrange
+      declareEntity(Vocabulary.HAS_ALIAS);
+      createCell("Sheet1", 1, 1, "Person");
+      createCell("Sheet1", 2, 1, "hasAlias");
+      createCell("Sheet1", 3, 1, "xsd:string");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1 some @C1");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
@@ -325,13 +465,70 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
    }
 
    @Test
+   public void shouldRenderObjectAllValues_UsingReferences() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "hasEngine");
+      createCell("Sheet1", 3, 1, "Motor");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1(ObjectProperty) only @C1");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.CAR),
+            SubClassOf(ObjectAllValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+   }
+
+   @Test
+   public void shouldRenderObjectAllValues_UsingClassExpression() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "Car");
+      createCell("Sheet1", 2, 1, "hasEngine");
+      createCell("Sheet1", 3, 1, "1");
+      createCell("Sheet1", 4, 1, "useFuel");
+      createCell("Sheet1", 4, 2, "Gasoline");
+      createCell("Sheet1", 4, 3, "Diesel");
+      createCell("Sheet1", 5, 1, "useElectricity");
+      createCell("Sheet1", 5, 2, "Battery");
+      createCell("Sheet1", 6, 1, "numberOfCylinder");
+      createCell("Sheet1", 6, 2, "6");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1(ObjectProperty) only "
+            + "((((@D1(ObjectProperty) some (@D2 or @D3) or @E1(ObjectProperty) some @E2)) and @F1 value @F2(xsd:integer)))");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.CAR),
+            SubClassOf(ObjectAllValuesFrom(Vocabulary.HAS_ENGINE, 
+                  ObjectIntersectionOf(ObjectUnionOf(
+                        ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
+                        ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
+   }
+
+   @Test
    public void shouldRenderDataAllValues() {
       // Arrange
       declareEntity(Vocabulary.HAS_ALIAS);
       createCell("Sheet1", 1, 1, "Person");
-      createCell("Sheet1", 2, 1, "Nick");
       // Act
       Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: hasAlias only xsd:string");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.PERSON),
+            SubClassOf(DataAllValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+   }
+
+   @Test
+   public void shouldRenderDataAllValues_UsingReferences() {
+      // Arrange
+      declareEntity(Vocabulary.HAS_ALIAS);
+      createCell("Sheet1", 1, 1, "Person");
+      createCell("Sheet1", 2, 1, "hasAlias");
+      createCell("Sheet1", 3, 1, "xsd:string");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @A1 SubClassOf: @B1 only @C1");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(

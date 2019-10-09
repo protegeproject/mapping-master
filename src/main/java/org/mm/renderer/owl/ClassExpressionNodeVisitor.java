@@ -98,10 +98,12 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
             classExpressions.add(ce);
          }
       }
-      if (classExpressions.size() > 1) {
+      int expressionSize = classExpressions.size();
+      if (expressionSize == 1){
+         classExpression = classExpressions.stream().findFirst().get();
+      } else if (expressionSize > 1) {
          classExpression = owlFactory.createOWLObjectUnionOf(classExpressions);
       }
-      classExpression = owlFactory.createOWLObjectUnionOf(classExpressions);
    }
 
    @Override
@@ -122,10 +124,12 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
             classExpressions.add(ce);
          }
       }
-      if (classExpressions.size() > 1) {
+      int expressionSize = classExpressions.size();
+      if (expressionSize == 1){
+         classExpression = classExpressions.stream().findFirst().get();
+      } else if (expressionSize > 1) {
          classExpression = owlFactory.createOWLObjectIntersectionOf(classExpressions);
       }
-      classExpression = owlFactory.createOWLObjectIntersectionOf(classExpressions);
    }
 
    @Override
