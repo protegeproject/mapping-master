@@ -11,28 +11,28 @@ import org.mm.parser.node.ASTAnyValue;
 import org.mm.parser.node.ASTCardinalityValue;
 import org.mm.parser.node.ASTClass;
 import org.mm.parser.node.ASTClassExpressionCategory;
-import org.mm.parser.node.ASTDataAllValuesFrom;
 import org.mm.parser.node.ASTDataProperty;
-import org.mm.parser.node.ASTDataSomeValuesFrom;
 import org.mm.parser.node.ASTFiller;
 import org.mm.parser.node.ASTNamedIndividual;
-import org.mm.parser.node.ASTObjectAllValuesFrom;
 import org.mm.parser.node.ASTObjectComplement;
 import org.mm.parser.node.ASTObjectIntersection;
 import org.mm.parser.node.ASTObjectOneOf;
 import org.mm.parser.node.ASTObjectProperty;
-import org.mm.parser.node.ASTObjectSomeValuesFrom;
 import org.mm.parser.node.ASTObjectUnion;
 import org.mm.parser.node.ASTProperty;
+import org.mm.parser.node.ASTPropertyAllValuesFrom;
 import org.mm.parser.node.ASTPropertyExactCardinality;
 import org.mm.parser.node.ASTPropertyHasValue;
 import org.mm.parser.node.ASTPropertyMaxCardinality;
 import org.mm.parser.node.ASTPropertyMinCardinality;
+import org.mm.parser.node.ASTPropertySomeValuesFrom;
+import org.mm.parser.node.ASTReferencedAllValuesFrom;
 import org.mm.parser.node.ASTReferencedExactCardinality;
 import org.mm.parser.node.ASTReferencedHasValue;
 import org.mm.parser.node.ASTReferencedMaxCardinality;
 import org.mm.parser.node.ASTReferencedMinCardinality;
 import org.mm.parser.node.ASTReferencedProperty;
+import org.mm.parser.node.ASTReferencedSomeValuesFrom;
 import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.CellCursor;
@@ -410,38 +410,58 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
    }
 
    @Override
-   public void visit(ASTDataAllValuesFrom node) {
-      OWLDataProperty property = getOWLDataProperty(node);
+   public void visit(ASTPropertySomeValuesFrom node) {
+      OWLEntity property = getDeclaredProperty(node);
       if (property != null) {
-         OWLDatatype datatype = DatatypeUtils.getOWLDatatype(node.getDatatype());
-         classExpression = owlFactory.createOWLDataAllValuesFrom(property, datatype);
+         if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
+            classExpression = owlFactory.createOWLDataSomeValuesFrom(property.asOWLDataProperty(), datatype);
+         } else if (property.isOWLObjectProperty()) {
+            OWLClassExpression fillerExpression = getClassExpressionFiller(node);
+            classExpression = owlFactory.createOWLObjectSomeValuesFrom(property.asOWLObjectProperty(), fillerExpression);
+         }
       }
    }
 
    @Override
-   public void visit(ASTObjectAllValuesFrom node) {
-      OWLObjectProperty property = getOWLObjectProperty(node);
-      OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-      if (property != null && innerClassExpression != null) {
-         classExpression = owlFactory.createOWLObjectAllValuesFrom(property, innerClassExpression);
-      }
-   }
-
-   @Override
-   public void visit(ASTDataSomeValuesFrom node) {
-      OWLDataProperty property = getOWLDataProperty(node);
+   public void visit(ASTReferencedSomeValuesFrom node) {
+      OWLEntity property = getReferencedProperty(node);
       if (property != null) {
-         OWLDatatype datatype = DatatypeUtils.getOWLDatatype(node.getDatatype());
-         classExpression = owlFactory.createOWLDataSomeValuesFrom(property, datatype);
+         if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
+            classExpression = owlFactory.createOWLDataSomeValuesFrom(property.asOWLDataProperty(), datatype);
+         } else if (property.isOWLObjectProperty()) {
+            OWLClassExpression fillerExpression = getClassExpressionFiller(node);
+            classExpression = owlFactory.createOWLObjectSomeValuesFrom(property.asOWLObjectProperty(), fillerExpression);
+         }
       }
    }
 
    @Override
-   public void visit(ASTObjectSomeValuesFrom node) {
-      OWLObjectProperty property = getOWLObjectProperty(node);
-      OWLClassExpression innerClassExpression = getOWLClassExpression(node);
-      if (property != null && innerClassExpression != null) {
-         classExpression = owlFactory.createOWLObjectSomeValuesFrom(property, innerClassExpression);
+   public void visit(ASTPropertyAllValuesFrom node) {
+      OWLEntity property = getDeclaredProperty(node);
+      if (property != null) {
+         if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
+            classExpression = owlFactory.createOWLDataAllValuesFrom(property.asOWLDataProperty(), datatype);
+         } else if (property.isOWLObjectProperty()) {
+            OWLClassExpression fillerExpression = getClassExpressionFiller(node);
+            classExpression = owlFactory.createOWLObjectAllValuesFrom(property.asOWLObjectProperty(), fillerExpression);
+         }
+      }
+   }
+
+   @Override
+   public void visit(ASTReferencedAllValuesFrom node) {
+      OWLEntity property = getReferencedProperty(node);
+      if (property != null) {
+         if (property.isOWLDataProperty()) {
+            OWLDatatype datatype = getDatatypeFiller(node);
+            classExpression = owlFactory.createOWLDataAllValuesFrom(property.asOWLDataProperty(), datatype);
+         } else if (property.isOWLObjectProperty()) {
+            OWLClassExpression fillerExpression = getClassExpressionFiller(node);
+            classExpression = owlFactory.createOWLObjectAllValuesFrom(property.asOWLObjectProperty(), fillerExpression);
+         }
       }
    }
 

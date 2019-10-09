@@ -15,9 +15,7 @@ import org.mm.parser.node.ASTClassDeclaration;
 import org.mm.parser.node.ASTClassExpressionCategory;
 import org.mm.parser.node.ASTClassExpressionFiller;
 import org.mm.parser.node.ASTClassFrame;
-import org.mm.parser.node.ASTDataAllValuesFrom;
 import org.mm.parser.node.ASTDataProperty;
-import org.mm.parser.node.ASTDataSomeValuesFrom;
 import org.mm.parser.node.ASTDatatype;
 import org.mm.parser.node.ASTDifferentFrom;
 import org.mm.parser.node.ASTEquivalentClasses;
@@ -31,29 +29,31 @@ import org.mm.parser.node.ASTIri;
 import org.mm.parser.node.ASTLiteral;
 import org.mm.parser.node.ASTName;
 import org.mm.parser.node.ASTNamedIndividual;
-import org.mm.parser.node.ASTObjectAllValuesFrom;
 import org.mm.parser.node.ASTObjectComplement;
 import org.mm.parser.node.ASTObjectIntersection;
 import org.mm.parser.node.ASTObjectOneOf;
 import org.mm.parser.node.ASTObjectProperty;
-import org.mm.parser.node.ASTObjectSomeValuesFrom;
 import org.mm.parser.node.ASTObjectUnion;
 import org.mm.parser.node.ASTProperty;
+import org.mm.parser.node.ASTPropertyAllValuesFrom;
 import org.mm.parser.node.ASTPropertyAssertion;
 import org.mm.parser.node.ASTPropertyExactCardinality;
 import org.mm.parser.node.ASTPropertyFact;
 import org.mm.parser.node.ASTPropertyHasValue;
 import org.mm.parser.node.ASTPropertyMaxCardinality;
 import org.mm.parser.node.ASTPropertyMinCardinality;
+import org.mm.parser.node.ASTPropertySomeValuesFrom;
 import org.mm.parser.node.ASTPropertyValue;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTReferenceNotation;
+import org.mm.parser.node.ASTReferencedAllValuesFrom;
 import org.mm.parser.node.ASTReferencedExactCardinality;
 import org.mm.parser.node.ASTReferencedFact;
 import org.mm.parser.node.ASTReferencedHasValue;
 import org.mm.parser.node.ASTReferencedMaxCardinality;
 import org.mm.parser.node.ASTReferencedMinCardinality;
 import org.mm.parser.node.ASTReferencedProperty;
+import org.mm.parser.node.ASTReferencedSomeValuesFrom;
 import org.mm.parser.node.ASTRestrictionCategory;
 import org.mm.parser.node.ASTRuleExpression;
 import org.mm.parser.node.ASTSameAs;
@@ -95,13 +95,13 @@ public interface NodeVisitor {
 
    void visit(ASTClassFrame node);
 
-   void visit(ASTDataAllValuesFrom node);
+   void visit(ASTPropertyAllValuesFrom node);
 
    void visit(ASTCardinalityValue node);
 
    void visit(ASTDataProperty node);
 
-   void visit(ASTDataSomeValuesFrom node);
+   void visit(ASTPropertySomeValuesFrom node);
 
    void visit(ASTDifferentFrom node);
 
@@ -133,7 +133,7 @@ public interface NodeVisitor {
 
    void visit(ASTNamedIndividual node);
 
-   void visit(ASTObjectAllValuesFrom node);
+   void visit(ASTReferencedAllValuesFrom node);
 
    void visit(ASTObjectComplement node);
 
@@ -161,7 +161,7 @@ public interface NodeVisitor {
 
    void visit(ASTObjectProperty node);
 
-   void visit(ASTObjectSomeValuesFrom node);
+   void visit(ASTReferencedSomeValuesFrom node);
 
    void visit(ASTObjectUnion node);
 

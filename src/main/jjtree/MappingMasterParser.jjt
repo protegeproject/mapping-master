@@ -615,9 +615,9 @@ void restriction() : {}
   ( LOOKAHEAD(8) exact_cardinality()
     | LOOKAHEAD(8) max_cardinality()
     | LOOKAHEAD(8) min_cardinality()
-    | LOOKAHEAD(12) has_value()
-    | LOOKAHEAD(12) all_values_from()
-    | LOOKAHEAD(12) some_values_from()
+    | LOOKAHEAD(8) has_value()
+    | LOOKAHEAD(8) all_values_from()
+    | LOOKAHEAD(8) some_values_from()
   )
 }
 
@@ -734,48 +734,36 @@ void referenced_has_value() #ReferencedHasValue : {}
 
 void all_values_from() : {}
 {
-  ( LOOKAHEAD(3) data_all_values_from()
-    | object_all_values_from()
+  ( property_all_values_from()
+    | referenced_all_values_from()
   )
 }
 
-void data_all_values_from() #DataAllValuesFrom :
+void property_all_values_from() #PropertyAllValuesFrom : {}
 {
-  int datatype = 0;
-}
-{
-  data_property() <ONLY> datatype()
-  {
-    jjtThis.datatype = datatype;
-  }
+  property() <ONLY> filler()
 }
 
-void object_all_values_from() #ObjectAllValuesFrom : {}
+void referenced_all_values_from() #ReferencedAllValuesFrom : {}
 {
-  object_property() <ONLY> class_expression()
+  referenced_property() <ONLY> filler()
 }
 
 void some_values_from() : {}
 {
-  ( LOOKAHEAD(3) data_some_values_from()
-    | object_some_values_from()
+  ( property_some_values_from()
+    | referenced_some_values_from()
   )
 }
 
-void data_some_values_from() #DataSomeValuesFrom :
+void property_some_values_from() #PropertySomeValuesFrom : {}
 {
-  int datatype = 0;
-}
-{
-  data_property() <SOME> datatype()
-  {
-    jjtThis.datatype = datatype;
-  }
+  property() <SOME> filler()
 }
 
-void object_some_values_from() #ObjectSomeValuesFrom : {}
+void referenced_some_values_from() #ReferencedSomeValuesFrom : {}
 {
-  object_property() <SOME> class_expression()
+  referenced_property() <SOME> filler()
 }
 
 void filler() #Filler :

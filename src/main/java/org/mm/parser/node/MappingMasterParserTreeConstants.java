@@ -40,10 +40,10 @@ public interface MappingMasterParserTreeConstants
   public int JJTCARDINALITYVALUE = 32;
   public int JJTPROPERTYHASVALUE = 33;
   public int JJTREFERENCEDHASVALUE = 34;
-  public int JJTDATAALLVALUESFROM = 35;
-  public int JJTOBJECTALLVALUESFROM = 36;
-  public int JJTDATASOMEVALUESFROM = 37;
-  public int JJTOBJECTSOMEVALUESFROM = 38;
+  public int JJTPROPERTYALLVALUESFROM = 35;
+  public int JJTREFERENCEDALLVALUESFROM = 36;
+  public int JJTPROPERTYSOMEVALUESFROM = 37;
+  public int JJTREFERENCEDSOMEVALUESFROM = 38;
   public int JJTFILLER = 39;
   public int JJTCLASSEXPRESSIONFILLER = 40;
   public int JJTREFERENCEDPROPERTY = 41;
@@ -105,10 +105,10 @@ public interface MappingMasterParserTreeConstants
     "CardinalityValue",
     "PropertyHasValue",
     "ReferencedHasValue",
-    "DataAllValuesFrom",
-    "ObjectAllValuesFrom",
-    "DataSomeValuesFrom",
-    "ObjectSomeValuesFrom",
+    "PropertyAllValuesFrom",
+    "ReferencedAllValuesFrom",
+    "PropertySomeValuesFrom",
+    "ReferencedSomeValuesFrom",
     "Filler",
     "ClassExpressionFiller",
     "ReferencedProperty",
@@ -134,4 +134,4 @@ public interface MappingMasterParserTreeConstants
     "Datatype",
   };
 }
-/* JavaCC - OriginalChecksum=410332871415c8fc7effc86e823d675e (do not edit this line) */
+/* JavaCC - OriginalChecksum=b58e6892cf4c7210ffe3bfefd16eb9cb (do not edit this line) */
