@@ -6,6 +6,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    EntityDeclarationTest.class,
+   ClassExpressionTest.class,
    AssertionAxiomTest.class,
    IriEncodingDirectiveTest.class,
    EmptyCellDirectiveTest.class,
