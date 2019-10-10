@@ -37,7 +37,7 @@ public class Vocabulary {
    public static final OWLClass BMW = Class(IRI(ONTOLOGY_ID, "BMW"));
    public static final OWLClass BARBARA_PUFFINS_CAMELCASE = Class(IRI(ONTOLOGY_ID, "Barbara'sPuffinsHoney-RiceCereal-10.5ozBox"));
    public static final OWLClass BARBARA_PUFFINS_SNAKECASE = Class(IRI(ONTOLOGY_ID, "Barbara's_Puffins_Honey-Rice_Cereal_-_10.5oz_box"));
-   public static final OWLClass BARBARA_PUFFINS_UUID = Class(IRI(ONTOLOGY_ID, "ba4a8803-d1ed-3115-a491-4e257f2b490a"));
+   public static final OWLClass BARBARA_PUFFINS_UUID = Class(IRI(ONTOLOGY_ID, "dee34b3b-6646-3e80-b625-7e4a92bcc862"));
    public static final OWLClass BARBARA_PUFFINS_MD5 = Class(IRI(ONTOLOGY_ID, "290d31fea17d405a10b7a025dde55111"));
    public static final OWLClass CAR_LOWERCASE = Class(IRI(ONTOLOGY_ID, "car"));
    public static final OWLClass CAR_UPPERCASE = Class(IRI(ONTOLOGY_ID, "CAR"));

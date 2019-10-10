@@ -175,7 +175,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
                               tokenImage[datatype]));
                }
                break;
-            case MM_UNTYPED: value = getUntypedValue(cellValue, directives); break;
+            case MM_UNTYPED: value = processAnyValue(cellAddress, cellValue, directives); break;
             default: throw new RuntimeException(
                   String.format("Programming error: Unknown directive to handle reference entity type (%s)",
                         tokenImage[entityType]));
@@ -184,8 +184,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return value;
    }
 
-   private Value processClassName(CellAddress cellAddress, String cellValue,
-         ReferenceDirectives directives) {
+   private Value processClassName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
       Value className = new ClassName(localName, true);
       if (directives.useUserPrefix()) {
@@ -196,8 +195,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return className;
    }
 
-   private Value processDataPropertyName(CellAddress cellAddress, String cellValue,
-         ReferenceDirectives directives) {
+   private Value processDataPropertyName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
       Value propertyName = new DataPropertyName(localName, true);
       if (directives.useUserPrefix()) {
@@ -208,8 +206,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value processObjectPropertyName(CellAddress cellAddress, String cellValue,
-         ReferenceDirectives directives) {
+   private Value processObjectPropertyName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
       Value propertyName = new ObjectPropertyName(localName, true);
       if (directives.useUserPrefix()) {
@@ -220,8 +217,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value processAnnotationPropertyName(CellAddress cellAddress, String cellValue,
-         ReferenceDirectives directives) {
+   private Value processAnnotationPropertyName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
       Value propertyName = new AnnotationPropertyName(localName, true);
       if (directives.useUserPrefix()) {
@@ -232,8 +228,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private Value processIndividualName(CellAddress cellAddress, String cellValue,
-         ReferenceDirectives directives) {
+   private Value processIndividualName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       String localName = getLocalName(cellAddress, cellValue, directives);
       Value propertyName = new IndividualName(localName, true);
       if (directives.useUserPrefix()) {
@@ -244,31 +239,25 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       return propertyName;
    }
 
-   private String getLocalName(CellAddress cellAddress, String cellValue,
-         ReferenceDirectives directives) {
+   private String getLocalName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       int option = directives.getIriEncoding();
-      if (option == MM_CAMELCASE_ENCODE) {
-         if (directives.getEntityType() == OWL_CLASS) {
-            return NameUtils.toUpperCamel(cellValue);
-         } else {
-            return NameUtils.toLowerCamel(cellValue);
-         }
-      } else if (option == MM_SNAKECASE_ENCODE) {
-         return NameUtils.toSnakeCase(cellValue);
-      } else if (option == MM_UUID_ENCODE) {
-         String cellValueWithAddress = cellValue.concat(cellAddress.toString());
-         return NameUtils.toUUID(cellValueWithAddress);
-      } else if (option == MM_HASH_ENCODE) {
-         return NameUtils.toMD5(cellValue);
-      } else if (option == MM_NO_ENCODE) {
-         return cellValue;
+      switch (option) {
+         case MM_CAMELCASE_ENCODE: return (directives.getEntityType() == OWL_CLASS) ? NameUtils.toUpperCamel(cellValue) : NameUtils.toLowerCamel(cellValue);
+         case MM_SNAKECASE_ENCODE: return NameUtils.toSnakeCase(cellValue);
+         case MM_UUID_ENCODE: return NameUtils.toUUID(String.format("%s : %s", cellAddress, cellValue));
+         case MM_HASH_ENCODE: return NameUtils.toMD5(cellValue);
+         case MM_NO_ENCODE: return cellValue;
       }
       throw new RuntimeException("Programming error: Unknown directive to handle IRI encoding"
             + " (" + tokenImage[option] + ")");
    }
 
-   private UntypedValue getUntypedValue(String cellValue, ReferenceDirectives directives) {
-      return new UntypedValue(cellValue, getDatatype(directives.getValueDatatype()), directives.getLanguage(), true);
+   private UntypedValue processAnyValue(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
+      return new UntypedValue(
+            cellValue,
+            getLocalName(cellAddress, cellValue, directives),
+            getDatatype(directives.getValueDatatype()),
+            directives.getLanguage(), true);
    }
 
    private IriValue getIriValue(String cellValue) {
