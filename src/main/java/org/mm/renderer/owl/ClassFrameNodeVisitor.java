@@ -93,7 +93,7 @@ public class ClassFrameNodeVisitor extends EntityNodeVisitor {
       visitor.visit(classExpressionNode);
       OWLClassExpression classExpression = visitor.getClassExpression();
       if (classExpression != null && subject != null) {
-         axioms.add(owlFactory.createOWLSubClassOfAxiom(classExpression, subject));
+         axioms.add(owlFactory.createOWLSubClassOfAxiom(subject, classExpression));
       }
    }
 
@@ -121,7 +121,7 @@ public class ClassFrameNodeVisitor extends EntityNodeVisitor {
       visitor.visit(classExpressionNode);
       OWLClassExpression classExpression = visitor.getClassExpression();
       if (classExpression != null && subject != null) {
-         axioms.add(owlFactory.createOWLEquivalentClassesAxiom(classExpression, subject));
+         axioms.add(owlFactory.createOWLEquivalentClassesAxiom(subject, classExpression));
       }
    }
 

@@ -50,7 +50,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectExactCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectExactCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -66,7 +66,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectExactCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectExactCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -89,11 +89,11 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectExactCardinality(1, Vocabulary.HAS_ENGINE, 
+            SubClassOf(Vocabulary.CAR, ObjectExactCardinality(1, Vocabulary.HAS_ENGINE, 
                   ObjectIntersectionOf(ObjectUnionOf(
                         ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
                         ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
-                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))))));
    }
 
    @Test
@@ -107,7 +107,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataExactCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataExactCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -123,7 +123,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataExactCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataExactCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -138,7 +138,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectMinCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectMinCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -154,7 +154,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectMinCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectMinCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -177,11 +177,11 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectMinCardinality(1, Vocabulary.HAS_ENGINE, 
+            SubClassOf(Vocabulary.CAR, ObjectMinCardinality(1, Vocabulary.HAS_ENGINE, 
                   ObjectIntersectionOf(ObjectUnionOf(
                         ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
                         ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
-                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))))));
    }
 
    @Test
@@ -195,7 +195,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataMinCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataMinCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -211,7 +211,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataMinCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataMinCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -226,7 +226,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectMaxCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectMaxCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -242,7 +242,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectMaxCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectMaxCardinality(1, Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -265,11 +265,11 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectMaxCardinality(1, Vocabulary.HAS_ENGINE, 
+            SubClassOf(Vocabulary.CAR, ObjectMaxCardinality(1, Vocabulary.HAS_ENGINE, 
                   ObjectIntersectionOf(ObjectUnionOf(
                         ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
                         ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
-                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))))));
    }
 
    @Test
@@ -283,7 +283,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataMaxCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataMaxCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -299,7 +299,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataMaxCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataMaxCardinality(1, Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -314,7 +314,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectHasValue(Vocabulary.HAS_ENGINE, Vocabulary.BMW_MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectHasValue(Vocabulary.HAS_ENGINE, Vocabulary.BMW_MOTOR))));
    }
 
    @Test
@@ -329,7 +329,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectHasValue(Vocabulary.HAS_ENGINE, Vocabulary.BMW_MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectHasValue(Vocabulary.HAS_ENGINE, Vocabulary.BMW_MOTOR))));
    }
 
    @Test
@@ -344,7 +344,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataHasValue(Vocabulary.HAS_ALIAS, Vocabulary.NICK), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataHasValue(Vocabulary.HAS_ALIAS, Vocabulary.NICK))));
    }
 
    @Test
@@ -359,7 +359,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataHasValue(Vocabulary.HAS_ALIAS, Vocabulary.NICK), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataHasValue(Vocabulary.HAS_ALIAS, Vocabulary.NICK))));
    }
 
    @Test
@@ -374,7 +374,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -389,7 +389,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -412,11 +412,11 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, 
+            SubClassOf(Vocabulary.CAR, ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, 
                   ObjectIntersectionOf(ObjectUnionOf(
                         ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
                         ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
-                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))))));
    }
 
    @Test
@@ -430,7 +430,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataSomeValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataSomeValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -446,7 +446,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataSomeValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataSomeValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -461,7 +461,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectAllValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectAllValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -476,7 +476,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectAllValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR), Vocabulary.CAR)));
+            SubClassOf(Vocabulary.CAR, ObjectAllValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
    }
 
    @Test
@@ -499,11 +499,11 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
-            SubClassOf(ObjectAllValuesFrom(Vocabulary.HAS_ENGINE, 
+            SubClassOf(Vocabulary.CAR, ObjectAllValuesFrom(Vocabulary.HAS_ENGINE, 
                   ObjectIntersectionOf(ObjectUnionOf(
                         ObjectSomeValuesFrom(Vocabulary.USE_FUEL, ObjectUnionOf(Vocabulary.GASOLINE, Vocabulary.DIESEL)),
                         ObjectSomeValuesFrom(Vocabulary.USE_ELECTRICITY, Vocabulary.BATTERY)),
-                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))), Vocabulary.CAR)));
+                  DataHasValue(Vocabulary.NUMBER_OF_CYLINDER, Literal(6)))))));
    }
 
    @Test
@@ -517,7 +517,7 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataAllValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataAllValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 
    @Test
@@ -533,6 +533,6 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataAllValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataAllValuesFrom(Vocabulary.HAS_ALIAS, Vocabulary.XSD_STRING))));
    }
 }

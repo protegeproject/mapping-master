@@ -66,6 +66,6 @@ public class PrefixDirectiveTest extends AbstractOwlRendererTest {
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.PERSON),
-            SubClassOf(DataExactCardinality(1, Vocabulary.HAS_NAME, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
+            SubClassOf(Vocabulary.PERSON, DataExactCardinality(1, Vocabulary.HAS_NAME, Vocabulary.XSD_STRING))));
    }
 }
