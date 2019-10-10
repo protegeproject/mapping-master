@@ -4,6 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.mm.parser.MappingMasterParserConstants.MM_UNTYPED;
 import static org.mm.parser.MappingMasterParserConstants.OWL_ANNOTATION_PROPERTY;
 import static org.mm.parser.MappingMasterParserConstants.OWL_CLASS;
+import static org.mm.parser.MappingMasterParserConstants.OWL_DATATYPE;
 import static org.mm.parser.MappingMasterParserConstants.OWL_DATA_PROPERTY;
 import static org.mm.parser.MappingMasterParserConstants.OWL_NAMED_INDIVIDUAL;
 import static org.mm.parser.MappingMasterParserConstants.OWL_OBJECT_PROPERTY;
@@ -153,6 +154,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
          case OWL_OBJECT_PROPERTY: value = ObjectPropertyName.create(valueString); break;
          case OWL_ANNOTATION_PROPERTY: value = AnnotationPropertyName.create(valueString); break;
          case OWL_NAMED_INDIVIDUAL: value = IndividualName.create(valueString); break;
+         case OWL_DATATYPE: value = DatatypeName.create(valueString); break;
          case MM_UNTYPED: value = UntypedPrefixedName.create(valueString); break;
       }
    }
@@ -168,6 +170,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
          case OWL_OBJECT_PROPERTY: value = ObjectPropertyIri.create(iriString); break;
          case OWL_ANNOTATION_PROPERTY: value = AnnotationPropertyIri.create(iriString); break;
          case OWL_NAMED_INDIVIDUAL: value = IndividualIri.create(iriString); break;
+         case OWL_DATATYPE: value = DatatypeIri.create(iriString); break;
          case MM_UNTYPED: value = UntypedIri.create(iriString); break;
       }
    }

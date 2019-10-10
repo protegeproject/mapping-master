@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
    EntityDeclarationTest.class,
    ClassExpressionTest.class,
    AssertionAxiomTest.class,
+   EntityTypeDirectiveTest.class,
    IriEncodingDirectiveTest.class,
    EmptyCellDirectiveTest.class,
    AbsentEntityDirectiveTest.class,

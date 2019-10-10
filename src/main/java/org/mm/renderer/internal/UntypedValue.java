@@ -12,14 +12,12 @@ import com.google.common.base.Objects;
 public class UntypedValue implements Value {
 
    private final String value;
-   private final String encodedValue;
    private final String datatype;
    private final String language;
    private final boolean isFromWorkbook;
 
-   public UntypedValue(@Nonnull String value, String encodedValue, String datatype, String language, boolean isFromWorkbook) {
+   public UntypedValue(@Nonnull String value, String datatype, String language, boolean isFromWorkbook) {
       this.value = checkNotNull(value);
-      this.encodedValue = encodedValue;
       this.datatype = datatype;
       this.language = language;
       this.isFromWorkbook = isFromWorkbook;
@@ -28,10 +26,6 @@ public class UntypedValue implements Value {
    @Override
    public String getString() {
       return value;
-   }
-
-   public String getName() {
-      return encodedValue;
    }
 
    public String getDatatype() {
@@ -44,7 +38,7 @@ public class UntypedValue implements Value {
 
    @Override
    public Value update(String newValue) {
-      return new UntypedValue(newValue, encodedValue, datatype, language, isFromWorkbook);
+      return new UntypedValue(newValue, datatype, language, isFromWorkbook);
    }
 
    @Override
@@ -73,23 +67,23 @@ public class UntypedValue implements Value {
    }
 
    public ClassName asClassName() {
-      return new ClassName(encodedValue, isFromWorkbook);
+      return new ClassName(value, isFromWorkbook);
    }
 
    public DataPropertyName asDataPropertyName() {
-      return new DataPropertyName(encodedValue, isFromWorkbook);
+      return new DataPropertyName(value, isFromWorkbook);
    }
 
    public ObjectPropertyName asObjectPropertyName() {
-      return new ObjectPropertyName(encodedValue, isFromWorkbook);
+      return new ObjectPropertyName(value, isFromWorkbook);
    }
 
    public AnnotationPropertyName asAnnotationPropertyName() {
-      return new AnnotationPropertyName(encodedValue, isFromWorkbook);
+      return new AnnotationPropertyName(value, isFromWorkbook);
    }
 
    public IndividualName asIndividualName() {
-      return new IndividualName(encodedValue, isFromWorkbook);
+      return new IndividualName(value, isFromWorkbook);
    }
 
    public LiteralValue asLiteralValue() {

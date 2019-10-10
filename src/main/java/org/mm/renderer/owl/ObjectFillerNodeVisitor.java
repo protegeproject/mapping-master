@@ -1,7 +1,9 @@
 package org.mm.renderer.owl;
 
+import static org.mm.parser.MappingMasterParserConstants.OWL_CLASS;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.ParserUtils;
 import org.mm.parser.node.ASTClassExpressionFiller;
 import org.mm.parser.node.ASTFiller;
@@ -14,11 +16,11 @@ import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.Value;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
-public class FillerNodeVisitor extends ClassExpressionNodeVisitor {
+public class ObjectFillerNodeVisitor extends ClassExpressionNodeVisitor {
 
    private OWLClassExpression classExpression;
 
-   public FillerNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
+   public ObjectFillerNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
          @Nonnull BuiltInFunctionHandler builtInFunctionHandler,
          @Nonnull OwlFactory owlFactory,
          @Nonnull CellCursor cellCursor) {
@@ -48,12 +50,18 @@ public class FillerNodeVisitor extends ClassExpressionNodeVisitor {
 
    @Override
    public void visit(ASTReference valueNode) {
+      changeEntityType(valueNode);
       super.visit(valueNode);
       Value value = getValue();
       if (value != null) {
          String className = value.getString();
          classExpression = owlFactory.createOWLClass(className);
       }
+   }
+
+   private void changeEntityType(ASTReference valueNode) {
+      ReferenceDirectives newDirectives = valueNode.getDirectives().setEntityType(OWL_CLASS);
+      valueNode.referenceDirectives = newDirectives;
    }
 
    @Override

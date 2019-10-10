@@ -1221,6 +1221,7 @@ int reference_type() :
     | t = <OWL_OBJECT_PROPERTY> { entityType = t.kind; }
     | t = <OWL_DATA_PROPERTY> { entityType = t.kind; }
     | t = <OWL_ANNOTATION_PROPERTY> { entityType = t.kind; }
+    | t = <OWL_DATATYPE> { entityType = t.kind; }
     | t = <OWL_IRI> { entityType = t.kind; }
     | t = <OWL_LITERAL> { entityType = t.kind; }
   )

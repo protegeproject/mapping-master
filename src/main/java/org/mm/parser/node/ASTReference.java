@@ -13,8 +13,6 @@ class ASTReference extends SimpleNode {
 
   public ReferenceDirectives referenceDirectives; /* XXX: Manually added */
 
-  public int referenceType; /* XXX: Manually added */
-
   public boolean hasBuiltInFunction = false; /* XXX: Manually added */
 
   public ASTReference(int id) {
@@ -28,10 +26,6 @@ class ASTReference extends SimpleNode {
   @Nonnull
   public ReferenceDirectives getDirectives() { /* XXX: Manually added */
      return referenceDirectives;
-  }
-
-  public int getType() { /* XXX: Manually added */
-     return referenceType;
   }
 
   public boolean hasBuiltInFunction() { /* XXX: Manually added */

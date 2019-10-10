@@ -4,12 +4,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Class;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataExactCardinality;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.IRI;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.NamedIndividual;
-
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 import java.util.Set;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -52,5 +52,20 @@ public class PrefixDirectiveTest extends AbstractOwlRendererTest {
       // Assert
       assertThat(results, hasSize(1));
       assertThat(results, containsInAnyOrder(Declaration(NamedIndividual(IRI(EX_PREFIX + text)))));
+   }
+
+   @Test
+   public void shouldAppendDatatypeNamePrefix() {
+   // Arrange
+      declareEntity(Vocabulary.PERSON);
+      declareEntity(Vocabulary.HAS_NAME);
+      createCell("Sheet1", 1, 1, "string");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: Person SubClassOf: hasName exactly 1 @A1(mm:Prefix=\"xsd\")");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.PERSON),
+            SubClassOf(DataExactCardinality(1, Vocabulary.HAS_NAME, Vocabulary.XSD_STRING), Vocabulary.PERSON)));
    }
 }

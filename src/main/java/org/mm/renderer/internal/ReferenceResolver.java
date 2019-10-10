@@ -146,6 +146,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             case OWL_OBJECT_PROPERTY: value = processObjectPropertyName(cellAddress, cellValue, directives); break;
             case OWL_ANNOTATION_PROPERTY: value = processAnnotationPropertyName(cellAddress, cellValue, directives); break;
             case OWL_NAMED_INDIVIDUAL: value = processIndividualName(cellAddress, cellValue, directives); break;
+            case OWL_DATATYPE: value = processDatatypeName(cellAddress, cellValue, directives); break;
             case OWL_IRI: value = getIriValue(cellValue); break;
             case OWL_LITERAL:
                int datatype = directives.getValueDatatype();
@@ -175,7 +176,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
                               tokenImage[datatype]));
                }
                break;
-            case MM_UNTYPED: value = processAnyValue(cellAddress, cellValue, directives); break;
+            case MM_UNTYPED: value = processUntypedValue(cellAddress, cellValue, directives); break;
             default: throw new RuntimeException(
                   String.format("Programming error: Unknown directive to handle reference entity type (%s)",
                         tokenImage[entityType]));
@@ -252,10 +253,20 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             + " (" + tokenImage[option] + ")");
    }
 
-   private UntypedValue processAnyValue(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
+   private Value processDatatypeName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
+      String localName = cellValue;
+      Value datatypeName = new DatatypeName(localName, true);
+      if (directives.useUserPrefix()) {
+         datatypeName = new DatatypeName(directives.getPrefix() + ":" + localName, true);
+      } else if (directives.useUserNamespace()) {
+         datatypeName = new DatatypeIri(directives.getNamespace() + localName, true);
+      }
+      return datatypeName;
+   }
+
+   private UntypedValue processUntypedValue(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       return new UntypedValue(
             cellValue,
-            getLocalName(cellAddress, cellValue, directives),
             getDatatype(directives.getValueDatatype()),
             directives.getLanguage(), true);
    }
