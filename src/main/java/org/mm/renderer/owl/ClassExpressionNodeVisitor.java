@@ -37,12 +37,9 @@ import org.mm.parser.node.Node;
 import org.mm.parser.node.SimpleNode;
 import org.mm.renderer.CellCursor;
 import org.mm.renderer.internal.BuiltInFunctionHandler;
-import org.mm.renderer.internal.IndividualIri;
-import org.mm.renderer.internal.IndividualName;
-import org.mm.renderer.internal.LiteralValue;
-import org.mm.renderer.internal.PlainLiteralValue;
+import org.mm.renderer.internal.IndividualFillerNodeVisitor;
+import org.mm.renderer.internal.LiteralFillerNodeVisitor;
 import org.mm.renderer.internal.ReferenceResolver;
-import org.mm.renderer.internal.UntypedValue;
 import org.mm.renderer.internal.Value;
 import org.mm.renderer.internal.ValueNodeVisitor;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -345,37 +342,27 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
       OWLEntity property = getDeclaredProperty(node);
       if (property != null) {
          if (property.isOWLDataProperty()) {
-            Value value = getHasValue(node);
-            if (value instanceof LiteralValue) {
-               OWLLiteral literal = owlFactory.getOWLTypedLiteral((LiteralValue) value);
-               classExpression = owlFactory.createOWLDataHasValue(property.asOWLDataProperty(), literal);
-            } else if (value instanceof PlainLiteralValue) {
-               OWLLiteral literal = owlFactory.getOWLPlainLiteral((PlainLiteralValue) value);
-               classExpression = owlFactory.createOWLDataHasValue(property.asOWLDataProperty(), literal);
-            } else if (value instanceof UntypedValue) {
-               OWLLiteral literal = owlFactory.getOWLTypedLiteral(((UntypedValue) value).asLiteralValue());
-               classExpression = owlFactory.createOWLDataHasValue(property.asOWLDataProperty(), literal);
-            }
+            OWLLiteral literal = getLiteralFiller(node);
+            classExpression = owlFactory.createOWLDataHasValue(property.asOWLDataProperty(), literal);
          } else if (property.isOWLObjectProperty()) {
-            Value value = getHasValue(node);
-            if (value instanceof IndividualName) {
-               OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((IndividualName) value);
-               classExpression = owlFactory.createOWLObjectHasValue(property.asOWLObjectProperty(), individual);
-            } else if (value instanceof IndividualIri) {
-               OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((IndividualIri) value);
-               classExpression = owlFactory.createOWLObjectHasValue(property.asOWLObjectProperty(), individual);
-            } else if (value instanceof UntypedValue) {
-               OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(((UntypedValue) value).asIndividualName());
-               classExpression = owlFactory.createOWLObjectHasValue(property.asOWLObjectProperty(), individual);
-            }
+            OWLNamedIndividual individual = getIndividualFiller(node);
+            classExpression = owlFactory.createOWLObjectHasValue(property.asOWLObjectProperty(), individual);
          }
       }
    }
 
-   private Value getHasValue(SimpleNode node) {
+   private OWLLiteral getLiteralFiller(SimpleNode node) {
       ASTAnyValue anyValueNode = ParserUtils.getChild(node, NodeType.ANY_VALUE);
-      anyValueNode.accept(this);
-      return getValue();
+      LiteralFillerNodeVisitor visitor = createLiteralFillerNodeVisitor();
+      visitor.visit(anyValueNode);
+      return visitor.getLiteral();
+   }
+
+   private OWLNamedIndividual getIndividualFiller(SimpleNode node) {
+      ASTAnyValue anyValueNode = ParserUtils.getChild(node, NodeType.ANY_VALUE);
+      IndividualFillerNodeVisitor visitor = createIndividualFillerNodeVisitor();
+      visitor.visit(anyValueNode);
+      return visitor.getIndividual();
    }
 
    @Override
@@ -383,29 +370,11 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
       OWLEntity property = getReferencedProperty(node);
       if (property != null) {
          if (property.isOWLDataProperty()) {
-            Value value = getHasValue(node);
-            if (value instanceof LiteralValue) {
-               OWLLiteral literal = owlFactory.getOWLTypedLiteral((LiteralValue) value);
-               classExpression = owlFactory.createOWLDataHasValue(property.asOWLDataProperty(), literal);
-            } else if (value instanceof PlainLiteralValue) {
-               OWLLiteral literal = owlFactory.getOWLPlainLiteral((PlainLiteralValue) value);
-               classExpression = owlFactory.createOWLDataHasValue(property.asOWLDataProperty(), literal);
-            } else if (value instanceof UntypedValue) {
-               OWLLiteral literal = owlFactory.getOWLTypedLiteral(((UntypedValue) value).asLiteralValue());
-               classExpression = owlFactory.createOWLDataHasValue(property.asOWLDataProperty(), literal);
-            }
+            OWLLiteral literal = getLiteralFiller(node);
+            classExpression = owlFactory.createOWLDataHasValue(property.asOWLDataProperty(), literal);
          } else if (property.isOWLObjectProperty()) {
-            Value value = getHasValue(node);
-            if (value instanceof IndividualName) {
-               OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((IndividualName) value);
-               classExpression = owlFactory.createOWLObjectHasValue(property.asOWLObjectProperty(), individual);
-            } else if (value instanceof IndividualIri) {
-               OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual((IndividualIri) value);
-               classExpression = owlFactory.createOWLObjectHasValue(property.asOWLObjectProperty(), individual);
-            } else if (value instanceof UntypedValue) {
-               OWLNamedIndividual individual = owlFactory.getOWLNamedIndividual(((UntypedValue) value).asIndividualName());
-               classExpression = owlFactory.createOWLObjectHasValue(property.asOWLObjectProperty(), individual);
-            }
+            OWLNamedIndividual individual = getIndividualFiller(node);
+            classExpression = owlFactory.createOWLObjectHasValue(property.asOWLObjectProperty(), individual);
          }
       }
    }
@@ -534,6 +503,14 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
       ClassExpressionNodeVisitor innerVisitor = createNewClassExpressionNodeVisitor();
       innerVisitor.visit(classExpressionNode);
       return innerVisitor.getClassExpression();
+   }
+
+   private LiteralFillerNodeVisitor createLiteralFillerNodeVisitor() {
+      return new LiteralFillerNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
+   }
+
+   private IndividualFillerNodeVisitor createIndividualFillerNodeVisitor() {
+      return new IndividualFillerNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    private DatatypeFillerNodeVisitor createDataFillerNodeVisitor() {
