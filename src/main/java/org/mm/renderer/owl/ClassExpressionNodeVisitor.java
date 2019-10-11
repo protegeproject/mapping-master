@@ -185,7 +185,7 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
    @Nullable
    private OWLDatatype getDatatypeFiller(SimpleNode node) {
       ASTFiller fillerNode = ParserUtils.getChild(node, NodeType.FILLER);
-      DataFillerNodeVisitor visitor = createDataFillerNodeVisitor();
+      DatatypeFillerNodeVisitor visitor = createDataFillerNodeVisitor();
       visitor.visit(fillerNode);
       return visitor.getDatatype();
    }
@@ -193,7 +193,7 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
    @Nullable
    private OWLClassExpression getClassExpressionFiller(SimpleNode node) {
       ASTFiller valueNode = ParserUtils.getChild(node, NodeType.FILLER);
-      ObjectFillerNodeVisitor visitor = createObjectFillerNodeVisitor();
+      ClassExpressionFillerNodeVisitor visitor = createObjectFillerNodeVisitor();
       visitor.visit(valueNode);
       return visitor.getClassExpression();
    }
@@ -536,12 +536,12 @@ public class ClassExpressionNodeVisitor extends EntityNodeVisitor {
       return innerVisitor.getClassExpression();
    }
 
-   private DataFillerNodeVisitor createDataFillerNodeVisitor() {
-      return new DataFillerNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
+   private DatatypeFillerNodeVisitor createDataFillerNodeVisitor() {
+      return new DatatypeFillerNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
-   private ObjectFillerNodeVisitor createObjectFillerNodeVisitor() {
-      return new ObjectFillerNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
+   private ClassExpressionFillerNodeVisitor createObjectFillerNodeVisitor() {
+      return new ClassExpressionFillerNodeVisitor(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    private ClassExpressionNodeVisitor createNewClassExpressionNodeVisitor() {

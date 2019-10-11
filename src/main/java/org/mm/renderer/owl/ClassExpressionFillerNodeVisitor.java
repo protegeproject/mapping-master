@@ -1,11 +1,11 @@
 package org.mm.renderer.owl;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.mm.parser.MappingMasterParserConstants.OWL_DATATYPE;
+import static org.mm.parser.MappingMasterParserConstants.OWL_CLASS;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.mm.directive.ReferenceDirectives;
 import org.mm.parser.ParserUtils;
+import org.mm.parser.node.ASTClassExpressionFiller;
 import org.mm.parser.node.ASTFiller;
 import org.mm.parser.node.ASTReference;
 import org.mm.parser.node.ASTValue;
@@ -14,36 +14,28 @@ import org.mm.renderer.CellCursor;
 import org.mm.renderer.internal.BuiltInFunctionHandler;
 import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.Value;
-import org.mm.renderer.internal.ValueNodeVisitor;
-import org.semanticweb.owlapi.model.OWLDatatype;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 
-public class DataFillerNodeVisitor extends ValueNodeVisitor {
+public class ClassExpressionFillerNodeVisitor extends ClassExpressionNodeVisitor {
 
-   private final OwlFactory owlFactory;
+   private OWLClassExpression classExpression;
 
-   private OWLDatatype datatype;
-
-   public DataFillerNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
+   public ClassExpressionFillerNodeVisitor(@Nonnull ReferenceResolver referenceResolver,
          @Nonnull BuiltInFunctionHandler builtInFunctionHandler,
          @Nonnull OwlFactory owlFactory,
          @Nonnull CellCursor cellCursor) {
-      super(referenceResolver, builtInFunctionHandler, cellCursor);
-      this.owlFactory = checkNotNull(owlFactory);
+      super(referenceResolver, builtInFunctionHandler, owlFactory, cellCursor);
    }
 
    @Nullable
-   public OWLDatatype getDatatype() {
-      return datatype;
+   public OWLClassExpression getClassExpression() {
+      return classExpression;
    }
 
    @Override
    public void visit(ASTFiller node) {
-      if (node.getDatatype() != -1) {
-         datatype = DatatypeUtils.getOWLDatatype(node.getDatatype());
-      } else {
-         Node fillerNode = ParserUtils.getChild(node);
-         fillerNode.accept(this);
-      }
+      Node fillerNode = ParserUtils.getChild(node);
+      fillerNode.accept(this);
    }
 
    @Override
@@ -51,7 +43,8 @@ public class DataFillerNodeVisitor extends ValueNodeVisitor {
       super.visit(valueNode);
       Value value = getValue();
       if (value != null) {
-         datatype = owlFactory.createOWLDatatype(value.getString());
+         String className = value.getString();
+         classExpression = owlFactory.fetchOWLClass(className);
       }
    }
 
@@ -61,12 +54,20 @@ public class DataFillerNodeVisitor extends ValueNodeVisitor {
       super.visit(valueNode);
       Value value = getValue();
       if (value != null) {
-         datatype = owlFactory.createOWLDatatype(value.getString());
+         String className = value.getString();
+         classExpression = owlFactory.createOWLClass(className);
       }
    }
 
    private void changeEntityType(ASTReference valueNode) {
-      ReferenceDirectives newDirectives = valueNode.getDirectives().setEntityType(OWL_DATATYPE);
+      ReferenceDirectives newDirectives = valueNode.getDirectives().setEntityType(OWL_CLASS);
       valueNode.referenceDirectives = newDirectives;
+   }
+
+   @Override
+   public void visit(ASTClassExpressionFiller node) {
+      Node classExpressionNode = ParserUtils.getChild(node);
+      classExpressionNode.accept(this);
+      classExpression = super.getClassExpression();
    }
 }
