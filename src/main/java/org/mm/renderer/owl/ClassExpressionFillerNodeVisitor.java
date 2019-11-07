@@ -12,6 +12,8 @@ import org.mm.parser.node.ASTValue;
 import org.mm.parser.node.Node;
 import org.mm.renderer.CellCursor;
 import org.mm.renderer.internal.BuiltInFunctionHandler;
+import org.mm.renderer.internal.ClassIri;
+import org.mm.renderer.internal.ClassName;
 import org.mm.renderer.internal.ReferenceResolver;
 import org.mm.renderer.internal.Value;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -42,9 +44,10 @@ public class ClassExpressionFillerNodeVisitor extends ClassExpressionNodeVisitor
    public void visit(ASTValue valueNode) {
       super.visit(valueNode);
       Value value = getValue();
-      if (value != null) {
-         String className = value.getString();
-         classExpression = owlFactory.fetchOWLClass(className);
+      if (value instanceof ClassName) {
+         classExpression = owlFactory.getOWLClass((ClassName) value);
+      } else if (value instanceof ClassIri) {
+         classExpression = owlFactory.getOWLClass((ClassIri) value);
       }
    }
 
@@ -53,9 +56,10 @@ public class ClassExpressionFillerNodeVisitor extends ClassExpressionNodeVisitor
       changeEntityType(valueNode);
       super.visit(valueNode);
       Value value = getValue();
-      if (value != null) {
-         String className = value.getString();
-         classExpression = owlFactory.createOWLClass(className);
+      if (value instanceof ClassName) {
+         classExpression = owlFactory.getOWLClass((ClassName) value);
+      } else if (value instanceof ClassIri) {
+         classExpression = owlFactory.getOWLClass((ClassIri) value);
       }
    }
 

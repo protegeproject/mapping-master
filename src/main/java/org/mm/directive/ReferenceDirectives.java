@@ -17,6 +17,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
    private final String language;
 
    private final int entityType;
+   private final int valueType;
    private final int propertyType;
 
    private final int valueDatatype;
@@ -33,14 +34,15 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives(@Nonnull String prefix, @Nonnull String namespace,
          @Nonnull String language, @Nonnull String labelValue, @Nonnull String literalValue,
-         int entityType, int propertyType, int valueDatatype, int iriEncoding, int shiftDirection,
-         int orderIfCellEmpty, int orderIfEntityAbsent) {
+         int entityType, int valueType, int propertyType, int valueDatatype, int iriEncoding,
+         int shiftDirection, int orderIfCellEmpty, int orderIfEntityAbsent) {
       this.prefix = checkNotNull(prefix);
       this.namespace = checkNotNull(namespace);
       this.language = checkNotNull(language);
       this.labelValue = checkNotNull(labelValue);
       this.literalValue = checkNotNull(literalValue);
       this.entityType = entityType;
+      this.valueType = valueType;
       this.propertyType = propertyType;
       this.valueDatatype = valueDatatype;
       this.iriEncoding = iriEncoding;
@@ -56,6 +58,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
            sourceDirectives.getLabelValue(),
            sourceDirectives.getLiteralValue(),
            sourceDirectives.getEntityType(),
+           sourceDirectives.getValueType(),
            sourceDirectives.getPropertyType(),
            sourceDirectives.getValueDatatype(),
            sourceDirectives.getIriEncoding(),
@@ -70,8 +73,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setPrefix(String newPrefix) {
       return new ReferenceDirectives(newPrefix, namespace, language, labelValue, literalValue,
-            entityType, propertyType, valueDatatype, iriEncoding, shiftDirection, orderIfCellEmpty,
-            orderIfEntityAbsent);
+            entityType, valueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            orderIfCellEmpty, orderIfEntityAbsent);
    }
 
    public boolean useUserPrefix() {
@@ -84,8 +87,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setNamespace(String newNamespace) {
       return new ReferenceDirectives(prefix, newNamespace, language, labelValue, literalValue,
-            entityType, propertyType, valueDatatype, iriEncoding, shiftDirection, orderIfCellEmpty,
-            orderIfEntityAbsent);
+            entityType, valueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            orderIfCellEmpty, orderIfEntityAbsent);
    }
 
    public boolean useUserNamespace() {
@@ -98,8 +101,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setLanguage(String newLanguage) {
       return new ReferenceDirectives(prefix, namespace, newLanguage, labelValue, literalValue,
-            entityType, propertyType, valueDatatype, iriEncoding, shiftDirection, orderIfCellEmpty,
-            orderIfEntityAbsent);
+            entityType, valueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            orderIfCellEmpty, orderIfEntityAbsent);
    }
 
    public boolean useUserLanguage() {
@@ -112,8 +115,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setLabelValue(String newLabelValue) {
       return new ReferenceDirectives(prefix, namespace, language, newLabelValue, literalValue,
-            entityType, propertyType, valueDatatype, iriEncoding, shiftDirection, orderIfCellEmpty,
-            orderIfEntityAbsent);
+            entityType, valueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            orderIfCellEmpty, orderIfEntityAbsent);
    }
 
    public boolean useUserLabelValue() {
@@ -125,9 +128,9 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
    }
 
    public ReferenceDirectives setLiteralValue(String newLiteralValue) {
-      return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
-            entityType, propertyType, valueDatatype, iriEncoding, shiftDirection, orderIfCellEmpty,
-            orderIfEntityAbsent);
+      return new ReferenceDirectives(prefix, namespace, language, labelValue, newLiteralValue,
+            entityType, valueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            orderIfCellEmpty, orderIfEntityAbsent);
    }
 
    public boolean useUserLiteralValue() {
@@ -140,7 +143,17 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setEntityType(int newEntityType) {
       return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
-            newEntityType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            newEntityType, valueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            orderIfCellEmpty, orderIfEntityAbsent);
+   }
+
+   public int getValueType() {
+      return valueType;
+   }
+
+   public ReferenceDirectives setValueType(int newValueType) {
+      return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
+            entityType, newValueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
             orderIfCellEmpty, orderIfEntityAbsent);
    }
 
@@ -150,7 +163,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setPropertyType(int newPropertyType) {
       return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
-            entityType, newPropertyType, valueDatatype, iriEncoding, shiftDirection,
+            entityType, valueType, newPropertyType, valueDatatype, iriEncoding, shiftDirection,
             orderIfCellEmpty, orderIfEntityAbsent);
    }
 
@@ -160,7 +173,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setValueDatatype(int newValueDatatype) {
       return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
-            entityType, propertyType, newValueDatatype, iriEncoding, shiftDirection,
+            entityType, valueType, propertyType, newValueDatatype, iriEncoding, shiftDirection,
             orderIfCellEmpty, orderIfEntityAbsent);
    }
 
@@ -170,7 +183,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setIriEncoding(int newIriEncoding) {
       return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
-            entityType, propertyType, valueDatatype, newIriEncoding, shiftDirection,
+            entityType, valueType, propertyType, valueDatatype, newIriEncoding, shiftDirection,
             orderIfCellEmpty, orderIfEntityAbsent);
    }
 
@@ -180,7 +193,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setShiftDirection(int newShiftDirection) {
       return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
-            entityType, propertyType, valueDatatype, iriEncoding, newShiftDirection,
+            entityType, valueType, propertyType, valueDatatype, iriEncoding, newShiftDirection,
             orderIfCellEmpty, orderIfEntityAbsent);
    }
 
@@ -190,7 +203,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setOrderIfCellEmpty(int newOrderIfCellEmpty) {
       return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
-            entityType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            entityType, valueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
             newOrderIfCellEmpty, orderIfEntityAbsent);
    }
 
@@ -200,8 +213,8 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
 
    public ReferenceDirectives setOrderIfEntityAbsent(int newOrderIfEntityAbsent) {
       return new ReferenceDirectives(prefix, namespace, language, labelValue, literalValue,
-            entityType, propertyType, valueDatatype, iriEncoding, shiftDirection, orderIfCellEmpty,
-            newOrderIfEntityAbsent);
+            entityType, valueType, propertyType, valueDatatype, iriEncoding, shiftDirection,
+            orderIfCellEmpty, newOrderIfEntityAbsent);
    }
 
    @Override
@@ -222,6 +235,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
             && Objects.equals(labelValue, other.getLabelValue())
             && Objects.equals(literalValue, other.getLiteralValue())
             && Objects.equals(entityType, other.getEntityType())
+            && Objects.equals(valueType, other.getValueType())
             && Objects.equals(propertyType, other.getPropertyType())
             && Objects.equals(valueDatatype, other.getValueDatatype())
             && Objects.equals(iriEncoding, other.getIriEncoding())
@@ -234,7 +248,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
    @Override
    public int hashCode() {
       return Objects.hash(prefix, namespace, language, labelValue, literalValue, entityType,
-            propertyType, valueDatatype, iriEncoding, shiftDirection, orderIfCellEmpty,
+            valueType, propertyType, valueDatatype, iriEncoding, shiftDirection, orderIfCellEmpty,
             orderIfEntityAbsent);
    }
 
@@ -247,6 +261,7 @@ public class ReferenceDirectives implements MappingMasterParserConstants {
             .addValue(labelValue)
             .addValue(literalValue)
             .addValue(entityType)
+            .addValue(valueType)
             .addValue(propertyType)
             .addValue(valueDatatype)
             .addValue(iriEncoding)

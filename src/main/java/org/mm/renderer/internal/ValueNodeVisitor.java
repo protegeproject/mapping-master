@@ -6,6 +6,7 @@ import static org.mm.parser.MappingMasterParserConstants.OWL_ANNOTATION_PROPERTY
 import static org.mm.parser.MappingMasterParserConstants.OWL_CLASS;
 import static org.mm.parser.MappingMasterParserConstants.OWL_DATATYPE;
 import static org.mm.parser.MappingMasterParserConstants.OWL_DATA_PROPERTY;
+import static org.mm.parser.MappingMasterParserConstants.OWL_LITERAL;
 import static org.mm.parser.MappingMasterParserConstants.OWL_NAMED_INDIVIDUAL;
 import static org.mm.parser.MappingMasterParserConstants.OWL_OBJECT_PROPERTY;
 import javax.annotation.Nonnull;
@@ -151,6 +152,7 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
          case OWL_ANNOTATION_PROPERTY: value = AnnotationPropertyIri.create(iriString); break;
          case OWL_NAMED_INDIVIDUAL: value = IndividualIri.create(iriString); break;
          case OWL_DATATYPE: value = DatatypeIri.create(iriString); break;
+         case OWL_LITERAL: value = UntypedIri.create(iriString); break;
          case MM_UNTYPED: value = UntypedIri.create(iriString); break;
       }
    }

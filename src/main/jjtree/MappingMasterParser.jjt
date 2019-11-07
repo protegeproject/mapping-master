@@ -179,6 +179,7 @@ TOKEN: { <XML_LANG: "xml:lang" > }
 TOKEN: { <MM_DEFAULT_IRI_ENCODING: "mm:DefaultIRIEncoding"> }
 TOKEN: { <MM_DEFAULT_SHIFT_DIRECTION: "mm:DefaultShiftDirection"> }
 TOKEN: { <MM_DEFAULT_REFERENCE_TYPE: "mm:DefaultReferenceType"> }
+TOKEN: { <MM_DEFAULT_VALUE_TYPE: "mm:DefaultValueType"> }
 TOKEN: { <MM_DEFAULT_PROPERTY_TYPE: "mm:DefaultPropertyType"> }
 TOKEN: { <MM_DEFAULT_VALUE_DATATYPE: "mm:DefaultValueDatatype"> }
 
@@ -200,8 +201,10 @@ TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
 TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
 TOKEN: { <OWL_ANNOTATION_PROPERTY: "AnnotationProperty"> }
 TOKEN: { <OWL_LITERAL: "Literal"> }
-TOKEN: { <OWL_IRI: "IRI"> }
 TOKEN: { <OWL_DATATYPE: "Datatype"> }
+
+TOKEN: { <IRI: "IRI"> }
+TOKEN: { <TERM: "TERM"> }
 
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
 TOKEN: { <MM_TO_LOWER_CASE: "mm:toLowerCase"> }
@@ -292,6 +295,7 @@ void rule_directive() : {}
     | mm_default_namespace_directive()
     | mm_default_language_directive()
     | mm_default_reference_type_directive()
+    | mm_default_value_type_directive()
     | mm_default_property_type_directive()
     | mm_default_value_datatype_directive()
     | mm_default_iri_encoding_directive()
@@ -343,6 +347,17 @@ void mm_default_reference_type_directive() :
   <MM_DEFAULT_REFERENCE_TYPE> "=" defaultEntityType = reference_type()
   {
     localDirectives = localDirectives.setEntityType(defaultEntityType);
+  }
+}
+
+void mm_default_value_type_directive() :
+{
+  int defaultValueType;
+}
+{
+  <MM_DEFAULT_VALUE_TYPE> "=" defaultValueType = value_type()
+  {
+    localDirectives = localDirectives.setValueType(defaultValueType);
   }
 }
 
@@ -490,7 +505,7 @@ void annotation() #Annotation : {}
 
 void annotation_value() #AnnotationValue : {}
 {
-  ( iri(OWL_IRI)
+  ( iri(OWL_LITERAL)
     | literal()
     | reference(MM_UNTYPED)
   )
@@ -1012,6 +1027,7 @@ void reference_directive() :
    | namespace_directive()
    | language_directive()
    | value = reference_type() { userDirectives = userDirectives.setEntityType(value); }
+   | value = value_type() { userDirectives = userDirectives.setValueType(value); }
    | value = datatype_type() { userDirectives = userDirectives.setValueDatatype(value).setEntityType(OWL_LITERAL); }
    | value = iri_encoding() { userDirectives = userDirectives.setIriEncoding(value); }
    | value = shift_direction() { userDirectives = userDirectives.setShiftDirection(value); }
@@ -1222,11 +1238,24 @@ int reference_type() :
     | t = <OWL_DATA_PROPERTY> { entityType = t.kind; }
     | t = <OWL_ANNOTATION_PROPERTY> { entityType = t.kind; }
     | t = <OWL_DATATYPE> { entityType = t.kind; }
-    | t = <OWL_IRI> { entityType = t.kind; }
     | t = <OWL_LITERAL> { entityType = t.kind; }
   )
   {
     return entityType;
+  }
+}
+
+int value_type() :
+{
+  Token t;
+  int valueType;
+}
+{
+  ( t = <TERM> { valueType = t.kind; }
+    | t = <IRI> { valueType = t.kind; }
+  )
+  {
+    return valueType;
   }
 }
 

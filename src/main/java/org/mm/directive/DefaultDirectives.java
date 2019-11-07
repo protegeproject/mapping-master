@@ -13,6 +13,7 @@ public class DefaultDirectives extends ReferenceDirectives {
             "",                              // default label value
             "",                              // default literal value
             MM_UNTYPED,                      // default entity type
+            TERM,                            // default value type
             OWL_DATA_PROPERTY,               // default property type
             XSD_STRING,                      // default value datatype
             MM_CAMELCASE_ENCODE,             // default IRI encoding
