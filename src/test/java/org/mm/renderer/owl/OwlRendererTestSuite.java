@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   CellReferenceTest.class,
    EntityDeclarationTest.class,
    ClassExpressionTest.class,
    AssertionAxiomTest.class,

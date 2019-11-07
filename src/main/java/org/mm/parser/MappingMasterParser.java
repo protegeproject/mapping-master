@@ -1000,7 +1000,7 @@ void class_expression() throws ParseException {/*@bgen(jjtree) ClassExpressionCa
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      if (jj_2_1(4)) {
+      if (jj_2_1(10)) {
         restriction();
       } else {
         switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {

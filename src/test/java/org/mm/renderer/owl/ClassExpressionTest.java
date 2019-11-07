@@ -39,6 +39,21 @@ public class ClassExpressionTest extends AbstractOwlRendererTest {
    }
 
    @Test
+   public void shouldRenderSimpleClass() {
+      // Arrange
+      declareEntity(Vocabulary.HAS_ENGINE);
+      createCell("Sheet1", 1, 1, "Person");
+      createCell("Sheet1", 2, 1, "Student");
+      // Act
+      Set<OWLAxiom> results = evaluate("Class: @B1 SubClassOf: @A1");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(
+            Declaration(Vocabulary.STUDENT),
+            SubClassOf(Vocabulary.STUDENT, Vocabulary.PERSON)));
+   }
+
+   @Test
    public void shouldRenderObjectExactCardinality() {
       // Arrange
       declareEntity(Vocabulary.HAS_ENGINE);

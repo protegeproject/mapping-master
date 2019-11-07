@@ -567,8 +567,8 @@ void different_from() #DifferentFrom : {}
 
 void class_expression() #ClassExpressionCategory : {}
 {
-  ( LOOKAHEAD(4) restriction()
-    | atomic_class()
+  ( LOOKAHEAD(10) restriction()
+    | atomic_class() 
     | "(" boolean_class_expression() ")"
     | "{" object_one_of() "}"
   )
