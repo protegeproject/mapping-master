@@ -3,7 +3,12 @@ package org.mm.renderer.owl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.AnnotationAssertion;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.DataPropertyAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Declaration;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.IRI;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.Literal;
+import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectPropertyAssertion;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.ObjectSomeValuesFrom;
 import static org.semanticweb.owlapi.apibinding.OWLFunctionalSyntaxFactory.SubClassOf;
 
@@ -13,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
+import org.semanticweb.owlapi.vocab.Namespaces;
 
 /**
  * @author Josef Hardi <josef.hardi@stanford.edu> <br>
@@ -27,7 +33,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldRenderNameLabel_InClassDeclaration() {
+   public void shouldRenderNameValue_InClassDeclaration() {
       // Arrange
       createCell("Sheet1", 1, 1, "Car");
       // Act
@@ -38,7 +44,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldRenderIriLabel_InClassDeclaration() {
+   public void shouldRenderIriValue_InClassDeclaration() {
       // Arrange
       createCell("Sheet1", 1, 1, "http://protege.stanford.edu/mapping-master/test/Car");
       // Act
@@ -49,7 +55,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldRenderNameLabel_InIndividualDeclaration() {
+   public void shouldRenderNameValue_InIndividualDeclaration() {
       // Arrange
       createCell("Sheet1", 1, 1, "fred");
       // Act
@@ -60,7 +66,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldRenderIriLabel_InIndividualDeclaration() {
+   public void shouldRenderIriValue_InIndividualDeclaration() {
       // Arrange
       createCell("Sheet1", 1, 1, "http://protege.stanford.edu/mapping-master/test/fred");
       // Act
@@ -71,7 +77,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldRenderNameLabel_InSubClassDeclaration() {
+   public void shouldRenderNameValue_InSubClassDeclaration() {
       // Arrange
       createCell("Sheet1", 1, 1, "Student");
       createCell("Sheet1", 2, 1, "Person");
@@ -85,7 +91,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldRenderIriLabel_InSubClassDeclaration() {
+   public void shouldRenderIriValue_InSubClassDeclaration() {
       // Arrange
       createCell("Sheet1", 1, 1, "http://protege.stanford.edu/mapping-master/test/Student");
       createCell("Sheet1", 2, 1, "http://protege.stanford.edu/mapping-master/test/Person");
@@ -99,7 +105,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldRenderNameLabel_InClassExpression() {
+   public void shouldRenderNameValue_InClassExpression() {
       // Arrange
       createCell("Sheet1", 1, 1, "Car");
       createCell("Sheet1", 2, 1, "hasEngine");
@@ -114,7 +120,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
    }
 
    @Test
-   public void shouldRenderIriLabel_InClassExpression() {
+   public void shouldRenderIriValue_InClassExpression() {
       // Arrange
       createCell("Sheet1", 1, 1, "http://protege.stanford.edu/mapping-master/test/Car");
       createCell("Sheet1", 2, 1, "http://protege.stanford.edu/mapping-master/test/hasEngine");
@@ -126,5 +132,74 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
       assertThat(results, containsInAnyOrder(
             Declaration(Vocabulary.CAR),
             SubClassOf(Vocabulary.CAR, ObjectSomeValuesFrom(Vocabulary.HAS_ENGINE, Vocabulary.MOTOR))));
+   }
+
+   @Test
+   public void shouldRenderNameValue_InPropertyAssertions() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 2, 1, "hasAge");
+      createCell("Sheet1", 3, 1, "25");
+      createCell("Sheet1", 4, 1, "hasParent");
+      createCell("Sheet1", 5, 1, "bob");
+      // Act
+      Set<OWLAxiom> results = evaluate("Individual: @A1 "
+            + "Facts: @B1 @C1(xsd:integer), @D1(ObjectProperty) @E1");
+      // Assert
+      assertThat(results, hasSize(3));
+      assertThat(results, containsInAnyOrder(Declaration(Vocabulary.FRED),
+            DataPropertyAssertion(Vocabulary.HAS_AGE, Vocabulary.FRED, Literal("25", Vocabulary.XSD_INTEGER)),
+            ObjectPropertyAssertion(Vocabulary.HAS_PARENT, Vocabulary.FRED, Vocabulary.BOB)));
+   }
+
+   @Test
+   public void shouldRenderIriValue_InPropertyAssertions() {
+      // Arrange
+      createCell("Sheet1", 1, 1, "http://protege.stanford.edu/mapping-master/test/fred");
+      createCell("Sheet1", 2, 1, "http://protege.stanford.edu/mapping-master/test/hasAge");
+      createCell("Sheet1", 3, 1, "25");
+      createCell("Sheet1", 4, 1, "http://protege.stanford.edu/mapping-master/test/hasParent");
+      createCell("Sheet1", 5, 1, "http://protege.stanford.edu/mapping-master/test/bob");
+      // Act
+      Set<OWLAxiom> results = evaluate("Individual: @A1(IRI) "
+            + "Facts: @B1(IRI) @C1(xsd:integer), @D1(ObjectProperty IRI) @E1(IRI)");
+      // Assert
+      assertThat(results, hasSize(3));
+      assertThat(results, containsInAnyOrder(Declaration(Vocabulary.FRED),
+            DataPropertyAssertion(Vocabulary.HAS_AGE, Vocabulary.FRED, Literal("25", Vocabulary.XSD_INTEGER)),
+            ObjectPropertyAssertion(Vocabulary.HAS_PARENT, Vocabulary.FRED, Vocabulary.BOB)));
+   }
+
+   @Test
+   public void shouldRenderNameValue_InPropertyAnnotation() {
+      // Arrange
+      setPrefix("foaf", Namespaces.FOAF.toString());
+      String text = "https://upload.wikimedia.org/wikipedia/en/a/ad/Fred_Flintstone.png";
+      createCell("Sheet1", 1, 1, "fred");
+      createCell("Sheet1", 2, 1, "foaf:depiction");
+      createCell("Sheet1", 3, 1, text);
+      // Act
+      Set<OWLAxiom> results = evaluate("Individual: @A1 Annotations: @B1 @C1(IRI)");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(Declaration(Vocabulary.FRED),
+            AnnotationAssertion(Vocabulary.FOAF_DEPICTION, Vocabulary.FRED.getIRI(),
+                  IRI(text))));
+   }
+
+   @Test
+   public void shouldRenderIriValue_InPropertyAnnotation() {
+      // Arrange
+      String text = "https://upload.wikimedia.org/wikipedia/en/a/ad/Fred_Flintstone.png";
+      createCell("Sheet1", 1, 1, "http://protege.stanford.edu/mapping-master/test/fred");
+      createCell("Sheet1", 2, 1, "http://xmlns.com/foaf/0.1/depiction");
+      createCell("Sheet1", 3, 1, text);
+      // Act
+      Set<OWLAxiom> results = evaluate("Individual: @A1(IRI) Annotations: @B1(IRI) @C1(IRI)");
+      // Assert
+      assertThat(results, hasSize(2));
+      assertThat(results, containsInAnyOrder(Declaration(Vocabulary.FRED),
+            AnnotationAssertion(Vocabulary.FOAF_DEPICTION, Vocabulary.FRED.getIRI(),
+                  IRI(text))));
    }
 }
