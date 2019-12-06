@@ -1,7 +1,9 @@
 package org.mm.renderer.owl;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.ByteArrayInputStream;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import org.mm.parser.MappingMasterParser;
 import org.mm.parser.NodeType;
 import org.mm.parser.ParseException;
@@ -32,8 +34,14 @@ public class OwlRenderer implements Renderer<Set<OWLAxiom>> {
 
    private static final Logger logger = LoggerFactory.getLogger(OwlRenderer.class);
 
+   private final OwlEntityResolver entityResolver;
+
+   public OwlRenderer(@Nonnull OwlEntityResolver entityResolver) {
+      this.entityResolver = checkNotNull(entityResolver);
+   }
+
    @Override
-   public Set<OWLAxiom> render(String transformationRule, Workbook workbook, RenderingContext context, OwlEntityResolver entityResolver) {
+   public Set<OWLAxiom> render(String transformationRule, Workbook workbook, RenderingContext context) {
       final Node transformationRuleObject = parse(transformationRule);
       final ReferenceResolver referenceResolver = new ReferenceResolver(workbook);
       final BuiltInFunctionHandler builtInFunctionHandler = new BuiltInFunctionHandler();
