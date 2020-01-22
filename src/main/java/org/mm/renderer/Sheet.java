@@ -103,7 +103,7 @@ public class Sheet {
          final Cell cell = poiRow.getCell(column-1);
          if (cell != null) {
             final String stringValue = getCellValue(cell);
-            value = Optional.of(stringValue);
+            value = Optional.ofNullable(stringValue);
          }
       }
       return value;
