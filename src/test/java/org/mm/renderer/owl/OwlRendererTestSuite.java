@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
    LanguageDirectiveTest.class,
    NamespaceDirectiveTest.class,
    PrefixDirectiveTest.class,
+   PrefixFunctionsTest.class,
    ShiftDirectiveTest.class,
    BuiltInFunctionsTest.class
 })

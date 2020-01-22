@@ -24,6 +24,7 @@ import org.semanticweb.owlapi.vocab.Namespaces;
 public class Vocabulary {
 
    public static final String ONTOLOGY_ID = "http://protege.stanford.edu/mapping-master/test/";
+   public static final String EX_NAMESPACE = "https://example.org/entity/";
 
    public static final OWLClass CAR = Class(IRI(ONTOLOGY_ID, "Car"));
    public static final OWLClass MOTOR = Class(IRI(ONTOLOGY_ID, "Motor"));
@@ -41,6 +42,16 @@ public class Vocabulary {
    public static final OWLClass BARBARA_PUFFINS_MD5 = Class(IRI(ONTOLOGY_ID, "290d31fea17d405a10b7a025dde55111"));
    public static final OWLClass CAR_LOWERCASE = Class(IRI(ONTOLOGY_ID, "car"));
    public static final OWLClass CAR_UPPERCASE = Class(IRI(ONTOLOGY_ID, "CAR"));
+
+   public static final OWLClass EX_CAR_OWNER = Class(IRI(EX_NAMESPACE, "CarOwner"));
+   public static final OWLClass EX_CAR_OWNER_UPPERCASE = Class(IRI(EX_NAMESPACE, "CAROWNER"));
+   public static final OWLClass EX_CAR_OWNER_LOWERCASE = Class(IRI(EX_NAMESPACE, "carowner"));
+   public static final OWLClass EX_CAR_OWNER_REVERSE = Class(IRI(EX_NAMESPACE, "renwOraC"));
+   public static final OWLClass EX_CAR_OWNER_REPLACE = Class(IRI(EX_NAMESPACE, "BarOwner"));
+   public static final OWLClass EX_CAR_OWNER_REPLACE_FIRST = Class(IRI(EX_NAMESPACE, "CalOwner"));
+   public static final OWLClass EX_CAR_OWNER_REPLACE_ALL = Class(IRI(EX_NAMESPACE, "CalOwnel"));
+   public static final OWLClass EX_CAR_OWNER_PRINTF = Class(IRI(EX_NAMESPACE, "NewCarOwner"));
+   public static final OWLClass EX_CAR_OWNER_CAPTURE = Class(IRI(EX_NAMESPACE, "Car"));
 
    public static final OWLObjectProperty HAS_ENGINE = ObjectProperty(IRI(ONTOLOGY_ID, "hasEngine"));
    public static final OWLObjectProperty USE_FUEL = ObjectProperty(IRI(ONTOLOGY_ID, "useFuel"));

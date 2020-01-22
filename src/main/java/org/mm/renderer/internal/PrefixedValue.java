@@ -19,6 +19,14 @@ public abstract class PrefixedValue implements Value {
       this.isFromWorkbook = isFromWorkbook;
    }
 
+   public String getPrefix() {
+      return value.contains(":") ? value.substring(0, value.indexOf(':')) : "";
+   }
+
+   public String getLocalName() {
+      return value.contains(":") ? value.substring(value.indexOf(':')+1, value.length()) : value;
+   }
+
    @Override
    public String getString() {
       return value;
