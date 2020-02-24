@@ -191,13 +191,13 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          case IRI: return new ClassIri(cellValue, true);
          case TERM:
             String localName = getLocalName(cellAddress, cellValue, directives);
-            Value className = new ClassName(localName, true);
             if (directives.useUserPrefix()) {
-               className = new ClassName(directives.getPrefix() + ":" + localName, true);
+               return new ClassName(directives.getPrefix() + ":" + localName, true);
             } else if (directives.useUserNamespace()) {
-               className = new ClassIri(directives.getNamespace() + localName, true);
+               return new ClassIri(directives.getNamespace() + localName, true);
+            } else {
+               return new ClassName(localName, true);
             }
-            return className;
          default: return new ClassName(NameUtils.toSnakeCase(cellValue), true);
       }
    }
@@ -208,13 +208,13 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          case IRI: return new DataPropertyIri(cellValue, true);
          case TERM:
             String localName = getLocalName(cellAddress, cellValue, directives);
-            Value propertyName = new DataPropertyName(localName, true);
             if (directives.useUserPrefix()) {
-               propertyName = new DataPropertyName(directives.getPrefix() + ":" + localName, true);
+               return new DataPropertyName(directives.getPrefix() + ":" + localName, true);
             } else if (directives.useUserNamespace()) {
-               propertyName = new DataPropertyIri(directives.getNamespace() + localName, true);
+               return new DataPropertyIri(directives.getNamespace() + localName, true);
+            } else {
+               return new DataPropertyName(localName, true);
             }
-            return propertyName;
          default: return new DataPropertyName(NameUtils.toSnakeCase(cellValue), true);
       }
    }
@@ -225,13 +225,13 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          case IRI: return new ObjectPropertyIri(cellValue, true);
          case TERM:
             String localName = getLocalName(cellAddress, cellValue, directives);
-            Value propertyName = new ObjectPropertyName(localName, true);
             if (directives.useUserPrefix()) {
-               propertyName = new ObjectPropertyName(directives.getPrefix() + ":" + localName, true);
+               return new ObjectPropertyName(directives.getPrefix() + ":" + localName, true);
             } else if (directives.useUserNamespace()) {
-               propertyName = new ObjectPropertyIri(directives.getNamespace() + localName, true);
+               return new ObjectPropertyIri(directives.getNamespace() + localName, true);
+            } else {
+               return new ObjectPropertyName(localName, true);
             }
-            return propertyName;
          default: return new ObjectPropertyName(NameUtils.toSnakeCase(cellValue), true);
       }
    }
@@ -242,13 +242,13 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          case IRI: return new AnnotationPropertyIri(cellValue, true);
          case TERM:
             String localName = getLocalName(cellAddress, cellValue, directives);
-            Value propertyName = new AnnotationPropertyName(localName, true);
             if (directives.useUserPrefix()) {
-               propertyName = new AnnotationPropertyName(directives.getPrefix() + ":" + localName, true);
+               return new AnnotationPropertyName(directives.getPrefix() + ":" + localName, true);
             } else if (directives.useUserNamespace()) {
-               propertyName = new AnnotationPropertyIri(directives.getNamespace() + localName, true);
+               return new AnnotationPropertyIri(directives.getNamespace() + localName, true);
+            } else {
+               return new AnnotationPropertyName(localName, true);
             }
-            return propertyName;
          default: return new AnnotationPropertyName(NameUtils.toSnakeCase(cellValue), true);
       }
    }
@@ -259,13 +259,13 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          case IRI: return new IndividualIri(cellValue, true);
          case TERM:
             String localName = getLocalName(cellAddress, cellValue, directives);
-            Value propertyName = new IndividualName(localName, true);
             if (directives.useUserPrefix()) {
-               propertyName = new IndividualName(directives.getPrefix() + ":" + localName, true);
+               return new IndividualName(directives.getPrefix() + ":" + localName, true);
             } else if (directives.useUserNamespace()) {
-               propertyName = new IndividualIri(directives.getNamespace() + localName, true);
+               return new IndividualIri(directives.getNamespace() + localName, true);
+            } else {
+               return new IndividualName(localName, true);
             }
-            return propertyName;
          default: return new IndividualName(NameUtils.toSnakeCase(cellValue), true);
       }
    }
@@ -276,22 +276,22 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          case IRI: return new UntypedIri(cellValue, true);
          case TERM:
             String localName = getLocalName(cellAddress, cellValue, directives);
-            Value entityName = new UntypedValue(localName,
-                  getDatatype(directives.getValueDatatype()),
-                  directives.getLanguage(),
-                  true);
             if (directives.useUserPrefix()) {
-               entityName = new UntypedValue(directives.getPrefix() + ":" + localName,
+               return new UntypedValue(directives.getPrefix() + ":" + localName,
                      getDatatype(directives.getValueDatatype()),
                      directives.getLanguage(),
                      true);
             } else if (directives.useUserNamespace()) {
-               entityName = new UntypedValue(directives.getNamespace()+ localName,
+               return new UntypedValue(directives.getNamespace()+ localName,
+                     getDatatype(directives.getValueDatatype()),
+                     directives.getLanguage(),
+                     true);
+            } else {
+               return new UntypedValue(localName,
                      getDatatype(directives.getValueDatatype()),
                      directives.getLanguage(),
                      true);
             }
-            return entityName;
          default: return new UntypedValue(cellValue,
                getDatatype(directives.getValueDatatype()),
                directives.getLanguage(),
