@@ -126,7 +126,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
       createCell("Sheet1", 2, 1, "http://protege.stanford.edu/mapping-master/test/hasEngine");
       createCell("Sheet1", 3, 1, "http://protege.stanford.edu/mapping-master/test/Motor");
       // Act
-      Set<OWLAxiom> results = evaluate("Class: @A1(IRI) SubClassOf: @B1(ObjectProperty IRI) some @C1(IRI)");
+      Set<OWLAxiom> results = evaluate("Class: @A1(mm:entityIRI) SubClassOf: @B1(ObjectProperty mm:entityIRI) some @C1(mm:entityIRI)");
       // Assert
       assertThat(results, hasSize(2));
       assertThat(results, containsInAnyOrder(
@@ -162,7 +162,7 @@ public class CellReferenceTest extends AbstractOwlRendererTest {
       createCell("Sheet1", 5, 1, "http://protege.stanford.edu/mapping-master/test/bob");
       // Act
       Set<OWLAxiom> results = evaluate("Individual: @A1(IRI) "
-            + "Facts: @B1(IRI) @C1(xsd:integer), @D1(ObjectProperty IRI) @E1(IRI)");
+            + "Facts: @B1(mm:entityIRI) @C1(xsd:integer), @D1(ObjectProperty mm:entityIRI) @E1(IRI)");
       // Assert
       assertThat(results, hasSize(3));
       assertThat(results, containsInAnyOrder(Declaration(Vocabulary.FRED),

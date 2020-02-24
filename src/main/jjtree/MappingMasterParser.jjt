@@ -200,11 +200,12 @@ TOKEN: { <OWL_NAMED_INDIVIDUAL: "Individual"> }
 TOKEN: { <OWL_OBJECT_PROPERTY: "ObjectProperty"> }
 TOKEN: { <OWL_DATA_PROPERTY: "DataProperty"> }
 TOKEN: { <OWL_ANNOTATION_PROPERTY: "AnnotationProperty"> }
+TOKEN: { <OWL_IRI: "IRI"> }
 TOKEN: { <OWL_LITERAL: "Literal"> }
 TOKEN: { <OWL_DATATYPE: "Datatype"> }
 
-TOKEN: { <IRI: "IRI"> }
-TOKEN: { <TERM: "TERM"> }
+TOKEN: { <IRI: "mm:entityIRI"> }
+TOKEN: { <TERM: "mm:entityTerm"> }
 
 TOKEN: { <MM_TO_UPPER_CASE: "mm:toUpperCase"> }
 TOKEN: { <MM_TO_LOWER_CASE: "mm:toLowerCase"> }
@@ -507,7 +508,7 @@ void annotation_value() #AnnotationValue : {}
 {
   ( iri(OWL_LITERAL)
     | literal()
-    | reference(MM_UNTYPED)
+    | reference(OWL_LITERAL)
   )
 }
 
@@ -1237,6 +1238,7 @@ int reference_type() :
     | t = <OWL_OBJECT_PROPERTY> { entityType = t.kind; }
     | t = <OWL_DATA_PROPERTY> { entityType = t.kind; }
     | t = <OWL_ANNOTATION_PROPERTY> { entityType = t.kind; }
+    | t = <OWL_IRI> { entityType = t.kind; }
     | t = <OWL_DATATYPE> { entityType = t.kind; }
     | t = <OWL_LITERAL> { entityType = t.kind; }
   )

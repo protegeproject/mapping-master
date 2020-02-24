@@ -129,113 +129,115 @@ public interface MappingMasterParserConstants {
   /** RegularExpression Id. */
   int OWL_ANNOTATION_PROPERTY = 68;
   /** RegularExpression Id. */
-  int OWL_LITERAL = 69;
+  int OWL_IRI = 69;
   /** RegularExpression Id. */
-  int OWL_DATATYPE = 70;
+  int OWL_LITERAL = 70;
   /** RegularExpression Id. */
-  int IRI = 71;
+  int OWL_DATATYPE = 71;
   /** RegularExpression Id. */
-  int TERM = 72;
+  int IRI = 72;
   /** RegularExpression Id. */
-  int MM_TO_UPPER_CASE = 73;
+  int TERM = 73;
   /** RegularExpression Id. */
-  int MM_TO_LOWER_CASE = 74;
+  int MM_TO_UPPER_CASE = 74;
   /** RegularExpression Id. */
-  int MM_TRIM = 75;
+  int MM_TO_LOWER_CASE = 75;
   /** RegularExpression Id. */
-  int MM_PRINTF = 76;
+  int MM_TRIM = 76;
   /** RegularExpression Id. */
-  int MM_DECIMAL_FORMAT = 77;
+  int MM_PRINTF = 77;
   /** RegularExpression Id. */
-  int MM_CAPTURING = 78;
+  int MM_DECIMAL_FORMAT = 78;
   /** RegularExpression Id. */
-  int MM_REVERSE = 79;
+  int MM_CAPTURING = 79;
   /** RegularExpression Id. */
-  int MM_REPLACE = 80;
+  int MM_REVERSE = 80;
   /** RegularExpression Id. */
-  int MM_REPLACE_ALL = 81;
+  int MM_REPLACE = 81;
   /** RegularExpression Id. */
-  int MM_REPLACE_FIRST = 82;
+  int MM_REPLACE_ALL = 82;
   /** RegularExpression Id. */
-  int MM_APPEND = 83;
+  int MM_REPLACE_FIRST = 83;
   /** RegularExpression Id. */
-  int MM_PREPEND = 84;
+  int MM_APPEND = 84;
   /** RegularExpression Id. */
-  int MM_NO_ENCODE = 85;
+  int MM_PREPEND = 85;
   /** RegularExpression Id. */
-  int MM_CAMELCASE_ENCODE = 86;
+  int MM_NO_ENCODE = 86;
   /** RegularExpression Id. */
-  int MM_SNAKECASE_ENCODE = 87;
+  int MM_CAMELCASE_ENCODE = 87;
   /** RegularExpression Id. */
-  int MM_UUID_ENCODE = 88;
+  int MM_SNAKECASE_ENCODE = 88;
   /** RegularExpression Id. */
-  int MM_HASH_ENCODE = 89;
+  int MM_UUID_ENCODE = 89;
   /** RegularExpression Id. */
-  int MM_DEFAULT_LITERAL = 90;
+  int MM_HASH_ENCODE = 90;
   /** RegularExpression Id. */
-  int MM_DEFAULT_LABEL = 91;
+  int MM_DEFAULT_LITERAL = 91;
   /** RegularExpression Id. */
-  int MM_DEFAULT_PREFIX = 92;
+  int MM_DEFAULT_LABEL = 92;
   /** RegularExpression Id. */
-  int MM_DEFAULT_NAMESPACE = 93;
+  int MM_DEFAULT_PREFIX = 93;
   /** RegularExpression Id. */
-  int MM_DEFAULT_LANGUAGE = 94;
+  int MM_DEFAULT_NAMESPACE = 94;
   /** RegularExpression Id. */
-  int MM_NO_SHIFT = 95;
+  int MM_DEFAULT_LANGUAGE = 95;
   /** RegularExpression Id. */
-  int MM_SHIFT_UP = 96;
+  int MM_NO_SHIFT = 96;
   /** RegularExpression Id. */
-  int MM_SHIFT_DOWN = 97;
+  int MM_SHIFT_UP = 97;
   /** RegularExpression Id. */
-  int MM_SHIFT_LEFT = 98;
+  int MM_SHIFT_DOWN = 98;
   /** RegularExpression Id. */
-  int MM_SHIFT_RIGHT = 99;
+  int MM_SHIFT_LEFT = 99;
   /** RegularExpression Id. */
-  int MM_CREATE_IF_CELL_EMPTY = 100;
+  int MM_SHIFT_RIGHT = 100;
   /** RegularExpression Id. */
-  int MM_IGNORE_IF_CELL_EMPTY = 101;
+  int MM_CREATE_IF_CELL_EMPTY = 101;
   /** RegularExpression Id. */
-  int MM_WARNING_IF_CELL_EMPTY = 102;
+  int MM_IGNORE_IF_CELL_EMPTY = 102;
   /** RegularExpression Id. */
-  int MM_ERROR_IF_CELL_EMPTY = 103;
+  int MM_WARNING_IF_CELL_EMPTY = 103;
   /** RegularExpression Id. */
-  int MM_CREATE_IF_ENTITY_ABSENT = 104;
+  int MM_ERROR_IF_CELL_EMPTY = 104;
   /** RegularExpression Id. */
-  int MM_IGNORE_IF_ENTITY_ABSENT = 105;
+  int MM_CREATE_IF_ENTITY_ABSENT = 105;
   /** RegularExpression Id. */
-  int MM_WARNING_IF_ENTITY_ABSENT = 106;
+  int MM_IGNORE_IF_ENTITY_ABSENT = 106;
   /** RegularExpression Id. */
-  int MM_ERROR_IF_ENTITY_ABSENT = 107;
+  int MM_WARNING_IF_ENTITY_ABSENT = 107;
   /** RegularExpression Id. */
-  int CREATE = 108;
+  int MM_ERROR_IF_ENTITY_ABSENT = 108;
   /** RegularExpression Id. */
-  int IGNORE = 109;
+  int CREATE = 109;
   /** RegularExpression Id. */
-  int WARNING = 110;
+  int IGNORE = 110;
   /** RegularExpression Id. */
-  int ERROR = 111;
+  int WARNING = 111;
   /** RegularExpression Id. */
-  int IRI_REF = 112;
+  int ERROR = 112;
   /** RegularExpression Id. */
-  int STRING_LITERAL = 113;
+  int IRI_REF = 113;
   /** RegularExpression Id. */
-  int INTEGER_LITERAL = 114;
+  int STRING_LITERAL = 114;
   /** RegularExpression Id. */
-  int LONG_LITERAL = 115;
+  int INTEGER_LITERAL = 115;
   /** RegularExpression Id. */
-  int FLOAT_LITERAL = 116;
+  int LONG_LITERAL = 116;
   /** RegularExpression Id. */
-  int QUOTED_NAME = 117;
+  int FLOAT_LITERAL = 117;
   /** RegularExpression Id. */
-  int LETTER = 118;
+  int QUOTED_NAME = 118;
   /** RegularExpression Id. */
-  int DIGIT = 119;
+  int LETTER = 119;
   /** RegularExpression Id. */
-  int EXPONENT = 120;
+  int DIGIT = 120;
   /** RegularExpression Id. */
-  int CELL_REFERENCE = 121;
+  int EXPONENT = 121;
   /** RegularExpression Id. */
-  int NAME = 122;
+  int CELL_REFERENCE = 122;
+  /** RegularExpression Id. */
+  int NAME = 123;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -317,10 +319,11 @@ public interface MappingMasterParserConstants {
     "\"ObjectProperty\"",
     "\"DataProperty\"",
     "\"AnnotationProperty\"",
+    "\"IRI\"",
     "\"Literal\"",
     "\"Datatype\"",
-    "\"IRI\"",
-    "\"TERM\"",
+    "\"mm:entityIRI\"",
+    "\"mm:entityTerm\"",
     "\"mm:toUpperCase\"",
     "\"mm:toLowerCase\"",
     "\"mm:trim\"",

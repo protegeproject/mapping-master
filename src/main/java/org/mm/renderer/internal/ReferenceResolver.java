@@ -146,6 +146,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             case OWL_OBJECT_PROPERTY: value = processObjectPropertyName(cellAddress, cellValue, directives); break;
             case OWL_ANNOTATION_PROPERTY: value = processAnnotationPropertyName(cellAddress, cellValue, directives); break;
             case OWL_NAMED_INDIVIDUAL: value = processIndividualName(cellAddress, cellValue, directives); break;
+            case OWL_IRI: value = processIriValue(cellAddress, cellValue, directives); break;
             case OWL_DATATYPE: value = processDatatypeName(cellAddress, cellValue, directives); break;
             case OWL_LITERAL:
                int datatype = directives.getValueDatatype();
@@ -175,13 +176,7 @@ public class ReferenceResolver implements MappingMasterParserConstants {
                               tokenImage[datatype]));
                }
                break;
-            case MM_UNTYPED:
-               int valueType = directives.getValueType();
-               switch (valueType) {
-                  case IRI: value = processUntypedIri(cellValue); break;
-                  default: value = processUntypedValue(cellAddress, cellValue, directives); break;
-               }
-               break;
+            case MM_UNTYPED: value = processEntityName(cellAddress, cellValue, directives); break;
             default: throw new RuntimeException(
                   String.format("Programming error: Unknown directive to handle reference entity type (%s)",
                         tokenImage[entityType]));
@@ -275,6 +270,35 @@ public class ReferenceResolver implements MappingMasterParserConstants {
       }
    }
 
+   private Value processEntityName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
+      int valueType = directives.getValueType();
+      switch (valueType) {
+         case IRI: return new UntypedIri(cellValue, true);
+         case TERM:
+            String localName = getLocalName(cellAddress, cellValue, directives);
+            Value entityName = new UntypedValue(localName,
+                  getDatatype(directives.getValueDatatype()),
+                  directives.getLanguage(),
+                  true);
+            if (directives.useUserPrefix()) {
+               entityName = new UntypedValue(directives.getPrefix() + ":" + localName,
+                     getDatatype(directives.getValueDatatype()),
+                     directives.getLanguage(),
+                     true);
+            } else if (directives.useUserNamespace()) {
+               entityName = new UntypedValue(directives.getNamespace()+ localName,
+                     getDatatype(directives.getValueDatatype()),
+                     directives.getLanguage(),
+                     true);
+            }
+            return entityName;
+         default: return new UntypedValue(cellValue,
+               getDatatype(directives.getValueDatatype()),
+               directives.getLanguage(),
+               true);
+      }
+   }
+
    private String getLocalName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       int option = directives.getIriEncoding();
       switch (option) {
@@ -288,6 +312,10 @@ public class ReferenceResolver implements MappingMasterParserConstants {
             + " (" + tokenImage[option] + ")");
    }
 
+   private Value processIriValue(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
+      return new UntypedIri(cellValue, true);
+   }
+
    private Value processDatatypeName(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
       String localName = cellValue;
       Value datatypeName = new DatatypeName(localName, true);
@@ -297,17 +325,6 @@ public class ReferenceResolver implements MappingMasterParserConstants {
          datatypeName = new DatatypeIri(directives.getNamespace() + localName, true);
       }
       return datatypeName;
-   }
-
-   private UntypedValue processUntypedValue(CellAddress cellAddress, String cellValue, ReferenceDirectives directives) {
-      return new UntypedValue(
-            cellValue,
-            getDatatype(directives.getValueDatatype()),
-            directives.getLanguage(), true);
-   }
-
-   private IriValue processUntypedIri(String cellValue) {
-      return new UntypedIri(cellValue, true);
    }
 
    private Value processLiteral(String cellValue, ReferenceDirectives directives) {
