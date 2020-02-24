@@ -6,6 +6,9 @@ import org.mm.parser.*;
 
 public
 class ASTPropertyValue extends SimpleNode {
+
+  public boolean isLiteral = false;
+
   public ASTPropertyValue(int id) {
     super(id);
   }

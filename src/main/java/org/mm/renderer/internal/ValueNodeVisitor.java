@@ -76,6 +76,12 @@ public class ValueNodeVisitor extends NodeVisitorAdapter {
    @Override
    public void visit(ASTPropertyValue valueNode) {
       Node valueTypeNode = ParserUtils.getChild(valueNode);
+      if (valueTypeNode instanceof ASTReference) {
+         ASTReference refTypeNode = (ASTReference) valueTypeNode;
+         if (valueNode.isLiteral) {
+            refTypeNode.referenceDirectives = refTypeNode.getDirectives().setEntityType(OWL_LITERAL);
+         }
+      }
       valueTypeNode.accept(this);
    }
 

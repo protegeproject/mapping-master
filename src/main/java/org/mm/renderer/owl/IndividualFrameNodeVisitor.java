@@ -150,14 +150,15 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
    public void visit(ASTPropertyFact node) {
       OWLEntity property = getProperty(node);
       if (property != null) {
-         Value value = getPropertyValue(node);
          if (property.isOWLDataProperty()) {
+            Value value = getPropertyValue(node, true);
             if (value instanceof UntypedValue) {
                visitDataPropertyAssertion(property.asOWLDataProperty(), ((UntypedValue) value).asLiteralValue());
             } else {
                visitDataPropertyAssertion(property.asOWLDataProperty(), value);
             }
          } else if (property.isOWLObjectProperty()) {
+            Value value = getPropertyValue(node, false);
             if (value instanceof UntypedValue) {
                visitObjectPropertyAssertion(property.asOWLObjectProperty(), ((UntypedValue) value).asIndividualName());
             } else {
@@ -174,8 +175,10 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
       return getEntity();
    }
 
-   private Value getPropertyValue(SimpleNode node) {
+   private Value getPropertyValue(SimpleNode node, boolean isLiteral) {
       ASTPropertyValue valueNode = ParserUtils.getChild(node, NodeType.PROPERTY_VALUE);
+      // XXX: Code smell - a public flag to set the value type between a data property or an object property
+      valueNode.isLiteral = isLiteral;
       valueNode.accept(this);
       return getValue();
    }
@@ -210,14 +213,15 @@ public class IndividualFrameNodeVisitor extends EntityNodeVisitor {
    public void visit(ASTReferencedFact node) {
       OWLEntity property = getProperty(node);
       if (property != null) {
-         Value value = getPropertyValue(node);
          if (property.isOWLDataProperty()) {
+            Value value = getPropertyValue(node, true);
             if (value instanceof UntypedValue) {
                visitDataPropertyAssertion(property.asOWLDataProperty(), ((UntypedValue) value).asLiteralValue());
             } else {
                visitDataPropertyAssertion(property.asOWLDataProperty(), value);
             }
          } else if (property.isOWLObjectProperty()) {
+            Value value = getPropertyValue(node, false);
             if (value instanceof UntypedValue) {
                visitObjectPropertyAssertion(property.asOWLObjectProperty(), ((UntypedValue) value).asIndividualName());
             } else {
