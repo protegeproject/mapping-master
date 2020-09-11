@@ -4,7 +4,8 @@ package org.mm.parser;
 
 public
 class ASTDefaultID extends SimpleNode {
-  public String defaultID;
+	
+  public String defaultID; /* Manually added */
 
 public ASTDefaultID(int id) {
     super(id);
