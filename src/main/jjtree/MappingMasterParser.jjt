@@ -131,6 +131,7 @@ MORE :
 
 /* Tokens */
 TOKEN: { <CLASS: "Class:" | "class:"> }
+TOKEN: { <OBJECT_PROPERTY: "ObjectProperty:" | "objectProperty:"> }
 TOKEN: { <INDIVIDUAL: "Individual:" | "individual:"> }
 TOKEN: { <EQUIVALENT_TO: "EquivalentTo:" | "equivalentTo:"> }
 TOKEN: { <SUBCLASS_OF: "SubClassOf:" | "subClassOf:"> }
@@ -366,6 +367,7 @@ void mm_expression() #MMExpression : {}
 {
   (  owl_class_declaration() 
    | owl_individual_declaration()
+   | owl_object_property_declaration()
   )
   // TODO datatype, object property, data property, and annotation property declarations
   // TODO negative property assertions, disjoint classes, disjoint properties, equivalent properties
@@ -607,6 +609,13 @@ void owl_class_declaration() #OWLClassDeclaration : {}
   // See: http://www.w3.org/TR/owl2-manchester-syntax/
 }
 
+void owl_object_property_declaration() #OWLObjectPropertyDeclaration : {}
+{
+  <OBJECT_PROPERTY> owl_object_property(defaultObjectPropertyValueEncoding)
+    ( <ANNOTATIONS> annotation_fact_list()
+    ) *
+}
+
 void owl_equivalent_classes() #OWLEquivalentClasses : {}
 {
    <EQUIVALENT_TO> owl_class_expression_with_condition() ( "," owl_class_expression_with_condition() )*
@@ -664,6 +673,11 @@ void owl_annotation_property() #OWLAnnotationProperty: {}
 }
 
 void owl_class_name() : {}
+{
+  name()
+}
+
+void owl_object_property_name() : {}
 {
   name()
 }
@@ -818,7 +832,12 @@ void owl_object_one_of() #OWLObjectOneOf : {}
 void owl_class(int defaultValueEncoding) #OWLClass : {}
 {
   owl_class_name() | reference(OWL_CLASS, defaultValueEncoding, defaultIRIEncoding)
-} 
+}
+
+void owl_object_property(int defaultValueEncoding) #OWLObjectProperty : {}
+{
+  owl_object_property_name() | reference(OWL_OBJECT_PROPERTY, defaultValueEncoding, defaultIRIEncoding)
+}
 
 void owl_named_individual(int defaultValueEncoding) #OWLNamedIndividual : {}
 {
