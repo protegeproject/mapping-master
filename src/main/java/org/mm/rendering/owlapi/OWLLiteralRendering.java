@@ -58,9 +58,16 @@ public class OWLLiteralRendering extends OWLAnnotationValueRendering
          return new OWLLiteralType(XSD_DATETIME);
       else if (literal.getDatatype().getIRI().equals(XSDVocabulary.DURATION.getIRI()))
          return new OWLLiteralType(XSD_DURATION);
-      else if (literal.getDatatype().isRDFPlainLiteral()) {
+      else if (literal.getDatatype().isRDFPlainLiteral())
          return new OWLLiteralType(RDF_PLAINLITERAL);
-      }
+      else if (literal.getDatatype().getIRI().equals(XSDVocabulary.ANY_URI.getIRI()))
+            return new OWLLiteralType(XSD_ANYURI);
+
       throw new RuntimeException("Unsupported data type: " + literal.getDatatype());
    }
 }
+
+//   RDF_XML_LITERAL(Namespaces.RDF, "XMLLiteral", OWL2Datatype.Category.CAT_STRING_WITHOUT_LANGUAGE_TAG, false, ".*"),
+//   RDFS_LITERAL(Namespaces.RDFS, "Literal", OWL2Datatype.Category.CAT_UNIVERSAL, false, ".*"),
+//   RDF_PLAIN_LITERAL(Namespaces.RDF, "PlainLiteral", OWL2Datatype.Category.CAT_STRING_WITHOUT_LANGUAGE_TAG, false, ".*"),
+

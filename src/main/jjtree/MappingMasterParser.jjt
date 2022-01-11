@@ -170,6 +170,7 @@ TOKEN: { <XSD_DURATION: "xsd:duration" > }
 TOKEN: { <XSD_DATE: "xsd:date" > }
 TOKEN: { <RDF_XMLLITERAL: "rdf:XMLLiteral" > }
 TOKEN: { <RDF_PLAINLITERAL: "rdf:PlainLiteral" > }
+TOKEN: { <XSD_ANYURI: "xsd:anyURI" > }
 
 /*
 TOKEN: { <XSD_NOTATION: "xsd:NOTATION" > }
@@ -1046,6 +1047,7 @@ int datatype() :
    | t = <XSD_DATE>
    | t = <XSD_DURATION>
    | t = <RDF_PLAINLITERAL>
+   | t = <XSD_ANYURI>
  )
   {
     return t.kind;

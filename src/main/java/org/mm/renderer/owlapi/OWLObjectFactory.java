@@ -1,10 +1,5 @@
 package org.mm.renderer.owlapi;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import org.mm.core.OWLEntityResolver;
 import org.mm.core.OWLOntologySource;
 import org.mm.exceptions.EntityCreationException;
@@ -63,6 +58,11 @@ import org.semanticweb.owlapi.model.OWLSubDataPropertyOfAxiom;
 import org.semanticweb.owlapi.model.OWLSubObjectPropertyOfAxiom;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 import org.semanticweb.owlapi.vocab.XSDVocabulary;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class OWLObjectFactory implements MappingMasterParserConstants
 {
@@ -208,32 +208,34 @@ public class OWLObjectFactory implements MappingMasterParserConstants
    public OWLLiteral createTypedLiteral(String value, int type) throws RendererException
    {
       switch (type) {
-         case XSD_STRING:
-            return createOWLLiteralString(value);
-         case XSD_BOOLEAN:
-            return createOWLLiteralBoolean(value);
-         case XSD_DOUBLE:
-            return createOWLLiteralDouble(value);
-         case XSD_FLOAT:
-            return createOWLLiteralFloat(value);
-         case XSD_LONG:
-            return createOWLLiteralLong(value);
-         case XSD_INTEGER:
-            return createOWLLiteralInteger(value);
-         case XSD_SHORT:
-            return createOWLLiteralShort(value);
-         case XSD_BYTE:
-            return createOWLLiteralByte(value);
-         case XSD_DECIMAL:
-            return createOWLLiteralDecimal(value);
-         case XSD_DATETIME:
-            return createOWLLiteralDateTime(value);
-         case XSD_DATE:
-            return createOWLLiteralDate(value);
-         case XSD_TIME:
-            return createOWLLiteralTime(value);
-         case XSD_DURATION:
-            return createOWLLiteralDuration(value);
+      case XSD_STRING:
+         return createOWLLiteralString(value);
+      case XSD_BOOLEAN:
+         return createOWLLiteralBoolean(value);
+      case XSD_DOUBLE:
+         return createOWLLiteralDouble(value);
+      case XSD_FLOAT:
+         return createOWLLiteralFloat(value);
+      case XSD_LONG:
+         return createOWLLiteralLong(value);
+      case XSD_INTEGER:
+         return createOWLLiteralInteger(value);
+      case XSD_SHORT:
+         return createOWLLiteralShort(value);
+      case XSD_BYTE:
+         return createOWLLiteralByte(value);
+      case XSD_DECIMAL:
+         return createOWLLiteralDecimal(value);
+      case XSD_DATETIME:
+         return createOWLLiteralDateTime(value);
+      case XSD_DATE:
+         return createOWLLiteralDate(value);
+      case XSD_TIME:
+         return createOWLLiteralTime(value);
+      case XSD_DURATION:
+         return createOWLLiteralDuration(value);
+      case XSD_ANYURI:
+         return createOWLLiteralAnyURI(value);
       }
       throw new RendererException("Unknown datatype");
    }
@@ -310,6 +312,11 @@ public class OWLObjectFactory implements MappingMasterParserConstants
    public OWLLiteral createOWLLiteralDuration(String value)
    {
       return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.DURATION.getIRI()));
+   }
+
+   public OWLLiteral createOWLLiteralAnyURI(String value)
+   {
+      return owlDataFactory.getOWLLiteral(value, owlDataFactory.getOWLDatatype(XSDVocabulary.ANY_URI.getIRI()));
    }
 
    public OWLDatatype createOWLDatatype(String typeName) throws RendererException

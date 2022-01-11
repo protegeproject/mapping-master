@@ -89,9 +89,14 @@ public class OWLLiteralType implements MappingMasterParserConstants
       return this.type == XSD_DURATION;
    }
 
+   public boolean isXSDAnyURI()
+   {
+      return this.type == XSD_ANYURI;
+   }
+
    public boolean isQuotedOWLLiteral()
    {
-      return isXSDString() || isXSDTime() || isXSDDate() || isXSDDateTime() || isXSDDuration();
+      return isXSDString() || isXSDTime() || isXSDDate() || isXSDDateTime() || isXSDDuration() || isXSDAnyURI();
    }
 
    public String toString()
