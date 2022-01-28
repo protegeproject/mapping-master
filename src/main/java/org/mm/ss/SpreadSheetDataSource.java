@@ -1,12 +1,8 @@
 package org.mm.ss;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -18,6 +14,12 @@ import org.mm.parser.node.SourceSpecificationNode;
 import org.mm.renderer.InternalRendererException;
 import org.mm.renderer.RendererException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SpreadSheetDataSource implements DataSource, MappingMasterParserConstants
 {
    private final Workbook workbook;
@@ -26,6 +28,8 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
    private final List<Sheet> sheetList = new ArrayList<>();
 
    private Optional<SpreadsheetLocation> currentLocation;
+
+   private final DataFormatter dataFormatter = new DataFormatter();
 
    public SpreadSheetDataSource()
    {
@@ -115,9 +119,11 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
          case Cell.CELL_TYPE_STRING :
             return cell.getStringCellValue();
          case Cell.CELL_TYPE_NUMERIC :
-            // Check if the numeric is an integer or double
-            if (isInteger(cell.getNumericCellValue())) {
-               return Integer.toString((int) cell.getNumericCellValue());
+            // Check if the numeric is an integer or double or a date
+            if (isDateFormatted(cell)) {
+               return dataFormatter.formatCellValue(cell);
+            } else if (isInteger(cell.getNumericCellValue())) {
+               return Integer.toString((int)cell.getNumericCellValue());
             } else {
                return Double.toString(cell.getNumericCellValue());
             }
@@ -133,6 +139,11 @@ public class SpreadSheetDataSource implements DataSource, MappingMasterParserCon
    private boolean isInteger(double number)
    {
       return (number == Math.floor(number) && !Double.isInfinite(number));
+   }
+
+   private boolean isDateFormatted(Cell cell)
+   {
+      return DateUtil.isCellDateFormatted(cell);
    }
 
    public String getLocationValueWithShifting(SpreadsheetLocation location, ReferenceNode referenceNode)
