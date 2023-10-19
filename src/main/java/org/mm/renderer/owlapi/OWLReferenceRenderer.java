@@ -137,7 +137,7 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
             Optional<OWLEntity> foundEntity = getOWLEntityFromOntology(literalValue);
             if (foundEntity.isPresent()) {
                IRI entityIri = foundEntity.get().getIRI();
-               return  Optional.of(new OWLIRIReferenceRendering(entityIri, referenceType));
+               return Optional.of(new OWLIRIReferenceRendering(entityIri, referenceType));
             }
          }
       } else if (sourceSpecificationNode.hasLocation()) {
@@ -164,14 +164,14 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
          }
          else if (referenceNode.hasEntityType()) {
             /*
-             * Setup the entity name, label and language tag based on user's input. There are validation process
+             * Set up the entity name, label and language tag based on user's input. There are validation process
              * for the entity name and label to decide if an empty value will throw a warning, an error or just
              * simply ignore it.
              */
             Optional<String> entityName = getEntityName(resolvedValue, referenceNode);
             entityName = processIdentifier(entityName, location, referenceNode);
             Optional<String> entityLabel = getEntityLabel(resolvedValue, referenceNode);
-            entityLabel = validateLabel(entityLabel, location, referenceNode);
+            entityLabel = processLabel(entityLabel, location, referenceNode);
             
             /*
              * Create the OWL entity based on the input of its name, label and language tag. The method createOWLEntity
@@ -213,85 +213,95 @@ public class OWLReferenceRenderer implements ReferenceRenderer, MappingMasterPar
    private Optional<String> processResolvedValue(Optional<String> resolvedValue, SpreadsheetLocation location, ReferenceDirectives directives)
          throws RendererException
    {
-      Optional<String> finalValue = resolvedValue;
-      if (!resolvedValue.isPresent()) {
+      if (resolvedValue.isPresent() && !resolvedValue.get().isEmpty())
+         return resolvedValue;
+      else {
          switch (directives.getActualEmptyLocationDirective()) {
-            case MM_PROCESS_IF_EMPTY_LOCATION:
-               finalValue = Optional.of("");
-               break;
-            case MM_SKIP_IF_EMPTY_LOCATION:
-               break;
-            case MM_WARNING_IF_EMPTY_LOCATION:
-               logger.warn("The cell location {} has an empty value", location);
-               break;
-            case MM_ERROR_IF_EMPTY_LOCATION:
-               throw new RendererException("The cell location " + location + " has an empty value");
+         case MM_PROCESS_IF_EMPTY_LOCATION:
+            return Optional.of("");
+         case MM_SKIP_IF_EMPTY_LOCATION:
+            return Optional.empty();
+         case MM_WARNING_IF_EMPTY_LOCATION:
+            logger.warn("The cell location {} has an empty value", location);
+            return Optional.empty();
+         case MM_ERROR_IF_EMPTY_LOCATION:
+            throw new RendererException("The cell location " + location + " has an empty value");
+         default:
+            return resolvedValue;
          }
       }
-      return finalValue;
    }
 
    private Optional<String> processLiteral(Optional<String> literalValue, SpreadsheetLocation location, ReferenceDirectives directives)
          throws RendererException
    {
-      Optional<String> finalLiteral = literalValue;
-      if (!literalValue.isPresent()) {
+      if (literalValue.isPresent() && !literalValue.get().isEmpty())
+         return literalValue;
+      else {
          switch (directives.getActualEmptyLiteralDirective()) {
-            case MM_PROCESS_IF_EMPTY_LITERAL:
-               finalLiteral = Optional.of("");
-               break;
-            case MM_SKIP_IF_EMPTY_LITERAL:
-               break;
-            case MM_WARNING_IF_EMPTY_LITERAL:
-               logger.warn("The cell location {} has an empty value", location);
-               break;
-            case MM_ERROR_IF_EMPTY_LITERAL:
-               throw new RendererException("The cell location " + location + " has an empty value");
+         case MM_PROCESS_IF_EMPTY_LITERAL:
+            return Optional.of("");
+         case MM_SKIP_IF_EMPTY_LITERAL:
+            return Optional.empty();
+         case MM_WARNING_IF_EMPTY_LITERAL:
+            logger.warn("The cell location {} has an empty value", location);
+            return Optional.empty();
+         case MM_ERROR_IF_EMPTY_LITERAL:
+            throw new RendererException("The cell location " + location + " has an empty value");
+         default:
+            return Optional.empty();
          }
       }
-      return finalLiteral;
    }
 
    private Optional<String> processIdentifier(Optional<String> entityName, SpreadsheetLocation location, ReferenceNode referenceNode)
          throws RendererException
    {
-      Optional<String> finalName = entityName;
-      if (referenceNode.hasRDFIDValueEncoding() && !entityName.isPresent()) {
-         switch (referenceNode.getReferenceDirectives().getActualEmptyRDFIDDirective()) {
+      if (entityName.isPresent() && !entityName.get().isEmpty())
+         return entityName;
+      else {
+         if (referenceNode.hasRDFIDValueEncoding()) {
+            switch (referenceNode.getReferenceDirectives().getActualEmptyRDFIDDirective()) {
             case MM_PROCESS_IF_EMPTY_ID:
-               finalName = Optional.of("");
-               break;
+               return Optional.of("");
             case MM_SKIP_IF_EMPTY_ID:
-               break;
+               return Optional.empty();
             case MM_WARNING_IF_EMPTY_ID:
                logger.warn("The cell location {} has an empty value", location);
-               break;
+               return Optional.empty();
             case MM_ERROR_IF_EMPTY_ID:
                throw new RendererException("The cell location " + location + " has an empty value");
-         }
+            default:
+               return Optional.empty();
+            }
+         } else // Ignore skip logic if does not have rdf:ID encoding
+            return entityName;
       }
-      return finalName;
    }
 
-   private Optional<String> validateLabel(Optional<String> entityLabel, SpreadsheetLocation location, ReferenceNode referenceNode)
+   private Optional<String> processLabel(Optional<String> entityLabel, SpreadsheetLocation location, ReferenceNode referenceNode)
          throws RendererException
    {
-      Optional<String> finalLabel = entityLabel;
-      if (referenceNode.hasRDFSLabelValueEncoding() && !entityLabel.isPresent()) {
-         switch (referenceNode.getReferenceDirectives().getActualEmptyRDFSLabelDirective()) {
+      if (entityLabel.isPresent() && !entityLabel.get().isEmpty())
+         return entityLabel;
+      else {
+         if (referenceNode.hasRDFSLabelValueEncoding()) {
+            switch (referenceNode.getReferenceDirectives().getActualEmptyRDFSLabelDirective()) {
             case MM_PROCESS_IF_EMPTY_LABEL:
-               finalLabel = Optional.of("");
-               break;
+               return Optional.of("");
             case MM_SKIP_IF_EMPTY_LABEL:
-               break;
+               return Optional.empty();
             case MM_WARNING_IF_EMPTY_LABEL:
                logger.warn("The cell location {} has an empty value", location);
-               break;
+               return Optional.empty();
             case MM_ERROR_IF_EMPTY_LABEL:
                throw new RendererException("The cell location " + location + " has an empty value");
-         }
+            default:
+               return Optional.empty();
+            }
+         } else // Ignore skip logic if does not have rdfs:label encoding
+            return entityLabel;
       }
-      return finalLabel;
    }
 
    private ReferenceType getReferenceType(ReferenceNode referenceNode) throws RendererException

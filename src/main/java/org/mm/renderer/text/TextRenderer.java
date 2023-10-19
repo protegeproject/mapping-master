@@ -1359,6 +1359,7 @@ public class TextRenderer extends ReferenceRendererConfiguration implements Rend
       sb.append(" ");
       sb.append("located at cell ");
       sb.append(ReferenceUtil.resolveLocation(getDataSource(), referenceNode));
+      sb.append(" using reference " + referenceNode);
       sb.append(".");
       return sb.toString();
    }
