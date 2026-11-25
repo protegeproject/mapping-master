@@ -80,8 +80,8 @@ public class OWLObjectFactory implements MappingMasterParserConstants
       owlDataFactory = ontology.getOWLOntologyManager().getOWLDataFactory();
       labelToEntityMapper = new LabelToEntityMapper(ontology);
       OWLDocumentFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
-      if (format.isPrefixOWLOntologyFormat()) {
-         prefixMap = format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap();
+      if (format.isPrefixOWLDocumentFormat()) {
+         prefixMap = format.asPrefixOWLDocumentFormat().getPrefixName2PrefixMap();
       }
    }
 
