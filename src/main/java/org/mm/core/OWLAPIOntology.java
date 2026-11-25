@@ -32,8 +32,8 @@ public class OWLAPIOntology implements OWLOntologySource
    {
       PrefixManager prefixManager = new DefaultPrefixManager();
       OWLDocumentFormat format = ontology.getOWLOntologyManager().getOntologyFormat(ontology);
-      if (format.isPrefixOWLOntologyFormat()) {
-         Map<String, String> prefixMap = format.asPrefixOWLOntologyFormat().getPrefixName2PrefixMap();
+      if (format.isPrefixOWLDocumentFormat()) {
+         Map<String, String> prefixMap = format.asPrefixOWLDocumentFormat().getPrefixName2PrefixMap();
          for (String prefixName : prefixMap.keySet()) {
             prefixManager.setPrefix(prefixName, prefixMap.get(prefixName));
          }

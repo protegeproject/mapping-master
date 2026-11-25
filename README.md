@@ -34,3 +34,19 @@ If you have questions about this library, please go to the main
 Protégé website and subscribe to the [Protégé Developer Support
 mailing list](http://protege.stanford.edu/support.php#mailingListSupport).
 After subscribing, send messages to protege-dev at lists.stanford.edu.
+
+
+## Protégé 6 / OWL API 5
+
+MappingMaster 3 targets OWL API 5.5.1 and Java 11. Build and test with
+`mvn --batch-mode clean verify`. The spreadsheet regression tests load both
+Excel formats, generate class/subclass/annotation axioms, check that previewing
+does not apply changes, and save and reopen the resulting ontology.
+
+For a paired Cellfie 3 development build, first run `mvn --batch-mode clean install`
+here, then build Cellfie. Cellfie embeds this library; users install only the
+Cellfie plugin JAR.
+
+The standard Protégé publishing workflow is in `.github/workflows/publish.yml`.
+A numeric release tag matching the POM version publishes signed source, Javadoc,
+and binary artifacts to Maven Central using organization publishing secrets.
